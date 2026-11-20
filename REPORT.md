@@ -28,12 +28,17 @@
 - Run `npx http-server . -p 4173 -c-1 --silent` then `node tests/check.mjs http://localhost:4173/ [seed]`.
 - UPI ID defaults to the demo `hisaab.demo@upi` (shown as demo in Settings); a real shop sets its own.
 
-## Judges' note (paste into "Details for the judges")
+## Judges' note (as submitted on 20 Nov 2026, 9:29 pm IST)
+Live app: https://hisaab-hazel.vercel.app
+Documentation: https://github.com/karwasanjay007/hisaab-docs (specification check, architecture, 189 acceptance criteria, journeys, data model, reviews and test results)
+
 Hisaab is a digital khata for a local kirana shop, like Khatabook. It opens empty, ready for the shop's own ledger, with one tap to load the sample shop; paste any shop file (JSON, or a spreadsheet saved as CSV) into #import-box and press #import-go to replace it (Undo puts the old shop back). All six tester hooks are in place, ?today= is honoured, and all seven bonus items are built: overdue list, edit and delete with undo, CSV export (entries and balances), search, a UPI pay link in every reminder, Hindi and Telugu, and reading the amount from a payment screenshot.
+
 The automations from the coaching sessions are in too: a WhatsApp reminder with the exact UPI amount, a UPI QR code on each customer page, a "Remind all overdue" queue that opens each chat in turn, a WhatsApp receipt after every entry, and a printable statement with a scan-to-pay QR.
+
 What makes it different: voice quick entry. Tap the microphone and say "Sunita 500 udhaar" (English, Hindi or Telugu) and the form fills itself; the shopkeeper checks and presses Save. Names show in Devanagari or Telugu script in brackets, money in ₹ with lakh grouping, light and dark themes, a left menu on desktop and a bottom bar at 375 px, and it works offline. No login; data stays on the phone.
+
 Tested on the live link: every "Done when" passes, and an independent checker scores 27/27 on four random shops.
-Documentation (specification check, architecture, 189 acceptance criteria, journeys, data model, reviews and test results): https://github.com/karwasanjay007/hisaab-docs
 
 ## Localisation and ledger features (20 Nov 2026)
 - Money shows as ₹ with Indian grouping and Latin digits (Google's research on Indian users); Hindi or
