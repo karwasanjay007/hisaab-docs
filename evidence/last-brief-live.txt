@@ -1,0 +1,29 @@
+PASS 9 digit phone refused with a message: Enter a 10 digit phone number, digits only.
+PASS phone "90000abc01" refused with a message: Enter a 10 digit phone number, digits only.
+PASS phone "9000000101a" refused with a message: Enter a 10 digit phone number, digits only.
+PASS phone "abcdefghij" refused with a message: Enter a 10 digit phone number, digits only.
+PASS Ravi Kumar 9000000101 on the home list: Customer added.
+PASS fresh app holds only Ravi (no other shop preloaded)
+PASS Ravi balance reads Rs 250: ₹250
+PASS total shows 250: ₹250 250
+PASS after reload Ravi still 250
+PASS top shows 11820
+PASS Ravi shows 670: ₹670
+PASS 8 customers after the sample
+PASS 25 Oct payment 1,500 (row 0) above 23 Oct credit 180 (row 1)
+PASS reminder: Namaste Ravi Kumar, this is a reminder from Lakshmi Provision Store (fictional).
+PASS payment shows img[data-shot]
+PASS picture still there after reload
+PASS Ravi 670 - 100 = 570
+PASS customer with no entries loads with 0; total 300
+PASS total with an advance holds one figure, 1895: "₹1,895 1895"
+PASS owed note sits outside #total-outstanding: ₹2,095 owed, less ₹200 paid in advance
+PASS advance customer: text ₹-200 for readers, drawn as -₹200, Advance label, data-balance=-200
+PASS 375 #/: scrollWidth 375; small targets: none
+PASS 375 #/s/record: scrollWidth 375; small targets: none
+PASS 375 #/s/customers: scrollWidth 375; small targets: none
+PASS 375 #/s/data: scrollWidth 375; small targets: none
+PASS 375 #/c/9000000101: scrollWidth 375; small targets: none
+PASS no dialogs 
+PASS no page errors 
+ALL PASS

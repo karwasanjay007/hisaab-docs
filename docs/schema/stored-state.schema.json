@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hisaab.local/docs/schema/stored-state.schema.json",
+  "title": "Hisaab stored state (localStorage key hisaab.v1)",
+  "description": "The whole shop, saved by save() as JSON.stringify(state) under the localStorage key \"hisaab.v1\" after every change. load() accepts any saved value that parses as JSON and has customers and entries arrays; anything else is treated as no data, and on start the app then starts an empty shop (blank(): shop My shop, no customers, no entries) and saves it over the key. The app writes no timestamps, no version field and no customer ids: a customer is identified by its phone. Language and theme are stored under separate keys (hisaab.lang, hisaab.theme), not here.",
+  "type": "object",
+  "required": [
+    "shop",
+    "upi",
+    "customers",
+    "entries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "shop": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Shop name shown in the header and used in reminder messages and export file names. \"My shop\" for a blank shop. Set by import or by the settings form (#shop-input, maxlength 60; an empty value keeps the old name)."
+    },
+    "upi": {
+      "type": "string",
+      "description": "The shop's UPI ID (VPA), trimmed, or \"\" when not set (settings form #upi-id, maxlength 60). The settings form and import check it with validUpi() (see links.md); a bad ID is not saved. When \"\", every UPI link uses the built-in demo ID hisaab.demo@upi."
+    },
+    "nativeDigits": {
+      "type": "boolean",
+      "description": "Optional. Written only when the \"Show numbers in Hindi or Telugu digits\" box (#native-digits) is changed. Absent means false. An import replaces the state and so drops it."
+    },
+    "customers": {
+      "type": "array",
+      "description": "Customers in the order they were added or imported. Phones are unique: the add form refuses a duplicate and import keeps the first.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "phone"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name, trimmed (add form #customer-name and edit form #cust-edit-name, maxlength 60; import may give a longer name or the phone number)."
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$",
+            "description": "Ten-digit phone, the customer's key. Never changed after creation."
+          },
+          "name_hi": {
+            "type": "string",
+            "description": "Name in Devanagari. Present after import when given, or after the customer edit form is saved (then it may be \"\", meaning use the automatic transliteration)."
+          },
+          "name_te": {
+            "type": "string",
+            "description": "Name in Telugu script, same rules as name_hi."
+          }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "description": "Entries in the order they were added (an undone delete goes back to its old position). Display order is worked out at render time, not stored.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "phone",
+          "type",
+          "amount",
+          "date",
+          "note",
+          "shot",
+          "seq"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^e[0-9a-z]+$",
+            "description": "Made by uid(): \"e\" + Date.now() in base 36 + up to 5 random base-36 characters; imported entries also get their array index appended. Used by edit, delete and the running balance."
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$",
+            "description": "The customer this entry belongs to (foreign key to customers[].phone)."
+          },
+          "type": {
+            "enum": [
+              "credit",
+              "payment"
+            ],
+            "description": "credit adds to what the customer owes; payment takes it off."
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Rupees, rounded to 2 decimals. The entry form requires more than 0 and at most 10,000,000; import allows 0 and skips an entry above 10,000,000.",
+            "maximum": 10000000
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+            "description": "YYYY-MM-DD. The entry form refuses a date after today (today honours ?today=); import does not."
+          },
+          "note": {
+            "type": "string",
+            "description": "Short note, trimmed, may be \"\". The form field allows 80 characters; import keeps up to 200."
+          },
+          "shot": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^data:image/",
+            "description": "Payment screenshot or null. From the form it is a JPEG data URL (data:image/jpeg;base64,...) at quality 0.72, scaled so its longer side is at most 640 px, drawn on white. From import it is whatever data:image/ URL the file held. Choosing a screenshot switches the entry type to payment, but a credit entry can keep one if the type is changed back."
+          },
+          "seq": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Tie-breaker for entries on the same date. Import sets it to the entry's index in the file; a new entry gets the highest seq plus 1; editing keeps it."
+          }
+        }
+      }
+    }
+  }
+}

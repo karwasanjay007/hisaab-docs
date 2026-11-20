@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hisaab.local/docs/schema/quick-entry-result.schema.json",
+  "title": "Hisaab quick-entry parse result",
+  "description": "What window.hisaabParseQuick(text) returns: a test hook over parseQuick() in app.js, the parser behind the quick-entry box (#quick-input) and the microphone. It reads text such as \"Sunita 500 udhaar\" or \"Ravi paid 1.5 hazar UPI\" against the customers currently loaded. It only parses; it saves nothing.",
+  "type": "object",
+  "required": [
+    "amount",
+    "type",
+    "phones",
+    "note"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "amount": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "The first token that is a plain number (digits with an optional decimal part, after Devanagari and Telugu digits are turned into 0-9, commas between digits removed, the rupee sign removed, and a leading \"rs\"/\"rs.\" or a trailing \"/-\" stripped), times a multiplier when the next token is one: hazar, hazaar, thousand, k (also \"5k\"), the Hindi and Telugu words for thousand = 1000; sau, hundred and the Hindi and Telugu words = 100; lakh and its Hindi and Telugu words = 100000. A 10-digit number is treated as a phone, not an amount. null when no number was found."
+    },
+    "type": {
+      "enum": [
+        "credit",
+        "payment",
+        null
+      ],
+      "description": "payment when any payment word is present (paid, pay, payment, received, got, jama, mila, wapas, returned and Hindi and Telugu words), wherever it stands. Otherwise the first of these decides: a credit word (credit, udhaar, udhar, gave, diya, baki, liya, saman and Hindi and Telugu words) gives credit, a payment app word (upi, gpay, phonepe, paytm) gives payment. Otherwise null (the form then defaults to credit). \"cash\" goes into the note but does not set the type."
+    },
+    "phones": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]{10}$"
+      },
+      "description": "Phones of every customer tied for the best name score (empty when nothing scored). Scoring per word: a full 10-digit phone match scores 10, the last 4 digits of the phone score 4, an exact name word 3, a name word starting with the word (3 or more letters) 2, one letter different (4 or more letters) 1. Name words include name, name_hi, name_te and the automatic Hindi and Telugu transliterations. More than one phone means the app asks which customer."
+    },
+    "note": {
+      "type": "string",
+      "description": "The payment app words (upi written as UPI, gpay, phonepe, paytm, cash and their Hindi and Telugu forms) followed by the leftover words that are not amounts, type words, filler words (rs, rupees, ne, ko, ka, the, for and similar) or close to any customer's name, joined by spaces, lower case. \"\" when nothing is left."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@startuml deployment
+!include <C4/C4_Deployment>
+title Hisaab: deployment
+
+Deployment_Node(dev, "Developer PC", "Windows, PowerShell, Vercel CLI") {
+  Container(src, "Working copy", "Git", "App files plus brief, brand, tests, docs and *.md")
+}
+Deployment_Node(gh, "GitHub", "Private repository") {
+  Container(repo, "karwasanjay007/hisaab", "Git", "Source history and rollback")
+}
+Deployment_Node(vc, "Vercel", "Team elodos, project hisaab") {
+  Deployment_Node(edge, "Static hosting", "HTTPS, *.vercel.app") {
+    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; no functions, no server code")
+  }
+}
+Deployment_Node(phone, "Owner's phone", "Mobile browser") {
+  Container(app, "Hisaab single-page app", "HTML, CSS, JavaScript", "Runs the ledger")
+  ContainerDb(store, "localStorage", "Web Storage", "The shop's data, never uploaded")
+  Container(swk, "Service worker", "sw.js", "Cache hisaab-v1")
+}
+
+Rel(src, repo, "git push", "HTTPS")
+Rel(src, site, "vercel deploy --prod --yes; .vercelignore drops non-site files", "Vercel CLI")
+Rel(app, site, "Loads files from hisaab-hazel.vercel.app", "HTTPS")
+Rel(app, store, "Reads and writes")
+Rel(app, swk, "Registers")
+Rel(swk, site, "Network first, cache as fallback", "HTTPS")
+
+LAYOUT_WITH_LEGEND()
+@enduml

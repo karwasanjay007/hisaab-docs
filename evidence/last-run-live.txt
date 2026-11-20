@@ -1,0 +1,42 @@
+Hisaab checker  base=https://hisaab-hazel.vercel.app/  seed=12345  today=2026-11-15
+
+PASS [1-sample total] #total-outstanding "₹11,820
+11820" contains 11820
+PASS [1-sample balances] all 8 customer balances correct
+INFO [1-sample top defaulter] top_defaulter_phone 9000000102 (Sunita Devi): first [data-customer] row is 9000000102; a "top/highest" label appears on the page
+INFO [1-sample customers_with_balance] "8" customers-with-balance figure seen in page text
+PASS [3-reminder] all 8 reminder links correct (wa.me/91<phone>, name, balance, rupees)
+PASS [9-bonus UPI] every reminder has upi://pay?pa=...&am=<balance>
+PASS [4-persistence] after reload total 11820 and all 8 rows unchanged
+PASS [6-today] days-since-last-payment figures match ?today (11-15: 8/8, 12-15: 8/8)
+PASS [9-bonus overdue] overdue list of 8 sorted by days since last payment: 105:61d 104:44d 108:43d 102:42d 106:27d 103:27d 107:24d 101:21d
+PASS [9-bonus search] name "Sunita" -> 9000000102 only; phone 9000000105 -> that row only
+PASS [9-bonus CSV] hisaab-lakshmi-provision-store-fictional-entries.csv: entry CSV: 38 rows, credit sum 18280, payment sum 6460 match; header "date,name,phone,type,amount,note,has_screenshot"
+PASS [9-bonus language] selected "हिंदी": Indic characters 11 -> 1522
+INFO [4-customer page order] Sunita Devi entries appear newest first (950, 1500, 340, 120, 1200, 1500)
+INFO [2-hidden data] 15 customers, 42 entries; overpaid 9811434799 = -450, no entries 9478081538 = 0; sum all -5705, sum positive 6115
+PASS [2-hidden total] #total-outstanding "₹-5,705
+-5705" contains -5705
+INFO [2-hidden total] app shows the SUM OF ALL balances (advances netted off)
+PASS [2-hidden balances] all 15 customer balances correct
+PASS [2-hidden replace] import replaced the shop: no sample customer remains
+PASS [2-hidden reminders] 15/15 reminder links carry name and balance
+PASS [2-hidden persistence] hidden shop survives reload
+PASS [5-shot img] img[data-shot] shown (visible on load; customer via select, type via radio)
+PASS [5-shot balance] balance 3470 -> 3000 after payment of 470; total "₹11,350
+11350" (expect 11350)
+PASS [5-shot reload] img[data-shot] survives reload (loaded true, src data:image/jpeg;base64,/9j/4AA...)
+PASS [9-bonus OCR] amount field filled with 750 after 1 s
+PASS [9-bonus edit/delete] deleting newest entry (payment 950) gave 4420; editing next (credit 1500 -> 1000) gave 3920
+PASS [7-phone] scrollWidth home 375, customer page 375
+PASS [8-contrast light home] 202 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast light customer] 95 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast dark home] 202 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast dark customer] 95 text elements, all meet 4.5:1 / 3:1
+INFO [8-theme] body background light rgb(246, 242, 233), dark rgb(11, 21, 17)
+
+PASS [dialogs] no window dialogs
+PASS [console] no console or page errors
+
+Summary: 27 PASS, 0 FAIL
+Score estimate: 100/100  = hidden data 60/60 + bonus 30/30 [UPI, overdue, search, CSV, language, OCR, edit/delete] + phone 5/5 + light/dark 5/5

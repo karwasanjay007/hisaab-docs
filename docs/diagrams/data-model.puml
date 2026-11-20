@@ -1,0 +1,103 @@
+@startuml data-model
+title Hisaab data model (browser localStorage)
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundCorner 14
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam titleFontSize 18
+skinparam titleFontColor #0E5C45
+skinparam ArrowColor #0E5C45
+skinparam ArrowFontColor #33413C
+skinparam ArrowThickness 1.4
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #0E5C45
+  BorderThickness 1.6
+  HeaderBackgroundColor #E6F1ED
+  FontColor #14211C
+  AttributeFontColor #33413C
+  StereotypeFontColor #0E5C45
+}
+skinparam note {
+  BackgroundColor #F5F8F6
+  BorderColor #9DB8AD
+  FontColor #33413C
+  FontSize 12
+}
+skinparam package {
+  BorderColor #9DB8AD
+  FontColor #0E5C45
+  BackgroundColor #FFFFFF
+}
+hide circle
+hide methods
+set separator none
+
+package "localStorage key hisaab.v1 (one JSON document)" {
+  class Shop <<root, one per browser>> {
+    shop : string
+    {field} upi : string  (empty = demo ID)
+    nativeDigits : boolean [optional]
+    customers : Customer[]
+    entries : Entry[]
+  }
+
+  class Customer {
+    {field} <b>phone</b> : string  (10 digits, key)
+    name : string
+    name_hi : string [optional]
+    name_te : string [optional]
+  }
+
+  class Entry {
+    {field} <b>id</b> : string  (uid, key)
+    {field} phone : string  (refers to Customer)
+    type : credit | payment
+    {field} amount : number  (rupees, 2 dp)
+    date : YYYY-MM-DD
+    note : string
+    shot : JPEG data URL | null
+    {field} seq : integer  (same-date order)
+  }
+}
+
+package "Separate localStorage keys" {
+  class Preferences <<per browser>> {
+    hisaab.lang : en | hi | te
+    hisaab.theme : light | dark
+  }
+}
+
+Shop "1" *-- "0..*" Customer : customers
+Shop "1" *-- "0..*" Entry : entries
+Customer "1" -- "0..*" Entry : phone
+
+note right of Customer
+  <b>Derived, never stored</b>
+  balance = sum(credit amounts) - sum(payment amounts)
+  balance > 0 : owes the shop
+  balance < 0 : in advance
+  days overdue (balance > 0 only) =
+    max(0, today - last payment date,
+    or first credit date when never paid)
+  today = ?today=YYYY-MM-DD when valid, else the device date
+end note
+
+note bottom of Entry
+  <b>Running balance</b> (customer page):
+  entries of one customer sorted by date, then seq,
+  oldest first; balance after each entry.
+  Shown newest first.
+end note
+
+note left of Shop
+  <b>Total outstanding</b> =
+  sum of all balances, so a customer
+  in advance reduces it. The owed figure
+  (balances above 0) is in a note
+  below the total when it differs.
+end note
+
+@enduml

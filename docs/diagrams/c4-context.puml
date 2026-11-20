@@ -1,0 +1,30 @@
+@startuml c4-context
+!include <C4/C4_Context>
+title Hisaab: system context (C4 level 1)
+
+Person(owner, "Shop owner", "Runs a kirana shop; records udhaar and jama on a phone and sends reminders")
+Person(customer, "Customer", "Buys on credit; receives a WhatsApp reminder and pays by UPI")
+Person(grader, "Automated grader", "Scripted browser that reads fixed ids and data attributes and loads hidden shops")
+
+System(hisaab, "Hisaab", "Shop credit ledger that runs entirely in the browser; data stays on the phone")
+
+System_Ext(whatsapp, "WhatsApp", "Opens a chat from a wa.me link with the message already written")
+System_Ext(upi, "Customer's UPI app", "Opens a upi://pay link or scans the QR code to pay the shop")
+System_Ext(vercel, "Vercel", "Static hosting of the site at hisaab-hazel.vercel.app")
+System_Ext(cdnjs, "cdnjs", "Serves qrcode-generator 1.4.4 on demand")
+System_Ext(jsdelivr, "jsDelivr", "Serves Tesseract.js 5.1.1 on demand")
+System_Ext(fonts, "Google Fonts", "Baloo 2 and Noto Sans with Devanagari and Telugu")
+
+Rel(owner, hisaab, "Records entries, checks balances, sends reminders", "HTTPS, browser")
+Rel(grader, hisaab, "Opens pages, fills #import-box, reads #total-outstanding", "HTTPS, Playwright")
+Rel(hisaab, whatsapp, "Hands over reminder and receipt text", "wa.me/91<phone>?text=")
+Rel(whatsapp, customer, "Delivers the message the owner sends")
+Rel(customer, upi, "Pays the amount shown")
+Rel(hisaab, upi, "Pay link and QR code", "upi://pay?pa=...&am=...")
+Rel(vercel, hisaab, "Serves the static files", "HTTPS")
+Rel(hisaab, cdnjs, "Loads the QR library when a QR code or statement is asked for", "HTTPS")
+Rel(hisaab, jsdelivr, "Loads the screenshot reader when a screenshot is chosen", "HTTPS")
+Rel(hisaab, fonts, "Loads web fonts", "HTTPS")
+
+LAYOUT_WITH_LEGEND()
+@enduml

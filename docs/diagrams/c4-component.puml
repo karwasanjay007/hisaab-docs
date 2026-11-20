@@ -1,0 +1,49 @@
+@startuml c4-component
+!include <C4/C4_Component>
+title Hisaab: components inside app.js (C4 level 3)
+
+ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme")
+Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
+Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback")
+
+Container_Boundary(app, "app.js (one IIFE)") {
+  Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")
+  Component(store, "State and storage", "load, save, fromShopFile, balances, totalOutstanding, overdueRows", "The shop object, its validation and every computed figure")
+  Component(i18n, "i18n", "I18N, t, applyLabels, translit, money, digits", "English, Hindi and Telugu labels, names in local script, rupee formatting")
+  Component(render, "Rendering", "render, renderCustomer, entryHtml, runningBalances", "Builds the overview, lists and customer page from state, escaping text")
+  Component(router, "Routing and navigation", "route, goTo, spy, closeSheet", "Hash routes #/, #/s/section, #/c/phone; left nav, bottom bar, More sheet")
+  Component(form, "Entry form and validation", "onEntrySubmit, startEdit, deleteEntry, onAddCustomer, toast", "Adds, edits and deletes entries and customers; Undo through the toast")
+  Component(quick, "Quick entry and voice", "parseQuick, applyQuick, onQuick, setupVoice", "Parses Sunita 500 udhaar, typed or spoken, and fills the form")
+  Component(remind, "Reminders", "reminderText, waLink, upiLink, receiptLink, renderRemindAll", "WhatsApp links with name, balance and UPI pay link; remind-all queue")
+  Component(qr, "QR", "loadQr, qrSvg, showQr", "UPI QR code on the customer page")
+  Component(stmt, "Statement", "printStatement", "Printable customer statement with totals and a scan-to-pay QR")
+  Component(io, "Import and export", "doImport, fromCsv, csvRows, exportEntries, exportBalances, exportJson, csvCell", "Replaces the shop from JSON or CSV with Undo; writes CSV and JSON files")
+  Component(shot, "Screenshot reading", "onShotChange, loadTesseract, readAmount, pickAmount", "Resizes to a 640 px JPEG and reads the paid amount")
+  Component(theme, "Theme", "currentTheme, toggleTheme", "Light and dark, following the system until chosen")
+}
+
+Rel(init, store, "load(); an empty shop on first visit")
+Rel(init, router, "route() on start and on hashchange")
+Rel(init, swc, "Registers sw.js")
+Rel(store, ls, "Reads and writes", "JSON")
+Rel(router, render, "render() for the chosen view")
+Rel(render, store, "Reads balances and entries")
+Rel(render, i18n, "Labels, names, money")
+Rel(render, remind, "Reminder hrefs on rows")
+Rel(form, store, "Changes entries, save()")
+Rel(form, render, "Re-renders after a change")
+Rel(form, remind, "Receipt link in the toast")
+Rel(quick, form, "Fills the entry form; the owner presses Save")
+Rel(quick, speechapi, "Listens", "SpeechRecognition")
+Rel(shot, form, "Sets payment type, picture and amount")
+Rel(shot, cdnlibs, "Tesseract.recognize()")
+Rel(io, store, "fromShopFile(), save()")
+Rel(qr, cdnlibs, "qrcode()")
+Rel(qr, remind, "Encodes upiLink()")
+Rel(stmt, qr, "Embeds the QR code")
+Rel(theme, ls, "hisaab.theme")
+Rel(i18n, ls, "hisaab.lang")
+
+LAYOUT_WITH_LEGEND()
+@enduml

@@ -1,0 +1,98 @@
+@startuml j1-first-open
+title J1 First open: load the shop, or start empty, and render the overview
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Shop owner" as Owner
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
+database "localStorage" as LS
+participant "Service worker\n(sw.js)" as SW
+autonumber
+Owner -> UI : Open the app address, optionally with ?today=YYYY-MM-DD
+UI -> LS : head script: getItem('hisaab.theme')
+opt a theme is saved
+  UI -> UI : set data-theme on the html element
+end
+UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js
+App -> LS : getItem('hisaab.lang')
+LS --> App : 'en', 'hi' or 'te' (unknown or missing means 'en')
+UI -> App : DOMContentLoaded: init()
+App -> LS : load(): getItem('hisaab.v1')
+alt saved shop with customers[] and entries[]
+  LS --> App : state
+else first visit or unreadable data
+  App -> App : state = blank()
+  note right of App : an empty "My shop": no customers, no entries;\nthe sample is not loaded
+  App -> LS : save(): setItem('hisaab.v1', state)
+end
+App -> UI : applyLabels(): html lang, data-i18n labels, placeholders
+App -> UI : resetEntryForm(): date and max date = todayIso()
+App -> App : add listeners, setupVoice()
+App -> App : route(): read location.hash (#/, #/s/{section} or #/c/{phone})
+App -> App : render(): b = balances(), total = totalOutstanding(b)
+note right of App
+  balance = all credit minus all payments
+  total outstanding = sum of all balances
+  todayIso() uses ?today= when it is a valid date
+end note
+App -> UI : #total-outstanding: text, data-value, plain-number copy
+App -> UI : li[data-customer] rows with span[data-balance] and a[data-remind]
+App -> UI : #top-defaulter, overdue list, Remind all, KPI tiles,\nrecent entries, customer select, settings
+App -> App : spy(): mark the active nav item
+alt the shop has customers
+  UI --> Owner : Overview: total outstanding and every balance
+else no customers (first visit)
+  App -> UI : show #customer-empty and #start-actions
+  UI --> Owner : "No customers yet. Add your first customer, or load the sample shop to look around."\nwith Add your first customer and Load sample shop
+  opt Owner taps Add your first customer (#add-first)
+    UI -> App : location.hash = '#/s/add'; focus #customer-name
+  end
+  opt Owner taps Load sample shop (#load-sample-home)
+    UI -> App : same as #load-sample: fetch sample-data.json, then doImport() with Undo
+  end
+end
+opt page served over https or from localhost
+  UI -> App : window load event
+  App -> SW : navigator.serviceWorker.register('sw.js')
+  SW -> SW : install: skipWaiting(); activate: clients.claim()
+end
+opt another tab changes 'hisaab.v1'
+  LS -> App : storage event
+  App -> App : state = load() or blank(); render()
+end
+@enduml

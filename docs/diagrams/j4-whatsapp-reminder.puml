@@ -1,0 +1,85 @@
+@startuml j4-whatsapp-reminder
+title J4 WhatsApp reminder from a customer row
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Shop owner" as Owner
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
+database "localStorage" as LS
+participant "WhatsApp / UPI app" as WA
+autonumber
+== Built at every render, before any tap ==
+App -> App : render(): bal = balances()[phone] for each customer
+App -> App : reminderText(c, bal)
+alt bal above zero
+  App -> App : "Namaste {name}, this is a reminder from {shop}.\nYour balance is Rs {amt}. Pay by UPI: {upi link} Thank you."
+  App -> App : upiLink(c, bal): upi:~//pay?pa={UPI ID}&pn={shop}&am={bal}&cu=INR&tn=Hisaab {name}
+  note right of App : UPI ID from Settings (state.upi);\nuntil set, the demo ID hisaab.demo@upi
+else bal below zero (advance)
+  App -> App : "...You have Rs {amt} in advance with us. Thank you."
+else bal is zero
+  App -> App : "...Your account is settled, Rs 0 due. Thank you."
+end
+App -> UI : a[data-remind] href = wa.me/91{phone}?text={encoded message},\ntarget _blank (same link on the customer page as #cust-remind)
+opt Settings: owner saves shop name and UPI ID
+  Owner -> UI : Shop settings form, Save
+  alt UPI ID typed and validUpi() fails
+    App -> UI : #settings-msg "Enter a UPI ID like shopname@okbank, or leave it empty."
+    note right of App : nothing is saved; empty is allowed\n(the demo ID is then used)
+  else valid or empty
+    UI -> App : submit: state.shop, state.upi
+    App -> LS : save()
+    App -> App : render(): every reminder link is rebuilt
+  end
+end
+== The reminder ==
+Owner -> UI : tap the WhatsApp button on a customer row
+note right of UI : a plain link; no click handler in app.js
+UI -> WA : open wa.me in a new tab or the WhatsApp app
+WA --> Owner : chat with +91{phone}, message typed in, not sent
+Owner -> WA : read it, press Send in WhatsApp
+note right of WA : the app never sends by itself
+opt customer pays from the UPI link in the message
+  WA -> WA : the customer's UPI app opens with payee, amount and note filled
+  Owner -> UI : later records the payment (journey J2)
+end
+opt on the customer page: UPI pay link (#cust-upi), shown when bal above zero
+  Owner -> UI : tap UPI pay link
+  UI -> WA : open upi:~//pay?... in a UPI app on this phone
+end
+@enduml
