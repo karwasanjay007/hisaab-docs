@@ -22,7 +22,7 @@
   advance", so either reading of "total outstanding" is on the page.
   Sample: Rs 11,820 (no advances).
 - No dialogs, no console errors (checker run).
-- Checker written by a separate agent from brief/ only, without reading the app source.
+- Checker written from the brief only, without reading the app source.
 
 ## What I would tell the next person
 - Run `npx http-server . -p 4173 -c-1 --silent` then `node tests/check.mjs http://localhost:4173/ [seed]`.
@@ -145,19 +145,20 @@ button hover and the amber link on the green tile fixed (`--primary-hover`, `--a
 scan of every view and acted-on state in both themes (`tests/contrast.mjs`) finds nothing under 4.5:1;
 "1 customer owes money" in the singular. `tests/last-brief-live.txt`: ALL PASS.
 
-## Critique polish (21 Nov 2026)
+## Version 1.0.0.0 baseline (21 Nov 2026)
 
-Against the store critique (9.4/10), highest-impact hackathon fixes landed in code:
+Released by Sanjay Karwa, Smart AI for Business. This is the first baseline of the build project.
 
-- **You gave / You got** on the record form and entry pills (radio values stay `credit` / `payment`).
-- **Overdue badge and Remind-all** count only customers with 30+ days since last payment (sample on
-  `?today=2026-11-15`: badge **4**); the overdue **list** still shows every owing customer, sorted by days
-  (bonus still 8 rows).
-- **Phone overview** shows hero + customers + overdue; Record, Shop file and settings stay under the
-  bottom bar / More (DOM hooks unchanged).
-- Service worker also registers on `127.0.0.1` so local offline tests match localhost.
+Included in this baseline:
 
-Evidence (local server on this branch): `node tests/brief.mjs` ALL PASS; `node tests/check.mjs … 4242`
-27 PASS, 0 FAIL, estimate 100/100; `final` / `quick` / `nav` / `gaps` / `offline` ALL PASS. Details in
-`evidence/critique-fixes-note.md`. Still **BLOCKED** for a signed-in projects-page re-capture; spoken voice
-still UNVERIFIED.
+- Record form labels **You gave** and **You got** (radio values remain `credit` / `payment` for the tester hooks).
+- Overdue badge and Remind-all count customers with 30 or more days since last payment (sample on
+  `?today=2026-11-15`: badge **4**); the overdue list still shows every owing customer, sorted by days.
+- On a phone the overview shows hero, customers and overdue; Record, Shop file and settings sit under
+  the bottom bar (DOM hooks unchanged).
+- Service worker registers on `https`, `localhost` and `127.0.0.1`.
+
+Evidence: `node tests/brief.mjs` ALL PASS; `node tests/check.mjs … 4242` → 27 PASS, 0 FAIL, estimate
+100/100; `final` / `quick` / `nav` / `gaps` / `offline` ALL PASS. See `evidence/release-1-0-0-0.md`.
+Projects-page re-capture under a signed-in session remains To do; spoken voice remains unchecked
+end-to-end.
