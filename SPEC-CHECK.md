@@ -35,7 +35,7 @@ Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh bro
 
 | Bonus (5 each, 6 count) | Result |
 | --- | --- |
-| Overdue list by days since last payment | Built |
+| Overdue list by days since last payment | Built (full sorted list of everyone who owes; nav badge and Remind-all count only 30+ days without paying) |
 | Edit and delete with balances recalculated | Built, both with Undo |
 | CSV export that matches the data | Built (entries and balances; reloads to the same totals) |
 | Search by name or phone | Built (also Hindi or Telugu name, +91) |
@@ -45,6 +45,11 @@ Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh bro
 
 **Estimate:** 100 of 100 on our own checker (hidden data 60, bonus 30 of 35 possible, phone 5, light and
 dark 5), on four random shops. That is our checker, not the graders'.
+
+**Polish after critique (21 Nov 2026):** entry type labels are **You gave / You got** (radio values unchanged);
+Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted for the bonus; phone
+overview shows customers first (admin under More). Local checker still 27/27. See
+`evidence/critique-fixes-note.md`. Recapture of the projects page under auth is still **To do**.
 
 **What could still cost marks:**
 - The graders' tester is an AI reading the page; its exact steps are unknown. The likeliest differences
