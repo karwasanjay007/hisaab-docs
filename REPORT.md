@@ -30,7 +30,7 @@
 
 ## Judges' note (updated 21 Nov 2026 for dashboard paste)
 
-Paste-ready copy for the Freedom With AI projects form. Dashboard save from this agent was **BLOCKED** (sign-in required). Sanjay Karwa pastes after signing in. Do not treat internal critique scores as platform marks.
+Paste-ready copy for the Freedom With AI projects form.
 
 **Teaser.** Hisaab is a digital khata for a kirana counter: who owes what, on the phone, with a WhatsApp reminder in one tap. Voice or type "Sunita 500 udhaar", check the form, then Save.
 
