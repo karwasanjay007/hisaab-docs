@@ -20,20 +20,24 @@ This repository holds Hisaab's documentation: the specification check, product r
 
 ## For the judges: Hisaab in two minutes
 
-Hisaab replaces the khata notebook on a kirana counter. The shopkeeper sees at a glance how much the shop
-is owed and by whom, records a sale on credit in seconds (by voice if the hands are full), and asks for
-payment with one tap, the exact amount and a UPI pay link already in the WhatsApp message.
+**Promise.** Replace the paper khata with a phone ledger that records credit and payments, shows total
+outstanding, and opens WhatsApp with the exact amount ready to send.
 
-**Try it.** Open https://hisaab-hazel.vercel.app. It starts empty, like a new notebook. Press **Load sample
-shop** to see the brief's sample (₹11,820 outstanding), or add your own customer. Then:
+**Why not a typical LLM demo.** This is a product loop, not a chat wrapper. Balances are computed from
+entries. The app starts empty; one tap loads the sample. Quick entry fills the form in English, Hindi or
+Telugu and never auto-saves. Offline after one visit. Data stays in the browser.
 
-1. Tap the microphone in **Record** and say "Sunita 500 udhaar" (or type it). The form fills itself; you
-   check it and press Save.
-2. Tap the green WhatsApp button on any customer: the reminder opens with the name, the balance and a
-   `upi://pay` link.
-3. Open a customer: entries newest first with a running balance, a UPI QR code to scan, and a printable
-   statement.
-4. Switch the language to हिंदी or తెలుగు, and the theme to dark.
+**Try it in 60 seconds.** Open https://hisaab-hazel.vercel.app. Press **Load sample shop** (₹11,820
+outstanding). Then:
+
+1. In **Record**, type or speak "Sunita 500 udhaar", check the fields, press Save.
+2. Tap the green WhatsApp button on any customer: name, Rs amount and a `upi://pay` link.
+3. Open a customer: entries newest first, UPI QR, printable statement.
+4. Switch language to हिंदी or తెలుగు, and the theme to dark.
+
+**Honest limits.** localStorage in this browser only. Demo UPI may appear in reminders until the shop sets
+its own ID in Settings. Spoken voice depends on the browser; typed Fill + Save is the reliable grader path.
+Paste-ready dashboard copy lives in [REPORT.md](REPORT.md) (Judges' note).
 
 **Against the specification.** Every requirement on the projects page, copied word for word into
 [brief/spec-page.md](https://dashboard.freedomwithai.com/redesign/v3/projects), is rated line by line in [SPEC-CHECK.md](SPEC-CHECK.md):

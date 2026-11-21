@@ -28,9 +28,32 @@
 - Run `npx http-server . -p 4173 -c-1 --silent` then `node tests/check.mjs http://localhost:4173/ [seed]`.
 - UPI ID defaults to the demo `hisaab.demo@upi` (shown as demo in Settings); a real shop sets its own.
 
-## Judges' note (as submitted on 20 Nov 2026, 9:29 pm IST)
-Live app: https://hisaab-hazel.vercel.app
-Documentation: https://github.com/karwasanjay007/hisaab-docs (specification check, architecture, 189 acceptance criteria, journeys, data model, reviews and test results)
+## Judges' note (updated 21 Nov 2026 for dashboard paste)
+
+Paste-ready copy for the Freedom With AI projects form. Dashboard save from this agent was **BLOCKED** (sign-in required). Sanjay Karwa pastes after signing in. Do not treat internal critique scores as platform marks.
+
+**Teaser.** Hisaab is a digital khata for a kirana counter: who owes what, on the phone, with a WhatsApp reminder in one tap. Voice or type "Sunita 500 udhaar", check the form, then Save.
+
+**Pitch.**
+One-line promise. Replace the paper khata with a phone ledger that records credit and payments, shows total outstanding, and opens WhatsApp with the exact amount ready to send.
+
+Why it wins against a typical LLM demo. This is a product loop, not a chat wrapper. Balances are computed from entries, never typed in. The app starts empty (like a new notebook); one tap loads the sample shop. Six tester hooks match the brief; seven bonuses ship (overdue, edit/delete with Undo, CSV, search, UPI in the reminder, Hindi and Telugu, amount from a payment screenshot). Quick entry fills the form in English, Hindi or Telugu and never auto-saves. Offline after one visit. Data stays in the browser.
+
+What to click in 60 seconds.
+1. Open https://hisaab-hazel.vercel.app and press Load sample shop (total outstanding ₹11,820).
+2. In Record, type or speak "Sunita 500 udhaar", check the filled fields, press Save.
+3. Tap a green WhatsApp reminder: name, Rs amount, and a UPI pay link.
+4. Open a customer for newest-first entries, UPI QR and Statement.
+
+Honest limits. Ledger is localStorage in this browser only (no multi-phone sync yet). Until the shop sets its own UPI ID, reminders may still carry the demo UPI shown in Settings. Spoken voice depends on the browser's speech support; typed Fill + Save is the reliable path for graders.
+
+Built by Sanjay Karwa, Smart AI for Business. Version 1.0.0.0.
+Live: https://hisaab-hazel.vercel.app
+Documentation: https://github.com/karwasanjay007/hisaab-docs
+
+**Shorter field (~110 words).** Hisaab is a kirana khata on the phone: customers, You gave / You got entries, total outstanding, and WhatsApp reminders with name, Rs amount and UPI. Open https://hisaab-hazel.vercel.app, Load sample shop, then record "Sunita 500 udhaar" (voice or type) and Save. Tap WhatsApp on any customer; open a customer for QR and statement. Starts empty; import via #import-box; works at 375 px, light and dark, English / हिंदी / తెలుగు; offline after one visit. Data stays on the device. Demo UPI until the shop sets its own. Built by Sanjay Karwa, Smart AI for Business. Docs: https://github.com/karwasanjay007/hisaab-docs
+
+### Prior note (as submitted on 20 Nov 2026, 9:29 pm IST)
 
 Hisaab is a digital khata for a local kirana shop, like Khatabook. It opens empty, ready for the shop's own ledger, with one tap to load the sample shop; paste any shop file (JSON, or a spreadsheet saved as CSV) into #import-box and press #import-go to replace it (Undo puts the old shop back). All six tester hooks are in place, ?today= is honoured, and all seven bonus items are built: overdue list, edit and delete with undo, CSV export (entries and balances), search, a UPI pay link in every reminder, Hindi and Telugu, and reading the amount from a payment screenshot.
 
