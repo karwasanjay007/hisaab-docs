@@ -151,11 +151,11 @@ Released by Sanjay Karwa, Smart AI for Business. This is the first baseline of t
 
 Included in this baseline:
 
-- Record form labels **You gave** and **You got** (radio values remain `credit` / `payment` for the tester hooks).
+- Record form labels **You gave (credit)** and **You got (payment)** (form heading "Record credit (you gave) or payment (you got)") (radio values remain `credit` / `payment` for the tester hooks).
 - Overdue badge and Remind-all count customers with 30 or more days since last payment (sample on
   `?today=2026-11-15`: badge **4**); the overdue list still shows every owing customer, sorted by days.
-- On a phone the overview shows hero, customers and overdue; Record, Shop file and settings sit under
-  the bottom bar (DOM hooks unchanged).
+- On a phone the overview hides nothing: Customers and Overdue first, then the record form, add customer,
+  recent entries, Shop file (import) and settings (DOM hooks unchanged).
 - Service worker registers on `https`, `localhost` and `127.0.0.1`.
 
 Evidence: `node tests/brief.mjs` ALL PASS; `node tests/check.mjs … 4242` → 27 PASS, 0 FAIL, estimate

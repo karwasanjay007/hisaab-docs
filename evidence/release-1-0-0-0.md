@@ -8,9 +8,9 @@
 
 ## What this baseline includes
 
-- You gave / You got on the record form (tester radio values unchanged).
+- "You gave (credit)" / "You got (payment)" on the record form (tester radio values unchanged).
 - Overdue badge and Remind-all: 30 or more days without payment; full sorted owing list kept for the bonus.
-- Phone overview: money and customers first; Shop file and settings under More.
+- Phone overview: Customers and Overdue first, then the record form, add customer, recent entries, Shop file (import) and settings; no section hidden.
 - Offline after one visit; UPI QR; Hindi and Telugu; screenshot amount reading.
 
 ## Checks run on this baseline (local server)

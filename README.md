@@ -73,15 +73,15 @@ shop's phones (for example with Supabase sign-in) is the natural next step, list
 
 ## What it does
 
-- **Customers and entries.** Add a customer, record **You gave** (udhaar) or **You got** (payment) with an
+- **Customers and entries.** Add a customer, record **You gave (credit)** (udhaar) or **You got (payment)** with an
   amount, date, note and an optional payment screenshot; the amount is read from the screenshot, in
   English, Hindi or Telugu. Edit or delete with Undo. Each balance and the
   total outstanding are computed from the entries, never typed in.
 - **Overview.** Total outstanding, who owes the most, money collected and given on credit in the last 30
   days, and an overdue list sorted by days since the last payment. The Overdue badge and Remind-all count
   only 30+ days without paying; the list still shows everyone who owes. Search by name (English, Hindi or
-  Telugu script) or phone. On a phone the overview is money + customers; Record and Shop file sit under
-  the bottom bar.
+  Telugu script) or phone. On a phone nothing is hidden: Customers and Overdue come first, then the
+  record form, add customer, recent entries, Shop file (import) and settings.
 - **Reminders and getting paid.** One tap opens WhatsApp with the customer's name, balance and a UPI pay
   link already in the message. "Remind all overdue" walks the overdue list, longest first. Each customer
   page shows a UPI QR code to scan at the counter.
