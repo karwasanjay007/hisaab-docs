@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | Source | https://dashboard.freedomwithai.com/redesign/v3/projects (Hisaab section) |
-| Captured | 20 Nov 2026, afternoon, Claude in Chrome get_page_text, word for word in `brief/spec-page.md` |
+| Captured | 20 Nov 2026, afternoon, word for word into `brief/spec-page.md` from the projects page |
 | Recaptured before submitting | To do on 21 Nov before 2:00 pm IST; the page changed once already (both projects may now be submitted) |
 | Literal test | `tests/brief.mjs`, live result `tests/last-brief-live.txt` |
 
@@ -46,10 +46,10 @@ Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh bro
 **Estimate:** 100 of 100 on our own checker (hidden data 60, bonus 30 of 35 possible, phone 5, light and
 dark 5), on four random shops. That is our checker, not the graders'.
 
-**Polish after critique (21 Nov 2026):** entry type labels are **You gave / You got** (radio values unchanged);
-Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted for the bonus; phone
-overview shows customers first (admin under More). Local checker still 27/27. See
-`evidence/critique-fixes-note.md`. Recapture of the projects page under auth is still **To do**.
+**Version 1.0.0.0 (21 Nov 2026, Sanjay Karwa):** entry type labels are **You gave / You got** (radio values
+unchanged); Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted for the
+bonus; phone overview shows customers first (admin under More). Local checker still 27/27. See
+`evidence/release-1-0-0-0.md` and `VERSION`. Recapture of the projects page under auth is still **To do**.
 
 **What could still cost marks:**
 - The graders' tester is an AI reading the page; its exact steps are unknown. The likeliest differences
