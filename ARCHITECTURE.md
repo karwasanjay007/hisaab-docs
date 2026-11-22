@@ -128,7 +128,7 @@ Small helpers shared by all modules: `$`, `esc`, `fmt`, `round2`, `phone10`, `va
 
 The main journeys (first open, recording entries, reminders, import, screenshot reading, quick entry,
 language and offline) are described with sequence diagrams in [docs/journeys.md](docs/journeys.md), with
-the diagrams in `docs/diagrams/j1-first-open.svg` to `docs/diagrams/j9-language-offline.svg`.
+the diagrams in `docs/diagrams/j1-first-open.svg` to `docs/diagrams/j9-language-offline.svg`, and `docs/diagrams/j10-several-shops.svg` (added in 1.1.0.0).
 
 ## 7. Data
 

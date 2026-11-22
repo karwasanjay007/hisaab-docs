@@ -82,6 +82,19 @@ else valid
   else 7 s pass
     App -> App : hide the toast; lastShop = null
   end
+  note right of LS : v1.1: the plain import still replaces only the current shop;\na file without a profile keeps the shop's saved owner, address and logo
+end
+== v1.1 alternative: Import as a new shop ==
+Owner -> UI : text in #import-box, press "Import as a new shop" (#import-new)
+UI -> App : click (shops.js)
+App -> LS : park the current shop in 'hisaab.shops'; open a blank shop under 'hisaab.v1'
+App -> App : the normal import (as above) runs into the blank shop
+alt file accepted
+  App -> LS : save(): setItem('hisaab.v1', the imported shop)
+  App -> UI : the new shop is open; the previous shop stays parked in 'hisaab.shops'
+else file refused
+  App -> LS : return to the previous shop under 'hisaab.v1'; drop the blank one
+  App -> UI : #import-msg with the reason; the previous shop is shown again
 end
 == Export ==
 alt Entries CSV (#export-csv)
@@ -93,6 +106,7 @@ else Balances CSV (#export-balances)
 else Shop file JSON (#export-json)
   Owner -> UI : tap
   UI -> App : exportJson(): shop, upi, customers, entries\n(phone, type, amount, date, note; no screenshots)
+  note right of App : v1.1: the backup file also carries the shop profile\n(owner, address, logo) when one is set
 end
 note right of App : csvCell(): text that starts with = + - @ gets a leading quote
 App -> UI : download(): Blob, a[download] hisaab-{shop}-entries.csv,\n-balances.csv or hisaab-{shop}.json

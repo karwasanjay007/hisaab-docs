@@ -42,6 +42,10 @@ package "localStorage key hisaab.v1 (one JSON document)" {
     nativeDigits : boolean [optional]
     customers : Customer[]
     entries : Entry[]
+    .. v1.1 shop profile, each optional ..
+    {field} owner : string  (at most 60) [optional]
+    {field} address : string  (at most 160) [optional]
+    {field} logo : data:image/ URL  (96 px, under 40 KB) [optional]
   }
 
   class Customer {
@@ -69,6 +73,39 @@ package "Separate localStorage keys" {
     hisaab.theme : light | dark
   }
 }
+
+package "localStorage key hisaab.shops (v1.1, only with two or more shops)" {
+  class Shops <<v1.1, one per browser>> {
+    {field} active : string  (id of the shop in use)
+    list : ShopSlot[]
+  }
+
+  class ShopSlot <<v1.1>> {
+    {field} <b>id</b> : string  (key)
+    name : string
+    {field} data : Shop | null  (null = the active shop)
+  }
+}
+
+Shops "1" *-- "1..*" ShopSlot : list
+ShopSlot "1" o-- "0..1" Shop : data (parked ledger)
+
+note bottom of ShopSlot
+  <b>v1.1 several shops</b>
+  The active shop's data is null: its ledger
+  lives under hisaab.v1. A switch parks the
+  current ledger here and puts the chosen one
+  back under hisaab.v1.
+  hisaab.shops is not written until a second
+  shop is added and is removed again when
+  one shop is left.
+end note
+
+note top of Shop
+  <b>v1.1 backup file</b> (JSON export)
+  carries owner, address and logo
+  when they are set.
+end note
 
 Shop "1" *-- "0..*" Customer : customers
 Shop "1" *-- "0..*" Entry : entries

@@ -31,8 +31,9 @@ grader contract.
 | J7 | Load a shop file and export | Shop owner (or a tester) | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
 | J8 | Payment screenshot | Shop owner | Chooses a screenshot in the entry form | Picture shrunk and kept on the entry; amount read and offered for checking | E1, E3, E8 |
 | J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in English, Hindi or Telugu, kept after reload; the app opens offline with the same shop | E7, E8 |
+| J10 | Several shops (added in 1.1.0.0) | Shop owner | In Shop settings types a name and presses "Add shop", presses "Switch" or "Remove", or presses "Import as a new shop" on the import card | More than one shop on the same phone; the shop in use stays under `hisaab.v1`, the others are parked under `hisaab.shops` | E6 |
 
-All nine journeys asked for are supported by the code; none was dropped or merged.
+All nine journeys asked for are supported by the code; none was dropped or merged. J10 was added in version 1.1.0.0.
 
 ## J1 First open
 
@@ -353,3 +354,28 @@ Source: [j9-language-offline.puml](diagrams/j9-language-offline.puml)
 - Tesseract.js (jsDelivr) is not cached by `sw.js`; offline, the screenshot reader says it could not read
   an amount. If the QR library was never loaded online, the QR card shows the pay link as text.
 - An unknown saved language falls back to English.
+
+## J10 Several shops (added in 1.1.0.0)
+
+**Goal.** Keep more than one shop on the same phone and move between them.
+
+**Preconditions.** The app is open. With one shop nothing is stored beyond `hisaab.v1`.
+
+**Steps.**
+1. The owner opens Shop settings, types a name in the "Shops" block and presses "Add shop".
+2. The app parks the current ledger in `hisaab.shops` and opens an empty ledger under `hisaab.v1`.
+3. The owner records entries in the new shop (J2).
+4. The owner presses "Switch" on the first shop: the current ledger is parked, the chosen one is put back
+   under `hisaab.v1`, and the overview shows its total.
+5. "Remove" on a parked shop needs two presses.
+
+![J10 Several shops](diagrams/j10-several-shops.svg)
+
+Source: [j10-several-shops.puml](diagrams/j10-several-shops.puml)
+
+**Error and edge paths.**
+- "Import as a new shop" on the import card parks the current shop, opens a blank one and runs the normal
+  import (J7) into it. If the file is refused, the app returns to the previous shop and drops the blank one.
+- `hisaab.shops` = `{ active, list: [ { id, name, data } ] }`; the active shop's `data` is null because its
+  ledger lives under `hisaab.v1`. The key is not written until a second shop is added and is removed again
+  when one shop is left.
