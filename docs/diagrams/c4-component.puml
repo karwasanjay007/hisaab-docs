@@ -2,10 +2,12 @@
 !include <C4/C4_Component>
 title Hisaab: components inside app.js (C4 level 3)
 
-ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme")
+ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops")
 Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
 Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
-Container_Ext(swc, "Service worker", "sw.js", "Offline fallback")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: cache hisaab-v3, the app shell also lists profile.css, profile.js, shops.css, shops.js")
+Container_Ext(profile, "Shop profile add-on", "profile.js, profile.css", "v1.1: owner, address and logo in Shop settings, the header and the printed statement; balance history line as inline SVG on the customer page")
+Container_Ext(shops, "Several shops add-on", "shops.js, shops.css", "v1.1: add, switch and remove shops, Import as a new shop; the current shop stays under hisaab.v1")
 
 Container_Boundary(app, "app.js (one IIFE)") {
   Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")
@@ -21,6 +23,7 @@ Container_Boundary(app, "app.js (one IIFE)") {
   Component(io, "Import and export", "doImport, fromCsv, csvRows, exportEntries, exportBalances, exportJson, csvCell", "Replaces the shop from JSON or CSV with Undo; writes CSV and JSON files")
   Component(shot, "Screenshot reading", "onShotChange, loadTesseract, readAmount, pickAmount", "Resizes to a 640 px JPEG and reads the paid amount")
   Component(theme, "Theme", "currentTheme, toggleTheme", "Light and dark, following the system until chosen")
+  Component(hook, "Add-on hook", "window.Hisaab: on(event, fn), state(), replace(shop), save(), render()", "v1.1: emits render, statement, imported and export to the add-ons; each listener runs in its own guard")
 }
 
 Rel(init, store, "load(); an empty shop on first visit")
@@ -44,6 +47,13 @@ Rel(qr, remind, "Encodes upiLink()")
 Rel(stmt, qr, "Embeds the QR code")
 Rel(theme, ls, "hisaab.theme")
 Rel(i18n, ls, "hisaab.lang")
+Rel(render, hook, "Emits render")
+Rel(stmt, hook, "Emits statement")
+Rel(io, hook, "Emits imported and export")
+Rel(hook, store, "state(), replace(shop), save()")
+Rel(profile, hook, "Listens and reads the shop", "window.Hisaab")
+Rel(shops, hook, "Listens, replaces the shop", "window.Hisaab")
+Rel(shops, ls, "Parks the other shops", "hisaab.shops")
 
 LAYOUT_WITH_LEGEND()
 @enduml

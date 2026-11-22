@@ -10,13 +10,13 @@ Deployment_Node(gh, "GitHub", "Private repository") {
 }
 Deployment_Node(vc, "Vercel", "Team elodos, project hisaab") {
   Deployment_Node(edge, "Static hosting", "HTTPS, *.vercel.app") {
-    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; no functions, no server code")
+    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; v1.1: profile.css, profile.js, shops.css, shops.js; no functions, no server code")
   }
 }
 Deployment_Node(phone, "Owner's phone", "Mobile browser") {
-  Container(app, "Hisaab single-page app", "HTML, CSS, JavaScript", "Runs the ledger")
-  ContainerDb(store, "localStorage", "Web Storage", "The shop's data, never uploaded")
-  Container(swk, "Service worker", "sw.js", "Cache hisaab-v1")
+  Container(app, "Hisaab single-page app", "HTML, CSS, JavaScript", "Runs the ledger; v1.1: app.js exposes the window.Hisaab hook, and the add-ons profile.js and shops.js load after it")
+  ContainerDb(store, "localStorage", "Web Storage", "The shop's data, never uploaded: hisaab.v1 for the current shop; v1.1: hisaab.shops for the other shops, once a second shop exists")
+  Container(swk, "Service worker", "sw.js", "v1.1: cache hisaab-v3, precaches the app shell with profile.css, profile.js, shops.css, shops.js")
 }
 
 Rel(src, repo, "git push", "HTTPS")

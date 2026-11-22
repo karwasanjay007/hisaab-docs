@@ -10,14 +10,17 @@ System_Ext(vercel, "Vercel static hosting", "Serves the site over HTTPS")
 
 System_Boundary(browser, "Owner's browser") {
   Container(spa, "Single-page app", "HTML, CSS, vanilla JavaScript", "index.html, styles.css, sample.js and app.js; hash routes, one IIFE, no framework, no build step")
-  ContainerDb(ls, "localStorage", "Web Storage, JSON", "hisaab.v1 holds the whole shop; hisaab.lang and hisaab.theme hold preferences")
-  Container(sw, "Service worker and cache", "sw.js, Cache API", "Precaches the app shell in cache hisaab-v2; network first for the app's files, the QR library and Google Fonts; the cached copy offline")
+  Container(addons, "Add-ons", "profile.js + profile.css, shops.js + shops.css", "v1.1: loaded after app.js. profile.js: shop profile (owner, address, logo) in Shop settings, the header and the printed statement, and a balance history line as inline SVG on the customer page. shops.js: several shops on one phone (add, switch, remove, Import as a new shop)")
+  ContainerDb(ls, "localStorage", "Web Storage, JSON", "hisaab.v1 holds the whole current shop; hisaab.lang and hisaab.theme hold preferences; v1.1: hisaab.shops parks the other shops, written only once a second shop exists")
+  Container(sw, "Service worker and cache", "sw.js, Cache API", "Precaches the app shell in cache hisaab-v3 (v1.1: also profile.css, profile.js, shops.css, shops.js); network first for the app's files, the QR library and Google Fonts; the cached copy offline")
   Container(libs, "Lazy-loaded libraries", "qrcode-generator 1.4.4, Tesseract.js 5.1.1", "Script tags added only when a QR code, a statement or a screenshot needs them")
   Container(speech, "Web Speech API", "SpeechRecognition, built into the browser", "Turns spoken quick entry into text in en-IN, hi-IN or te-IN")
 }
 
 Rel(owner, spa, "Taps, types and speaks")
 Rel(spa, ls, "Reads on start, writes after every change", "getItem, setItem")
+Rel(addons, spa, "v1.1: listens to render, statement, imported and export; reads and replaces the shop", "window.Hisaab: on, state, replace, save, render")
+Rel(addons, ls, "v1.1: shops.js parks and restores the other shops", "hisaab.shops")
 Rel(spa, sw, "Registers on HTTPS or localhost", "serviceWorker.register")
 Rel(sw, vercel, "Fetches the latest files first", "HTTPS")
 Rel(spa, libs, "Calls qrcode() and Tesseract.recognize()")
