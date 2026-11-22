@@ -11,7 +11,7 @@ library loaded from a CDN, and WhatsApp or a UPI app. A diagram shows only the p
 To render again, from the project folder:
 
 ```
-java -jar /c/Projects/2027/Cursor/vmo2-ai-sdlc-pack/src/plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
+java -jar plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
 ```
 
 Epics: E1 Customers and entries, E2 Shop overview, E3 Reminders and getting paid, E4 Customer page and
