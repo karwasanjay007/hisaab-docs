@@ -64,13 +64,13 @@ end
 note right of App : voice quick entry listens in hi-IN, te-IN or en-IN (J3)
 == First online visit: install and activate ==
 App -> SW : register('sw.js') after the load event
-SW -> SW : install: skipWaiting(); caches.open('hisaab-v2').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest)
-SW -> SW : activate: delete every cache except 'hisaab-v2'; clients.claim()
+SW -> SW : install: skipWaiting(); caches.open('hisaab-v3').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest, and since v1.1 profile.css, profile.js,\nshops.css, shops.js)
+SW -> SW : activate: delete every cache except 'hisaab-v3'; clients.claim()
 == Online visits keep the cache fresh ==
 UI -> SW : GET for a same-origin file, the qrcode-generator script\nfrom cdnjs, or Google Fonts
 SW -> SW : fetch(request) from the network first
 alt network answers ok (or an opaque cross-origin reply)
-  SW -> SW : caches.open('hisaab-v2').put(request, copy)
+  SW -> SW : caches.open('hisaab-v3').put(request, copy)
   SW --> UI : fresh response
 end
 note right of SW : only GET; other origins, such as Tesseract.js\nfrom jsDelivr, are not handled or cached

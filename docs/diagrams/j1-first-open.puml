@@ -48,7 +48,7 @@ UI -> LS : head script: getItem('hisaab.theme')
 opt a theme is saved
   UI -> UI : set data-theme on the html element
 end
-UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js
+UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js (v1.1: then the add-ons profile.js and shops.js)
 App -> LS : getItem('hisaab.lang')
 LS --> App : 'en', 'hi' or 'te' (unknown or missing means 'en')
 UI -> App : DOMContentLoaded: init()

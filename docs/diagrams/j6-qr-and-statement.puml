@@ -71,7 +71,7 @@ Owner -> UI : tap Statement (PDF) (#cust-statement)
 UI -> App : Promise.race(loadQr(), 1.5 s timer)
 note right of App : waits at most 1.5 s for the QR library;\nthe statement prints either way
 App -> App : printStatement()
-App -> UI : #print-area: shop, customer, date (todayIso()), table oldest first\nwith gave, got and running balance, totals
+App -> UI : #print-area: shop, customer, date (todayIso()), table oldest first\nwith gave, got and running balance, totals\n(v1.1: the shop logo, owner and address in the heading when a profile is set)
 opt balance above zero and window.qrcode loaded
   App -> UI : add scan-to-pay QR with amount and UPI ID
 end
