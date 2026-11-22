@@ -1,0 +1,26 @@
+PASS one shop: nothing is written under hisaab.shops
+PASS total and customer rows are the same with and without shops.js | ₹11,820 11820 vs ₹11,820 11820, 8 rows
+PASS the Shops card and "Import as a new shop" show, with one shop listed | 1
+PASS the only shop has no Switch or Remove button
+PASS a new shop starts empty | total ₹0 0, customers 0
+PASS the new shop is current and named | Second shop, listed 2
+PASS hisaab.shops holds the parked shop, and the active one has data: null
+PASS switching back restores the first shop exactly | ₹11,820 11820, Lakshmi Provision Store (fictional)
+PASS a plain import in the second shop loads into that shop | Plain import, listed 2
+PASS the list follows the renamed current shop
+PASS the first shop is untouched by that import | Lakshmi Provision Store (fictional), ₹11,820 11820
+PASS "Import as a new shop" makes a third shop holding the file | Third shop, listed 3, ₹11,820 11820
+PASS a broken file with "Import as a new shop" returns to the previous shop, no extra shop | Third shop, listed 3
+PASS the import's own error stays on screen | This is not valid JSON: Unexpected token 'b', "{"shop": brok
+PASS the first press on Remove only asks again | listed 3
+PASS the second press removes the shop | listed 2
+PASS everything survives a reload | Third shop, listed 2
+PASS the parked shop opens after a reload | Plain import
+PASS Hindi labels | दुकानें | नई दुकान के रूप में लोड करें | दुकान जोड़ें | बदलें
+PASS Telugu labels | దుకాణాలు | కొత్త దుకాణంగా లోడ్ చేయండి | దుకాణం చేర్చు | మార్చు
+PASS at 320 px nothing of the Shops card or the new import button reaches past the screen | 0
+PASS no sideways scroll at 320 px (Telugu, two shops, profile.js left out) | 320
+PASS every control is at least 44 px tall | 
+PASS none of the grader's attributes are used by the add-on
+PASS no page errors 
+ALL PASS (25 checks)

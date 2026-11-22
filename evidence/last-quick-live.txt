@@ -1,0 +1,26 @@
+PASS Sunita 500 udhaar -> {"amount":500,"type":"credit","phones":["9000000102"],"note":""}
+PASS sunita devi 1,500 credit groceries -> {"amount":1500,"type":"credit","phones":["9000000102"],"note":"groceries"}
+PASS Ravi paid 200 -> {"amount":200,"type":"payment","phones":["9000000101"],"note":""}
+PASS Ravi 200 upi -> {"amount":200,"type":"payment","phones":["9000000101"],"note":"UPI"}
+PASS fatima ₹2.5 hazar jama -> {"amount":2500,"type":"payment","phones":["9000000106"],"note":""}
+PASS सुनीता 500 उधार -> {"amount":500,"type":"credit","phones":["9000000102"],"note":""}
+PASS रवि ने ५०० जमा किए -> {"amount":500,"type":"payment","phones":["9000000101"],"note":""}
+PASS సునీత 300 అప్పు -> {"amount":300,"type":"credit","phones":["9000000102"],"note":""}
+PASS 9000000105 750 paid -> {"amount":750,"type":"payment","phones":["9000000105"],"note":""}
+PASS Anjli 120 -> {"amount":120,"type":null,"phones":["9000000104"],"note":""}
+PASS Rs 99 kavita -> {"amount":99,"type":null,"phones":["9000000108"],"note":""}
+PASS customer filled
+PASS amount filled
+PASS credit chosen
+PASS note filled: biscuits
+msg: Filled: Sunita Devi, gave ₹500. Check it, then press Save entry.
+PASS focus on Save
+PASS balance changed ₹3,470 -> ₹3,970
+PASS unknown name asks which customer
+PASS missing amount message
+PASS customer page fills without name
+PASS mic button shown in Chromium
+PASS no sideways scroll at 375: 375
+hi msg: भर दिया: Sunita Devi (सुनीता देवी), उधार ₹500। जाँचें, फिर एंट्री सेव करें।
+PASS no console errors 
+ALL PASS

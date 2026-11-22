@@ -15,8 +15,8 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు |
-| Version | 1.0.0.0 (baseline, Sanjay Karwa, 21 Nov 2026) |
-| Status | Finished; every line of the specification met and tested on the live site |
+| Version | 1.1.0.0 (22 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## For the judges: Hisaab in two minutes
 

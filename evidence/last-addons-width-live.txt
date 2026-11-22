@@ -1,0 +1,55 @@
+PASS 320 px en light #/: no sideways scroll | 320
+PASS 320 px en light #/s/settings: no sideways scroll | 320
+PASS 320 px en light #/s/data: no sideways scroll | 320
+PASS 320 px en light #/s/add: no sideways scroll | 320
+PASS 320 px en dark #/: no sideways scroll | 320
+PASS 320 px en dark #/s/settings: no sideways scroll | 320
+PASS 320 px en dark #/s/data: no sideways scroll | 320
+PASS 320 px en dark #/s/add: no sideways scroll | 320
+PASS 320 px hi light #/: no sideways scroll | 320
+PASS 320 px hi light #/s/settings: no sideways scroll | 320
+PASS 320 px hi light #/s/data: no sideways scroll | 320
+PASS 320 px hi light #/s/add: no sideways scroll | 320
+PASS 320 px hi dark #/: no sideways scroll | 320
+PASS 320 px hi dark #/s/settings: no sideways scroll | 320
+PASS 320 px hi dark #/s/data: no sideways scroll | 320
+PASS 320 px hi dark #/s/add: no sideways scroll | 320
+PASS 320 px te light #/: no sideways scroll | 320
+PASS 320 px te light #/s/settings: no sideways scroll | 320
+PASS 320 px te light #/s/data: no sideways scroll | 320
+PASS 320 px te light #/s/add: no sideways scroll | 320
+PASS 320 px te dark #/: no sideways scroll | 320
+PASS 320 px te dark #/s/settings: no sideways scroll | 320
+PASS 320 px te dark #/s/data: no sideways scroll | 320
+PASS 320 px te dark #/s/add: no sideways scroll | 320
+PASS 320 px: the Shops card shows with Shop settings and on the overview, not in the Customers view | true, false, true
+PASS 320 px customer page with the balance chart: no sideways scroll | 320
+PASS 320 px: no page errors 
+PASS 375 px en light #/: no sideways scroll | 375
+PASS 375 px en light #/s/settings: no sideways scroll | 375
+PASS 375 px en light #/s/data: no sideways scroll | 375
+PASS 375 px en light #/s/add: no sideways scroll | 375
+PASS 375 px en dark #/: no sideways scroll | 375
+PASS 375 px en dark #/s/settings: no sideways scroll | 375
+PASS 375 px en dark #/s/data: no sideways scroll | 375
+PASS 375 px en dark #/s/add: no sideways scroll | 375
+PASS 375 px hi light #/: no sideways scroll | 375
+PASS 375 px hi light #/s/settings: no sideways scroll | 375
+PASS 375 px hi light #/s/data: no sideways scroll | 375
+PASS 375 px hi light #/s/add: no sideways scroll | 375
+PASS 375 px hi dark #/: no sideways scroll | 375
+PASS 375 px hi dark #/s/settings: no sideways scroll | 375
+PASS 375 px hi dark #/s/data: no sideways scroll | 375
+PASS 375 px hi dark #/s/add: no sideways scroll | 375
+PASS 375 px te light #/: no sideways scroll | 375
+PASS 375 px te light #/s/settings: no sideways scroll | 375
+PASS 375 px te light #/s/data: no sideways scroll | 375
+PASS 375 px te light #/s/add: no sideways scroll | 375
+PASS 375 px te dark #/: no sideways scroll | 375
+PASS 375 px te dark #/s/settings: no sideways scroll | 375
+PASS 375 px te dark #/s/data: no sideways scroll | 375
+PASS 375 px te dark #/s/add: no sideways scroll | 375
+PASS 375 px: the Shops card shows with Shop settings and on the overview, not in the Customers view | true, false, true
+PASS 375 px customer page with the balance chart: no sideways scroll | 375
+PASS 375 px: no page errors 
+ALL PASS (54 checks)

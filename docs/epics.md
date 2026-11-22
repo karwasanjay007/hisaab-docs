@@ -599,7 +599,7 @@ As the shop owner, I want the app to open without a signal so that I can record 
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
 | AC-E8.F4.1 | The app is served over HTTPS or from localhost | It loads | A service worker (`sw.js`) is registered | manual |
-| AC-E8.F4.2 | The network is up | One of the app's own files, qrcode-generator from cdnjs or a Google Fonts file is requested | The network copy is used and a copy is kept in cache `hisaab-v2`, so a new release shows at once | manual |
+| AC-E8.F4.2 | The network is up | One of the app's own files, qrcode-generator from cdnjs or a Google Fonts file is requested | The network copy is used and a copy is kept in cache `hisaab-v3`, so a new release shows at once | manual |
 | AC-E8.F4.3 | The network is down | A page file is requested | The kept copy is used, or `index.html` as a last resort | `offline.mjs "offline reload shows the ledger"` |
 | AC-E8.F4.4 | The browser offers install | The manifest is read | `manifest.webmanifest` lets the app be added to the home screen | manual |
 | AC-E8.F4.5 | The first visit | The service worker installs and activates | The app shell (`./`, `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`) is cached at once, and older caches are deleted | manual |

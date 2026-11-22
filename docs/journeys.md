@@ -334,10 +334,10 @@ the service worker has installed and cached the app shell.
 2. Optional: Hindi or Telugu digits (`#native-digits`, saved in the shop) and the light or dark theme
    (`hisaab.theme`).
 3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, `sample.js`,
-   `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v2` cache; on activate it deletes
+   `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v3` cache; on activate it deletes
    older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v2`.
+   Google Fonts from the network first and keeps a copy in `hisaab-v3`.
 5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
    `?today=` still works), or `index.html`.
 6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.

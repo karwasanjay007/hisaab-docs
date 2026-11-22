@@ -29,6 +29,7 @@ PASS a27 Customers but an empty entries list (everything is zero)
 PASS a28 Mixed states in one shop: owing, settled, advance, no entries, never p | INFO overdue order differs only among ties or customers who never paid: 9033000005,9033000001,9033000006,9033000007 vs 9033000005,9033000006,9033000001,9033000007
 PASS a29 Balances and day counts that sort wrongly as text (900 vs 1000 vs 1000
 PASS a30 60 customers, 300 entries with paise, spanning two year ends, sparse ( | INFO overdue order differs only among ties or customers who never paid: 6000106998,8000106776,9000107072,8000105703,7000105592 vs 9000107072,9000105666,6000106665,8000105407,9000106702
+ALL PASS (31 shops)
 PASS b01 phone written as a JSON number, not a string (customers and entries)
 PASS b02 phone with +91 prefix and with a bare 91 prefix; entries use the plain
 PASS b03 phone with spaces inside and around it
@@ -59,4 +60,5 @@ PASS b27 the whole pasted text starts with a byte-order mark and has leading an
 PASS b28 a second shop imported after a first; one phone (9000000481) is in bot
 PASS b29 text that is not valid JSON (trailing comma, single quotes, a comment,
 PASS b30 "customers" is an object keyed by phone instead of a list (valid JSON,
-ALL PASS (61 shops, live, run in two halves)
+ALL PASS (30 shops)
+ALL PASS (61 shops, live, run in two halves, version 1.1.0.0)

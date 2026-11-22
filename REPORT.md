@@ -233,3 +233,35 @@ in dark or photographed receipts. Voice quick entry uses the browser's own speec
 why (microphone blocked, no microphone, the speech service did not answer), a refused language is tried again
 in Indian English, and a silent service is stopped after 9 seconds. Evidence: `evidence/last-voice-live.txt`
 ALL PASS (15 checks, with a stand-in speech service); a real spoken entry is not covered by a saved test.
+
+## Version 1.1.0.0 (22 Nov 2026)
+
+Three additions, made after a comparison with other builds in the batch. Two items that comparison listed as
+missing were already in 1.0.0.0: import by choosing a file, and reading the amount from a payment screenshot.
+The additions live in two add-on files beside the ledger; the ids, attributes, totals and the import that the
+tester uses are the same as in 1.0.0.0, and no earlier test was edited.
+
+| Addition | What it does | How the baseline is kept |
+| --- | --- | --- |
+| Shop profile | Owner name, address and a small logo in Shop settings; shown in the header and on the printed statement, and carried in the backup file | Shown only when set. A plain import into a shop with no profile writes nothing extra to storage. The logo is shrunk to 96 px and kept under 40 KB |
+| Balance history | A line of the balance after each entry on the customer page, drawn as SVG, with a sentence for screen readers | It exists only on the customer page, for a customer with two or more entries, and uses none of the attributes the tester reads |
+| Several shops | More than one shop on the same phone: add, switch, remove (two presses), and "Import as a new shop" | The current shop stays under `hisaab.v1` exactly as before. Other shops are parked under `hisaab.shops`, which is not written until a second shop is added. The plain import, the sample and the exports act on the current shop only |
+
+`app.js` changed in three places: a hook block at the end (the render, the statement and the import emit an
+event for the add-ons, each listener in its own guard), one line in the backup export, and the storage listener,
+which now drops this tab's undo memory when another tab changes the ledger. The service worker cache is
+`hisaab-v3` and lists the four new files.
+
+**Review.** One independent reviewer read the change before the deploy: 9 out of 10, no defect in what the
+tester reads. Four smaller points were fixed before going live: the Shops block now sits inside the Shop settings
+card, so that view is still one card; undo in a second tab after a shop switch; a message when a refused
+"Import as a new shop" cannot switch back; unsaved profile text is kept through a render.
+
+**Tests on the live site after the deploy.** New: `evidence/last-profile-live.txt` (36 checks),
+`evidence/last-shops-live.txt` (25), `evidence/last-addons-width-live.txt` (54: 320 and 375 px, three
+languages, light and dark). Earlier suites, unedited: the independent checker with seed 4242 (100 out of 100,
+hidden data 60 out of 60), the 61-shop sweep, brief, final, gaps, critic 14, phone-import 12, navigation, quick
+entry, voice 15, offline, contrast. All pass.
+
+**Not covered.** Storage-full during a shop switch and a tab closed between the two writes of a switch were
+traced in the code by the reviewer, not run. The printed statement was checked by its markup, not on paper.

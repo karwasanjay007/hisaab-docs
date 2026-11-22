@@ -1,0 +1,19 @@
+PASS non-mobile added with a warning: Customer added. Check the number: Indian mobile numbers start with 6, 7, 8 or 9, so WhatsApp may not reach this one.
+PASS +91 mobile accepted
+PASS bad UPI refused
+PASS good UPI saved
+PASS reminder uses the saved UPI ID
+PASS import message: Loaded Gap Shop: 1 customers, 2 entries. 1 entries had no date and are dated today. Skipped 2: entry 2: amount ""; entry 3: amount "99999999999999"
+PASS balance from good rows only (500 - 100): ₹400 400
+PASS CSV round trip keeps 11,820: ₹11,820 11820
+PASS CSV customers loaded: Loaded Lakshmi Provision Store (fictional): 8 customers, 38 entries.
+PASS hand-made CSV (900 + 450): ₹1,350 1350
+PASS unreadable text explained
+PASS edit offers Undo
+PASS edit applied
+PASS undo restored the entry
+PASS balance back to 3,470
+hi ocr msg: स्क्रीनशॉट से रु 450 पढ़ा। सेव करने से पहले जाँच लें। | amount: 450
+PASS Hindi screenshot amount read
+PASS no console errors 
+ALL PASS

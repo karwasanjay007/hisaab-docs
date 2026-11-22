@@ -1,13 +1,20 @@
-1.0.0.0
+1.1.0.0
 
-# Hisaab documentation baseline
+# Hisaab release baseline
 #
-# Version:     1.0.0.0
-# Released:    21 November 2026
+# Version:     1.1.0.0
+# Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
-# Live app:    https://hisaab-hazel.vercel.app
-# Code:        private repository (hisaab); this repository holds documents only
+# Live:        https://hisaab-hazel.vercel.app
+# Docs:        https://github.com/karwasanjay007/hisaab-docs
 #
-# Baseline set for the Freedom With AI Batch 10 submission. Client-facing
-# documents in this repository read Version 1.0.0.0 with Sanjay Karwa's
-# full name. Diagrams are SVG. No invented proof figures.
+# This file marks the first public baseline of the shop credit ledger
+# submitted for the Freedom With AI Batch 10 build project. All must-do
+# items, tester hooks and bonus menu items are included. Balances are
+# computed from entries only; customer data stays in the browser.
+#
+# Version 1.1.0.0 adds, beside the baseline and without changing what it does:
+# a shop profile (owner, address, logo) shown in the header and on the
+# statement; a balance history line on each customer page; more than one shop
+# on the same phone, with a switcher and "Import as a new shop". The add-ons
+# live in profile.js and shops.js; the ledger itself is unchanged.

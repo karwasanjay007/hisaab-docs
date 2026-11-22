@@ -1,0 +1,41 @@
+PASS total text: "₹11,820 11820"
+PASS remind-all label: Remind all overdue (4)
+PASS first link is longest overdue: https://wa.me/919000000105?text=Namaste%
+PASS remind-all opened a chat tab
+PASS link moved to the next customer
+PASS next label: Next reminder: Anjali Reddy (2 of 4)
+PASS overdue badge is 30+ days only: 4
+PASS overdue list still lists every owing customer for the bonus sort
+PASS large amount refused
+PASS small amount 0.5 saved
+PASS Hindi search finds Ravi
+PASS +91 phone search
+PASS name + digits narrows to one
+PASS no-match message
+PASS entries CSV downloads
+PASS import replaced shop
+PASS undo offered after import
+PASS undo restored the shop: ₹11,820.5 11820.5
+PASS QR button shown for owing customer
+PASS QR drawn
+PASS QR amount
+PASS UPI link kept
+PASS statement has scan-to-pay QR
+PASS QR card closed for another customer
+PASS 375 #/: scrollWidth 375, content right 375
+PASS 375 #/s/record: scrollWidth 375, content right 375
+PASS 375 #/c/9000000102: scrollWidth 375, content right 375
+PASS 768 #/: scrollWidth 768, content right 768
+PASS 768 #/s/record: scrollWidth 768, content right 768
+PASS 768 #/c/9000000102: scrollWidth 768, content right 768
+PASS 1366 #/: scrollWidth 1366, content right 1366
+PASS 1366 #/s/record: scrollWidth 1366, content right 1366
+PASS 1366 #/c/9000000102: scrollWidth 1366, content right 1366
+PASS 1920 #/: scrollWidth 1920, content right 1920
+PASS 1920 #/s/record: scrollWidth 1920, content right 1920
+PASS 1920 #/c/9000000102: scrollWidth 1920, content right 1920
+PASS 2560 #/: scrollWidth 2560, content right 2560
+PASS 2560 #/s/record: scrollWidth 2560, content right 2560
+PASS 2560 #/c/9000000102: scrollWidth 2560, content right 2560
+PASS no console errors 
+ALL PASS

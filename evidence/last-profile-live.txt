@@ -1,0 +1,37 @@
+PASS the second context runs without profile.js
+PASS total outstanding is the same with and without profile.js | ₹11,820 11820 vs ₹11,820 11820
+PASS the customer rows are the same with and without profile.js | 8 rows
+PASS the profile form sits in Shop settings with a status message
+PASS saving says so | Profile saved.
+PASS owner and address survive a reload
+PASS no logo in the header until one is set
+PASS a chosen PNG shows as the logo in the header
+PASS the stored logo is a data URL under 40 KB | 142 characters
+PASS a 600 by 400 picture is brought down to 96 px on its longer side | 96 x 64, 1962 characters
+PASS the shop name in the header is untouched | Lakshmi Provision Store (fictional)
+PASS the add-on adds none of the reserved data attributes
+PASS the ledger still reads the same with a profile and logo set
+PASS the balance chart shows for a customer with 6 entries
+PASS the chart is role="img" with a sentence label | Balance went from ₹0 to ₹670 over 6 entries. Highest ₹2,170, lowest ₹250
+PASS the chart is one inline SVG: a line, the last point, labels, a viewBox; no canvas or image
+PASS the chart card sits in the customer grid just before the entries
+PASS the chart heading is in English
+PASS the statement carries owner and address under the shop name
+PASS the statement shows the logo, keeps the shop name, and the print call was made once (stubbed)
+PASS Hindi headings show | समय के साथ बकाया / दुकान की जानकारी
+PASS Telugu headings show | కాలక్రమంలో బాకీ / దుకాణం వివరాలు
+PASS the chart label follows the language | 6 ఎంట్రీలలో బాకీ ₹0 నుండి ₹670 కి మారింది. అత్యధికం ₹2,170, అత్యల్పం ₹
+PASS the backup file carries owner, address and logo
+PASS the profile can be cleared; the header logo goes away
+PASS a backup without a profile has no profile fields
+PASS importing the backup brings the profile back, fields and header included
+PASS importing the sample file again keeps the saved profile
+PASS after export and import the ledger reads the same and the profile is still there after a reload
+PASS no sideways scroll on the home view at 320 px | 320
+PASS the header is no taller with a logo at 320 px | 64 vs 64
+PASS no sideways scroll on a customer page at 320 px, chart inside the screen | 320, chart 33 / 287 / 164
+PASS at 375 px the logo fits inside the top row | row 64, logo 20
+PASS no chart for a customer with one entry
+PASS the chart comes back on a customer with 6 entries
+PASS no page errors 
+ALL PASS (36 checks)

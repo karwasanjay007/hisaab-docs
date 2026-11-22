@@ -1,0 +1,4 @@
+cached: 0 
+PASS offline reload shows the ledger
+PASS QR draws offline
+ALL PASS
