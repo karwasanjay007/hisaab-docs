@@ -141,3 +141,14 @@ schema uses (ajv is not installed). Result:
 
 Other schema files: [schema/quick-entry-result.schema.json](schema/quick-entry-result.schema.json)
 (the result of `window.hisaabParseQuick`) and [schema/links.md](schema/links.md) (WhatsApp and UPI links).
+
+## Added in version 1.1.0.0 (22 Nov 2026)
+
+- **Shop state under `hisaab.v1`, optional profile fields:** `owner` (text, at most 60 characters), `address` (at
+  most 160) and `logo` (a `data:image/` URL, shrunk to 96 px and kept under 40 KB). The backup file carries them
+  when they are set.
+- **A second key, `hisaab.shops`:** `{ active, list: [ { id, name, data } ] }` holds the other shops on the same
+  phone. The active shop's `data` is null, because its ledger is the one under `hisaab.v1`. The key is written only
+  once a second shop is added and is removed again when one shop is left.
+
+The diagram `diagrams/data-model.svg` shows both.
