@@ -219,3 +219,9 @@ Evidence: `evidence/last-sweep-live.txt` ALL PASS (61 shops with the official sa
 balance and its text, who owes the most, how many owe, the overdue list, the reminder link with name and
 amount); `evidence/last-critic-live.txt` ALL PASS (10 checks); `evidence/last-brief-live.txt` ALL PASS;
 `evidence/last-phone-import-live.txt` ALL PASS (12 checks). All on the live site.
+
+**Critic round 2 (22 Nov 2026).** A second critic drove the live site as a script would, at 375 px in dark
+mode, through every must-do and bonus item, and scored the build 9.5 out of 10 with one defect: the amount was
+not read from a payment screenshot whose amount is one short, large line ("Rs 120"). The text reader took the
+picture as one block and dropped that line; it now reads the picture as scattered text first. Evidence:
+`evidence/last-critic-live.txt` ALL PASS (14 checks, four such pictures among them).

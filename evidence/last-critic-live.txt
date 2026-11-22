@@ -8,4 +8,8 @@ PASS row balance is one figure: digits of "₹1,18,200" are 118200, of "₹1,500
 PASS total holds the plain figure 119700
 PASS Edit from the Recent view on a phone shows the filled record form | visible true, amount 1500
 PASS no sideways scroll at 375 px after that
-ALL PASS (10 checks)
+PASS amount read from a screenshot showing "Rs 120" | field "120" | Read Rs 120 from the screenshot. Check it before saving.
+PASS amount read from a screenshot showing "₹ 500" | field "500" | Read Rs 500 from the screenshot. Check it before saving.
+PASS amount read from a screenshot showing "₹85" | field "85" | Read Rs 85 from the screenshot. Check it before saving.
+PASS amount read from a screenshot showing "Rs. 2,340.00" | field "2340" | Read Rs 2,340 from the screenshot. Check it before saving.
+ALL PASS (14 checks)
