@@ -185,3 +185,16 @@ Evidence: `node tests/brief.mjs` ALL PASS; `node tests/check.mjs … 4242` → 2
 100/100; `final` / `quick` / `nav` / `gaps` / `offline` ALL PASS. See `evidence/release-1-0-0-0.md`.
 Projects-page re-capture under a signed-in session remains To do; spoken voice remains unchecked
 end-to-end.
+
+## Hardening after the baseline (22 Nov 2026, version unchanged)
+
+Two small changes, found by an outside sweep of the live site and deployed the same day.
+
+- **Phone summary cards.** At 375 px the page itself never scrolled sideways, but the summary cards under
+  the total sat in a strip that was swiped sideways (590 px of cards in a 328 px box). They now wrap into
+  two columns, so nothing on the phone screen scrolls sideways.
+- **A shop file without an entries list.** A file with customers and no `entries` key was refused. It now
+  loads with every balance 0. An `entries` value that is not a list is still refused with a message.
+
+Evidence: `evidence/last-phone-import-live.txt` ALL PASS (12 checks: 375 px in light and dark, then the two
+imports); `evidence/last-brief-live.txt` rerun on the live site, ALL PASS. Code: `hisaab` 790ef60.
