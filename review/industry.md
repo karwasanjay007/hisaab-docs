@@ -2,7 +2,7 @@
 
 Reviewed 20 Nov 2026 on the live site https://hisaab-hazel.vercel.app/?today=2026-11-15 (desktop 1366 px and
 phone 375 px, Playwright, no console errors, no dialogs) and the source (index.html, app.js). Screenshots
-(JPG): `C:\Users\sskar\AppData\Local\Temp\claude\a153659dba92c228\3568ccd8-320a-4379-8379-a3641d808a21\scratchpad\final\industry\`
+(JPG): `the session scratch folder\final\industry\`
 (desk-home, desk-s-customers, desk-s-overdue, desk-c-9000000102, and the same four as phone-*).
 
 Nothing in this report asks to change the tester hooks (`#total-outstanding`, `[data-customer]`,

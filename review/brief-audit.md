@@ -110,7 +110,7 @@ asked for something "proud to showcase" and sellable to a shop. Ties go to the e
 
 ## Evidence files
 
-- Own live runs: `C:\Users\sskar\AppData\Local\Temp\claude\a153659dba92c228\3568ccd8-320a-4379-8379-a3641d808a21\scratchpad\audit-out.txt` and `audit2-out.txt` in the same folder (scripts `audit.cjs`, `audit2.cjs`). The scratchpad may be cleared; the key results are copied into the table above.
+- Own live runs: `the session scratch folder\audit-out.txt` and `audit2-out.txt` in the same folder (scripts `audit.cjs`, `audit2.cjs`). The scratchpad may be cleared; the key results are copied into the table above.
 - Project checker: `tests/last-run-live.txt` (27 PASS, seed 6060).
 - Transcript: `resources/coaching/transcripts/2026-11-15-batch10-level5-part3.md`. Parts 1 and 2 are on
   outreach and sales and say nothing about project judging.
