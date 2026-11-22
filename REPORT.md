@@ -225,3 +225,11 @@ mode, through every must-do and bonus item, and scored the build 9.5 out of 10 w
 not read from a payment screenshot whose amount is one short, large line ("Rs 120"). The text reader took the
 picture as one block and dropped that line; it now reads the picture as scattered text first. Evidence:
 `evidence/last-critic-live.txt` ALL PASS (14 checks, four such pictures among them).
+
+**Critic round 3 and voice (22 Nov 2026).** A third critic drove the live site with a shop of its own at 375 px
+and 1280 px, measured contrast in light and dark (nothing under 4.5:1 in 479 texts), read six payment
+screenshots and checked the `?today=` day counts: 10 out of 10 on what it ran; it did not run the walk-through
+in dark or photographed receipts. Voice quick entry uses the browser's own speech service; each failure now says
+why (microphone blocked, no microphone, the speech service did not answer), a refused language is tried again
+in Indian English, and a silent service is stopped after 9 seconds. Evidence: `evidence/last-voice-live.txt`
+ALL PASS (15 checks, with a stand-in speech service); a real spoken entry is not covered by a saved test.
