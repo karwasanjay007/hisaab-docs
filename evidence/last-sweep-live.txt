@@ -1,0 +1,62 @@
+PASS s00 official sample
+PASS a01 One customer, one credit, no payment
+PASS a02 Two customers, one owes more; both have paid
+PASS a03 40 customers, about 160 entries, random mix | INFO overdue order differs only among ties or customers who never paid: 9000100666,9000100185,9000100444,9000100148,9000100888 vs 9000100666,9000100444,9000100148,9000100888,9000101184
+PASS a04 150 customers with exactly 600 entries, phones starting 6/7/8/9 | INFO overdue order differs only among ties or customers who never paid: 9000100962,8000105217,6000103626,6000103404,6000102220 vs 9000100962,8000105217,6000103626,6000103404,6000102220
+PASS a05 A customer with no entries at all (balance 0, must still have a row)
+PASS a06 A customer who has paid everything (balance exactly 0) must not count 
+PASS a07 A customer who overpaid (advance, negative balance)
+PASS a08 Only credits, nobody has ever paid
+PASS a09 Only payments, no credit anywhere (every balance negative)
+PASS a10 Many entries on the same date (25 entries, all 2026-11-11)
+PASS a11 Entries in non-chronological order; last payment is not the last liste
+PASS a12 Dates across year ends (Dec 2025 to Jan 2027)
+PASS a13 Entries on 29 February (2024 and 2028 leap days); day counts cross a l
+PASS a14 "today" is earlier than some entries (entries dated in the future stil
+PASS a15 Very large amounts: lakhs
+PASS a16 Very large amounts: crores (total 8.75 crore) | INFO overdue order differs only among ties or customers who never paid: 9210000001,9210000002,9210000003 vs 9210000003,9210000001,9210000002
+PASS a17 Amounts with paise | INFO overdue order differs only among ties or customers who never paid: 9100000002,9100000001,9100000003 vs 9100000003,9100000002,9100000001
+PASS a18 Paise that break naive floating point sums (0.1 + 0.2, 0.7 + 0.1, many
+PASS a19 Very long names (customer and shop)
+PASS a20 Names, shop and notes in Devanagari | INFO overdue order differs only among ties or customers who never paid: 9400000002,9400000001,9400000003 vs 9400000003,9400000002,9400000001
+PASS a21 Names, shop and notes in Telugu
+PASS a22 Names with apostrophes, quotes, ampersands, angle brackets, backslash 
+PASS a23 Long notes (about 1,700 characters), an empty note, and a multi-line n
+PASS a24 Two customers with the same name and different phones (must stay two r
+PASS a25 Phones starting with 6, 7, 8 and 9, including near-identical numbers
+PASS a26 Customers listed in a different order from the entries (entries start 
+PASS a27 Customers but an empty entries list (everything is zero)
+PASS a28 Mixed states in one shop: owing, settled, advance, no entries, never p | INFO overdue order differs only among ties or customers who never paid: 9033000005,9033000001,9033000006,9033000007 vs 9033000005,9033000006,9033000001,9033000007
+PASS a29 Balances and day counts that sort wrongly as text (900 vs 1000 vs 1000
+PASS a30 60 customers, 300 entries with paise, spanning two year ends, sparse ( | INFO overdue order differs only among ties or customers who never paid: 6000106998,8000106776,9000107072,8000105703,7000105592 vs 9000107072,9000105666,6000106665,8000105407,9000106702
+PASS b01 phone written as a JSON number, not a string (customers and entries)
+PASS b02 phone with +91 prefix and with a bare 91 prefix; entries use the plain
+PASS b03 phone with spaces inside and around it
+PASS b04 phone with dashes
+PASS b05 phone with a leading 0 (trunk prefix), 11 characters
+PASS b06 amount written as a string of digits ("500")
+PASS b07 amount as a string with thousands commas ("1,200", Indian "1,20,000")
+PASS b08 amount with a currency mark: "Rs 500", "Rs. 1,250", "₹750", "450/-"
+PASS b09 amounts with paise (decimals), as numbers and as a string
+PASS b10 entries with amount 0
+PASS b11 negative amounts on a credit and on a payment
+PASS b12 amount missing on one entry and null on another
+PASS b13 type in capitals, mixed case and with surrounding spaces
+PASS b14 type words other than credit/payment: debit, udhar, paid, received
+PASS b15 dates as DD-MM-YYYY and DD/MM/YYYY
+PASS b16 date as a full ISO timestamp with time and zone
+PASS b17 date missing, null, empty and impossible (2026-02-30)
+PASS b18 note missing, null, empty, and very long with markup characters
+PASS b19 entries for a phone that is not in the customers list
+PASS b20 the same customer (same phone) listed twice, the second time with a di
+PASS b21 customers with name missing, empty and null
+PASS b22 extra unknown fields on the shop, the customers and the entries
+PASS b23 customers present, "entries" an empty list
+PASS b24 "entries" key missing altogether
+PASS b25 "shop" name missing
+PASS b26 keys in another order: entries before customers before shop, and field
+PASS b27 the whole pasted text starts with a byte-order mark and has leading an
+PASS b28 a second shop imported after a first; one phone (9000000481) is in bot
+PASS b29 text that is not valid JSON (trailing comma, single quotes, a comment,
+PASS b30 "customers" is an object keyed by phone instead of a list (valid JSON,
+ALL PASS (61 shops, live, run in two halves)

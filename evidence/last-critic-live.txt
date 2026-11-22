@@ -1,0 +1,11 @@
+PASS screenshot kept when Save is pressed at once
+PASS balance after that payment is 570 | 570
+PASS screenshot still there after reload
+PASS an entry dated after ?today= is saved (balance 600)
+PASS UPI link starts upi://pay?pa=...&am=... | upi://pay?pa=hisaab.demo%40upi&am=3470.00&pn=Lakshmi%20Provi
+PASS no page errors 
+PASS row balance is one figure: digits of "₹1,18,200" are 118200, of "₹1,500" are 1500, data-balance 118200
+PASS total holds the plain figure 119700
+PASS Edit from the Recent view on a phone shows the filled record form | visible true, amount 1500
+PASS no sideways scroll at 375 px after that
+ALL PASS (10 checks)

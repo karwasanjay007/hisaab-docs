@@ -198,3 +198,24 @@ Two small changes, found by an outside sweep of the live site and deployed the s
 
 Evidence: `evidence/last-phone-import-live.txt` ALL PASS (12 checks: 375 px in light and dark, then the two
 imports); `evidence/last-brief-live.txt` rerun on the live site, ALL PASS. Code: `hisaab` 790ef60.
+
+## Full sweep of hidden shops and a critic round (22 Nov 2026, version unchanged)
+
+**Sweep.** Two reviewers who read only the brief, not the code, wrote 60 shops with the expected numbers
+worked out by their own scripts: 30 in the exact sample format (1 to 150 customers, advances, paise, crores,
+names in Devanagari and Telugu, markup characters in names) and 30 with one irregularity each (phone and
+amount formats, other words for credit and payment, date formats, missing keys, text that is not a shop).
+On the first run 50 of 60 matched. Fixed: amounts above one crore were dropped on import; an amount written
+"450/-" was not read; "received" was not a payment. Kept as decided: the total is the sum of all balances
+(the owed figure sits in the note below it), and an entry with a negative amount is skipped and listed.
+
+**Critic.** A strict code critic scored the build 8 out of 10. Fixed: a script that pressed Save in the same
+tick as choosing the payment screenshot saved no picture; the UPI link now starts `upi://pay?pa=...&am=...`;
+Edit from the Recent view on a phone now shows the filled record form; a manual entry dated after
+`?today=` is saved. Not taken: a second, plain copy of the figure inside each row's balance, so a reader
+that keeps only digits still reads one number.
+
+Evidence: `evidence/last-sweep-live.txt` ALL PASS (61 shops with the official sample: the total, every
+balance and its text, who owes the most, how many owe, the overdue list, the reminder link with name and
+amount); `evidence/last-critic-live.txt` ALL PASS (10 checks); `evidence/last-brief-live.txt` ALL PASS;
+`evidence/last-phone-import-live.txt` ALL PASS (12 checks). All on the live site.
