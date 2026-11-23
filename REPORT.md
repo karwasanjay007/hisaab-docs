@@ -350,6 +350,32 @@ keys each).
 - The numbers of the sample shop are made up, and a made-up number can still belong to someone: one of them
   received a test reminder. The app now says so on sample customers.
 
+## Version 1.2.4.0 (23 Nov 2026)
+
+The owner followed this page's own line, "type or speak Sunita 500 udhaar", on his laptop, and no text came.
+
+**What was wrong in the app.** When a browser's speech service stopped without a result and without an error, the
+app wrote nothing: "Listening" stayed on screen. That ending had no message. It now says "Did not catch that. Try
+again or type it."
+
+**What the app cannot repair.** The words are recognised by the browser's own speech service, not by Hisaab. If
+that service is blocked, switched off or unreachable, no page can make it answer, and Hisaab has no server to fall
+back on, by design. So every voice failure now ends with the way that always works: on a phone or tablet, the
+microphone key of the keyboard; on a laptop, the computer's own dictation (on Windows, the Windows key and H),
+which types what is said into the box. Then Fill reads it as typed text.
+
+**What testing found.** The new test showed that a laptop with a touch screen was taken for a phone and offered
+the wrong tip. A phone is now recognised by what it is, not by touch. Fixed before the deploy.
+
+**Tests on the live site.** `evidence/last-voice-quiet-live.txt` (11 checks: the silent ending, an unreachable
+service, a blocked microphone, the right tip on a laptop and on a phone, Hindi and Tamil, 375 px);
+`last-voice-live.txt` (15, the earlier test, unchanged); quick entry, the brief, the independent checker (100 out
+of 100), the 61-shop sweep, languages, phone width, layout and offline: all pass. Two more text keys per language
+(`last-i18n-check.txt`, 235 keys each).
+
+**Not tried.** Real speech: a stand-in plays the speech service in the tests. Dictation on the owner's own laptop.
+Why his browser returned no text is not known.
+
 ## Requirement and feature map (23 Nov 2026)
 
 Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it
@@ -407,7 +433,8 @@ most of its rows cannot be judged.
 | N/A | Tappable pay link in the WhatsApp reminder | Yes (1.2.1) | Not tested | Not tested | Not tested |
 | N/A | Other ways to send when WhatsApp refuses a number | Yes (1.2.2) | Not tested | Not tested | Not tested |
 | N/A | WhatsApp check when a customer is added | Yes (1.2.3) | Not tested | Not tested | Not tested |
+| N/A | A voice failure says why and offers another way to speak | Yes (1.2.4) | Not tested | Not tested | Not tested |
 
-Hisaab: all 17 rows of the brief pass, and all 26 rows outside the brief are in place (the last four were added in
-1.2.1.0 to 1.2.3.0 and were not looked for on the other builds). None of the features seen on
+Hisaab: all 17 rows of the brief pass, and all 27 rows outside the brief are in place (the last five were added in
+1.2.1.0 to 1.2.4.0 and were not looked for on the other builds). None of the features seen on
 the three other builds is missing.

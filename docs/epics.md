@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.3.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.4.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 23 Nov 2026 (version 1.2.3.0) |
+| Last revised | 23 Nov 2026 (version 1.2.4.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -28,13 +28,18 @@ differently, or not built, the text says so.
 | `shops.mjs "..."` | `tests/shops.mjs`, several shops on one phone, added in 1.1.0.0 (last live run: `evidence/last-shops-live.txt`, 25 checks) |
 | `addons-width.mjs "..."` | `tests/addons-width.mjs`, the add-ons at 320 px and 375 px in three languages, light and dark (last live run: `evidence/last-addons-width-live.txt`, 54 checks) |
 | `langs.mjs "..."` | `tests/langs.mjs`, twelve languages, note shortcuts and the overdue total, added in 1.2.0.0 (last live run: `evidence/last-langs-live.txt`, 25 checks) |
-| `i18n-check.cjs` | `tests/i18n-check.cjs`, a script that reads the language files without a browser (last run: `evidence/last-i18n-check.txt`, 11 languages, 216 keys each) |
+| `i18n-check.cjs` | `tests/i18n-check.cjs`, a script that reads the language files without a browser (last run: `evidence/last-i18n-check.txt`, 11 languages, 235 keys each) |
 | `customer.mjs "..."` | `tests/customer.mjs`, the customer tools, added in 1.2.0.0 (last live run: `evidence/last-customer-live.txt`, 36 checks) |
 | `layout.mjs "..."` | `tests/layout.mjs`, the layout in 12 languages and 5 widths, overview and customer page (120 screens), added in 1.2.1.0 (last live run: `evidence/last-layout-live.txt`, 7 checks) |
 | `names.mjs "..."` | `tests/names.mjs`, customer names in the script of each language, added in 1.2.1.0 (last live run: `evidence/last-names-live.txt`, 33 checks) |
 | `pay.mjs "..."` | `tests/pay.mjs`, the pay link in the reminder and the pay page, added in 1.2.1.0 (last live run: `evidence/last-pay-live.txt`, 15 checks) |
 | `sendways.mjs "..."` | `tests/sendways.mjs`, the other ways to send a reminder, added in 1.2.2.0 (last live run: `evidence/last-sendways-live.txt`, 16 checks) |
 | `wacheck.mjs "..."` | `tests/wacheck.mjs`, the WhatsApp check of a number, added in 1.2.3.0 (last live run: `evidence/last-wacheck-live.txt`, 19 checks) |
+| `critic.mjs "..."` | `tests/critic.mjs`, the checks of the critic round of 22 Nov 2026: Save pressed straight after choosing a screenshot, a row balance that is one clean figure, the UPI link in the reminder, Edit from the Recent view on a phone, an entry dated after `?today=`, and amounts read from screenshots (last live run: `evidence/last-critic-live.txt`, 14 checks) |
+| `phone-import.mjs "..."` | `tests/phone-import.mjs`, two hardening checks of 22 Nov 2026: nothing scrolls sideways at 375 px, not even the summary cards, and a shop file with customers and no "entries" key loads (last live run: `evidence/last-phone-import-live.txt`, 12 checks) |
+| `sweep.mjs "..."` | `tests/sweep.mjs`, the sweep of hidden shops in `tests/fixtures/sweep.json`, written by two reviewers who read only the brief: each shop is pasted into `#import-box` in a fresh browser and every figure the tester reads is compared with the expected one (last live run: `evidence/last-sweep-live.txt`, ALL PASS) |
+| `voice.mjs "..."` | `tests/voice.mjs`, voice quick entry with a stand-in for the browser's speech service: a heard sentence fills the form and each kind of failure gets its own message (last live run: `evidence/last-voice-live.txt`, 15 checks) |
+| `voice-quiet.mjs "..."` | `tests/voice-quiet.mjs`, added in 1.2.4.0: voice quick entry never ends in silence, on a laptop and on a phone, with the way that always works (last live run: `evidence/last-voice-quiet-live.txt`, 11 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -46,13 +51,13 @@ prints after it.
 
 | Epic | Title | Features | Acceptance criteria | PRD trace |
 | --- | --- | --- | --- | --- |
-| E1 | Customers and entries | 7 | 41 | F-1, F-2, F-3, F-5, D-4, S-3, stage 1, stage 2 (screenshot, edit and delete) |
-| E2 | Shop overview | 5 | 21 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search), V-14 |
-| E3 | Reminders and getting paid | 5 | 17 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link), V-15, V-16 |
+| E1 | Customers and entries | 7 | 43 | F-1, F-2, F-3, F-5, D-4, S-3, stage 1, stage 2 (screenshot, edit and delete) |
+| E2 | Shop overview | 5 | 23 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search), V-14 |
+| E3 | Reminders and getting paid | 5 | 18 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link), V-15, V-16 |
 | E4 | Customer page and statement | 5 | 16 | F-1, stage 1 (customer page newest first), V-16, V-17, V-18 |
-| E5 | Quick entry, typed and by voice | 4 | 19 | V-11 (PRD, last section) |
-| E6 | Shop data | 6 | 33 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is V-12, backup and balances files V-13 |
-| E7 | Languages, themes and layout | 5 | 19 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), V-18, success measures |
+| E5 | Quick entry, typed and by voice | 5 | 27 | V-11, V-25 (PRD, last section) |
+| E6 | Shop data | 6 | 34 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is V-12, backup and balances files V-13 |
+| E7 | Languages, themes and layout | 5 | 20 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), V-18, success measures |
 | E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check", V-19 |
 | E9 | Shop profile and balance history (1.1.0.0) | 2 | 13 | V-1, V-2, C-1, C-2 (PRD, last section) |
 | E10 | Several shops (1.1.0.0) | 3 | 11 | V-3, C-1, C-2, C-3 (PRD, last section) |
@@ -60,7 +65,7 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.3.0) | 5 | 40 | V-20 to V-24, C-1, C-4 (PRD, last section) |
-| **Total** | | **60** | **287** | |
+| **Total** | | **61** | **302** | |
 
 ---
 
@@ -116,6 +121,7 @@ As the shop owner, I want to attach the customer's UPI screenshot to a payment s
 | AC-E1.F3.3 | The page reloads | The entry is drawn again | The screenshot is still shown (it is stored inside the entry) | `check.mjs [5-shot reload]`, `brief.mjs "picture still there after reload"` |
 | AC-E1.F3.4 | The chosen file is not a picture | The file is chosen | "That file is not a picture." shows and the file is cleared | manual |
 | AC-E1.F3.5 | A preview is shown | The owner presses Remove | The picture is dropped from the form; on an edit, saving then removes it from the entry | manual |
+| AC-E1.F3.6 | A picture has just been chosen | The owner presses Save at once, without waiting | The entry still shows its screenshot, also after a reload | `critic.mjs "screenshot kept when Save is pressed at once"`, `critic.mjs "screenshot still there after reload"` |
 
 ### E1.F4 Read the amount from the screenshot
 
@@ -144,6 +150,7 @@ As the shop owner, I want to correct a wrong entry so that the balance is right.
 | AC-E1.F5.5 | The form is in edit mode | The owner saves the edit | The old entry is copied first, and an "Entry updated." toast with Undo and the Send receipt link shows for 7 seconds; a new entry still shows "Saved." with Send receipt and no Undo | `gaps.mjs "edit offers Undo"`, `gaps.mjs "edit applied"` |
 | AC-E1.F5.6 | The "Entry updated." toast is showing | The owner presses Undo | The old entry is put back in its place and every balance is recomputed | `gaps.mjs "undo restored the entry"`, `gaps.mjs "balance back to 3,470"` |
 | AC-E1.F5.7 | An edit can still be undone | The owner deletes an entry or loads a shop | The edit can no longer be undone; only the newer action's Undo is offered (one level of undo) | manual |
+| AC-E1.F5.8 | The Recent view on a phone | The owner presses Edit | The record form comes into view, filled, and nothing scrolls sideways | `critic.mjs "Edit from the Recent view on a phone shows the filled record form ..."`, `critic.mjs "no sideways scroll at 375 px after that"` |
 
 ### E1.F6 Delete an entry with Undo
 
@@ -184,6 +191,7 @@ As the shop owner, I want the total owed to the shop at the top so that I know w
 | AC-E2.F1.1 | The sample shop is loaded | The app opens | `#total-outstanding` shows ₹11,820 and also holds the plain number 11820 (S-1) | `check.mjs [1-sample total]`, `final.mjs "total text"`, `brief.mjs "top shows 11820"`, `brief.mjs "total shows 250: ..."` (Ravi alone) |
 | AC-E2.F1.2 | Some customers are in advance | The total is drawn | `#total-outstanding` holds one figure, the sum of all balances (D-3, A-1), with its plain-number copy, for example "₹1,895 1895"; the note "₹{owed} owed, less ₹{advance} paid in advance" is in `#total-note` just below it, outside `#total-outstanding` | `check.mjs [2-hidden total]`, `brief.mjs "total with an advance holds one figure, 1895"`, `brief.mjs "owed note sits outside #total-outstanding"` |
 | AC-E2.F1.3 | Any shop | The total is drawn | `#total-outstanding` carries `data-value` (sum of all balances) | manual |
+| AC-E2.F1.4 | Each hidden shop of the sweep, written by reviewers who read only the brief (one customer, 150 customers, advances, paise, crores, leap days, dates across year ends, Devanagari and Telugu names) | It is pasted into `#import-box` in a fresh browser | The total, every row balance, the customer who owes the most, the count of customers who owe, the overdue order and the reminder link of the top customer match the expected figures | `sweep.mjs "s00 official sample"`, `sweep.mjs "a04 150 customers with exactly 600 entries ..."`, `sweep.mjs "a18 Paise that break naive floating point sums ..."` |
 
 ### E2.F2 Key figures
 
@@ -207,6 +215,7 @@ As the shop owner, I want every customer with their balance in one list, largest
 | AC-E2.F3.2 | Any shop | The list is drawn | Customers who owe come first, largest balance first; the rest follow by balance, then by name | `check.mjs [1-sample top defaulter]` (INFO) |
 | AC-E2.F3.3 | No customers, as on a first visit (E6.F5) | The overview is drawn | "No customers yet. Add your first customer, or load the sample shop to look around." shows with two buttons: Add your first customer (`#add-first`) opens `#/s/add` with focus on the name field, and Load sample shop (`#load-sample-home`) does the same as Load sample shop on the Shop file card | `brief.mjs "fresh app holds only Ravi (no other shop preloaded)"` (empty start); the buttons manual |
 | AC-E2.F3.4 | A customer is in advance | The list is drawn | Their `[data-balance]` text reads "₹-200" (sign next to the digits, so a number reader keeps it) with `data-balance="-200"`, drawn as "-₹200"; the row shows an "Advance" label; the customer page balance (`#cust-balance`) is drawn the same way | `brief.mjs "advance customer: text ₹-200 for readers, drawn as -₹200, Advance label, data-balance=-200"` |
+| AC-E2.F3.5 | Balances in lakhs | The list is drawn | Each row balance is one clean figure: with the commas taken out it is the plain number, and `data-balance` holds it too | `critic.mjs "row balance is one figure: ..."`, `critic.mjs "total holds the plain figure 119700"` |
 
 ### E2.F4 Overdue list
 
@@ -259,6 +268,7 @@ As the shop owner, I want a UPI pay link with the exact amount so that the custo
 | --- | --- | --- | --- | --- |
 | AC-E3.F2.1 | A customer owes | The link is built | It is `upi://pay?pa={UPI ID}&pn={shop}&am={balance to 2 decimals}&cu=INR&tn=Hisaab {name}` and is inside every reminder | `check.mjs [9-bonus UPI]` |
 | AC-E3.F2.2 | A customer owes | Their page is open | A "UPI pay link" button with the same link shows; it is hidden when the balance is 0 or in advance | `final.mjs "UPI link kept"` |
+| AC-E3.F2.3 | A customer owes | The WhatsApp reminder is built | The UPI link in it starts `upi://pay?pa=...&am=...` | `critic.mjs "UPI link starts upi://pay?pa=...&am=... ..."` |
 
 ### E3.F3 Shop UPI ID setting
 
@@ -406,8 +416,25 @@ As the shop owner, I want to say the entry so that I can record it with my hands
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
 | AC-E5.F4.1 | The browser has speech recognition (Chrome, Edge) | The page loads | The microphone button shows; where speech recognition is missing it stays hidden | `quick.mjs "mic button shown in Chromium"` |
-| AC-E5.F4.2 | The owner taps the microphone | They speak | It listens in en-IN, hi-IN or te-IN by the chosen language, shows the words as heard, and on stop runs the same parser (E5.F1) | manual |
-| AC-E5.F4.3 | Nothing is heard, or the microphone is blocked | Listening ends | "Did not catch that. Try again or type it." or "Could not use the microphone. Type the entry instead." shows | manual |
+| AC-E5.F4.2 | The owner taps the microphone | They speak | It listens in en-IN, hi-IN or te-IN by the chosen language, shows the words as heard, and on stop runs the same parser (E5.F1) | `voice.mjs "a heard "Ravi 500 udhaar" fills the form ..."` |
+| AC-E5.F4.3 | Nothing is heard, the microphone is blocked or missing, or the speech service does not answer | Listening ends | Each failure has its own message: "Did not catch that. Try again or type it.", "The microphone is blocked for this site. Allow it from the lock icon in the address bar", "No microphone was found on this device. Type the entry instead." or "This browser's speech service did not answer. Voice needs the internet and works best in Chrome. Type the entry instead."; the microphone button is released each time | `voice.mjs "failure "no-speech" says why ..."`, `voice.mjs "failure "not-allowed" says why ..."`, `voice.mjs "failure "audio-capture" says why ..."`, `voice.mjs "failure "network" says why ..."`, `voice.mjs "the microphone button is released after "network""` |
+| AC-E5.F4.4 | The chosen language is refused by the speech service | The owner speaks | It is tried again in Indian English and the entry is heard | `voice.mjs "a refused language is tried again in Indian English and the entry is heard ..."` |
+| AC-E5.F4.5 | The speech service stays silent | Nine seconds pass | Listening is stopped with a message in the chosen language | `voice.mjs "a speech service that stays silent is stopped after 9 seconds with a message ..."`, `voice.mjs "no page errors"` |
+
+### E5.F5 Voice never ends in silence (1.2.4.0)
+
+As the shop owner, I want every voice try to end with a message so that I am never left looking at "Listening" with nothing on screen, and I always know a way that works.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E5.F5.1 | A laptop | The speech service stops without a result and without an error | "Did not catch that" shows, not "Listening" | `voice-quiet.mjs "laptop: a service that stops without hearing anything says "Did not catch that", not "Listening" ..."` |
+| AC-E5.F5.2 | A laptop, including one with a touch screen | Any voice failure is shown | It adds the computer's own dictation (Windows key and H) as the way that always works; a speech service that cannot be reached says so, with the same tip | `voice-quiet.mjs "laptop: it adds the computer's own dictation as the way that always works"`, `voice-quiet.mjs "laptop: a speech service that cannot be reached says so, with the same tip"` |
+| AC-E5.F5.3 | A laptop | The sentence is heard | The form is filled and no tip is shown | `voice-quiet.mjs "laptop: when the sentence is heard the form is filled and no tip is shown ..."` |
+| AC-E5.F5.4 | A phone or tablet | The same ending, or a blocked microphone | The message offers the microphone key of the keyboard | `voice-quiet.mjs "phone: the same ending offers the microphone key of the keyboard ..."`, `voice-quiet.mjs "phone: a blocked microphone says so, with the tip"` |
+| AC-E5.F5.5 | Hindi on a laptop, Tamil on a phone | The message shows | The message and the tip are in that language | `voice-quiet.mjs "laptop, Hindi: the message and the tip are in Hindi ..."`, `voice-quiet.mjs "phone, Tamil: the message and the tip are in Tamil ..."` |
+| AC-E5.F5.6 | A 375 px wide screen | The longer message shows | Nothing scrolls sideways and the page has no errors | `voice-quiet.mjs "phone: the longer message does not scroll sideways at 375 px ..."`, `voice-quiet.mjs "phone: no page errors"` |
+
+Note: a stand-in plays the browser's speech service in both voice tests. Real speech needs a person and a microphone and was not tried.
 
 ---
 
@@ -436,7 +463,7 @@ As the shop owner, I want a bad file refused with a clear reason so that I never
 | --- | --- | --- | --- | --- |
 | AC-E6.F2.1 | The box is empty | Load is pressed | 'The file needs "customers" and "entries" lists.' shows and nothing changes | manual |
 | AC-E6.F2.2 | The text starts with { or [ but is not valid JSON | Load is pressed | "This is not valid JSON: {parser message}" shows and nothing changes; text that does not start with { or [ is read as CSV (E6.F6) | manual |
-| AC-E6.F2.3 | The JSON has no `customers` or `entries` list | Load is pressed | 'The file needs "customers" and "entries" lists.' shows and nothing changes | manual |
+| AC-E6.F2.3 | The JSON has no `customers` list, or its `entries` is there but is not a list | Load is pressed | 'The file needs "customers" and "entries" lists.' shows and nothing changes | `phone-import.mjs "entries that is not a list is still refused with a message"` |
 | AC-E6.F2.4 | No row in the file is usable (no valid customer at all) | Load is pressed | The first three problems show, for example 'customer 1: phone "123"', and nothing changes | manual |
 | AC-E6.F2.5 | Some rows are bad (a missing phone, an unknown type, a negative amount) but others are good | Load is pressed | The good rows replace the shop and the message adds "Skipped {n}: " (in English, Hindi or Telugu) and up to three problems | `gaps.mjs "import message: ..."` |
 | AC-E6.F2.6 | Rows use other spellings | Load is pressed | Phones are cleaned as in AC-E1.F1.4 and any 10 digits are accepted, not only mobile numbers; debit, udhar and sale mean credit; paid, jama and receipt mean payment; Rs, INR, ₹, commas and spaces in amounts are dropped; DD/MM/YYYY dates are read; shop_name, name, upi_id, name_hi and name_te are accepted | manual |
@@ -446,6 +473,7 @@ As the shop owner, I want a bad file refused with a clear reason so that I never
 | AC-E6.F2.10 | An entry's amount is missing, blank, not a number, negative or above 1,00,00,000 | Load is pressed | That entry is skipped and listed under "Skipped {n}: "; the good rows load | `gaps.mjs "import message: ..."`, `gaps.mjs "balance from good rows only (500 - 100): ..."` |
 | AC-E6.F2.11 | An entry's date is missing or cannot be read | Load is pressed | The entry is kept, dated today (or the `?today=` date), and the message adds "{n} entries had no date and are dated today." | `gaps.mjs "import message: ..."` |
 | AC-E6.F2.12 | The file's `upi` or `upi_id` is not a valid UPI ID (E3.F3) | Load is pressed | It is listed under "Skipped {n}: " and the current UPI ID is kept | manual |
+| AC-E6.F2.13 | A shop file has customers and no "entries" key | Load is pressed | It loads: every customer is listed with balance 0 and the total is 0 | `phone-import.mjs "shop file without "entries": both customers are listed ..."`, `phone-import.mjs "shop file without "entries": total outstanding is 0 ..."` |
 
 Built differently from the PRD: S-4 says a file with a missing phone number changes nothing. The code only
 refuses the file when it is not JSON or CSV, lacks the lists, or no customer at all can be read. When some
@@ -556,6 +584,7 @@ As the shop owner, I want the app to fit my phone so that I can use it with one 
 | AC-E7.F4.3 | A long shop name at 375 px | The header is drawn | The name is cut short with an ellipsis and does not overlap the language list | manual |
 | AC-E7.F4.4 | Buttons and fields | The owner taps them | Edit, Delete, the language list, the icon buttons and the logo link are at least 44 px tall, and customer-name links in entry lists have a 44 px tall tap area | `brief.mjs "375 {hash}: scrollWidth 375; small targets: none"` (on `#/`, `#/s/record`, `#/s/customers`, `#/s/data` and a customer page; the test flags any visible button, link, field, list or label button under 40 px, except inline text links) |
 | AC-E7.F4.5 | Any shop | The app is shown | The Customers item in the menu shows the number of customers and the Overdue item the number of overdue customers, marked as a warning; a count of 0 shows nothing | manual |
+| AC-E7.F4.6 | A 375 px wide screen, light or dark | The summary cards under the total are shown | They do not scroll sideways and every card ends inside the screen | `phone-import.mjs "light 375: summary cards do not scroll sideways ..."`, `phone-import.mjs "dark 375: every summary card ends inside the screen ..."` |
 
 ### E7.F5 Wide layouts
 
@@ -976,7 +1005,8 @@ Note: no app can look a number up on WhatsApp beforehand. The check depends on t
 | V-11, V-15, V-16, V-17, V-19 (added at final review; in the PRD since 23 Nov 2026) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
 | V-12, V-13, V-14, V-18 (in the PRD since 23 Nov 2026) | Spreadsheet import, backup and balances files, key figures and recent entries, local-script names and digits | E6.F6, E6.F4, E2.F2, E2.F5, E4.F5, E7.F2 |
 | V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
-| V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
+| V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check (the answer switched with one tap since 1.2.3.1) | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
+| V-25 (PRD, last section) | Voice entry never ends in silence (1.2.4.0) | E5.F5, E5.F4 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

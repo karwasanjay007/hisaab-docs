@@ -5,7 +5,7 @@
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
 | Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
-| Last revised | 23 Nov 2026 (version 1.2.3.0) |
+| Last revised | 23 Nov 2026 (version 1.2.4.0) |
 
 Diagrams are C4 (PlantUML with the bundled C4 library), kept as `.puml` sources in `docs/diagrams/` and
 rendered to SVG.
@@ -58,7 +58,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-4 | Screenshots resized in the browser to at most 640 px and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v8` (version 1.2.3.1): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v9` (version 1.2.4.0): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
@@ -94,12 +94,12 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | --- | --- | --- |
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
 | localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`; `hisaab.shops` (1.1.0.0); `hisaab.wa` (1.2.3.0, the owner's WhatsApp answer per number, outside the shop). A `storage` event listener reloads the shop when another tab changes it |
-| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v8` on install (the add-on files and `pay.html` included); network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
+| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v9` on install (the add-on files and `pay.html` included); network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
 | Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js` and their style files, with `polish.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
-| Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 233 text keys per language |
+| Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 235 text keys per language |
 | Pay page | `pay.html` | A separate small page. Reads shop, UPI ID and amount from the part after `#`, shows them and opens the `upi://pay` link |
 | Lazy-loaded libraries | qrcode-generator 1.4.4, Tesseract.js 5.1.1 | QR codes as inline SVG; text recognition of payment screenshots |
-| Web Speech API | `SpeechRecognition` or `webkitSpeechRecognition` | Voice quick entry in `en-IN`, `hi-IN` or `te-IN`. The microphone button stays hidden when the browser has no support |
+| Web Speech API | `SpeechRecognition` or `webkitSpeechRecognition` | Voice quick entry in `en-IN`, `hi-IN` or `te-IN`. The microphone button stays hidden when the browser has no support. The service is the browser's own and can fail; since 1.2.4.0 every failure is said in words, with a tip for the keyboard's microphone key or the computer's own dictation |
 
 `manifest.webmanifest` makes the site installable as a standalone app (`start_url ./`, theme `#0E5C45`,
 icon `icon.svg`).
@@ -213,7 +213,7 @@ Breakpoints in `styles.css`:
 Below 1024 px navigation is a bottom bar with a More sheet.
 
 ### Offline
-- On install the service worker precaches the app shell in `hisaab-v8` (`./`, `index.html`, `styles.css`,
+- On install the service worker precaches the app shell in `hisaab-v9` (`./`, `index.html`, `styles.css`,
   `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`, the add-on files and
   `pay.html`); on activate it deletes
   older caches. After one online visit the app opens with no signal, and the ledger works fully offline
@@ -231,6 +231,11 @@ Below 1024 px navigation is a bottom bar with a More sheet.
 | `tests/check.mjs` | Independent checker written by a separate agent from `brief/` only, without reading the app source. Playwright 1.62.0. Checks the sample shop, a random hidden shop from a seed through `#import-box`, reminders, UPI, persistence, `?today=`, overdue, search, CSV, language, dialogs and console errors. Usage `node tests/check.mjs [baseUrl] [seed]` | `tests/last-run-live.txt`: live site, seed 12345, 27 PASS, 0 FAIL. REPORT.md records the same on seeds 777, 31337 and 8080; `tests/last-run.txt` is the local run |
 | `tests/nav.mjs` | Every nav item opens its section as its own view, at the top, quickly. Usage `node tests/nav.mjs [baseUrl]` | ALL PASS (REPORT.md) |
 | `tests/quick.mjs` | Quick entry: the parser on English, Hindi and Telugu lines, the form fill, focus on Save, the customer page, the microphone button, 375 px. Usage `node tests/quick.mjs [baseUrl]` | ALL PASS |
+| `tests/voice.mjs` | Voice quick entry with a stand-in speech service: each failure has its own words, a refused language is tried once more in `en-IN`, a silent service is stopped after 9 seconds. Usage `node tests/voice.mjs [baseUrl]` | ALL PASS (15 checks) |
+| `tests/voice-quiet.mjs` | (1.2.4.0) A speech service that ends with no result and no error says "Did not catch that"; every failure line carries the keyboard tip on a phone or tablet and the dictation tip on a computer, a touch-screen laptop included. Usage `node tests/voice-quiet.mjs [baseUrl]` | ALL PASS (11 checks) |
+| `tests/critic.mjs` | The defects a code critic found: Save in the same tick as choosing a screenshot, the UPI link, Edit from the Recent view, a manual entry dated after `?today=`, amounts read from four payment screenshots | ALL PASS (14 checks) |
+| `tests/phone-import.mjs` | On a phone the summary cards wrap into two columns; a shop file with customers and no `entries` key loads with every balance 0 | ALL PASS (12 checks) |
+| `tests/sweep.mjs` | 61 shops (60 written by two reviewers from the brief only, plus the sample): total, every balance, who owes the most, the overdue list and the reminder link | ALL PASS (61 shops) |
 | `tests/final.mjs` | Final review: total text, remind all, entry validation, search, CSV export, undo import, QR code and statement QR, widths from 375 to 2560 px. Usage `node tests/final.mjs [baseUrl]` | ALL PASS |
 | `tests/gaps.mjs` | The warning for a number that is not a mobile, the UPI ID check, import amount and date rules, CSV import (round trip and a hand-made sheet), Undo after an edit, a Hindi screenshot read. Usage `node tests/gaps.mjs [baseUrl]` | ALL PASS |
 | `tests/offline.mjs` | One online visit, then offline: the ledger opens with 11,820 and the QR code draws. Usage `node tests/offline.mjs [baseUrl]` | ALL PASS |
@@ -303,6 +308,18 @@ Further minor findings are listed in `review/functional.md`.
 | Pay page | `pay.html` | A separate small page. Reads shop, UPI ID, amount and the customer's name from the part after `#`, which is never sent to a server; shows them and opens the `upi://pay` link |
 | Other ways to send | `sendways.js` | On the customer page, the same reminder as an SMS (`sms:` link), to any contact chosen in WhatsApp (`wa.me` link with no number), or copied |
 | WhatsApp check | `wacheck.js` | After a customer is added by hand, offers a hello message on WhatsApp to that number and stores the owner's answer in `hisaab.wa`, outside `hisaab.v1` |
-| Language files | `i18n/<code>.json` | 233 text keys each (216 at 1.2.0.0, 223 at 1.2.2.0) |
+| Language files | `i18n/<code>.json` | 233 text keys each at 1.2.3.0 (216 at 1.2.0.0, 223 at 1.2.2.0) |
 | Service worker | `sw.js` | Cache `hisaab-v5` at 1.2.1.0, `hisaab-v6` at 1.2.2.0, `hisaab-v7` at 1.2.3.0, `hisaab-v8` at 1.2.3.1; the app shell also lists `names.js`, `sendways.js`, `wacheck.js`, `polish.css` and `pay.html` |
 | Tests | `tests/layout.mjs`, `tests/names.mjs`, `tests/pay.mjs`, `tests/sendways.mjs`, `tests/wacheck.mjs` | Layout 7 checks over 120 screens; names 33; pay 15; sendways 16; wacheck 19 |
+
+## Version 1.2.3.1 and 1.2.4.0 additions (23 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| One-tap switch (1.2.3.1) | `wacheck.js` | Once a number has an answer, a button `#wa-check-flip` beside Check on WhatsApp offers the other answer, so a wrong tap is put right with one tap. It uses the existing labels; no new text |
+| Voice that never ends in silence (1.2.4.0) | `app.js`, `listen` inside `setupVoice` | A speech service that stops with no result and no error now says "Did not catch that". Every voice failure line is followed by a tip: `quickKeyTip` (the microphone key of the keyboard) on a phone or tablet, known by its user agent (Android, iPhone, iPad, iPod), and `quickPcTip` (Windows key and H) on anything else, so a laptop with a touch screen gets the laptop tip. A silent service is still stopped after 9 seconds |
+| Language files | `i18n/<code>.json` | 235 text keys each (233 at 1.2.3.0); `quickKeyTip` and `quickPcTip` added in 1.2.4.0 |
+| Service worker | `sw.js` | Cache `hisaab-v8` at 1.2.3.1, `hisaab-v9` at 1.2.4.0 (`hisaab-v7` at 1.2.3.0); the app shell list is unchanged |
+| Tests | `tests/wacheck.mjs`, `tests/voice-quiet.mjs` | wacheck gained three checks at 1.2.3.1 (19); voice-quiet 11 checks, new at 1.2.4.0 |
+
+Nothing new is stored by either version.

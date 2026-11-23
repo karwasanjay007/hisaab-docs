@@ -65,6 +65,10 @@ opt Owner taps Check on WhatsApp (#wa-added-go)
   end
 end
 note right of UI : any customer page has Check on WhatsApp\n(#wa-check-go); the same question follows
+opt v1.2.3.1: the answer was wrong
+  Owner -> UI : one tap on the button beside Check on WhatsApp\n(#wa-check-flip, labelled with the other answer)
+  UI -> LS : setItem('hisaab.wa', phone: the other answer and the date)
+end
 == The reminder to a refused number ==
 Owner -> UI : open the customer page
 App -> UI : under the reminder buttons, the fold-out\n"Other ways to send" with the same message\nas the WhatsApp reminder (J4)

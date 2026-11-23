@@ -1,8 +1,8 @@
-1.2.3.1
+1.2.4.0
 
 # Hisaab release baseline
 #
-# Version:     1.2.3.1
+# Version:     1.2.4.0
 # Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://hisaab-hazel.vercel.app
@@ -35,3 +35,7 @@
 # message to the number, and the owner's answer (chat opened, or refused) remembered per number.
 #
 # Version 1.2.3.1 (23 November 2026): a wrong answer to the WhatsApp check is switched with one tap.
+#
+# Version 1.2.4.0 (23 November 2026): voice quick entry never ends in silence. A speech service that
+# stops without hearing anything now says so, with the way that always works: the keyboard's microphone
+# key on a phone, the computer's own dictation on a laptop.

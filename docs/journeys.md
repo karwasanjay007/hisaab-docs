@@ -3,7 +3,7 @@
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
 `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js` and `wacheck.js`, the layout sheet
-`polish.css` and the customer's pay page `pay.html`: the function names, the order of calls, what is
+`polish.css` and the customer's pay page `pay.html`, at version 1.2.4.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -166,7 +166,17 @@ Source: [j3-quick-entry-voice.puml](diagrams/j3-quick-entry-voice.puml)
   the focus.
 - No type word: the entry is taken as credit, and the message says so.
 - On a customer page the customer is already known, so only the amount, type and note are read.
-- Recognition errors show "Did not catch that..." (no speech) or "Could not use the microphone...".
+- Recognition errors say why: "Did not catch that..." (no speech), "The microphone is blocked for this
+  site..." (not allowed), "No microphone was found..." (no microphone), "This browser's speech service did
+  not answer..." (network), or "Could not use the microphone..." (anything else). A language the service
+  refuses is tried once more in `en-IN`.
+- Since 1.2.4.0 voice never ends in silence: when the service stops with no result and no error, the app
+  says "Did not catch that. Try again or type it." A service that gives nothing for 9 seconds is stopped,
+  with "This browser's speech service did not answer...".
+- Since 1.2.4.0 every voice failure line is followed by a tip. On a phone or tablet (its user agent names
+  Android, iPhone, iPad or iPod) the tip is the microphone key of the keyboard (`quickKeyTip`). On anything
+  else it is the computer's own dictation, the Windows key and H (`quickPcTip`), so a laptop with a touch
+  screen gets the laptop tip.
 - Amounts must be said or typed as digits; number words such as "paanch" are not read.
 - In the nine languages fetched by `langs.js`, that language's words for credit and payment are taught to
   the parser (`H.quickWords`) when the language loads.
@@ -383,9 +393,9 @@ the service worker has installed and cached the app shell.
 3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, the add-ons
    `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `names.js`, `sendways.js`,
    `wacheck.js`, `polish.css`, `pay.html`, `sample.js`, `sample-data.json`, `icon.svg`,
-   `manifest.webmanifest`) in the `hisaab-v8` cache; on activate it deletes older caches.
+   `manifest.webmanifest`) in the `hisaab-v9` cache; on activate it deletes older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v8`.
+   Google Fonts from the network first and keeps a copy in `hisaab-v9`.
 5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
    `?today=` still works), or `index.html`.
 6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.

@@ -1,0 +1,12 @@
+PASS laptop: a service that stops without hearing anything says "Did not catch that", not "Listening" | Did not catch that. Try again or type it. Tip: click the box
+PASS laptop: it adds the computer's own dictation as the way that always works
+PASS laptop: a speech service that cannot be reached says so, with the same tip
+PASS laptop: when the sentence is heard the form is filled and no tip is shown | Sunita 500 udhaar
+PASS laptop, Hindi: the message and the tip are in Hindi | सुनाई नहीं दिया। फिर से बोलें या लिखें। सुझाव: बॉक
+PASS laptop: no page errors 
+PASS phone: the same ending offers the microphone key of the keyboard | Did not catch that. Try again or type it. Tip: tap the box and use the
+PASS phone: a blocked microphone says so, with the tip
+PASS phone: the longer message does not scroll sideways at 375 px | 375
+PASS phone, Tamil: the message and the tip are in Tamil | சரியாகக் கேட்கவில்லை. மறுபடி சொல்லுங்கள் அல்லது எழ
+PASS phone: no page errors 
+ALL PASS (11 checks)

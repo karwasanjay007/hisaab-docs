@@ -5,8 +5,8 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 23 Nov 2026 (version 1.2.3.0) |
-| Additions | Versions 1.1.0.0 to 1.2.3.0 (22 to 23 Nov 2026): see the last section of this document |
+| Last revised | 23 Nov 2026 (version 1.2.4.0) |
+| Additions | Versions 1.1.0.0 to 1.2.4.0 (22 to 23 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
 
@@ -107,13 +107,15 @@ Focus:
 | 23 Nov 2026 | Section added for the additions of versions 1.1.0.0 and 1.2.0.0 |
 | 23 Nov 2026 | Requirements traced back from the app: V-11 to V-19 added for what 1.0.0.0 does beyond sections 1 to 5; section 2.2 corrected (several shops is built) |
 | 23 Nov 2026 | Baseline 1.2.3.0 approved by the owner: V-20 to V-24 added for versions 1.2.1.0, 1.2.2.0 and 1.2.3.0; an out-of-scope row for an automatic check of a number; the note on who the additions are for corrected (the customer now gets a pay link, and a hello message when the owner checks a number) |
+| 23 Nov 2026 | Version 1.2.4.0: V-24 now says that a wrong answer is put right with one tap (built in 1.2.3.1); V-25 added, voice quick entry never ends in silence |
 
-## Versions 1.1.0.0 to 1.2.3.0: additions (22 to 23 Nov 2026)
+## Versions 1.1.0.0 to 1.2.4.0: additions (22 to 23 Nov 2026)
 
 Why they were added. After the first release the app was compared with other builds of the same batch. Only
 the screens of those builds were read. What they showed that Hisaab did not have was added, in two steps:
-three additions in 1.1.0.0 and seven in 1.2.0.0. Versions 1.2.1.0 to 1.2.3.0 came from the owner's own
-use of the live site: three additions in 1.2.1.0, one in 1.2.2.0 and one in 1.2.3.0. The sections above still
+three additions in 1.1.0.0 and seven in 1.2.0.0. Versions 1.2.1.0 to 1.2.4.0 came from the owner's own
+use of the live site: three additions in 1.2.1.0, one in 1.2.2.0, one in 1.2.3.0 (put right in 1.2.3.1) and
+one in 1.2.4.0. The sections above still
 describe version 1.0.0.0.
 
 Who they are for. Every addition is for the shop owner. The customer still receives the reminder with the same
@@ -149,7 +151,7 @@ Built in version 1.0.0.0 but not stated in sections 1 to 5 (found when the requi
 | V-18 | 1.0.0.0 | Names and digits in the local script | The owner can correct a customer's name and add its Hindi and Telugu spelling. Figures can be shown in Hindi or Telugu digits |
 | V-19 | 1.0.0.0 | Works offline and can be installed | After the first visit the ledger opens with no network and can be added to the home screen. Reading the amount from a screenshot still needs a network |
 
-Added in versions 1.2.1.0 to 1.2.3.0 (23 Nov 2026), from the owner's use of the live site:
+Added in versions 1.2.1.0 to 1.2.4.0 (23 Nov 2026), from the owner's use of the live site:
 
 | ID | Version | Feature | Requirement |
 | --- | --- | --- | --- |
@@ -157,7 +159,8 @@ Added in versions 1.2.1.0 to 1.2.3.0 (23 Nov 2026), from the owner's use of the 
 | V-21 | 1.2.1.0 | Customer names in the script of every language | For the owner who reads one of the nine newer languages, so that names read the same way as the labels. Each name is followed by its spelling in the chosen language's script, as Hindi and Telugu already did. The spelling is made automatically. The total, the rows and the reminder links stay the same |
 | V-22 | 1.2.1.0 | A pay link the customer can tap | For the customer, because WhatsApp does not make a UPI link tappable. The WhatsApp reminder carries an ordinary web link first. It opens a small pay page with the shop, the amount and the UPI ID, and its button opens the UPI app. The UPI link stays in the message, as the brief asks. The details in the link are never sent to a server |
 | V-23 | 1.2.2.0 | Other ways to send a reminder | For the owner, when WhatsApp refuses a number. The same reminder can go as an SMS to the customer's number, to any contact chosen in WhatsApp, or be copied. A sample number says that it is made up |
-| V-24 | 1.2.3.0 | Check a number on WhatsApp | For the owner, so that a refusal is found once, when the customer is added, and not at every reminder. After a customer is added by hand, the owner can send a hello message to the number with the name and the shop and no balance. The owner then says whether the chat opened. The answer is kept for that number, apart from the ledger. A refused number reads "Not on WhatsApp" and offers the other ways to send (V-23). No app can look a number up beforehand; this is a limit, not a choice |
+| V-24 | 1.2.3.0 | Check a number on WhatsApp | For the owner, so that a refusal is found once, when the customer is added, and not at every reminder. After a customer is added by hand, the owner can send a hello message to the number with the name and the shop and no balance. The owner then says whether the chat opened. The answer is kept for that number, apart from the ledger. A refused number reads "Not on WhatsApp" and offers the other ways to send (V-23). A wrong answer is put right with one tap, without opening WhatsApp again (1.2.3.1). No app can look a number up beforehand; this is a limit, not a choice |
+| V-25 | 1.2.4.0 | Voice entry never ends in silence | For the owner who speaks the entry, so that a try that hears nothing is never left showing "Listening" with no word on screen. When the speech service stops without hearing anything, or cannot be reached, the app says so, for example "Did not catch that". Every failure also names the way that always works: the microphone key of the keyboard on a phone or tablet, and the computer's own dictation on a laptop, including a laptop with a touch screen. The message is in the chosen language and fits a phone screen. When the sentence is heard, the form fills and no tip shows |
 
 Constraints:
 

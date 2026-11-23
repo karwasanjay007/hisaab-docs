@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Last revised | 23 Nov 2026 (versions 1.1.0.0 to 1.2.3.0 added at the end) |
+| Last revised | 23 Nov 2026 (versions 1.1.0.0 to 1.2.4.0 added at the end) |
 
 ## Steps
 
@@ -33,7 +33,7 @@
 | R2 | Deploy to a `*.vercel.app` address (never sai4b.com) | Live URL fetched, 200 pasted |
 | R3 | Check at 1440 px and 375 px, light and dark | Screenshots looked at; fixes in REPORT.md |
 
-## Versions 1.1.0.0 to 1.2.3.0, as built (22 to 23 Nov 2026)
+## Versions 1.1.0.0 to 1.2.4.0, as built (22 to 23 Nov 2026)
 
 The method was the same for 1.1.0.0 and 1.2.0.0. The method for the later versions is given with their table.
 
@@ -70,7 +70,7 @@ The method was the same for 1.1.0.0 and 1.2.0.0. The method for the later versio
 One review point was left as it is: entries are put back in a slightly different order after Undo of a customer
 delete. Nothing is lost.
 
-### Versions 1.2.1.0 to 1.2.3.0
+### Versions 1.2.1.0 to 1.2.4.0
 
 Method: each change was measured first, on the live site. After 1.2.1.0 only the delta was tested, with the new
 test and the suites it touches. The documents were brought up to date after the owner approved the baseline
@@ -83,6 +83,8 @@ test and the suites it touches. The documents were brought up to date after the 
 | 1.2.1.0 | A pay link the customer can tap, before the UPI link in the reminder | `pay.html`; `payPage` and `reminderText` in `app.js` | `tests/pay.mjs` (15 checks) | Nothing |
 | 1.2.2.0 | Other ways to send a reminder: SMS, any WhatsApp contact, copy; a note on sample numbers | `sendways.js` | `tests/sendways.mjs` (16 checks) | Nothing |
 | 1.2.3.0 | A WhatsApp check when a customer is added by hand | `wacheck.js` | `tests/wacheck.mjs` (16 checks) | The first customer added after a shop file load was not offered the check. Fixed before the deploy |
+| 1.2.3.1 | A wrong answer to the WhatsApp check is switched with one tap | `wacheck.js` (the button `#wa-check-flip`) | `tests/wacheck.mjs` (19 checks) | Nothing. Asked for by the owner after he pressed "No" by mistake in his own trial |
+| 1.2.4.0 | Voice entry never ends in silence: a failure says why, with the keyboard microphone or the computer's own dictation as the way that always works | `app.js` (`listen` inside `setupVoice`); two text keys in every language file | `tests/voice-quiet.mjs` (11 checks); `tests/voice.mjs` (15, unchanged) | A laptop with a touch screen was taken for a phone and offered the wrong tip. A phone is now recognised by what it is. Fixed before the deploy |
 
 ### Left for later
 
@@ -97,3 +99,5 @@ test and the suites it touches. The documents were brought up to date after the 
 - A native speaker's read of the names in the nine newer scripts and of the strings added in 1.2.1.0 to 1.2.3.0.
 - The SMS link, the pay page and the WhatsApp check on a real phone.
 - The pay page in languages other than English.
+- Real speech. A stand-in plays the browser's speech service in the voice tests; nobody has spoken an entry on a
+  phone and on a laptop as a test, and the computer's own dictation was not tried on the owner's machine.

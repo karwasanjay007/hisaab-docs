@@ -6,9 +6,9 @@ PASS failure "not-allowed" says why | The microphone is blocked for this site. A
 PASS the microphone button is released after "not-allowed"
 PASS failure "service-not-allowed" says why | The microphone is blocked for this site. Allow it from the lock icon in the addr
 PASS the microphone button is released after "service-not-allowed"
-PASS failure "audio-capture" says why | No microphone was found on this device. Type the entry instead.
+PASS failure "audio-capture" says why | No microphone was found on this device. Type the entry instead. Tip: click the b
 PASS the microphone button is released after "audio-capture"
-PASS failure "no-speech" says why | Did not catch that. Try again or type it.
+PASS failure "no-speech" says why | Did not catch that. Try again or type it. Tip: click the box and press the Windo
 PASS the microphone button is released after "no-speech"
 PASS a refused language is tried again in Indian English and the entry is heard | te-IN,en-IN, amount 250
 PASS a speech service that stays silent is stopped after 9 seconds with a message | ఈ బ్రౌజర్ మాట గుర్తించే సేవ స్పందించలేదు. దీనికి ఇంటర్నెట్ క

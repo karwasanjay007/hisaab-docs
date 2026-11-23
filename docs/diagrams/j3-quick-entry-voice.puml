@@ -56,11 +56,25 @@ alt voice path
   end
   alt onerror
     SR -> App : error
-    App -> UI : "Did not catch that..." (no-speech)\nor "Could not use the microphone..."
+    App -> UI : no-speech: "Did not catch that..."\nnot-allowed: "The microphone is blocked..."\naudio-capture: "No microphone was found..."\nnetwork: "This browser's speech service did not answer..."\nother: "Could not use the microphone..."
+    note right of App : language-not-supported: tried once more in en-IN
   else onend with words heard
     SR -> App : onend
     App -> App : onQuick()
+  else v1.2.4: onend with no words and no error
+    SR -> App : onend
+    App -> UI : "Did not catch that. Try again or type it."
+  else nothing for 9 seconds
+    App -> SR : abort()
+    App -> UI : "This browser's speech service did not answer..."
   end
+  note right of App
+    v1.2.4: every failure line is followed by a tip.
+    Phone or tablet (user agent Android, iPhone, iPad, iPod):
+    quickKeyTip, the microphone key of the keyboard.
+    Anything else, a touch-screen laptop too:
+    quickPcTip, Windows key and H (on a Mac, the microphone key).
+  end note
 else typed path
   Owner -> UI : type in #quick-input, press Enter or the Fill button
   UI -> App : submit: onQuick()
