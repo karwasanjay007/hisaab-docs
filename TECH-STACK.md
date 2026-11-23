@@ -4,7 +4,7 @@
 | --- | --- |
 | Expected users | one shop owner per phone; the grader's automated browser |
 | Budget a month | $0 |
-| Last revised | 20 Nov 2026 |
+| Last revised | 23 Nov 2026 (rows for versions 1.1.0.0 and 1.2.0.0 added) |
 
 ## Constraints from the PRD
 
@@ -23,6 +23,12 @@
 | Hosting | Vercel, static, project `hisaab`, `*.vercel.app` | Free, HTTPS, deploy from GitHub | Netlify | $0 |
 | Code | Private GitHub repository karwasanjay007/hisaab | History and rollback | | $0 |
 | Tests | Playwright against the local and live site; an independent checker written from the brief only | Mirrors how the grader checks | Manual clicking | $0 |
+| Add-ons (1.1.0.0 and 1.2.0.0) | Plain script files beside the ledger: `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, each with its own style file where it needs one. They reach the ledger through one hook, `window.Hisaab`, at the end of `app.js` | The ledger and what the tester reads stay as they were; an add-on that fails cannot stop the ledger | Writing the features into `app.js`: every change would touch tested code | $0 |
+| Languages (1.2.0.0) | English, Hindi and Telugu built in; nine more as `i18n/<code>.json`, twelve languages in all, 216 text keys each, fetched when chosen | A visit in a built-in language fetches nothing extra | All twelve inside `app.js`: more weight on every visit | $0 |
+| Translation checker (1.2.0.0) | `tests/i18n-check.cjs`, a Node script: same keys, same placeholders, the right script, the words that stay in Latin | Finds a missing or broken text before the deploy | | $0 |
+| Offline | A service worker, `sw.js`, with the cache `hisaab-v4`. It holds the app shell and the add-on files, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
+
+Still no server, no account and no build step, in version 1.2.0.0 as in 1.0.0.0.
 
 **Total a month:** $0
 

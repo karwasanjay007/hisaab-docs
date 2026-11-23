@@ -24,6 +24,12 @@ differently, or not built, the text says so.
 | `offline.mjs "..."` | `tests/offline.mjs`, one online visit, then the same page offline |
 | `brief.mjs "..."` | `tests/brief.mjs`, every "Done when" line of `brief/spec-page.md` followed literally in a fresh browser (last live run: `tests/last-brief-live.txt`, ALL PASS) |
 | manual | No script covers it; checked by hand or by reading the code |
+| `profile.mjs "..."` | `tests/profile.mjs`, the shop profile and the balance history line, added in 1.1.0.0 (last live run: `evidence/last-profile-live.txt`, 36 checks) |
+| `shops.mjs "..."` | `tests/shops.mjs`, several shops on one phone, added in 1.1.0.0 (last live run: `evidence/last-shops-live.txt`, 25 checks) |
+| `addons-width.mjs "..."` | `tests/addons-width.mjs`, the add-ons at 320 px and 375 px in three languages, light and dark (last live run: `evidence/last-addons-width-live.txt`, 54 checks) |
+| `langs.mjs "..."` | `tests/langs.mjs`, twelve languages, note shortcuts and the overdue total, added in 1.2.0.0 (last live run: `evidence/last-langs-live.txt`, 25 checks) |
+| `i18n-check.cjs` | `tests/i18n-check.cjs`, a script that reads the language files without a browser (last run: `evidence/last-i18n-check.txt`, 11 languages, 216 keys each) |
+| `customer.mjs "..."` | `tests/customer.mjs`, the customer tools, added in 1.2.0.0 (last live run: `evidence/last-customer-live.txt`, 36 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -43,7 +49,12 @@ prints after it.
 | E6 | Shop data | 6 | 33 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is not in the PRD |
 | E7 | Languages, themes and layout | 5 | 18 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), success measures |
 | E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check" |
-| **Total** | | **42** | **189** | |
+| E9 | Shop profile and balance history (1.1.0.0) | 2 | 12 | V-1, V-2, C-1, C-2 (PRD, last section) |
+| E10 | Several shops (1.1.0.0) | 3 | 11 | V-3, C-1, C-2, C-3 (PRD, last section) |
+| E11 | More languages (1.2.0.0) | 2 | 8 | V-4, C-1, C-4 (PRD, last section) |
+| E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
+| E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
+| **Total** | | **55** | **244** | |
 
 ---
 
@@ -622,6 +633,211 @@ As the shop owner, I want an app that never stalls on a pop-up and works with a 
 
 ---
 
+## E9 Shop profile and balance history
+
+Goal: added in version 1.1.0.0. The owner can put a name, an address and a small logo on the shop, and can see
+how one customer's balance moved over time. Both live in an add-on file beside the ledger. Nothing shows until
+it is set, and the total, the rows and the import read the same as before.
+
+### E9.F1 Shop profile
+
+As the shop owner, I want my name, address and logo on the app and on the statement so that a customer knows who the statement is from.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E9.F1.1 | No profile has been set | The owner opens Shop settings | The profile form is there with a status message, and the header shows no logo | `profile.mjs "the profile form sits in Shop settings with a status message"`, `profile.mjs "no logo in the header until one is set"` |
+| AC-E9.F1.2 | The profile form | The owner types an owner name and an address and saves | "Profile saved." shows, both are still there after a reload, and the shop name in the header is untouched | `profile.mjs "saving says so ..."`, `profile.mjs "owner and address survive a reload"`, `profile.mjs "the shop name in the header is untouched ..."` |
+| AC-E9.F1.3 | The profile form | The owner chooses a picture as the logo | The logo shows in the header; a large picture is brought down to 96 px on its longer side and stored under 40 KB | `profile.mjs "a chosen PNG shows as the logo in the header"`, `profile.mjs "a 600 by 400 picture is brought down to 96 px on its longer side ..."`, `profile.mjs "the stored logo is a data URL under 40 KB ..."` |
+| AC-E9.F1.4 | A profile and a logo are set | The owner opens a customer's statement | The statement carries the owner and the address under the shop name, and shows the logo | `profile.mjs "the statement carries owner and address under the shop name"`, `profile.mjs "the statement shows the logo, keeps the shop name, and the print call was made once (stubbed)"` |
+| AC-E9.F1.5 | A profile and a logo are set | The owner exports the backup file and loads it again | The file carries owner, address and logo, and the load brings them back; a backup made without a profile has no profile fields | `profile.mjs "the backup file carries owner, address and logo"`, `profile.mjs "importing the backup brings the profile back, fields and header included"`, `profile.mjs "a backup without a profile has no profile fields"` |
+| AC-E9.F1.6 | A profile and a logo are set | The owner clears the profile | The header logo goes away | `profile.mjs "the profile can be cleared; the header logo goes away"` |
+| AC-E9.F1.7 | The sample shop | The page is read with the add-on and without it | The total and the customer rows are the same, and the add-on adds none of the attributes the tester reads | `profile.mjs "total outstanding is the same with and without profile.js ..."`, `profile.mjs "the customer rows are the same with and without profile.js ..."`, `profile.mjs "the add-on adds none of the reserved data attributes"` |
+| AC-E9.F1.8 | A phone 320 px or 375 px wide | A logo is set | There is no sideways scroll, and the header is no taller than before | `profile.mjs "the header is no taller with a logo at 320 px ..."`, `addons-width.mjs "320 px en light #/s/settings: no sideways scroll ..."` |
+
+Note: the printed statement was checked by its markup, not on paper.
+
+### E9.F2 Balance history line
+
+As the shop owner, I want a line of the balance after each entry so that I see at a glance whether a customer is paying down or building up.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E9.F2.1 | A customer with two or more entries (six in the test) | The customer page opens | The balance history shows in a card just before the entries | `profile.mjs "the balance chart shows for a customer with 6 entries"`, `profile.mjs "the chart card sits in the customer grid just before the entries"` |
+| AC-E9.F2.2 | A customer with one entry | The customer page opens | No balance history shows | `profile.mjs "no chart for a customer with one entry"` |
+| AC-E9.F2.3 | The balance history is drawn | The page is read | It is one inline SVG, with no canvas or image, and it carries a sentence for screen readers that follows the chosen language | `profile.mjs "the chart is one inline SVG: a line, the last point, labels, a viewBox; no canvas or image"`, `profile.mjs 'the chart is role="img" with a sentence label ...'`, `profile.mjs "the chart label follows the language ..."` |
+| AC-E9.F2.4 | A phone 320 px or 375 px wide | A customer page with the balance history opens | The line stays inside the screen and there is no sideways scroll | `profile.mjs "no sideways scroll on a customer page at 320 px, chart inside the screen ..."`, `addons-width.mjs "375 px customer page with the balance chart: no sideways scroll ..."` |
+
+---
+
+## E10 Several shops
+
+Goal: added in version 1.1.0.0. An owner with more than one shop keeps each ledger on the same phone and
+moves between them. The current shop stays under the ledger's own key, `hisaab.v1`, exactly as before. The
+other shops are parked under `hisaab.shops`, which is not written until a second shop is added. There is still
+no login and no server.
+
+### E10.F1 Add a shop and switch
+
+As the shop owner, I want to add a second shop and switch between shops so that each ledger stays separate.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E10.F1.1 | One shop | The app is used | Nothing is stored beyond the ledger's own key: `hisaab.shops` is not written, and the only shop has no Switch or Remove button | `shops.mjs "one shop: nothing is written under hisaab.shops"`, `shops.mjs "the only shop has no Switch or Remove button"` |
+| AC-E10.F1.2 | The Shops block in Shop settings | The owner types a name and presses Add shop | The new shop starts empty, is current and carries the name; the earlier shop is parked under `hisaab.shops` | `shops.mjs "a new shop starts empty ..."`, `shops.mjs "the new shop is current and named ..."`, `shops.mjs "hisaab.shops holds the parked shop, and the active one has data: null"` |
+| AC-E10.F1.3 | Two shops | The owner presses Switch on the first shop | The first shop comes back exactly, with its total | `shops.mjs "switching back restores the first shop exactly ..."` |
+| AC-E10.F1.4 | The second shop is current | A file is loaded through the plain import | It loads into the current shop only; the first shop is untouched | `shops.mjs "a plain import in the second shop loads into that shop ..."`, `shops.mjs "the first shop is untouched by that import ..."` |
+| AC-E10.F1.5 | Several shops | The page reloads | Every shop is still there and a parked shop still opens | `shops.mjs "everything survives a reload ..."`, `shops.mjs "the parked shop opens after a reload ..."` |
+| AC-E10.F1.6 | The sample shop | The page is read with the add-on and without it | The total and the customer rows are the same, the add-on uses none of the attributes the tester reads, and nothing reaches past the screen at 320 px | `shops.mjs "total and customer rows are the same with and without shops.js ..."`, `shops.mjs "none of the grader's attributes are used by the add-on"`, `shops.mjs "at 320 px nothing of the Shops card or the new import button reaches past the screen ..."` |
+
+### E10.F2 Remove a shop
+
+As the shop owner, I want removing a shop to take two presses so that one slip does not lose a ledger.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E10.F2.1 | A parked shop | The owner presses Remove once | The app asks again and the shop is still listed | `shops.mjs "the first press on Remove only asks again ..."` |
+| AC-E10.F2.2 | The app has asked again | The owner presses Remove a second time | The shop is removed from the list | `shops.mjs "the second press removes the shop ..."` |
+
+### E10.F3 Import as a new shop
+
+As the shop owner, I want to load a file as a new shop so that the shop I have open is not replaced.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E10.F3.1 | A valid shop file in the import box | The owner presses "Import as a new shop" | The current shop is parked and a new shop holds the file | `shops.mjs '"Import as a new shop" makes a third shop holding the file ...'` |
+| AC-E10.F3.2 | A file that cannot be read in the import box | The owner presses "Import as a new shop" | The app returns to the previous shop and no extra shop is left | `shops.mjs 'a broken file with "Import as a new shop" returns to the previous shop, no extra shop ...'` |
+| AC-E10.F3.3 | The file was refused | The owner reads the import card | The import's own error message stays on screen | `shops.mjs "the import's own error stays on screen ..."` |
+
+Note: a full storage during a switch, and a tab closed between the two writes of a switch, were traced in the
+code by the reviewer and not run.
+
+---
+
+## E11 More languages
+
+Goal: added in version 1.2.0.0. Nine more languages join English, Hindi and Telugu: Bengali, Marathi, Tamil,
+Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu, twelve in all. The first three stay built into the app.
+Each further language is one file, fetched only when it is chosen. The figures do not depend on the language.
+
+### E11.F1 Twelve languages
+
+As the shop owner, I want the app in my own language so that I can read every label.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E11.F1.1 | Any view | The owner opens the language menu | Twelve languages are listed, the first three as before | `langs.mjs "the language menu has twelve languages, the first three as before ..."` |
+| AC-E11.F1.2 | The app is in English | The page loads | A visit in English fetches no language file | `langs.mjs "a visit in English fetches no language file"` |
+| AC-E11.F1.3 | The sample shop | The owner chooses one of the nine new languages | Its file is fetched once; the labels show in its own script; the total, the rows and the reminder links are the same in every language; there is no sideways scroll at 375 px | `langs.mjs "bn: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px ..."` (one line for each of the nine), `langs.mjs "each language file was fetched once, when chosen ..."` |
+| AC-E11.F1.4 | A new language was chosen | The page reloads | The chosen language is still there | `langs.mjs "the chosen language is still there after a reload ..."` |
+| AC-E11.F1.5 | A language whose file cannot be fetched | The owner chooses it | The app falls back to English | `langs.mjs "a language whose file cannot be fetched falls back to English"` |
+| AC-E11.F1.6 | Several languages were used in turn | The owner goes back to Hindi, then to English | Hindi, built in, still works, and English reads exactly as at the start | `langs.mjs "Hindi, built in, still works after the others"`, `langs.mjs "back in English everything reads exactly as at the start"` |
+| AC-E11.F1.7 | The language files | The checking script runs | Each language has the same 216 keys, every text is in its own script, and none is left identical to English | `i18n-check.cjs` |
+
+Note: the nine new languages were written by the build's own translation pass and checked by the script. No
+native speaker has read them yet. Dates stay in the English short form in the nine new languages, and Urdu is
+laid out left to right like the rest of the page.
+
+### E11.F2 Quick-entry words in each language
+
+As the shop owner, I want quick entry to know my language's words for "gave" and "got" so that the example on the screen works as written.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E11.F2.1 | The app is in Bengali, Tamil, Urdu or Kannada (the four the test covers) | The owner types that language's own example, a name, 500 and its word for credit | The form fills with the customer, 500 and credit | `langs.mjs 'bn: its own example "Sunita 500 ..." fills the form: Sunita Devi, 500, credit ...'` (one line each for bn, ta, ur and kn) |
+
+Note: voice entry in the nine new languages uses the browser's English speech service. A name spoken in another
+script is not matched to a customer saved in Latin letters.
+
+---
+
+## E12 Customer tools
+
+Goal: added in version 1.2.0.0. A block after the entries on the customer page, "More for this customer",
+gives the owner the customer's totals, a way to call or message them, a way to correct a wrong phone number and
+a way to delete a customer. It replaces the earlier notes in this document that a customer could not be deleted
+and a phone number could not be changed. The block is on the customer page only.
+
+### E12.F1 Totals and days since the last payment
+
+As the shop owner, I want a customer's totals and the days since they last paid so that I know where the account stands.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E12.F1.1 | Any shop | The owner opens the home view, then a customer page | The block is not on the home view; on the customer page it is a labelled card right after the entries | `customer.mjs "nothing of the add-on shows on the home view"`, `customer.mjs "it is a labelled card in the customer grid right after the entries"` |
+| AC-E12.F1.2 | The sample shop | A customer page opens | Total given on credit and total received are the sums of that customer's entries | `customer.mjs "total given on credit is the sum from the sample file ..."`, `customer.mjs "total received is the sum from the sample file ..."` |
+| AC-E12.F1.3 | A customer who has paid before, and a date in the page address | A customer page opens | The days since the last payment are counted to that date | `customer.mjs "days since the last payment, counted to 2026-11-15 ..."` |
+
+Note: a customer with no payment shows "No payment yet" (not covered by a script).
+
+### E12.F2 Call and WhatsApp chat links
+
+As the shop owner, I want to call or message a customer from their page so that I do not have to look up the number.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E12.F2.1 | A customer page | The owner taps Call | The phone app opens with the customer's number | `customer.mjs "the Call link carries the number ..."` |
+| AC-E12.F2.2 | A customer page | The owner taps WhatsApp chat | A chat opens with that number and no message | `customer.mjs "the chat link is wa.me with the number, no message, opens apart ..."` |
+| AC-E12.F2.3 | Any shop | The page is read with the add-on | The chat link is not a reminder link: the count of reminder links and the total are the same as before | `customer.mjs "home view: same number of a[data-remind] and the same total as before the script ..."`, `customer.mjs "customer page: as many a[data-remind] as before the script ..."`, `customer.mjs "the block has none of the reserved data attributes"` |
+
+### E12.F3 Change a customer's phone number
+
+As the shop owner, I want to correct a wrong phone number so that reminders reach the right person.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E12.F3.1 | A customer page | The owner presses the change number button | The form was closed until then; it opens with a phone field and a status message | `customer.mjs "the phone form is closed until asked for"`, `customer.mjs "the button opens a tel field with a status message"` |
+| AC-E12.F3.2 | The change number form | The owner saves a number that is not 10 digits | "Enter a 10-digit mobile number." shows and nothing changes | `customer.mjs "a short number is refused ..."` |
+| AC-E12.F3.3 | The change number form | The owner saves a phone number another customer has | It is refused with "Another customer already has this number." and nothing is moved | `customer.mjs "the number of another customer is refused, nothing moved ..."` |
+| AC-E12.F3.4 | The change number form | The owner saves a new 10 digit number | The customer and every entry move to the new number, in the stored shop too; the page address follows; "Phone number changed." shows | `customer.mjs "a good number changes the address ..."`, `customer.mjs "the customer and all 6 entries moved to the new number, in the stored shop too ..."`, `customer.mjs "it says so, and the block follows the new number ..."` |
+| AC-E12.F3.5 | A phone number was changed | The owner opens the home view | The total outstanding is the same as before | `customer.mjs "the total on the home view is the same after the phone change ..."` |
+| AC-E12.F3.6 | An entry was just deleted or edited, so the ledger's own Undo is on offer | The owner changes the customer's number | The ledger's own Undo is cleared, so an entry cannot come back under the old number | manual |
+
+### E12.F4 Delete a customer with Undo
+
+As the shop owner, I want to delete a customer who should not be in the ledger, and to take it back if I slipped.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E12.F4.1 | A customer page | The owner presses Delete customer once | The app asks for a second press and names the customer; nothing is removed | `customer.mjs "the first press only asks again ..."`, `customer.mjs "the page heading is untouched ..."` |
+| AC-E12.F4.2 | The app has asked again | The owner presses a second time | The customer, the entries and the row are removed, the overview opens, and the total drops by that customer's balance | `customer.mjs "the second press removes the customer, the entries and the row, and goes home"`, `customer.mjs "the total drops by that customer's balance ..."` |
+| AC-E12.F4.3 | A customer was just deleted | The overview shows | A bar says who was deleted and offers Undo, for eight seconds | `customer.mjs "a status bar says who was deleted and offers Undo ..."` (the eight seconds: manual) |
+| AC-E12.F4.4 | The Undo bar is showing | The owner presses Undo | Undo puts the customer and the same entries back, in the stored shop too, and the row and the total return | `customer.mjs "Undo puts the customer and the same 6 entries back, in the stored shop too"`, `customer.mjs "the row and the total are back ..."` |
+| AC-E12.F4.5 | A customer page | The owner taps Delete twice in quick succession | The two taps count as one press, so the customer is not deleted | manual |
+| AC-E12.F4.6 | A full test run of the block | Every action is taken | No confirm, alert or prompt dialog opens and no page error is logged | `customer.mjs "no confirm, alert or prompt was used"`, `customer.mjs "no page errors"` |
+| AC-E12.F4.7 | A phone 320 px wide, light or dark | The block shows with the form open | There is no sideways scroll and every control is at least 44 px tall | `customer.mjs "no sideways scroll on the customer page at 320 px, form open and the long delete label showing ..."`, `customer.mjs "every control in the block is at least 44 px tall ..."`, `customer.mjs "the block also shows in the dark theme at 320 px"` |
+
+Note: after the eight seconds, a reload or a switch to another shop, the deletion stands. After Undo the
+entries can come back in a slightly different order; none is lost.
+
+---
+
+## E13 Note shortcuts and overdue total
+
+Goal: added in version 1.2.0.0. Small helps on screens the owner already uses: one tap for the common notes,
+one line for the money that has waited longest, and the date the figures are for. Each is drawn beside what
+was there; nothing new is stored.
+
+### E13.F1 Note shortcuts
+
+As the shop owner, I want the common notes one tap away so that I type less when recording an entry.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E13.F1.1 | The entry form | The page is read | Six shortcuts sit under the note field: groceries, milk, rice, oil, paid on UPI and cash, in the chosen language | `langs.mjs "six note shortcuts under the note field ..."` |
+| AC-E13.F1.2 | The entry form | The owner taps one shortcut, then another | The first fills the note; the second is added after a comma | `langs.mjs "a shortcut fills the note, a second one is added after a comma ..."` |
+| AC-E13.F1.3 | The note is close to its longest length | The owner taps a shortcut | The note stays within the field's length, and the entry is saved only by the same button as before | manual |
+
+### E13.F2 Overdue total and the date of the figures
+
+As the shop owner, I want the total unpaid for 30 days or more, and the date the figures are for, so that I know how much to chase and how fresh the numbers are.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E13.F2.1 | A shop with overdue customers | The overdue list shows | A line above it gives the amount unpaid for 30 days or more and the number of customers | `langs.mjs "the overdue line gives the unpaid total and the number of customers ..."` |
+| AC-E13.F2.2 | Any shop | The overview shows | The date the figures are for shows under the total | manual |
+
+---
+
 ## Traceability: PRD requirement to features
 
 | PRD requirement | What it says, in short | Features |
@@ -658,6 +874,7 @@ As the shop owner, I want an app that never stalls on a pop-up and works with a 
 | Brief "How they check" selectors | | E8.F3 |
 | Projects page "Done when" lines (`brief/spec-page.md`) | Followed literally by `tests/brief.mjs` in a fresh browser | E1.F1, E1.F3, E1.F7, E2.F1, E2.F3, E3.F1, E4.F2, E6.F1, E6.F5, E7.F4, E8.F5 |
 | Not in the PRD (added at final review) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
+| V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
 | Not in the PRD (added after the final review) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

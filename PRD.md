@@ -6,6 +6,7 @@
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
 | Last revised | 20 Nov 2026 |
+| Additions | Versions 1.1.0.0 and 1.2.0.0 (22 to 23 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
 
@@ -103,3 +104,47 @@ Focus:
 | 20 Nov 2026 | First version, from the FWAI brief |
 | 20 Nov 2026 | D-3 and A-1 revised: total outstanding is the sum of all balances, with the owed figure in brackets when some customers are in advance |
 | 20 Nov 2026 | D-3: the owed figure moved out of the total into a note just below it, so the total shows one figure |
+| 23 Nov 2026 | Section added for the additions of versions 1.1.0.0 and 1.2.0.0 |
+
+## Version 1.1.0.0 and 1.2.0.0: additions (22 to 23 Nov 2026)
+
+Why they were added. After the first release the app was compared with other builds of the same batch. Only
+the screens of those builds were read. What they showed that Hisaab did not have was added, in two steps:
+three additions in 1.1.0.0 and seven in 1.2.0.0. The sections above are unchanged and still describe
+version 1.0.0.0.
+
+Who they are for. Every addition is for the shop owner. Nothing changes for the customer, who still receives
+the same reminder with the same amount.
+
+Requirements:
+
+| ID | Version | Feature | Requirement |
+| --- | --- | --- | --- |
+| V-1 | 1.1.0.0 | Shop profile | The owner can save an owner name, an address and a small logo. They show in the header and on the printed statement and travel in the backup file. Nothing shows until they are set |
+| V-2 | 1.1.0.0 | Balance history line | On a customer page with two or more entries, a line shows the balance after each entry, with a sentence for screen readers |
+| V-3 | 1.1.0.0 | More than one shop on the same phone | The owner can add a shop, switch between shops, remove one in two presses, and load a file as a new shop. Each shop keeps its own ledger |
+| V-4 | 1.2.0.0 | Nine more languages | Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu join English, Hindi and Telugu: twelve in all. Quick entry knows each language's words for "gave" and "got" |
+| V-5 | 1.2.0.0 | Customer page totals and days since the last payment | The customer page shows the total given on credit, the total received and the days since the last payment |
+| V-6 | 1.2.0.0 | Call and WhatsApp chat links | From a customer page the owner can call the customer or open a WhatsApp chat with no message. The reminder with the name and the balance stays a separate button |
+| V-7 | 1.2.0.0 | Change a customer's phone number | The owner can give a customer a new 10 digit number. The customer and every entry move to it. A number another customer has is refused (F-2) |
+| V-8 | 1.2.0.0 | Delete a customer with Undo | Deleting takes two presses and removes the customer and their entries. Undo is offered straight away and puts the same entries back (as D-4 does for an entry) |
+| V-9 | 1.2.0.0 | Note shortcuts | Six buttons under the note field fill in a common note: groceries, milk, rice, oil, paid on UPI, cash. The entry is saved by the same button as before |
+| V-10 | 1.2.0.0 | Total unpaid for 30 days or more, and the date of the figures | A line above the overdue list gives the amount unpaid for 30 days or more and the number of customers. The date the figures are for shows under the total (F-4) |
+
+Constraints:
+
+| ID | Constraint |
+| --- | --- |
+| C-1 | Every addition is an add-on file beside the ledger. The nine "must do" items and the bonus items of the brief behave as before, and the import the tester uses is unchanged |
+| C-2 | An addition shows only where it is used or once it is set. A shop with no profile stores nothing extra |
+| C-3 | With one shop nothing is stored beyond the ledger's own key. The plain import, the sample and the exports act on the current shop only |
+| C-4 | English, Hindi and Telugu stay built in. A further language is fetched only when chosen. The total, the rows and the reminder links are the same in every language |
+
+Out of scope for these versions:
+
+| Item | Why | Where it goes instead |
+| --- | --- | --- |
+| A server or an account | D-1 still holds: everything stays in the browser, on the owner's phone | Not planned |
+| Staff logins | Several shops on one phone is now in (V-3, which revises the row in section 2.2); logins need an account | Phase 3 |
+| Translation review by a native speaker | The nine new languages were checked by a script for keys, placeholders and script, not read by a native speaker | Still to come |
+| Voice entry in the nine new languages | The browser's speech service is used in English | Not planned |

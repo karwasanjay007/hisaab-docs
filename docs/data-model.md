@@ -19,14 +19,16 @@ Field-by-field rules: [schema/stored-state.schema.json](schema/stored-state.sche
 
 ### Keys and relationships
 
-- A customer is identified by its phone. There is no separate customer id, and the phone cannot be
-  changed after the customer is created (the edit form changes only the names).
+- A customer is identified by its phone. There is no separate customer id. The edit form changes only
+  the names. Since version 1.2.0.0 the customer page can change the phone, which rewrites `phone` on the
+  customer and on every entry of that customer.
 - An entry belongs to one customer through `entry.phone`. A customer has zero or more entries.
 - Phones are unique within a shop: the add-customer form refuses a phone that exists, and import keeps
   the first customer with a given phone. Both accept any 10 digits; the add-customer form refuses input
   with anything other than digits, spaces and + ( ) - ., and adds a number that does not start with 6, 7,
   8 or 9 with a warning that WhatsApp may not reach it.
-- Nothing deletes a customer, so no entry is left without its customer through the app. If a stored
+- Since version 1.2.0.0 a customer can be deleted. The customer and all their entries go together, so
+  no entry is left without its customer through the app. If a stored
   document were edited by hand to hold such an entry, its amount would still count in the totals
   (`balances()` adds a zero balance for any phone it meets) but it would not be listed as a customer.
 - The app stores no timestamps, no created or updated dates, and no version number inside the document.
@@ -73,14 +75,17 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | Key | Value | Written when | Read when |
 | --- | --- | --- | --- |
 | `hisaab.v1` | the whole shop as JSON ([stored-state.schema.json](schema/stored-state.schema.json)) | after every change: add or edit customer, add, edit or delete entry, undo, import, settings, digit style | on start, and when another tab changes it (the `storage` event reloads the shop in this tab) |
-| `hisaab.lang` | `en`, `hi` or `te` | the language menu (`#lang`) is changed | on start; an unknown value falls back to `en` |
+| `hisaab.lang` | one of twelve language codes: `en`, `hi`, `te`, `bn`, `mr`, `ta`, `gu`, `kn`, `ml`, `pa`, `or` or `ur` | the language menu (`#lang`) is changed | on start; an unknown value falls back to `en` |
 | `hisaab.theme` | `light` or `dark` | the theme button is pressed | by a small script in the `<head>` of `index.html` before the page paints; when absent the device setting decides |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
 cache `hisaab-v4` so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
-`manifest.webmanifest`), so one online visit is enough; on activate it deletes older caches such as
-`hisaab-v1`. At run time it fetches from the network first and keeps a copy of the app's own files, the
+`manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
+`profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
+`extras.css`), so one online visit is enough; on activate it deletes older caches such as
+`hisaab-v1`. At run time it fetches from the network first and keeps a copy of the app's own files
+(a language file `i18n/<code>.json` among them, the first time it is fetched), the
 `qrcode-generator` script from cdnjs and Google Fonts. Tesseract.js and its language data (jsDelivr) are
 not cached. It never caches the shop data, which lives only in `localStorage`.
 
@@ -152,3 +157,20 @@ Other schema files: [schema/quick-entry-result.schema.json](schema/quick-entry-r
   once a second shop is added and is removed again when one shop is left.
 
 The diagram `diagrams/data-model.svg` shows both.
+
+## Added in version 1.2.0.0 (22 to 23 Nov 2026)
+
+Nothing new is stored. No key and no field was added.
+
+- **`hisaab.lang`, more values:** the existing key can now hold one of twelve codes. English, Hindi and Telugu
+  are built into the app. Each of the other nine is one file, `i18n/<code>.json`, fetched only when that language
+  is chosen.
+- **Language files and the service worker:** a language file is kept by the service worker after its first fetch,
+  so the chosen language also opens without signal. It is text for the screen only and holds no shop data.
+- **Changing a customer's phone number:** the customer page can now do this. It rewrites `phone` on the customer
+  and on every entry of that customer, so the entries stay with their customer. The ledger's own Undo is cleared
+  at that moment, so an entry cannot come back under the old number.
+- **Deleting a customer:** this removes the customer and all their entries. It takes two presses. Undo restores
+  both the customer and the entries, and is offered for eight seconds.
+- **Figures that are drawn, not stored:** the customer page totals, the days since the last payment, the total
+  unpaid for 30 days or more and the date the figures are for are worked out from the entries each time.

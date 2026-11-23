@@ -61,3 +61,39 @@ bonus; phone overview shows Customers and Overdue first, nothing hidden. Local c
 - Reading the amount from a real UPI screenshot is tested only on generated images.
 - Found late by reading the page word for word: the first-visit sample would have failed must-do 1 and 2.
   The lesson is in the kickoff kit (capture the page verbatim, test every "Done when" literally).
+
+## After the baseline: versions 1.1.0.0 and 1.2.0.0 (22 to 23 Nov 2026)
+
+Every line of the specification above still holds on the live site after the additions. The ids, attributes,
+totals and the import that the tester uses are the same as in 1.0.0.0. No earlier test was edited. The earlier
+suites were run again on the live site after the 1.2.0.0 deploy, and all pass.
+
+| What is checked | Latest result | Evidence |
+| --- | --- | --- |
+| The nine must-do items, word for word | ALL PASS | `evidence/last-brief-live.txt` |
+| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242) | 27 pass, 0 fail; 100 out of 100 (hidden data 60 of 60, bonus 30, phone 5, light and dark 5) | `evidence/last-run-live.txt` |
+| Hidden-data style checks on many shops | ALL PASS on 61 shops | `evidence/last-sweep-live.txt` |
+| Import on a phone | ALL PASS (12 checks) | `evidence/last-phone-import-live.txt` |
+| Phone width with the add-ons: 320 and 375 px, three languages, light and dark | ALL PASS (54 checks) | `evidence/last-addons-width-live.txt` |
+| Light and dark contrast | ALL PASS | `evidence/last-contrast-live.txt` |
+| Other earlier suites: final, gaps, critic, navigation, quick entry, voice, offline | ALL PASS | `evidence/last-final-live.txt`, `evidence/last-gaps-live.txt`, `evidence/last-critic-live.txt`, `evidence/last-nav-live.txt`, `evidence/last-quick-live.txt`, `evidence/last-voice-live.txt`, `evidence/last-offline-live.txt` |
+
+That is still our own checker, not the graders'.
+
+### Beyond the specification
+
+None of these is asked for by the brief. Each one lives in an add-on file beside the ledger.
+
+| Feature | Version | How it is kept apart from what the tester reads | Evidence |
+| --- | --- | --- | --- |
+| Shop profile: owner, address, logo | 1.1.0.0 | Shown only when set. A plain import into a shop with no profile writes nothing extra to storage | `evidence/last-profile-live.txt` |
+| Balance history line | 1.1.0.0 | Only on the customer page, for a customer with two or more entries. It uses none of the attributes the tester reads | `evidence/last-profile-live.txt` |
+| More than one shop on the same phone | 1.1.0.0 | The current shop stays under `hisaab.v1` as before. Other shops are parked under `hisaab.shops`, which is not written until a second shop is added. The plain import, the sample and the exports act on the current shop only | `evidence/last-shops-live.txt` |
+| Nine more languages, twelve in all | 1.2.0.0 | English, Hindi and Telugu stay built in. A further language is one file, fetched only when chosen. The figures, rows and reminder links are the same in every language | `evidence/last-langs-live.txt`, `evidence/last-i18n-check.txt` |
+| Customer page tools: totals, days since the last payment, Call and WhatsApp chat links, change phone number, delete customer with Undo | 1.2.0.0 | A block after the entries on the customer page only. The chat link is not a reminder link, so the count of reminder links is unchanged | `evidence/last-customer-live.txt` |
+| Note shortcuts under the note field | 1.2.0.0 | They only fill the note field. The entry is saved by the same button | `evidence/last-langs-live.txt` |
+| Total unpaid for 30 days or more, and the date the figures are for | 1.2.0.0 | Drawn beside the existing figures. Nothing is stored | `evidence/last-langs-live.txt` |
+
+Not covered by a run: storage-full during a shop switch, and a tab closed between the two writes of a switch
+(both traced in the code by the reviewer). The printed statement was checked by its markup, not on paper. No
+native speaker has read the nine new languages.
