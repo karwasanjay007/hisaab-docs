@@ -61,4 +61,4 @@ PASS b28 a second shop imported after a first; one phone (9000000481) is in bot
 PASS b29 text that is not valid JSON (trailing comma, single quotes, a comment,
 PASS b30 "customers" is an object keyed by phone instead of a list (valid JSON,
 ALL PASS (30 shops)
-ALL PASS (61 shops, live, run in two halves, version 1.2.0.0)
+ALL PASS (61 shops, live, run in two halves, version 1.2.1.0)

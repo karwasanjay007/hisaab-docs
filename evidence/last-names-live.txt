@@ -1,0 +1,42 @@
+PASS English shows no bracket | 8 rows
+PASS Hindi: Sunita Devi reads as before | Sunita Devi (सुनीता देवी)
+PASS Hindi: the same total, rows and reminder links
+PASS Telugu: a Telugu-script bracket as before | Sunita Devi (సునీత దేవి)
+PASS Telugu: the same total, rows and reminder links
+PASS bn: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS bn: the same total, rows and reminder links | total 11820
+PASS bn: the customer page heading shows the name in its script | Sunita Devi (সুনীতা দেবী)
+PASS mr: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS mr: the same total, rows and reminder links | total 11820
+PASS mr: the customer page heading shows the name in its script | Sunita Devi (सुनीता देवी)
+PASS ta: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS ta: the same total, rows and reminder links | total 11820
+PASS ta: the customer page heading shows the name in its script | Sunita Devi (சுனீதா தேவி)
+PASS gu: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS gu: the same total, rows and reminder links | total 11820
+PASS gu: the customer page heading shows the name in its script | Sunita Devi (સુનીતા દેવી)
+PASS kn: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS kn: the same total, rows and reminder links | total 11820
+PASS kn: the customer page heading shows the name in its script | Sunita Devi (ಸುನೀತಾ ದೇವಿ)
+PASS ml: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS ml: the same total, rows and reminder links | total 11820
+PASS ml: the customer page heading shows the name in its script | Sunita Devi (സുനീതാ ദേവി)
+PASS pa: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS pa: the same total, rows and reminder links | total 11820
+PASS pa: the customer page heading shows the name in its script | Sunita Devi (ਸੁਨੀਤਾ ਦੇਵੀ)
+PASS or: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS or: the same total, rows and reminder links | total 11820
+PASS or: the customer page heading shows the name in its script | Sunita Devi (ସୁନୀତା ଦେବୀ)
+PASS ur: every name shows a bracket in its own script, no Latin, no unassigned character | 8 rows
+PASS ur: the same total, rows and reminder links | total 11820
+PASS ur: the customer page heading shows the name in its script | Sunita Devi (سنیتا دیوی)
+INFO Sunita Devi | bn সুনীতা দেবী | mr सुनीता देवी | ta சுனீதா தேவி | gu સુનીતા દેવી | kn ಸುನೀತಾ ದೇವಿ | ml സുനീതാ ദേവി | pa ਸੁਨੀਤਾ ਦੇਵੀ | or ସୁନୀତା ଦେବୀ | ur سنیتا دیوی
+INFO Fatima Begum | bn ফাতিমা বেগম | mr फ़ातिमा बेगम | ta ஃபாதிமா பேகம் | gu ફાતિમા બેગમ | kn ಫಾತಿಮಾ ಬೇಗಮ್ | ml ഫാതിമാ ബേഗമ് | pa ਫ਼ਾਤਿਮਾ ਬੇਗਮ | or ଫାତିମା ବେଗମ | ur فاطمہ بیگم
+INFO Mohd Irfan | bn মোহম্মদ ইরফান | mr मोहम्मद इरफ़ान | ta மோஹம்மத் இரஃபான் | gu મોહમ્મદ ઇરફાન | kn ಮೋಹಮ್ಮದ್ ಇರಫಾನ್ | ml മോഹമ്മദ് ഇരഫാൻ | pa ਮੋਹਮ੍ਮਦ ਇਰਫ਼ਾਨ | or ମୋହମ୍ମଦ ଇରଫାନ | ur محمد عرفان
+INFO Anjali Reddy | bn অংজলি রেড্ডী | mr अंजलि रेड्डी | ta அஞ்ஜலி ரேட்டி | gu અંજલિ રેડ્ડી | kn ಅಂಜಲಿ ರೇಡ್ಡಿ | ml അംജലി രേഡ്ഡി | pa ਅੰਜਲੀ ਰੇਡ੍ਡੀ | or ଅଂଜଲି ରେଡ୍ଡୀ | ur انجلی ریڈی
+INFO Ravi Kumar | bn রবি কুমার | mr रवि कुमार | ta ரவி குமார் | gu રવિ કુમાર | kn ರವಿ ಕುಮಾರ್ | ml രവി കുമാർ | pa ਰਵੀ ਕੁਮਾਰ | or ରବି କୁମାର | ur روی کمار
+INFO Kavitha S | bn কবিতা এস | mr कविता एस | ta கவிதா ஏஸ | gu કવિતા એસ | kn ಕವಿತಾ ಏಸ | ml കവിതാ ഏസ | pa ਕਵਿਤਾ ਏਸ | or କବିତା ଏସ | ur کویتا ایس
+INFO Venkat Naidu | bn বেংকট নায়ডূ | mr वेंकट नायडू | ta வேங்கட் நாயடூ | gu વેંકટ નાયડૂ | kn ವೇಂಕಟ್ ನಾಯಡೂ | ml വേംകട് നായഡൂ | pa ਵੇਂਕਟ ਨਾਯਡੂ | or ବେଂକଟ ନାୟଡୂ | ur وینکٹ نائیڈو
+INFO Prakash Rao | bn প্রকাশ রাও | mr प्रकाश राव | ta ப்ரகாஷ் ராவ | gu પ્રકાશ રાવ | kn ಪ್ರಕಾಶ್ ರಾವ | ml പ്രകാശ് രാവ | pa ਪ੍ਰਕਾਸ਼ ਰਾਵ | or ପ୍ରକାଶ ରାଓ | ur پرکاش راؤ
+PASS no page errors 
+ALL PASS (33 checks)

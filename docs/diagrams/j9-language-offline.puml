@@ -74,6 +74,7 @@ alt the file arrives (from the network, or from the cache after the first fetch)
   App -> App : Hisaab.addLanguage(code, words); Hisaab.setLang(code)
   App -> App : Hisaab.quickWords: quick entry learns that language's words\nfor "gave" and "got" (J3)
   App -> UI : render(): the page is drawn again in the chosen language
+  App -> UI : v1.2.1: names with that language's script in brackets,\nfrom Hisaab.nameIn (add-on names.js)
 else the file cannot be fetched (no signal and never used before)
   SW --> App : no file
   App -> UI : fall back to English and say so
@@ -81,16 +82,16 @@ end
 note right of App : v1.2: the figures, rows and reminder links are the same in every language;\non the next visit langs.js reads 'hisaab.lang' and fetches the file again
 == First online visit: install and activate ==
 App -> SW : register('sw.js') after the load event
-SW -> SW : install: skipWaiting(); caches.open('hisaab-v4').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest, and since v1.1 profile.css, profile.js,\nshops.css, shops.js, and since v1.2 extras.css, extras.js,\ncustomer.css, customer.js, langs.js)
-SW -> SW : activate: delete every cache except 'hisaab-v4'; clients.claim()
+SW -> SW : install: skipWaiting(); caches.open('hisaab-v8').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest, and since v1.1 profile.css, profile.js,\nshops.css, shops.js, and since v1.2 extras.css, extras.js,\ncustomer.css, customer.js, langs.js, and since v1.2.1 to v1.2.3\nnames.js, sendways.js, wacheck.js, polish.css, pay.html)
+SW -> SW : activate: delete every cache except 'hisaab-v8'; clients.claim()
 == Online visits keep the cache fresh ==
 UI -> SW : GET for a same-origin file, the qrcode-generator script\nfrom cdnjs, or Google Fonts
 SW -> SW : fetch(request) from the network first
 alt network answers ok (or an opaque cross-origin reply)
-  SW -> SW : caches.open('hisaab-v4').put(request, copy)
+  SW -> SW : caches.open('hisaab-v8').put(request, copy)
   SW --> UI : fresh response
 end
-note right of SW : v1.2: i18n/<code>.json is a same-origin file, so it is kept in 'hisaab-v4'\nafter the first fetch and the language works with no signal afterwards
+note right of SW : v1.2: i18n/<code>.json is a same-origin file, so it is kept in 'hisaab-v8'\nafter the first fetch and the language works with no signal afterwards
 note right of SW : only GET; other origins, such as Tesseract.js\nfrom jsDelivr, are not handled or cached
 == Reopen with no signal ==
 Owner -> UI : open the app, no network

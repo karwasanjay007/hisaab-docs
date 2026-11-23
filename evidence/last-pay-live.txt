@@ -1,0 +1,24 @@
+INFO the message:
+     Namaste Mohd Irfan, this is a reminder from Lakshmi Provision Store (fictional). Your balance is Rs 2,810.
+     
+     UPI pay link: https://hisaab-hazel.vercel.app/pay.html#pn=Lakshmi%20Provision%20Store%20%28fictional%29&tn=Hisaab%20Mohd%20Irfan&pa=hisaab.demo%40upi&am=2810.00
+     
+     Pay by UPI: upi://pay?pa=hisaab.demo%40upi&am=2810.00&pn=Lakshmi%20Provision%20Store%20(fictional)&cu=INR&tn=Hisaab%20Mohd%20Irfan
+     
+     Thank you.
+PASS the reminder is still a wa.me link to the customer
+PASS it still names the customer and the balance in rupees
+PASS the upi://pay link with the UPI ID and the balance is still in the message | upi://pay?pa=hisaab.demo%40upi&am=2810.00&pn=Lakshmi%20Provi
+PASS a pay link on the app's own address comes before it | https://hisaab-hazel.vercel.app/pay.html#pn=Lakshmi%20Provision%20Store%20%28fictional%29&
+PASS the tappable link stands first
+PASS the pay link has no bracket or other character that would end the link early, and ends in a digit
+PASS the details ride after "#", so they are never sent to a server
+PASS all 8 reminders carry both links | 8
+PASS the pay page shows the shop, the amount and the UPI ID | Lakshmi Provision Store (fictional) | ₹2,810 | hisaab.demo@upi
+PASS its button opens the same upi:// link as the message
+PASS the pay page fits a 375 px phone | 375
+PASS no request carries the shop, the UPI ID or the amount
+PASS a broken link shows "not complete" and nothing from the link is run
+PASS a shop name with markup is shown as text
+PASS no page errors 
+ALL PASS (15 checks)

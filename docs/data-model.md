@@ -77,13 +77,15 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.v1` | the whole shop as JSON ([stored-state.schema.json](schema/stored-state.schema.json)) | after every change: add or edit customer, add, edit or delete entry, undo, import, settings, digit style | on start, and when another tab changes it (the `storage` event reloads the shop in this tab) |
 | `hisaab.lang` | one of twelve language codes: `en`, `hi`, `te`, `bn`, `mr`, `ta`, `gu`, `kn`, `ml`, `pa`, `or` or `ur` | the language menu (`#lang`) is changed | on start; an unknown value falls back to `en` |
 | `hisaab.theme` | `light` or `dark` | the theme button is pressed | by a small script in the `<head>` of `index.html` before the page paints; when absent the device setting decides |
+| `hisaab.wa` | (1.2.3.0) a map from the 10-digit number to `{ s: "ok" or "no", d: date }`, the owner's answer to the WhatsApp check | the owner answers after a hello message to a customer added by hand | when a customer is added; not part of a shop file or a backup |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v4` so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v8` (version 1.2.3.1) so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
 `profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
-`extras.css`), so one online visit is enough; on activate it deletes older caches such as
+`extras.css`, and since 1.2.1.0 to 1.2.3.0 `names.js`, `sendways.js`, `wacheck.js`, `polish.css` and
+`pay.html`), so one online visit is enough; on activate it deletes older caches such as
 `hisaab-v1`. At run time it fetches from the network first and keeps a copy of the app's own files
 (a language file `i18n/<code>.json` among them, the first time it is fetched), the
 `qrcode-generator` script from cdnjs and Google Fonts. Tesseract.js and its language data (jsDelivr) are
@@ -174,3 +176,22 @@ Nothing new is stored. No key and no field was added.
   both the customer and the entries, and is offered for eight seconds.
 - **Figures that are drawn, not stored:** the customer page totals, the days since the last payment, the total
   unpaid for 30 days or more and the date the figures are for are worked out from the entries each time.
+
+## Added in version 1.2.1.0 to 1.2.3.0 (23 Nov 2026)
+
+One new key. Nothing in the shop under `hisaab.v1` changed.
+
+- **A new key, `hisaab.wa` (1.2.3.0):** a map from the 10-digit number to `{ s, d }`. `s` is `"ok"` or `"no"`,
+  the owner's answer to the question whether the number is on WhatsApp; `d` is the date of the answer
+  (`YYYY-MM-DD`). It is written after the owner answers, once a hello message was offered to a customer added
+  by hand.
+- **Per browser, keyed by number:** `hisaab.wa` is keyed by the number, not by the shop, so one answer serves
+  every shop on the phone. It is not part of a shop file, an export or a backup.
+- **Names in the nine newer scripts are computed, not stored:** `names.js` builds them each time from the
+  Devanagari spelling (`name_hi`, or the built-in transliteration). Only `name_hi` and `name_te` are stored.
+- **The pay link:** the reminder carries `pay.html#...` with the shop name, the UPI ID, the amount and the
+  customer's name after `#`. That part of an address is never sent to a server. The page reads it, shows it
+  and opens the `upi://pay` link.
+- **Cache:** `hisaab-v5` at 1.2.1.0, `hisaab-v6` at 1.2.2.0, `hisaab-v7` at 1.2.3.0, `hisaab-v8` at 1.2.3.1. The precache list also
+  names `names.js`, `sendways.js`, `wacheck.js`, `polish.css` and `pay.html`. Each language file has 233 text
+  keys.

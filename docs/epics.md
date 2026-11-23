@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.0.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.3.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 23 Nov 2026 (version 1.2.0.0) |
+| Last revised | 23 Nov 2026 (version 1.2.3.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -30,6 +30,11 @@ differently, or not built, the text says so.
 | `langs.mjs "..."` | `tests/langs.mjs`, twelve languages, note shortcuts and the overdue total, added in 1.2.0.0 (last live run: `evidence/last-langs-live.txt`, 25 checks) |
 | `i18n-check.cjs` | `tests/i18n-check.cjs`, a script that reads the language files without a browser (last run: `evidence/last-i18n-check.txt`, 11 languages, 216 keys each) |
 | `customer.mjs "..."` | `tests/customer.mjs`, the customer tools, added in 1.2.0.0 (last live run: `evidence/last-customer-live.txt`, 36 checks) |
+| `layout.mjs "..."` | `tests/layout.mjs`, the layout in 12 languages and 5 widths, overview and customer page (120 screens), added in 1.2.1.0 (last live run: `evidence/last-layout-live.txt`, 7 checks) |
+| `names.mjs "..."` | `tests/names.mjs`, customer names in the script of each language, added in 1.2.1.0 (last live run: `evidence/last-names-live.txt`, 33 checks) |
+| `pay.mjs "..."` | `tests/pay.mjs`, the pay link in the reminder and the pay page, added in 1.2.1.0 (last live run: `evidence/last-pay-live.txt`, 15 checks) |
+| `sendways.mjs "..."` | `tests/sendways.mjs`, the other ways to send a reminder, added in 1.2.2.0 (last live run: `evidence/last-sendways-live.txt`, 16 checks) |
+| `wacheck.mjs "..."` | `tests/wacheck.mjs`, the WhatsApp check of a number, added in 1.2.3.0 (last live run: `evidence/last-wacheck-live.txt`, 19 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -54,7 +59,8 @@ prints after it.
 | E11 | More languages (1.2.0.0) | 2 | 8 | V-4, C-1, C-4 (PRD, last section) |
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
-| **Total** | | **55** | **247** | |
+| E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.3.0) | 5 | 40 | V-20 to V-24, C-1, C-4 (PRD, last section) |
+| **Total** | | **60** | **287** | |
 
 ---
 
@@ -240,7 +246,7 @@ As the shop owner, I want a one-tap WhatsApp reminder with the name and amount s
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
 | AC-E3.F1.1 | A customer owes ₹3,470 | The list is drawn | Their row has `a[data-remind="<phone>"]` pointing to `https://wa.me/91<phone>?text=...`, opening in a new tab | `check.mjs [3-reminder]` |
-| AC-E3.F1.2 | A customer owes | The message is built | It reads "Namaste {name}, this is a reminder from {shop}. Your balance is Rs 3,470. Pay by UPI: {link} Thank you." (S-2) | `check.mjs [3-reminder]`, `check.mjs [2-hidden reminders]`, `brief.mjs "reminder: ..."` |
+| AC-E3.F1.2 | A customer owes | The message is built | It reads "Namaste {name}, this is a reminder from {shop}. Your balance is Rs 3,470. UPI pay link: {pay page link} Pay by UPI: {link} Thank you." (S-2). The pay page link is there since 1.2.1.0 (E14.F3) | `check.mjs [3-reminder]`, `check.mjs [2-hidden reminders]`, `brief.mjs "reminder: ..."`, `pay.mjs "a pay link on the app's own address comes before it ..."` |
 | AC-E3.F1.3 | A customer is in advance | The message is built | It says "You have Rs {amount} in advance with us." and has no pay link | `check.mjs [2-hidden reminders]` |
 | AC-E3.F1.4 | A customer's balance is 0 | The message is built | It says "Your account is settled, Rs 0 due." | manual |
 | AC-E3.F1.5 | The language is Hindi or Telugu | The message is built | The message text is in that language; the name stays as stored | manual |
@@ -840,6 +846,98 @@ As the shop owner, I want the total unpaid for 30 days or more, and the date the
 
 ---
 
+## E14 Reaching the customer and a layout that holds
+
+Goal: added in versions 1.2.1.0 to 1.2.3.0, from the owner's own use of the live site. The layout holds in
+every language and width, names show in the script of every language, the reminder carries a pay link the
+customer can tap, a reminder can go another way when WhatsApp refuses a number, and a number added by hand
+can be checked on WhatsApp once. Each is an add-on beside the ledger. The ids, attributes, totals, reminder
+links and the import that the tester reads are unchanged.
+
+### E14.F1 A layout that holds (1.2.1.0)
+
+As the shop owner, I want every screen to read cleanly in my language on my phone so that nothing is broken, hidden or cut off.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F1.1 | The sample shop, each of the 12 languages, at 5 widths | The overview and a customer page are drawn | Nothing scrolls sideways in any of the 120 screens | `layout.mjs "no sideways scroll in 120 screens ..."` |
+| AC-E14.F1.2 | The same screens | The text is laid out | No text is broken into a column of letters, and the customer name stays within three lines | `layout.mjs "no text is broken into a column of letters, and the customer name stays within three lines"` |
+| AC-E14.F1.3 | A customer page | The heading is laid out | The customer heading never runs under the action buttons | `layout.mjs "the customer heading never runs under the action buttons"` |
+| AC-E14.F1.4 | Any button or menu, in any language | It is drawn | Its label wraps instead of being cut off | `layout.mjs "no button or menu cuts its label off"` |
+| AC-E14.F1.5 | A customer page at 1366 and 1920 px | The cards are laid out in columns | There is no blank band between cards in a column | `layout.mjs "the customer page has no blank band between cards in a column ..."` |
+| AC-E14.F1.6 | The entry and add forms | They are drawn | No form button touches the text above it | `layout.mjs "no form button touches the text above it"` |
+| AC-E14.F1.7 | A narrow card | The customer's entries are drawn | Each entry stacks its date, note and amount inside the card | manual |
+
+### E14.F2 Names in the script of every language (1.2.1.0)
+
+As the shop owner, I want customer names in the script of my language so that the list reads the same way as the labels.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F2.1 | The sample shop in English | The list is drawn | No name has a bracket | `names.mjs "English shows no bracket ..."` |
+| AC-E14.F2.2 | Hindi or Telugu is chosen | The list is drawn | Names read as before, for example "Sunita Devi (सुनीता देवी)" | `names.mjs "Hindi: Sunita Devi reads as before ..."`, `names.mjs "Telugu: a Telugu-script bracket as before ..."` |
+| AC-E14.F2.3 | One of the nine newer languages is chosen | The list is drawn | Every name shows a bracket in that language's script, with no Latin letter and no unassigned character | `names.mjs "bn: every name shows a bracket in its own script, no Latin, no unassigned character ..."` and the same line for mr, ta, gu, kn, ml, pa, or, ur |
+| AC-E14.F2.4 | One of the nine newer languages is chosen | A customer page opens | Its heading shows the name in that script | `names.mjs "bn: the customer page heading shows the name in its script ..."` and the same line for the other eight |
+| AC-E14.F2.5 | Any of the twelve languages | The figures are read | The total, the rows and the reminder links are the same as in English (₹11,820 for the sample) | `names.mjs "bn: the same total, rows and reminder links ..."` and the same line for each language |
+
+Note: the spelling is made automatically from the stored name. The owner can correct the Hindi and Telugu
+spelling (E4.F5); there is no field for the nine newer scripts.
+
+### E14.F3 A pay link the customer can tap (1.2.1.0)
+
+As the customer, I want a link I can tap in the WhatsApp reminder so that I can pay without copying anything.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F3.1 | A customer owes | The reminder is built | It is still a wa.me link to the customer and still names the customer and the balance in rupees | `pay.mjs "the reminder is still a wa.me link to the customer"`, `pay.mjs "it still names the customer and the balance in rupees"` |
+| AC-E14.F3.2 | A customer owes | The reminder is built | The `upi://pay` link with the UPI ID and the balance is still in the message | `pay.mjs "the upi://pay link with the UPI ID and the balance is still in the message ..."` |
+| AC-E14.F3.3 | A customer owes | The reminder is built | A pay link on the app's own address stands first, before the UPI link | `pay.mjs "a pay link on the app's own address comes before it ..."`, `pay.mjs "the tappable link stands first"` |
+| AC-E14.F3.4 | A shop name with brackets | The pay link is built | It has no bracket or other character that would end the link early, and ends in a digit | `pay.mjs "the pay link has no bracket or other character that would end the link early, and ends in a digit"` |
+| AC-E14.F3.5 | The pay link | It is opened | The details ride after "#", and no request carries the shop, the UPI ID or the amount | `pay.mjs "the details ride after "#", so they are never sent to a server"`, `pay.mjs "no request carries the shop, the UPI ID or the amount"` |
+| AC-E14.F3.6 | The sample shop | Every reminder is built | All 8 reminders carry both links | `pay.mjs "all 8 reminders carry both links ..."` |
+| AC-E14.F3.7 | The pay page | It opens | It shows the shop, the amount and the UPI ID, and its button opens the same `upi://` link as the message | `pay.mjs "the pay page shows the shop, the amount and the UPI ID ..."`, `pay.mjs "its button opens the same upi:// link as the message"` |
+| AC-E14.F3.8 | The pay page on a phone | It is drawn at 375 px | It fits with no sideways scroll | `pay.mjs "the pay page fits a 375 px phone ..."` |
+| AC-E14.F3.9 | A broken link, or a shop name with markup | The pay page opens | It shows "not complete" and runs nothing from the link; markup is shown as text | `pay.mjs "a broken link shows "not complete" and nothing from the link is run"`, `pay.mjs "a shop name with markup is shown as text"` |
+
+Note: the pay page is in English only. A customer in advance or settled gets no pay link, as before.
+
+### E14.F4 Other ways to send a reminder (1.2.2.0)
+
+As the shop owner, I want another way to send the reminder when WhatsApp refuses a number so that the customer still gets it.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F4.1 | A customer page | It is drawn | "Other ways to send" shows under the reminder buttons | `sendways.mjs "the customer page offers "Other ways to send" under the reminder buttons"` |
+| AC-E14.F4.2 | A customer with a sample number | The page opens | The block opens by itself and says the number is made up | `sendways.mjs "for a sample number it opens by itself and says the number is made up"` |
+| AC-E14.F4.3 | The block is open | The owner picks SMS | The SMS goes to the customer's number with the same message as the WhatsApp reminder | `sendways.mjs "the SMS link goes to the customer's number with the same message as the WhatsApp reminder"` |
+| AC-E14.F4.4 | The block is open | The owner picks WhatsApp without a number | The same message opens, to send to any contact chosen in WhatsApp | `sendways.mjs "the WhatsApp link without a number carries the same message, to send to any contact"` |
+| AC-E14.F4.5 | The block is open | The owner presses Copy | "Message copied" shows and the clipboard holds the message | `sendways.mjs "the copy button holds the same message"`, `sendways.mjs "Copy says "Message copied" and the clipboard holds the message ..."` |
+| AC-E14.F4.6 | A customer with a real number | The page opens | There is no sample note and the SMS goes to that number | `sendways.mjs "for a real number there is no sample note and the SMS goes to that number"` |
+| AC-E14.F4.7 | The block is open | The links are counted | None of the new links counts as a reminder link; the overview has one reminder link per customer as before | `sendways.mjs "none of the new links counts as a reminder link"`, `sendways.mjs "the overview has one reminder link per customer as before ..."` |
+| AC-E14.F4.8 | Hindi, Telugu, Tamil, Bengali or Urdu, at 375 px | The block is open | It is in that language's script and nothing scrolls sideways | `sendways.mjs "no sideways scroll at 375 px with the block open ..."`, `sendways.mjs "hi: the block is in its own script and fits 375 px ..."` and the same line for te, ta, bn, ur |
+
+### E14.F5 Check a number on WhatsApp (1.2.3.0)
+
+As the shop owner, I want to find out once, when I add a customer, whether the number is on WhatsApp so that a refusal does not surprise me at every reminder.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F5.1 | A shop file is loaded | Eight customers arrive at once | No check is offered; they are not "just added" | `wacheck.mjs "loading a shop file asks for no check: eight customers at once are not "just added""` |
+| AC-E14.F5.2 | The owner adds a customer by hand | The customer is saved | The add form offers "Check on WhatsApp" | `wacheck.mjs "after adding a customer by hand, the add form offers "Check on WhatsApp" ..."` |
+| AC-E14.F5.3 | The offer shows | The owner presses it | A hello message to that number opens, with the name and the shop and no balance | `wacheck.mjs "it opens a hello message to that number, with the name and the shop and no balance ..."` |
+| AC-E14.F5.4 | The hello message was opened | The app moves to that customer | It asks whether the chat opened; until answered the number reads as not checked | `wacheck.mjs "the app moves to that customer and asks whether the chat opened"`, `wacheck.mjs "until answered, the number reads as not checked"` |
+| AC-E14.F5.5 | The question shows | The owner answers "Yes, the chat opened" | The number is marked as on WhatsApp | `wacheck.mjs ""Yes, the chat opened" marks the number as on WhatsApp"` |
+| AC-E14.F5.6 | The question shows | The owner answers "No" | The number reads "Not on WhatsApp" and the other ways to send open (E14.F4) | `wacheck.mjs ""No" marks it as not on WhatsApp and opens the other ways to send"` |
+| AC-E14.F5.7 | An answer was given | The storage and the page are read after a reload | The answer is kept in its own key for that number; the customer's ledger entry has no new field; the answer is still there | `wacheck.mjs "the answer is kept in its own key; the ledger entry of the customer has no new field ..."`, `wacheck.mjs "the answer is still there after a reload"` |
+| AC-E14.F5.8 | Any customer page | The owner wants to check the number | The check can be started from there | `wacheck.mjs "the check can be started from any customer page"` |
+| AC-E14.F5.9 | The check is shown or answered | The links are counted at 375 px | No new reminder link; one reminder link per customer as before; the offer is gone once answered; nothing scrolls sideways | `wacheck.mjs "no sideways scroll at 375 px with the offer shown ..."`, `wacheck.mjs "no new reminder link, and no sideways scroll at 375 px"`, `wacheck.mjs "the overview has one reminder link per customer as before, and the offer is gone once answered"` |
+| AC-E14.F5.10 | Hindi or Tamil | The check is shown | The status, the button and the hello message are in that language's script | `wacheck.mjs "hi: status, button and hello message in its own script ..."`, `wacheck.mjs "ta: status, button and hello message in its own script ..."` |
+| AC-E14.F5.11 | A number has an answer (added in 1.2.3.1) | The owner presses the button that offers the other answer | The answer switches with one tap, without opening WhatsApp again, and can be switched back | `wacheck.mjs "one tap switches it to "on WhatsApp", and the button now offers "No""`, `wacheck.mjs "and back again; still no sideways scroll at 375 px"` |
+
+Note: no app can look a number up on WhatsApp beforehand. The check depends on the owner's answer.
+
+---
+
 ## Traceability: PRD requirement to features
 
 | PRD requirement | What it says, in short | Features |
@@ -878,6 +976,7 @@ As the shop owner, I want the total unpaid for 30 days or more, and the date the
 | V-11, V-15, V-16, V-17, V-19 (added at final review; in the PRD since 23 Nov 2026) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
 | V-12, V-13, V-14, V-18 (in the PRD since 23 Nov 2026) | Spreadsheet import, backup and balances files, key figures and recent entries, local-script names and digits | E6.F6, E6.F4, E2.F2, E2.F5, E4.F5, E7.F2 |
 | V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
+| V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out
@@ -904,5 +1003,10 @@ Found in the code against the PRD or the reviews:
   (E7.F1, E7.F2).
 - The screenshot reader needs a network: Tesseract.js and its language data are not cached for offline.
 - Ideas from `review/industry.md` not built: opening balance when adding a customer, a credit limit per
-  customer, a backup reminder, a customer pay page opened from the reminder, and a "today's collection
-  round".
+  customer, a backup reminder and a "today's collection round". The customer pay page opened from the
+  reminder is built since 1.2.1.0 (E14.F3).
+- An automatic check that a number is on WhatsApp. WhatsApp gives no lookup to an ordinary app; it would need
+  a business account, a server and a cost. The check in E14.F5 rests on the owner's answer.
+- A field to correct a name in the nine newer scripts. Those spellings are made automatically; only the Hindi
+  and Telugu spellings can be corrected (E4.F5).
+- The pay page in languages other than English (E14.F3).

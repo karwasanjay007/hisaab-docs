@@ -82,6 +82,8 @@ note right of App
   logo beside the shop name (profile.js)
   #lang menu with twelve languages (langs.js);
   a saved extra language is fetched from i18n/
+  names.js, sendways.js and wacheck.js
+  draw on a customer page only (J9, J11, J12)
 end note
 alt the shop has customers
   UI --> Owner : Overview: total outstanding and every balance

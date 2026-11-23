@@ -1,0 +1,8 @@
+PASS no sideways scroll in 120 screens (12 languages, 5 widths, overview and customer page)
+PASS no text is broken into a column of letters, and the customer name stays within three lines
+PASS the customer heading never runs under the action buttons
+PASS no button or menu cuts its label off
+PASS the customer page has no blank band between cards in a column (1366 and 1920 px)
+PASS no form button touches the text above it
+PASS no page errors 
+ALL PASS (7 checks)

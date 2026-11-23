@@ -62,11 +62,17 @@ bonus; phone overview shows Customers and Overdue first, nothing hidden. Local c
 - Found late by reading the page word for word: the first-visit sample would have failed must-do 1 and 2.
   The lesson is in the kickoff kit (capture the page verbatim, test every "Done when" literally).
 
-## After the baseline: versions 1.1.0.0 and 1.2.0.0 (22 to 23 Nov 2026)
+## After the baseline: versions 1.1.0.0 to 1.2.3.0 (22 to 23 Nov 2026)
 
 Every line of the specification above still holds on the live site after the additions. The ids, attributes,
 totals and the import that the tester uses are the same as in 1.0.0.0. No earlier test was edited. The earlier
 suites were run again on the live site after the 1.2.0.0 deploy, and all pass.
+
+The same holds after the 1.2.1.0, 1.2.2.0 and 1.2.3.0 deploys (baseline 1.2.3.0 approved by the owner on
+23 Nov 2026). The independent checker gives 100 out of 100 on the live site (`evidence/last-run-live.txt`), and
+every "Done when" line passes (`evidence/last-brief-live.txt`). The bonus line on the UPI pay link in the
+reminder still holds: the reminder now opens with a pay link the customer can tap, and the `upi://pay` link
+stays in the message after it.
 
 | What is checked | Latest result | Evidence |
 | --- | --- | --- |
@@ -93,7 +99,14 @@ None of these is asked for by the brief. Each one lives in an add-on file beside
 | Customer page tools: totals, days since the last payment, Call and WhatsApp chat links, change phone number, delete customer with Undo | 1.2.0.0 | A block after the entries on the customer page only. The chat link is not a reminder link, so the count of reminder links is unchanged | `evidence/last-customer-live.txt` |
 | Note shortcuts under the note field | 1.2.0.0 | They only fill the note field. The entry is saved by the same button | `evidence/last-langs-live.txt` |
 | Total unpaid for 30 days or more, and the date the figures are for | 1.2.0.0 | Drawn beside the existing figures. Nothing is stored | `evidence/last-langs-live.txt` |
+| A layout that holds in every language and width | 1.2.1.0 | Layout rules only. No id, attribute or text changed | `evidence/last-layout-live.txt` |
+| Customer names in the script of all twelve languages | 1.2.1.0 | The script is shown in brackets after the stored name, as Hindi and Telugu were. The stored name, the total, the rows and the reminder links are the same in every language | `evidence/last-names-live.txt` |
+| A pay link the customer can tap in the reminder | 1.2.1.0 | The reminder is still `a[data-remind]` to `https://wa.me/91<phone>?text=`, with the name, the balance and the `upi://pay` link. The pay link is added before the UPI link; its details ride after "#" and are never sent to a server | `evidence/last-pay-live.txt` |
+| Other ways to send a reminder: SMS, any WhatsApp contact, copy | 1.2.2.0 | A block on the customer page only. None of its links is a reminder link, so the tester's count of `a[data-remind]` is unchanged | `evidence/last-sendways-live.txt` |
+| A WhatsApp check when a customer is added by hand | 1.2.3.0 | Offered only after a customer is added by hand, never after a load. The answer is kept in its own key per number, not in the ledger, and adds no reminder link | `evidence/last-wacheck-live.txt` |
 
 Not covered by a run: storage-full during a shop switch, and a tab closed between the two writes of a switch
 (both traced in the code by the reviewer). The printed statement was checked by its markup, not on paper. No
-native speaker has read the nine new languages.
+native speaker has read the nine new languages. Since 1.2.1.0, also not checked by a person: the spellings of
+names in the nine newer scripts, the new strings in those languages, and the SMS link, the pay page and the
+WhatsApp check on a real phone.

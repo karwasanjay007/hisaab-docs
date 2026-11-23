@@ -1,0 +1,20 @@
+PASS loading a shop file asks for no check: eight customers at once are not "just added"
+PASS after adding a customer by hand, the add form offers "Check on WhatsApp" | Meena Kumari added. Check the number on WhatsApp now, so reminders reach them.
+PASS it opens a hello message to that number, with the name and the shop and no balance | Namaste Meena Kumari, this is Lakshmi Provision Store (fictional). We 
+PASS no sideways scroll at 375 px with the offer shown | 375
+PASS the app moves to that customer and asks whether the chat opened
+PASS until answered, the number reads as not checked
+PASS "Yes, the chat opened" marks the number as on WhatsApp
+PASS the answer is kept in its own key; the ledger entry of the customer has no new field | name,phone
+PASS the answer is still there after a reload
+PASS the check can be started from any customer page
+PASS "No" marks it as not on WhatsApp and opens the other ways to send
+PASS no new reminder link, and no sideways scroll at 375 px
+PASS after "No", a button offers the other answer | Yes, the chat opened
+PASS one tap switches it to "on WhatsApp", and the button now offers "No"
+PASS and back again; still no sideways scroll at 375 px
+PASS hi: status, button and hello message in its own script | WhatsApp पर जाँचें
+PASS ta: status, button and hello message in its own script | WhatsApp-ல் சரிபார்
+PASS the overview has one reminder link per customer as before, and the offer is gone once answered
+PASS no page errors 
+ALL PASS (19 checks)

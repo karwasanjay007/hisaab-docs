@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.2.0.0 (23 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.2.3.1 (23 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -65,8 +65,13 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | Delete a customer, with Undo | Yes | 1.2 |
 | N/A | Note shortcuts under the note field | Yes | 1.2 |
 | N/A | Total unpaid for 30 days or more, and the date the figures are for | Yes | 1.2 |
+| N/A | Customer names in the script of all twelve languages (Hindi and Telugu since 1.0) | Yes | 1.2.1 |
+| N/A | A tappable pay link in the WhatsApp reminder, opening a pay page that opens the UPI app | Yes | 1.2.1 |
+| N/A | Layout checked in 12 languages at 5 widths: no heading broken into letters, no blank band, no cut label | Yes | 1.2.1 |
+| N/A | Other ways to send a reminder when WhatsApp refuses a number: SMS, a chosen contact, or copied | Yes | 1.2.2 |
+| N/A | WhatsApp check when a customer is added: a hello message, and the answer remembered per number | Yes | 1.2.3 |
 
-All 17 rows of the brief pass, and all 21 rows beyond it are in place. The same table with three other builds of
+All 17 rows of the brief pass, and all 26 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes
@@ -178,6 +183,11 @@ Diagrams are kept as SVG only.
 ## Privacy
 
 No account, no server and no keys. Customer names, phone numbers and amounts stay in the browser.
-WhatsApp and UPI links are built on the phone, and nothing is sent until the owner presses Send in
-WhatsApp. Text from imported files is escaped before it is shown, and exported CSV cells that start with
+WhatsApp, SMS and UPI links are built on the phone, and nothing is sent until the owner presses Send in
+WhatsApp or the messages app.
+The pay link in a reminder carries the shop name, the UPI ID, the amount and the customer's name to the
+customer who receives it. On the pay page those details sit after the "#" of the address, which a browser
+never sends to a server, and the page stores nothing.
+The answer to the WhatsApp check is kept in the same browser, outside the shop file. No app can ask WhatsApp
+whether a number has an account, so Hisaab asks the owner; no number is sent to any checking service. Text from imported files is escaped before it is shown, and exported CSV cells that start with
 `=`, `+`, `-` or `@` are prefixed so a spreadsheet does not run them as formulas.

@@ -50,6 +50,7 @@ UI -> App : render the customer page
 App -> LS : getItem('hisaab.v1')
 LS --> App : the customer and their entries
 App -> UI : after the entries, the block #cust-tools (customer.js): total given on credit,\ntotal received, days since the last payment or "No payment yet"
+note right of UI : v1.2.1: on a screen 1280 px or wider the left column reads\nentries, balance chart, customer tools, customer details;\nthe record form stands on the right.\nv1.2.2 and v1.2.3: the page head also has the WhatsApp check\nline and "Other ways to send" (J12)
 == Call or chat ==
 opt Call
   Owner -> UI : tap Call

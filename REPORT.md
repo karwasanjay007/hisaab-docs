@@ -303,6 +303,53 @@ navigation, quick entry, voice 15, offline, contrast, profile 36, shops 25, phon
 in another script is not matched to a customer saved in Latin letters. Dates stay in the English short form in
 the nine new languages. Urdu is laid out left to right like the rest of the page.
 
+## Version 1.2.1.0 to 1.2.3.0 (23 Nov 2026)
+
+Three small versions on one day, each asked for by the owner from the live site, each added beside the ledger. The
+ids, attributes, totals and the import that the tester uses are the same as in 1.0.0.0, and no earlier test was
+edited. The owner approved the result as the baseline on 23 Nov 2026; these documents were brought up to date after
+that approval.
+
+| Version | Addition | What it does | How the baseline is kept |
+| --- | --- | --- | --- |
+| 1.2.1.0 | Layout that holds | In languages with long button labels the customer heading broke into a column of letters and ran under the buttons, and the customer page had a blank band of 600 to 780 px in its left column. Now the heading keeps its width and the buttons wrap; the page reads down one column with the record form beside it; entries stack in any narrow card; long labels wrap | One style sheet loaded last, layout only. No id, attribute or text changed |
+| 1.2.1.0 | Names in nine more scripts | The name in the chosen language's script, in brackets after the name, now in all twelve languages (Hindi and Telugu before). Built automatically from the Hindi spelling | A hook in the name function, used only for the nine newer languages. Hindi and Telugu read as before |
+| 1.2.1.0 | A tappable pay link | WhatsApp does not make a `upi://` address tappable. The reminder now also carries an ordinary web link to a small pay page, which shows the shop, the amount and the UPI ID and opens the UPI app | The `upi://pay` link stays in the reminder, as the brief asks. The details sit after the "#" of the address and are never sent to a server |
+| 1.2.2.0 | Other ways to send | WhatsApp refuses a number that has no account, inside its own app. The customer page offers the same message as an SMS, to any contact chosen in WhatsApp, or copied. Sample numbers carry a note that they are made up | A fold-out under the reminder buttons. None of its links counts as a reminder link |
+| 1.2.3.0 | WhatsApp check when a customer is added | After a customer is added by hand, a hello message to the number (the name and the shop, no balance); the owner then says whether the chat opened. A refused number reads "Not on WhatsApp" and opens the other ways to send | The answer is kept in its own browser key, outside the ledger and the shop file. Loading a shop file offers nothing |
+
+**1.2.3.1.** During his own trial the owner pressed "No" by mistake. Once a number has an answer, a button beside
+"Check on WhatsApp" now offers the other answer, so a wrong tap is put right with one more. No new text was needed.
+
+**Measured before it was fixed.** A new check draws 120 screens (12 languages, 5 widths, overview and customer page)
+and measures text broken into a column of letters, the heading running under the buttons, cut labels, blank bands
+between cards and sideways scroll. It failed on four counts before the change and passes after it
+(`evidence/last-layout-live.txt`).
+
+**What testing found.** The test of the WhatsApp check found a fault before the deploy: the ledger draws before it
+announces that a shop file was loaded, so the first customer added after a load was not offered the check. Fixed and
+retested. The first spellings in the nine scripts used short vowels where a reader expects long ones (a wrong first rule for Tamil, Kannada and
+Malayalam); corrected, with word endings, Tamil n and s, Malayalam end letters, the
+Punjabi nasal sign and "Rao" in Bengali and Odia.
+
+**Tests on the live site.** 1.2.1.0: the full regression, 21 suites, all pass. 1.2.2.0 and 1.2.3.0: only the suites
+each change could affect, all pass; the others were not rerun because nothing they read was touched. Latest
+results: `evidence/last-run-live.txt` (the independent checker, 100 out of 100, hidden data 60 out of 60),
+`last-brief-live.txt`, `last-layout-live.txt` (7 checks over 120 screens), `last-names-live.txt` (33),
+`last-pay-live.txt` (15), `last-sendways-live.txt` (16), `last-wacheck-live.txt` (19), `last-customer-live.txt`
+(36), `last-langs-live.txt` (25), `last-addons-width-live.txt` (54), and `last-i18n-check.txt` (11 languages, 233
+keys each).
+
+**Limits, stated plainly.**
+- No app can ask WhatsApp beforehand whether a number has an account. The official route needs a business account,
+  a server and a paid message, and would end "nothing leaves this phone"; it was not built. Hisaab asks the owner.
+- The spellings in the nine newer scripts and the new labels in those languages are automatic. No native reader
+  has checked them, and there is no field yet to correct a name in those nine (Hindi and Telugu have one).
+- The pay page is in English. It, the SMS link and the WhatsApp check were tested in a desktop browser, not on a
+  phone with the apps installed.
+- The numbers of the sample shop are made up, and a made-up number can still belong to someone: one of them
+  received a test reminder. The app now says so on sample customers.
+
 ## Requirement and feature map (23 Nov 2026)
 
 Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it
@@ -356,6 +403,11 @@ most of its rows cannot be judged.
 | N/A | Delete a customer | Yes, with Undo | Yes | No | Not tested |
 | N/A | Note shortcuts | Yes | Yes | No | No |
 | N/A | Initial of the name beside each customer | Yes | Yes | No | No |
+| N/A | Names in the script of every language offered | Yes, twelve (1.2.1) | Not tested | Not tested | Not tested |
+| N/A | Tappable pay link in the WhatsApp reminder | Yes (1.2.1) | Not tested | Not tested | Not tested |
+| N/A | Other ways to send when WhatsApp refuses a number | Yes (1.2.2) | Not tested | Not tested | Not tested |
+| N/A | WhatsApp check when a customer is added | Yes (1.2.3) | Not tested | Not tested | Not tested |
 
-Hisaab: all 17 rows of the brief pass, and all 22 rows outside the brief are in place. None of the features seen on
+Hisaab: all 17 rows of the brief pass, and all 26 rows outside the brief are in place (the last four were added in
+1.2.1.0 to 1.2.3.0 and were not looked for on the other builds). None of the features seen on
 the three other builds is missing.

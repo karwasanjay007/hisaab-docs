@@ -1,12 +1,12 @@
-PASS bn: 216 keys, 216 in its own script, 0 left identical to English
-PASS gu: 216 keys, 216 in its own script, 0 left identical to English
-PASS hi: 216 keys, 216 in its own script, 0 left identical to English
-PASS kn: 216 keys, 216 in its own script, 0 left identical to English
-PASS ml: 216 keys, 216 in its own script, 0 left identical to English
-PASS mr: 216 keys, 216 in its own script, 0 left identical to English
-PASS or: 216 keys, 216 in its own script, 0 left identical to English
-PASS pa: 216 keys, 216 in its own script, 0 left identical to English
-PASS ta: 216 keys, 216 in its own script, 0 left identical to English
-PASS te: 216 keys, 216 in its own script, 0 left identical to English
-PASS ur: 216 keys, 216 in its own script, 0 left identical to English
+PASS bn: 233 keys, 233 in its own script, 0 left identical to English
+PASS gu: 233 keys, 233 in its own script, 0 left identical to English
+PASS hi: 233 keys, 233 in its own script, 0 left identical to English
+PASS kn: 233 keys, 233 in its own script, 0 left identical to English
+PASS ml: 233 keys, 233 in its own script, 0 left identical to English
+PASS mr: 233 keys, 233 in its own script, 0 left identical to English
+PASS or: 233 keys, 233 in its own script, 0 left identical to English
+PASS pa: 233 keys, 233 in its own script, 0 left identical to English
+PASS ta: 233 keys, 233 in its own script, 0 left identical to English
+PASS te: 233 keys, 233 in its own script, 0 left identical to English
+PASS ur: 233 keys, 233 in its own script, 0 left identical to English
 ALL PASS (11 languages)

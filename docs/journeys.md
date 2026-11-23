@@ -2,12 +2,14 @@
 
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
-`langs.js`, `extras.js` and `customer.js`: the function names, the order of calls, what is
+`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js` and `wacheck.js`, the layout sheet
+`polish.css` and the customer's pay page `pay.html`: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
 each one: Shop owner, Browser UI (`index.html`), `app.js`, `localStorage`, Service worker (`sw.js`), the
-library loaded from a CDN, and WhatsApp or a UPI app. A diagram shows only the participants it uses.
+library loaded from a CDN, WhatsApp or a UPI app, and the pay page (`pay.html`). A diagram shows only the
+participants it uses.
 
 To render again, from the project folder:
 
@@ -26,7 +28,7 @@ grader contract.
 | J1 | First open | Shop owner (or a tester) | Opens the app, optionally with `?today=` | Overview with the total outstanding and every balance; on a first visit an empty shop with two buttons, Add your first customer and Load sample shop | E2, E6, E7, E8 |
 | J2 | Record an entry | Shop owner | Fills the entry form and presses Save, or taps Edit or Delete | Entry saved, changed or removed; balances re-rendered; Undo after an edit or a delete | E1, E3 |
 | J3 | Quick entry by voice or typing | Shop owner | Taps the mic or types "Sunita 500 udhaar" | Entry form filled and Save focused; the owner saves | E5, E1, E7 |
-| J4 | WhatsApp reminder | Shop owner, then the customer | Taps the WhatsApp button on a customer row | WhatsApp opens with the name, balance and UPI pay link; the owner presses Send | E3 |
+| J4 | WhatsApp reminder | Shop owner, then the customer | Taps the WhatsApp button on a customer row | WhatsApp opens with the name, the balance, an https pay link to the pay page and the UPI link; the owner presses Send; the customer taps the pay link and their UPI app opens | E3 |
 | J5 | Remind all overdue | Shop owner | Taps "Remind all overdue" | One chat per overdue customer, longest overdue first | E3, E2 |
 | J6 | UPI QR and statement | Shop owner, then the customer | Opens a customer page, taps UPI QR code or Statement | QR drawn in the page; statement printed or saved as PDF with a scan-to-pay QR | E4, E3 |
 | J7 | Load a shop file and export | Shop owner (or a tester) | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
@@ -34,8 +36,9 @@ grader contract.
 | J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in one of twelve languages (three built in, nine fetched when chosen), kept after reload; the app opens offline with the same shop | E7, E8 |
 | J10 | Several shops (added in 1.1.0.0) | Shop owner | In Shop settings types a name and presses "Add shop", presses "Switch" or "Remove", or presses "Import as a new shop" on the import card | More than one shop on the same phone; the shop in use stays under `hisaab.v1`, the others are parked under `hisaab.shops` | E6 |
 | J11 | Customer tools (added in 1.2.0.0) | Shop owner | Opens a customer page and presses Call, WhatsApp chat, the change of phone number or Delete customer | Totals and days since the last payment shown; the phone app or a WhatsApp chat opens; the customer and their entries move to a new number, or are deleted with Undo for eight seconds | E4, E1 |
+| J12 | Reaching a customer WhatsApp refuses, and checking a number when it is added (added in 1.2.2.0 and 1.2.3.0) | Shop owner | Adds a customer by hand and taps Check on WhatsApp, or opens "Other ways to send" on a customer page | The owner's answer (on WhatsApp or not) kept per number under `hisaab.wa`; the reminder sent as an SMS, to a contact chosen in WhatsApp, or copied | E3, E4 |
 
-All eleven journeys are supported by the code. The first nine were asked for in the brief; none was dropped or merged. J10 was added in version 1.1.0.0 and J11 in version 1.2.0.0.
+All twelve journeys are supported by the code. The first nine were asked for in the brief; none was dropped or merged. J10 was added in version 1.1.0.0, J11 in version 1.2.0.0 and J12 in versions 1.2.2.0 and 1.2.3.0.
 
 ## J1 First open
 
@@ -49,8 +52,10 @@ localhost.
 1. The head script in `index.html` reads `hisaab.theme` and sets light or dark before anything draws.
 2. `sample.js` sets `window.HISAAB_SAMPLE` (used only as the fallback for Load sample shop); `app.js` reads
    `hisaab.lang` (English when missing or not built in). The add-ons follow: `profile.js`, `shops.js`,
-   `langs.js`, `extras.js`, `customer.js`. `langs.js` adds nine languages to the menu `#lang` (twelve in all)
-   and, when one of them was chosen before, fetches its file from `i18n/` and switches to it.
+   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`. `langs.js` adds nine
+   languages to the menu `#lang` (twelve in all) and, when one of them was chosen before, fetches its file
+   from `i18n/` and switches to it. `names.js`, `sendways.js` and `wacheck.js` draw only on a customer page
+   (J9, J11, J12). The stylesheet `polish.css` loads last and changes the layout only.
 3. `init()` calls `load()`, which reads `hisaab.v1`. A saved shop is used as it is.
 4. On a first visit, or when the saved data cannot be read, `blank()` gives an empty shop ("My shop", no
    customers, no entries) and it is saved. The sample is not loaded: the brief's "Done when" lines add
@@ -178,12 +183,23 @@ shopname@okbank, or leave it empty." and nothing is saved. Empty is allowed.
 **Steps.**
 1. At every render, each row's `a[data-remind]` gets its link: `https://wa.me/91{phone}?text=` and the
    message from `reminderText()`.
-2. When the customer owes money, the message gives the name, the shop, the balance and a UPI pay link,
-   `upi://pay?pa={UPI ID}&am={balance, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}`.
+2. When the customer owes money, the message reads, line by line: "Namaste {name}, this is a reminder
+   from {shop}. Your balance is Rs {amt}.", a blank line, "UPI pay link:" and an https link built by
+   `payPage()`, a blank line, "Pay by UPI:" and the link built by `upiLink()`, a blank line, "Thank you."
+   - The https link points at `pay.html` on the app's own address:
+     `pay.html#pn={shop}&tn=Hisaab {name}&pa={UPI ID}&am={balance, two decimals}`. WhatsApp makes only
+     https addresses tappable, so this is the link the customer taps.
+   - The UPI link is as before:
+     `upi://pay?pa={UPI ID}&am={balance, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}`.
 3. The owner taps the WhatsApp button. It is a plain link; WhatsApp (or WhatsApp Web) opens the chat with
    the message typed in.
 4. The owner presses Send in WhatsApp. The app never sends by itself.
-5. The customer can pay from the UPI link; the owner then records the payment (J2).
+5. The customer taps the "UPI pay link". `pay.html` opens in the customer's browser and reads the details
+   after "#" in the page itself. A browser never sends that part to a server, and the page stores and sends
+   nothing. It shows the shop, the amount and the UPI ID, a button "Open your UPI app" with the
+   `upi://pay` link, and a Copy button for the UPI ID. On a phone it opens the UPI app by itself after
+   0.4 seconds; the button stays for a second try. On a computer the customer copies the UPI ID.
+6. The customer pays in their UPI app; the owner then records the payment (J2).
 
 ![J4 WhatsApp reminder](diagrams/j4-whatsapp-reminder.svg)
 
@@ -192,6 +208,11 @@ Source: [j4-whatsapp-reminder.puml](diagrams/j4-whatsapp-reminder.puml)
 **Error and edge paths.**
 - A customer in advance gets a message stating the advance; a settled customer gets "Your account is
   settled, Rs 0 due."; neither contains a pay link.
+- A pay link that is broken or cut short (a UPI ID not like `name@handle`, or an amount that is not above
+  zero and below 100,000,000) shows "This payment link is not complete. Ask the shop to send it again."
+- When the app is opened from a file rather than over http or https, `payPage()` gives nothing and the
+  message carries only the `upi://pay` link, as before 1.2.1.0.
+- When WhatsApp refuses the number, the customer page offers other ways to send the same message (J12).
 - Changing the shop name or UPI ID in Settings rebuilds every link at the next render.
 - The customer page has the same reminder (`#cust-remind`) and a UPI pay link button (`#cust-upi`, shown
   only when money is owed).
@@ -354,15 +375,17 @@ the service worker has installed and cached the app shell.
 1. The owner picks one of the twelve languages in `#lang`. English, हिंदी and తెలుగు are built into
    `app.js`; the other nine are fetched by `langs.js` from `i18n/{code}.json` when chosen. The choice is saved as `hisaab.lang`; `applyLabels()`
    changes every label and placeholder and `render()` redraws: names with the local script in brackets,
-   dates in the chosen locale, reminders and receipts in the chosen language.
+   dates in the chosen locale, reminders and receipts in the chosen language. Since 1.2.1.0 the name in
+   brackets is in the script of every language but English: Hindi and Telugu from `app.js`, the other nine
+   from the add-on `names.js` through the hook `Hisaab.nameIn`.
 2. Optional: Hindi or Telugu digits (`#native-digits`, saved in the shop) and the light or dark theme
    (`hisaab.theme`).
 3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, the add-ons
-   `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `sample.js`,
-   `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v4` cache; on activate it deletes
-   older caches.
+   `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `names.js`, `sendways.js`,
+   `wacheck.js`, `polish.css`, `pay.html`, `sample.js`, `sample-data.json`, `icon.svg`,
+   `manifest.webmanifest`) in the `hisaab-v8` cache; on activate it deletes older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v4`.
+   Google Fonts from the network first and keeps a copy in `hisaab-v8`.
 5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
    `?today=` still works), or `index.html`.
 6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.
@@ -411,6 +434,10 @@ Source: [j10-several-shops.puml](diagrams/j10-several-shops.puml)
 customer who should not be in the ledger.
 
 **Preconditions.** A customer page is open. The block "More for this customer" sits after the entries.
+Since 1.2.1.0 (`polish.css`), on a screen 1280 px or wider the page reads down one column (entries, the
+balance chart, this block, the customer details) with the record form beside it; entries stack in a
+narrow card, and the heading keeps its width while its buttons wrap. Since 1.2.2.0 and 1.2.3.0 the page
+head also has the WhatsApp check line and the fold-out "Other ways to send" (J12).
 
 **Steps.**
 1. The owner opens a customer and reads the total given on credit, the total received, and the days since the
@@ -436,3 +463,48 @@ Source: [j11-customer-tools.puml](diagrams/j11-customer-tools.puml)
 - The ledger's own Undo (for an entry or an import) is cleared by a phone change or a delete, so it cannot put an
   entry back under the old number.
 - The total outstanding on the overview follows each change.
+
+## J12 Reaching a customer WhatsApp refuses, and checking a number when it is added (added in 1.2.2.0 and 1.2.3.0)
+
+**Goal.** Know before the first reminder whether a customer's number is on WhatsApp, and still reach a
+customer whose number WhatsApp refuses.
+
+**Preconditions.** A customer is added by hand, or a customer page is open. No app can ask WhatsApp
+beforehand whether a number has an account. WhatsApp refuses such a number inside its own app, where
+Hisaab cannot help. So the owner opens a chat and says what happened.
+
+**Steps.**
+1. The owner adds a customer by hand (J2). The add-customer card then shows "{name} added. Check the
+   number on WhatsApp now, so reminders reach them." with the button Check on WhatsApp (`#wa-added-go`).
+2. The button is a `wa.me` link to the number with a hello message: the customer's name and the shop, no
+   balance. WhatsApp opens in its own tab or app, and Hisaab moves to that customer's page.
+3. There `#wa-check` asks "Did WhatsApp open a chat with this number?" with Yes (`#wa-check-yes`) and No
+   (`#wa-check-no`).
+4. The answer is kept per number, with the date, under the browser key `hisaab.wa`, outside the ledger.
+   The line then reads "Checked: this number is on WhatsApp." or "Not on WhatsApp. Send by SMS, or change
+   the number." No also opens "Other ways to send".
+5. Any customer page has Check on WhatsApp (`#wa-check-go`), which opens the same hello message and asks
+   the same question. Until it is answered the line reads "This number has not been checked on WhatsApp
+   yet."
+6. Under the reminder buttons on the customer page, the fold-out "Other ways to send" (`#send-ways`) holds
+   the same message as the WhatsApp reminder (J4), in three ways:
+   - Send as SMS (`#send-sms`): an `sms:` link to the customer's number with the message.
+   - Choose a contact in WhatsApp (`#send-pick`): a `wa.me` link with no number, so the owner picks any
+     contact, such as a family member.
+   - Copy the message (`#send-copy`): copies it and says "Message copied" for 2.5 seconds.
+7. The owner presses Send in the SMS app or in WhatsApp. The app never sends by itself.
+
+![J12 WhatsApp check and other ways to send](diagrams/j12-whatsapp-check-and-other-ways.svg)
+
+Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and-other-ways.puml)
+
+**Error and edge paths.**
+- Loading a shop file offers no check: its customers count as known, not as just added.
+- The add-card offer shows only when one customer was added and the number has no answer yet.
+- For a sample number of the sample shop (one that starts 90000001, such as 9000000102), the fold-out
+  opens by itself with a note that the number is made up and should first be changed to the owner's own.
+- When the browser store is full, the answer is simply not remembered; the ledger is not touched.
+- None of these links carries `data-remind`, so the count of reminder links is unchanged.
+- The owner's answer is a record of what WhatsApp showed, not a check made by Hisaab.
+- A wrong answer is put right with one tap (since 1.2.3.1): once a number has an answer, a button beside Check on
+  WhatsApp (`#wa-check-flip`) offers the other answer and switches it without opening WhatsApp again.

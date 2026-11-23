@@ -87,6 +87,21 @@ package "localStorage key hisaab.shops (v1.1, only with two or more shops)" {
   }
 }
 
+package "localStorage key hisaab.wa (v1.2.3, per browser)" {
+  class WaChecks <<v1.2.3, one per browser>> {
+    {field} <b>number</b> : string  (10 digits, key)
+    {field} s : ok | no  (the owner's answer)
+    {field} d : string  (date, YYYY-MM-DD)
+  }
+}
+
+note bottom of WaChecks
+  <b>v1.2.3 WhatsApp check</b>
+  Keyed by number, not by shop.
+  Outside hisaab.v1: not in a
+  shop file or a backup.
+end note
+
 Shops "1" *-- "1..*" ShopSlot : list
 ShopSlot "1" o-- "0..1" Shop : data (parked ledger)
 

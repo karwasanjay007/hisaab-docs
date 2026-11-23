@@ -1,0 +1,17 @@
+PASS the customer page offers "Other ways to send" under the reminder buttons
+PASS for a sample number it opens by itself and says the number is made up
+PASS the SMS link goes to the customer's number with the same message as the WhatsApp reminder
+PASS the WhatsApp link without a number carries the same message, to send to any contact
+PASS the copy button holds the same message
+PASS none of the new links counts as a reminder link
+PASS no sideways scroll at 375 px with the block open | 375
+PASS Copy says "Message copied" and the clipboard holds the message | said: Message copied
+PASS for a real number there is no sample note and the SMS goes to that number
+PASS hi: the block is in its own script and fits 375 px | भेजने के और तरीके
+PASS te: the block is in its own script and fits 375 px | పంపడానికి ఇతర మార్గాలు
+PASS ta: the block is in its own script and fits 375 px | அனுப்ப வேறு வழிகள்
+PASS bn: the block is in its own script and fits 375 px | পাঠানোর অন্য উপায়
+PASS ur: the block is in its own script and fits 375 px | بھیجنے کے اور طریقے
+PASS the overview has one reminder link per customer as before (the added customer makes one more)
+PASS no page errors 
+ALL PASS (16 checks)

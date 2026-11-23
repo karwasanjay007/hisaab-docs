@@ -30,9 +30,9 @@ PASS [9-bonus OCR] amount field filled with 750 after 2 s
 PASS [9-bonus edit/delete] deleting newest entry (payment 950) gave 4420; editing next (credit 1500 -> 1000) gave 3920
 PASS [7-phone] scrollWidth home 375, customer page 375
 PASS [8-contrast light home] 228 text elements, all meet 4.5:1 / 3:1
-PASS [8-contrast light customer] 117 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast light customer] 126 text elements, all meet 4.5:1 / 3:1
 PASS [8-contrast dark home] 228 text elements, all meet 4.5:1 / 3:1
-PASS [8-contrast dark customer] 117 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast dark customer] 126 text elements, all meet 4.5:1 / 3:1
 INFO [8-theme] body background light rgb(246, 242, 233), dark rgb(11, 21, 17)
 
 PASS [dialogs] no window dialogs

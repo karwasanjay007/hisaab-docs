@@ -5,7 +5,7 @@
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
 | Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
-| Last revised | 20 Nov 2026 |
+| Last revised | 23 Nov 2026 (version 1.2.3.0) |
 
 Diagrams are C4 (PlantUML with the bundled C4 library), kept as `.puml` sources in `docs/diagrams/` and
 rendered to SVG.
@@ -58,7 +58,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-4 | Screenshots resized in the browser to at most 640 px and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v4`: the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v8` (version 1.2.3.1): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
@@ -79,6 +79,10 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
   `#import-box` and `#import-go`, and reads the fixed ids.
 - **WhatsApp** is reached only through `https://wa.me/91<phone>?text=<message>` links that Hisaab builds
   locally. Hisaab never sends anything itself; the owner presses Send.
+- The **SMS app** (version 1.2.2.0) opens an `sms:` link with the same reminder text, for a customer who
+  has no WhatsApp. The **phone dialer** (version 1.2.0.0) opens a `tel:` link from the customer page.
+- The **pay page** `pay.html` (version 1.2.1.0) is part of Hisaab. The reminder carries an https link to it,
+  because WhatsApp may not make a `upi://` link tappable. It opens the customer's UPI app.
 - **Vercel** serves the static files. **cdnjs** and **jsDelivr** serve the two lazy libraries.
   **Google Fonts** serves the web fonts.
 
@@ -89,8 +93,11 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | Container | Technology | What it does |
 | --- | --- | --- |
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
-| localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`. A `storage` event listener reloads the shop when another tab changes it |
-| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v4` on install; network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
+| localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`; `hisaab.shops` (1.1.0.0); `hisaab.wa` (1.2.3.0, the owner's WhatsApp answer per number, outside the shop). A `storage` event listener reloads the shop when another tab changes it |
+| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v8` on install (the add-on files and `pay.html` included); network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
+| Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js` and their style files, with `polish.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
+| Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 233 text keys per language |
+| Pay page | `pay.html` | A separate small page. Reads shop, UPI ID and amount from the part after `#`, shows them and opens the `upi://pay` link |
 | Lazy-loaded libraries | qrcode-generator 1.4.4, Tesseract.js 5.1.1 | QR codes as inline SVG; text recognition of payment screenshots |
 | Web Speech API | `SpeechRecognition` or `webkitSpeechRecognition` | Voice quick entry in `en-IN`, `hi-IN` or `te-IN`. The microphone button stays hidden when the browser has no support |
 
@@ -150,8 +157,8 @@ every figure is computed (F-3).
 - Release, from PowerShell in the project folder: `vercel deploy --prod --yes`.
 - `.vercelignore` keeps `brief`, `brand`, `tests`, `docs`, `*.md`, the editor and agent folders
   (`.clinerules`, `.cursor`, `.github`, `.vscode`, `.windsurf`) and `kilo.jsonc`, `.aider.conf.yml` off the
-  site. What is served: `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `sw.js`,
-  `manifest.webmanifest`, `icon.svg`.
+  site. What is served: `index.html`, `pay.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`,
+  `sw.js`, `manifest.webmanifest`, `icon.svg`, the add-on files and the folder `i18n`.
 - Because the service worker is network first, a new deployment reaches every phone on its next online
   visit.
 
@@ -206,8 +213,9 @@ Breakpoints in `styles.css`:
 Below 1024 px navigation is a bottom bar with a More sheet.
 
 ### Offline
-- On install the service worker precaches the app shell in `hisaab-v4` (`./`, `index.html`, `styles.css`,
-  `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`); on activate it deletes
+- On install the service worker precaches the app shell in `hisaab-v8` (`./`, `index.html`, `styles.css`,
+  `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`, the add-on files and
+  `pay.html`); on activate it deletes
   older caches. After one online visit the app opens with no signal, and the ledger works fully offline
   because the data is local.
 - At run time it caches, network first, the app's own files plus qrcode-generator from cdnjs and Google
@@ -240,7 +248,7 @@ the other scripts take the same base URL as their first argument.
 | Data lives in one browser on one phone | Clearing site data or losing the phone loses the shop; no sync between devices. Mitigation: JSON and CSV export. Next step (phase 3, PRD out of scope): optional cloud backup and sync across a shop's phones, for example Supabase sign-in, kept optional so the ledger never sits behind a login | AD-2, AD-3 |
 | localStorage size | Many screenshots can fill storage; `save` then shows "Storage is full" and the change is not kept | AD-4 |
 | Two readings of the total when a customer is in advance | `#total-outstanding` holds only the sum of all balances; the amount owed by those who owe is in `#total-note` just below it, so a grader expecting the owed-only figure must read the note | review/brief-audit.md R1 |
-| `upi://` links inside WhatsApp text | WhatsApp may not make them tappable; the QR code and statement are the fallback. Not checked on a real phone | review/industry.md |
+| `upi://` links inside WhatsApp text | WhatsApp may not make them tappable. Since 1.2.1.0 the reminder also carries an https link to `pay.html`, which opens the UPI app; the QR code and statement stay as fallbacks. Not checked on a real phone | review/industry.md |
 | Demo UPI ID `hisaab.demo@upi` until the owner sets one | Pay links point to a fake payee; shown as demo in Settings | PRD Q-1, review/brief-audit.md R5 |
 | Lenient import | Entries for an unknown phone create a customer named by the phone; a repeated phone is dropped silently; a missing or unreadable date becomes today (counted in the message); an amount of 0 and a future date are accepted | `fromShopFile`, review/brief-audit.md R4, review/functional.md 11 |
 | Phone numbers | Any 10 digits are accepted, typed or imported, not only Indian mobile numbers; a typed number that does not start with 6, 7, 8 or 9 is added with a warning that WhatsApp may not reach it, an imported one with none (AD-15) | `validPhone`, `validMobile`, review/functional.md 6 |
@@ -284,3 +292,17 @@ Further minor findings are listed in `review/functional.md`.
 | Note shortcuts, overdue total, date | `extras.js`, `extras.css` | `#note-chips` under `#entry-note`, `#overdue-total` above the overdue list, `#as-of` under the total |
 | Service worker | `sw.js` | Cache `hisaab-v4`; the app shell also lists the five new add-on files; a language file is cached the first time it is fetched |
 | Tests | `tests/i18n-check.cjs`, `tests/langs.mjs`, `tests/customer.mjs` | 11 languages checked; 25 and 36 checks |
+
+## Version 1.2.1.0 to 1.2.3.0 additions (23 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Add-on hooks, extended | `app.js` (end of file) | `window.Hisaab` gained `translit`, and the slot `nameIn(customer, lang)` that `names.js` fills. The reminder (`reminderText`) now also carries an https link built by `payPage`; the `upi://pay` link stays in the text |
+| Layout | `polish.css` | Layout only: the customer heading, the customer page columns, entries in a narrow card, tiles, labels that wrap, and the styles of the two new blocks. No id, attribute or text changed |
+| Names in nine more scripts | `names.js` | Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Gurmukhi, Odia and Urdu, built from the Devanagari spelling through `translit`; registers `Hisaab.nameIn` |
+| Pay page | `pay.html` | A separate small page. Reads shop, UPI ID, amount and the customer's name from the part after `#`, which is never sent to a server; shows them and opens the `upi://pay` link |
+| Other ways to send | `sendways.js` | On the customer page, the same reminder as an SMS (`sms:` link), to any contact chosen in WhatsApp (`wa.me` link with no number), or copied |
+| WhatsApp check | `wacheck.js` | After a customer is added by hand, offers a hello message on WhatsApp to that number and stores the owner's answer in `hisaab.wa`, outside `hisaab.v1` |
+| Language files | `i18n/<code>.json` | 233 text keys each (216 at 1.2.0.0, 223 at 1.2.2.0) |
+| Service worker | `sw.js` | Cache `hisaab-v5` at 1.2.1.0, `hisaab-v6` at 1.2.2.0, `hisaab-v7` at 1.2.3.0, `hisaab-v8` at 1.2.3.1; the app shell also lists `names.js`, `sendways.js`, `wacheck.js`, `polish.css` and `pay.html` |
+| Tests | `tests/layout.mjs`, `tests/names.mjs`, `tests/pay.mjs`, `tests/sendways.mjs`, `tests/wacheck.mjs` | Layout 7 checks over 120 screens; names 33; pay 15; sendways 16; wacheck 19 |
