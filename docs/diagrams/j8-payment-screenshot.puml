@@ -60,14 +60,14 @@ else image
     App -> CDN : add script cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js
     CDN --> App : window.Tesseract
   end
-  App -> CDN : Tesseract.recognize(image, language by app language:\nen 'eng', hi 'eng+hin', te 'eng+tel')
+  App -> CDN : createWorker(language by app language:\nhi 'eng+hin', te 'eng+tel', all others 'eng');\nread as scattered text, if no amount once more as one block
   opt the combined language fails to load
-    App -> CDN : Tesseract.recognize(image, 'eng')
+    App -> CDN : createWorker('eng'), the same two reads
   end
   CDN --> App : text
   note right of CDN : language data is downloaded on first use\nand is not cached for offline
   App -> App : qNorm(text): Devanagari and Telugu digits to 0 to 9
-  App -> App : pickAmount(text): a number after ₹, Rs, INR, amount, paid,\nरु, रुपये, राशि, రూ, మొత్తం or భుగతాన;\nelse the largest plain number that is not a year
+  App -> App : pickAmount(text): the largest number after ₹, Rs, INR, amount, paid,\nरु, रुपये, राशि, రూ, మొత్తం or భుగతాన;\nelse the largest plain number that is not a year
   alt amount found
     opt Amount field empty, or last filled by the reader
       App -> UI : put the amount into Amount

@@ -44,7 +44,7 @@ database "localStorage" as LS
 autonumber
 note over App, LS : v1.1 add-on shops.js, through the window.Hisaab hooks of app.js.\nWith one shop nothing is stored beyond 'hisaab.v1'.
 == Add a shop ==
-Owner -> UI : open Shop settings; in the "Shops" block (#sec-shops) type a name, press "Add shop" (#shop-add)
+Owner -> UI : open Shop settings; in the "Shops" block (#sec-shops) type a name (#shop-new-name, up to 60 letters;\nempty gives "New shop"), press "Add shop" (#shop-add)
 UI -> App : click (shops.js)
 App -> LS : park the current ledger: setItem('hisaab.shops',\n{ active, list: [ { id, name, data } ] }); the active shop's data is null
 App -> LS : open an empty ledger: setItem('hisaab.v1', blank shop)
@@ -61,7 +61,7 @@ App -> UI : render(): the overview shows the chosen shop's total
 == Remove ==
 Owner -> UI : press "Remove" on a parked shop ([data-shop-remove])
 UI -> Owner : first press: nothing is removed yet
-Owner -> UI : press "Remove" a second time
+Owner -> UI : press "Remove" again within 4 s\n(the open shop has no Remove)
 UI -> App : click (shops.js)
 alt two or more shops are left
   App -> LS : setItem('hisaab.shops', the list without that shop)

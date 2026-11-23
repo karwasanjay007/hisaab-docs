@@ -61,7 +61,7 @@ opt WhatsApp chat
   note right of WA : the reminder link with the balance is\nthe separate existing button (J4)
 end
 == Change phone number ==
-Owner -> UI : type a new 10-digit number, press the change button
+Owner -> UI : press Change phone number, type a new 10-digit number,\npress Save number
 UI -> App : click (customer.js)
 alt not 10 digits
   App -> UI : refused: the number must have 10 digits
@@ -75,7 +75,7 @@ end
 == Delete customer ==
 Owner -> UI : press Delete customer
 UI -> Owner : first press: nothing is removed yet; the button asks\n"Press again to delete ... and all their entries"
-Owner -> UI : press a second time
+Owner -> UI : press a second time within 5 s\n(a double tap within 0.7 s counts as one press)
 UI -> App : click (customer.js)
 App -> App : keep a copy; remove the customer and all their entries
 App -> LS : save(): setItem('hisaab.v1', state)
@@ -84,7 +84,7 @@ alt Undo pressed within 8 s
   Owner -> UI : tap Undo
   UI -> App : put the customer and the same entries back
   App -> LS : save()
-  App -> UI : render(); the bar is hidden
+  App -> UI : render(); the bar says "Restored ..." for 3 s
 else 8 s pass
   App -> UI : the bar is hidden; the customer stays deleted
 end

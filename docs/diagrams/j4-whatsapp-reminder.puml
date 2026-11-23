@@ -48,7 +48,7 @@ App -> App : render(): bal = balances()[phone] for each customer
 App -> App : reminderText(c, bal)
 alt bal above zero
   App -> App : "Namaste {name}, this is a reminder from {shop}.\nYour balance is Rs {amt}. Pay by UPI: {upi link} Thank you."
-  App -> App : upiLink(c, bal): upi:~//pay?pa={UPI ID}&pn={shop}&am={bal}&cu=INR&tn=Hisaab {name}
+  App -> App : upiLink(c, bal): upi:~//pay?pa={UPI ID}&am={bal, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}
   note right of App : UPI ID from Settings (state.upi);\nuntil set, the demo ID hisaab.demo@upi
 else bal below zero (advance)
   App -> App : "...You have Rs {amt} in advance with us. Thank you."

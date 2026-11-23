@@ -48,9 +48,9 @@ UI -> LS : head script: getItem('hisaab.theme')
 opt a theme is saved
   UI -> UI : set data-theme on the html element
 end
-UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js (v1.1: then the add-ons profile.js and shops.js)
+UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js, then the add-ons\nprofile.js, shops.js, langs.js, extras.js, customer.js
 App -> LS : getItem('hisaab.lang')
-LS --> App : 'en', 'hi' or 'te' (unknown or missing means 'en')
+LS --> App : 'en', 'hi' or 'te' built in (missing or other means 'en' at first)
 UI -> App : DOMContentLoaded: init()
 App -> LS : load(): getItem('hisaab.v1')
 alt saved shop with customers[] and entries[]
@@ -74,6 +74,15 @@ App -> UI : #total-outstanding: text, data-value, plain-number copy
 App -> UI : li[data-customer] rows with span[data-balance] and a[data-remind]
 App -> UI : #top-defaulter, overdue list, Remind all, KPI tiles,\nrecent entries, customer select, settings
 App -> App : spy(): mark the active nav item
+note right of App
+  add-ons on each render:
+  #as-of, the date of the figures (extras.js)
+  #overdue-total, unpaid 30 days or more (extras.js)
+  #sec-shops in Shop settings (shops.js)
+  logo beside the shop name (profile.js)
+  #lang menu with twelve languages (langs.js);
+  a saved extra language is fetched from i18n/
+end note
 alt the shop has customers
   UI --> Owner : Overview: total outstanding and every balance
 else no customers (first visit)

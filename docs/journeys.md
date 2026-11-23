@@ -48,7 +48,9 @@ localhost.
 **Steps.**
 1. The head script in `index.html` reads `hisaab.theme` and sets light or dark before anything draws.
 2. `sample.js` sets `window.HISAAB_SAMPLE` (used only as the fallback for Load sample shop); `app.js` reads
-   `hisaab.lang` (English when missing).
+   `hisaab.lang` (English when missing or not built in). The add-ons follow: `profile.js`, `shops.js`,
+   `langs.js`, `extras.js`, `customer.js`. `langs.js` adds nine languages to the menu `#lang` (twelve in all)
+   and, when one of them was chosen before, fetches its file from `i18n/` and switches to it.
 3. `init()` calls `load()`, which reads `hisaab.v1`. A saved shop is used as it is.
 4. On a first visit, or when the saved data cannot be read, `blank()` gives an empty shop ("My shop", no
    customers, no entries) and it is saved. The sample is not loaded: the brief's "Done when" lines add
@@ -62,6 +64,11 @@ localhost.
    With no customers it shows "No customers yet. Add your first customer, or load the sample shop to look
    around." and two buttons: `#add-first` opens `#/s/add` and focuses the name field, and
    `#load-sample-home` does the same as Load sample shop on the Shop file card (J7).
+   The add-ons then draw on each render: `extras.js` puts the date the figures are for (`#as-of`) under the
+   total and a line with the total unpaid for 30 days or more (`#overdue-total`, hidden when nobody is
+   overdue); `shops.js` adds the Shops block (`#sec-shops`) at the end of the Shop settings card;
+   `profile.js` adds the owner and address fields to Shop settings and a logo beside the shop name in the
+   header (`#shop-logo-img`, hidden until a logo is set).
 8. After the page's load event, `sw.js` is registered; it takes control at once (`skipWaiting`,
    `clients.claim`).
 
@@ -172,7 +179,7 @@ shopname@okbank, or leave it empty." and nothing is saved. Empty is allowed.
 1. At every render, each row's `a[data-remind]` gets its link: `https://wa.me/91{phone}?text=` and the
    message from `reminderText()`.
 2. When the customer owes money, the message gives the name, the shop, the balance and a UPI pay link,
-   `upi://pay?pa={UPI ID}&pn={shop}&am={balance}&cu=INR&tn=Hisaab {name}`.
+   `upi://pay?pa={UPI ID}&am={balance, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}`.
 3. The owner taps the WhatsApp button. It is a plain link; WhatsApp (or WhatsApp Web) opens the chat with
    the message typed in.
 4. The owner presses Send in WhatsApp. The app never sends by itself.
@@ -310,10 +317,11 @@ Tesseract.js.
 1. The owner chooses a picture in `#shot-input`. `onShotChange()` sets the type to Payment.
 2. The picture is drawn on a canvas at most 640 px on its longest side, on white, and kept as a JPEG at
    quality 0.72; a preview shows.
-3. `readAmount()` loads Tesseract.js 5.1.1 the first time and reads the original picture in the app
-   language: `eng` for English, `eng+hin` for Hindi, `eng+tel` for Telugu, falling back to `eng` if the
-   combined language fails to load.
-4. `qNorm()` turns Devanagari and Telugu digits into 0 to 9. `pickAmount()` prefers a number after ₹, Rs,
+3. `readAmount()` loads Tesseract.js 5.1.1 the first time and reads the original picture with a worker:
+   `eng+hin` for Hindi, `eng+tel` for Telugu, `eng` for English and the other nine languages, falling back
+   to `eng` if the combined language fails to load. It reads the picture as scattered text first and, if
+   that finds no amount, once more as one block.
+4. `qNorm()` turns Devanagari and Telugu digits into 0 to 9. `pickAmount()` prefers the largest number after ₹, Rs,
    INR, "amount", "paid", रु, रुपये, राशि, రూ, మొత్తం or భుగతాన, otherwise the largest plain number
    that is not a year. A Hindi screenshot reading "भुगतान रु ४५०" fills 450. The amount goes into the Amount field only if the field is empty or was filled by
    the reader, with "Read Rs {amt} from the screenshot. Check it before saving."
@@ -378,12 +386,13 @@ Source: [j9-language-offline.puml](diagrams/j9-language-offline.puml)
 **Preconditions.** The app is open. With one shop nothing is stored beyond `hisaab.v1`.
 
 **Steps.**
-1. The owner opens Shop settings, types a name in the "Shops" block and presses "Add shop".
+1. The owner opens Shop settings, types a name in the "Shops" block (up to 60 letters; empty gives "New
+   shop") and presses "Add shop".
 2. The app parks the current ledger in `hisaab.shops` and opens an empty ledger under `hisaab.v1`.
 3. The owner records entries in the new shop (J2).
 4. The owner presses "Switch" on the first shop: the current ledger is parked, the chosen one is put back
    under `hisaab.v1`, and the overview shows its total.
-5. "Remove" on a parked shop needs two presses.
+5. "Remove" on a parked shop needs a second press within four seconds. The open shop has no Remove.
 
 ![J10 Several shops](diagrams/j10-several-shops.svg)
 
@@ -410,8 +419,9 @@ customer who should not be in the ledger.
    reminder with the name and the balance is the separate button of J4.
 3. To change the number the owner types a new 10-digit number and saves. The customer and every entry of that
    customer move to the new number, and the page address follows.
-4. To delete, the owner presses "Delete customer", then presses again. The customer and all their entries are
-   removed, the overview opens, and a bar says who was deleted, with Undo for eight seconds.
+4. To delete, the owner presses "Delete customer", then presses again within five seconds. The customer and
+   all their entries are removed, the overview opens, and a bar says who was deleted, with Undo for eight
+   seconds.
 
 ![J11 Customer tools](diagrams/j11-customer-tools.svg)
 
@@ -420,7 +430,8 @@ Source: [j11-customer-tools.puml](diagrams/j11-customer-tools.puml)
 **Error and edge paths.**
 - A number that is not 10 digits, or that another customer already has, is refused with a message.
 - Two taps in quick succession on Delete count as one press.
-- Undo puts the customer and the same entries back. After the eight seconds, a reload or a switch to another
+- Undo puts the customer and the same entries back, and the bar says "Restored {name}." for three
+  seconds. After the eight seconds, a reload or a switch to another
   shop, the deletion stands.
 - The ledger's own Undo (for an entry or an import) is cleared by a phone change or a delete, so it cannot put an
   entry back under the old number.
