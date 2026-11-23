@@ -14,9 +14,60 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
-| Languages | English, हिंदी, తెలుగు |
-| Version | 1.1.0.0 (22 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
+| Version | 1.2.0.0 (23 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
+
+## What Hisaab supports
+
+Every requirement of the brief and every feature beyond it, in one table. The first column names the requirement
+the row belongs to: R1 to R9 are the nine "must do" items, B1 to B7 the bonus menu (at most six count), M the
+light and dark marks. N/A means the brief does not ask for it. "Pass" means tested on the live site; "Yes" means
+the feature is in place. The last column is the version it arrived in.
+
+| Req | Feature | Supported | Since |
+| --- | --- | --- | --- |
+| R1 | Add a customer with a name and a 10-digit phone number | Pass | 1.0 |
+| R2 | Add an entry: credit or payment, with amount, date and a short note | Pass | 1.0 |
+| R3 | Each customer's balance, and the shop's total outstanding at the top | Pass | 1.0 |
+| R4 | A customer page that lists the entries, newest first | Pass | 1.0 |
+| R5 | A payment screenshot, shown as a small picture on the entry | Pass | 1.0 |
+| R6 | A WhatsApp reminder per customer with the name and the balance in rupees | Pass | 1.0 |
+| R7 | Data still there after a reload | Pass | 1.0 |
+| R8 | An import box that loads a shop file in the sample format | Pass | 1.0 |
+| R9 | Works on a phone at 375 px | Pass | 1.0 |
+| B1 | Overdue list, sorted by days since the last payment | Pass | 1.0 |
+| B2 | Edit and delete an entry, with balances recalculated | Pass | 1.0 |
+| B3 | CSV export that matches the data | Pass | 1.0 |
+| B4 | Search by name or phone | Pass | 1.0 |
+| B5 | A UPI pay link in the reminder | Pass | 1.0 |
+| B6 | Hindi or Telugu labels | Pass | 1.0 |
+| B7 | Reading the amount from the payment screenshot | Pass | 1.0 |
+| M | Readable in light and dark | Pass | 1.0 |
+| N/A | Quick entry by typing or by voice ("Sunita 500 udhaar") | Yes | 1.0 |
+| N/A | UPI QR code for the exact balance | Yes | 1.0 |
+| N/A | Printable statement (PDF) for one customer | Yes | 1.0 |
+| N/A | Receipt message after an entry | Yes | 1.0 |
+| N/A | Remind all overdue customers, one after another | Yes | 1.0 |
+| N/A | Undo after a delete, an edit or an import | Yes | 1.0 |
+| N/A | Works without signal after the first visit | Yes | 1.0 |
+| N/A | Backup file (JSON), and import by pasting, by choosing a file or from a spreadsheet CSV | Yes | 1.0 |
+| N/A | Sample shop in one tap | Yes | 1.0 |
+| N/A | Customer names shown in Hindi and Telugu script | Yes | 1.0 |
+| N/A | Overview figures: owes the most, collected and given in the last 30 days, longest without paying | Yes | 1.0 |
+| N/A | Shop profile: owner, address and logo, on the header and the statement | Yes | 1.1 |
+| N/A | Balance history line on the customer page | Yes | 1.1 |
+| N/A | More than one shop on the same phone | Yes | 1.1 |
+| N/A | Twelve languages (nine more: Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia, Urdu) | Yes | 1.2 |
+| N/A | Customer page totals and days since the last payment | Yes | 1.2 |
+| N/A | Call and WhatsApp chat links for a customer | Yes | 1.2 |
+| N/A | Change a customer's phone number (rename since 1.0) | Yes | 1.2 |
+| N/A | Delete a customer, with Undo | Yes | 1.2 |
+| N/A | Note shortcuts under the note field | Yes | 1.2 |
+| N/A | Total unpaid for 30 days or more, and the date the figures are for | Yes | 1.2 |
+
+All 17 rows of the brief pass, and all 21 rows beyond it are in place. The same table with three other builds of
+the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes
 

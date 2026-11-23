@@ -1,0 +1,37 @@
+PASS nothing of the add-on shows on the home view
+PASS home view: same number of a[data-remind] and the same total as before the script | 8, ₹11,820 11820
+PASS the block shows on a customer page | Ravi Kumar
+PASS it is a labelled card in the customer grid right after the entries
+PASS the heading is in English
+PASS total given on credit is the sum from the sample file | ₹2,350 = 2350
+PASS total received is the sum from the sample file | ₹1,680 = 1680
+PASS days since the last payment, counted to 2026-11-15 | 21 days since the last payment (last 2026-10-25)
+PASS the Call link carries the number | tel:+919000000101
+PASS the chat link is wa.me with the number, no message, opens apart | https://wa.me/919000000101
+PASS customer page: as many a[data-remind] as before the script | 8
+PASS the block has none of the reserved data attributes
+PASS every id in the block is used once on the page
+PASS Hindi labels show | इस ग्राहक के लिए और
+PASS Telugu labels show | ఈ కస్టమర్ కోసం మరిన్ని
+PASS the phone form is closed until asked for
+PASS the button opens a tel field with a status message
+PASS a short number is refused | Enter a 10-digit mobile number.
+PASS the number of another customer is refused, nothing moved | Another customer already has this number.
+PASS a good number changes the address | #/c/9000000177
+PASS the customer and all 6 entries moved to the new number, in the stored shop too | 6 new, 0 old
+PASS it says so, and the block follows the new number | Phone number changed.
+PASS the total on the home view is the same after the phone change | ₹11,820 11820
+PASS the first press only asks again | Press again to delete Sunita Devi and all their entries
+PASS the page heading is untouched | Sunita Devi
+PASS the second press removes the customer, the entries and the row, and goes home
+PASS the total drops by that customer's balance | ₹11,820 11820 - 3470 = ₹8,350 8350
+PASS a status bar says who was deleted and offers Undo | Deleted Sunita Devi.
+PASS the bar is fixed near the bottom, its button 44 px or more, and the block is not on the home view | gap 16, button 44
+PASS Undo puts the customer and the same 6 entries back, in the stored shop too
+PASS the row and the total are back | ₹11,820 11820
+PASS no confirm, alert or prompt was used
+PASS no sideways scroll on the customer page at 320 px, form open and the long delete label showing | 320
+PASS every control in the block is at least 44 px tall | all fine
+PASS the block also shows in the dark theme at 320 px
+PASS no page errors 
+ALL PASS (36 checks)

@@ -30,10 +30,11 @@ grader contract.
 | J6 | UPI QR and statement | Shop owner, then the customer | Opens a customer page, taps UPI QR code or Statement | QR drawn in the page; statement printed or saved as PDF with a scan-to-pay QR | E4, E3 |
 | J7 | Load a shop file and export | Shop owner (or a tester) | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
 | J8 | Payment screenshot | Shop owner | Chooses a screenshot in the entry form | Picture shrunk and kept on the entry; amount read and offered for checking | E1, E3, E8 |
-| J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in English, Hindi or Telugu, kept after reload; the app opens offline with the same shop | E7, E8 |
+| J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in one of twelve languages (three built in, nine fetched when chosen), kept after reload; the app opens offline with the same shop | E7, E8 |
 | J10 | Several shops (added in 1.1.0.0) | Shop owner | In Shop settings types a name and presses "Add shop", presses "Switch" or "Remove", or presses "Import as a new shop" on the import card | More than one shop on the same phone; the shop in use stays under `hisaab.v1`, the others are parked under `hisaab.shops` | E6 |
+| J11 | Customer tools (added in 1.2.0.0) | Shop owner | Opens a customer page and presses Call, WhatsApp chat, the change of phone number or Delete customer | Totals and days since the last payment shown; the phone app or a WhatsApp chat opens; the customer and their entries move to a new number, or are deleted with Undo for eight seconds | E4, E1 |
 
-All nine journeys asked for are supported by the code; none was dropped or merged. J10 was added in version 1.1.0.0.
+All nine journeys asked for are supported by the code; none was dropped or merged. J10 was added in version 1.1.0.0 and J11 in version 1.2.0.0.
 
 ## J1 First open
 
@@ -323,7 +324,7 @@ Source: [j8-payment-screenshot.puml](diagrams/j8-payment-screenshot.puml)
 
 ## J9 Language and offline
 
-**Goal.** Use the app in English, Hindi or Telugu, and keep working in a shop with no signal.
+**Goal.** Use the app in English, Hindi or Telugu, or since 1.2.0.0 in Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia or Urdu, and keep working in a shop with no signal.
 
 **Preconditions.** For offline use the app has been opened online over https (or on localhost) once, so
 the service worker has installed and cached the app shell.
@@ -335,10 +336,10 @@ the service worker has installed and cached the app shell.
 2. Optional: Hindi or Telugu digits (`#native-digits`, saved in the shop) and the light or dark theme
    (`hisaab.theme`).
 3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, `sample.js`,
-   `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v3` cache; on activate it deletes
+   `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v4` cache; on activate it deletes
    older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v3`.
+   Google Fonts from the network first and keeps a copy in `hisaab-v4`.
 5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
    `?today=` still works), or `index.html`.
 6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.
@@ -379,3 +380,33 @@ Source: [j10-several-shops.puml](diagrams/j10-several-shops.puml)
 - `hisaab.shops` = `{ active, list: [ { id, name, data } ] }`; the active shop's `data` is null because its
   ledger lives under `hisaab.v1`. The key is not written until a second shop is added and is removed again
   when one shop is left.
+
+## J11 Customer tools (added in 1.2.0.0)
+
+**Goal.** See a customer's totals at a glance, call or message them, correct a wrong phone number, or remove a
+customer who should not be in the ledger.
+
+**Preconditions.** A customer page is open. The block "More for this customer" sits after the entries.
+
+**Steps.**
+1. The owner opens a customer and reads the total given on credit, the total received, and the days since the
+   last payment (or "No payment yet").
+2. "Call" opens the phone app with the customer's number; "WhatsApp chat" opens a chat with no message. The
+   reminder with the name and the balance is the separate button of J4.
+3. To change the number the owner types a new 10-digit number and saves. The customer and every entry of that
+   customer move to the new number, and the page address follows.
+4. To delete, the owner presses "Delete customer", then presses again. The customer and all their entries are
+   removed, the overview opens, and a bar says who was deleted, with Undo for eight seconds.
+
+![J11 Customer tools](diagrams/j11-customer-tools.svg)
+
+Source: [j11-customer-tools.puml](diagrams/j11-customer-tools.puml)
+
+**Error and edge paths.**
+- A number that is not 10 digits, or that another customer already has, is refused with a message.
+- Two taps in quick succession on Delete count as one press.
+- Undo puts the customer and the same entries back. After the eight seconds, a reload or a switch to another
+  shop, the deletion stands.
+- The ledger's own Undo (for an entry or an import) is cleared by a phone change or a delete, so it cannot put an
+  entry back under the old number.
+- The total outstanding on the overview follows each change.

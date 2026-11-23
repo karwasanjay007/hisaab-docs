@@ -7,7 +7,7 @@
   evidence: seeds 12345, 777 and 4242, 15 customers each, all balances and totals correct; import replaces the shop
 - Bonus menu: DONE, all 7 (UPI link, overdue list, search, CSV, Hindi and Telugu, amount from screenshot, edit and delete)
 - Phone 375 px and light/dark: DONE (scrollWidth 375; every text pair passes WCAG AA in both themes)
-- Live: https://hisaab-hazel.vercel.app (Vercel project hisaab, team elodos)
+- Live: https://hisaab-hazel.vercel.app (Vercel project hisaab)
 
 ## What broke and how I fixed it
 - WhatsApp button text was 4.31:1 on #128C4A; button green changed to #0F7A3F (5.42:1).
@@ -265,3 +265,97 @@ entry, voice 15, offline, contrast. All pass.
 
 **Not covered.** Storage-full during a shop switch and a tab closed between the two writes of a switch were
 traced in the code by the reviewer, not run. The printed statement was checked by its markup, not on paper.
+
+## Version 1.2.0.0 (22 to 23 Nov 2026)
+
+Made after reading the screens of three builds rated top in the batch (their pages were read only; on one, its
+own "load demo shop" button was pressed, which fills the test browser alone). What they showed that Hisaab did
+not have went in as add-on files beside the ledger. The ids, attributes, totals and the import that the tester
+uses are the same as in 1.0.0.0, and no earlier test was edited.
+
+| Addition | What it does | How the baseline is kept |
+| --- | --- | --- |
+| Nine more languages | Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu join English, Hindi and Telugu: twelve in all, 216 text keys each, add-ons included. Quick entry learns each language's words for "gave" and "got" | English, Hindi and Telugu stay built into the app. A further language is one file, fetched only when chosen; a visit in the three built-in languages fetches nothing extra. The figures, rows and reminder links are the same in every language |
+| Customer page tools | Total given and total received, days since the last payment, Call and WhatsApp chat links, change phone number, delete customer in two presses with Undo | A block after the entries on the customer page only. The chat link is not a reminder link, so the count of reminder links is unchanged |
+| Note shortcuts | Six buttons under the note field (groceries, milk, rice, oil, paid on UPI, cash, in the chosen language) | They only fill the note field; the entry is saved by the same button |
+| Overdue total and date | A line above the overdue list with the amount unpaid for 30 days or more and the number of customers; the date the figures are for, under the total | Drawn beside the existing figures; nothing is stored |
+
+**Review.** One independent reviewer read the change before the deploy: safe to deploy, nothing in what the
+tester reads changed. Four points in the new customer tools and note shortcuts were fixed before going live: the
+ledger's own Undo is cleared when a customer's number changes or the customer is deleted, so an entry cannot come
+back under the old number; two taps in quick succession on Delete count as one press; a note shortcut respects the
+field's length; the fourth (entries put back in a slightly different order after Undo) loses nothing and was left.
+The translators flagged that the quick-entry hint showed an example the parser did not understand in the new
+languages; the parser now learns each language's words, and the example uses the customer's name as stored.
+
+**Translations.** Written by the build's own translation pass and checked by a script for the same keys, the same
+placeholders, the right script and the words that stay in Latin (`evidence/last-i18n-check.txt`, 11 languages,
+216 keys each). No native speaker has read the nine new languages; wording may be improved by one.
+
+**Tests on the live site after the deploy.** New: `evidence/last-langs-live.txt` (25 checks: twelve languages,
+each in its own script with the same total, rows and reminder links, no sideways scroll at 375 px, a visit in
+English fetches no language file, each language's quick-entry example fills the form),
+`evidence/last-customer-live.txt` (36 checks). Earlier suites, unedited: the independent checker with seed 4242
+(100 out of 100, hidden data 60 out of 60), the 61-shop sweep, brief, final, gaps, critic 14, phone-import 12,
+navigation, quick entry, voice 15, offline, contrast, profile 36, shops 25, phone width 54. All pass.
+
+**Not covered.** Voice entry in the nine new languages uses the browser's English speech service; a name spoken
+in another script is not matched to a customer saved in Latin letters. Dates stay in the English short form in
+the nine new languages. Urdu is laid out left to right like the rest of the page.
+
+## Requirement and feature map (23 Nov 2026)
+
+Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it
+(called A, B and C here). The first column names the requirement the row belongs to: R1 to R9 are the nine "must
+do" items, B1 to B7 the bonus menu, M the light and dark marks. N/A means the brief does not ask for it.
+
+How to read the cells. Hisaab: "Pass" means tested on the live site on 22 and 23 Nov 2026; "Yes" says a feature
+outside the brief exists. Other builds: only their screens were read and nothing was typed, so "Seen" means it is
+visible on those screens, "Seen in part" means part of it is visible, "Not tested" means it cannot be judged
+without using their app, and "No" means it was not on the screens read. Build C was read with no shop loaded, so
+most of its rows cannot be judged.
+
+| Req | Feature | Hisaab | Build A | Build B | Build C |
+| --- | --- | --- | --- | --- | --- |
+| R1 | Add a customer with a name and a 10-digit phone | Pass | Seen | Seen | Seen |
+| R2 | Add an entry: credit or payment, amount, date, note | Pass | Seen | Seen in part | Not tested |
+| R3 | Each balance, and the total outstanding at the top | Pass | Seen | Seen | Seen in part |
+| R4 | Customer page lists entries, newest first | Pass | Seen | Seen in part | Not tested |
+| R5 | Payment screenshot shown on the entry | Pass | Seen in part | Seen in part | Not tested |
+| R6 | WhatsApp reminder with the name and the balance | Pass | Seen in part | Seen in part | Not tested |
+| R7 | Data still there after a reload | Pass | Not tested | Not tested | Not tested |
+| R8 | Import box for a shop file in the sample format | Pass | Seen | Seen | Seen |
+| R9 | Works at 375 px | Pass | Not tested | Not tested | Not tested |
+| B1 | Overdue list sorted by days since the last payment | Pass | Seen in part | Seen in part | Seen in part |
+| B2 | Edit and delete an entry | Pass | Seen | No | Not tested |
+| B3 | CSV export that matches the data | Pass | Seen | Seen | Seen |
+| B4 | Search by name or phone | Pass | Seen | Seen | No |
+| B5 | UPI pay link in the reminder | Pass | Not tested | Seen in part | Not tested |
+| B6 | Hindi or Telugu labels | Pass | Seen | Seen in part | Seen |
+| B7 | Reading the amount from the screenshot | Pass | Seen in part | No | Not tested |
+| M | Readable in light and dark | Pass | Seen in part | Seen in part | No |
+| N/A | Languages beyond Hindi and Telugu | Yes, twelve in all | Yes, twelve | No | No |
+| N/A | Quick entry by typing or by voice | Yes | No | No | No |
+| N/A | UPI QR code | Yes | No | No | No |
+| N/A | Printable statement (PDF) | Yes | No | No | No |
+| N/A | Remind all overdue customers in turn | Yes | No | No | No |
+| N/A | Undo after a delete, an edit or an import | Yes | No | No | No |
+| N/A | Works without signal after the first visit | Yes | Not tested | Not tested | Not tested |
+| N/A | Backup file (JSON) | Yes | Yes | No | No |
+| N/A | Import by choosing a file | Yes | Yes | No | Yes |
+| N/A | Sample or demo shop in one tap | Yes | Yes | Yes | No |
+| N/A | Overview figures beyond the total | Yes | Yes | Seen in part | No |
+| N/A | Total unpaid for 30 days or more | Yes | Yes | No | No |
+| N/A | The date the figures are for | Yes | Yes | No | Yes |
+| N/A | Shop profile: owner, address, logo | Yes | No | No | Not tested |
+| N/A | Balance history line | Yes | No | No | No |
+| N/A | More than one shop on the same phone | Yes | Seen in part | No | No |
+| N/A | Customer page totals and days since the last payment | Yes | Yes | No | Not tested |
+| N/A | Call and WhatsApp chat links for a customer | Yes | Yes | No | Not tested |
+| N/A | Rename a customer and change the phone number | Yes | Yes | No | Not tested |
+| N/A | Delete a customer | Yes, with Undo | Yes | No | Not tested |
+| N/A | Note shortcuts | Yes | Yes | No | No |
+| N/A | Initial of the name beside each customer | Yes | Yes | No | No |
+
+Hisaab: all 17 rows of the brief pass, and all 22 rows outside the brief are in place. None of the features seen on
+the three other builds is missing.

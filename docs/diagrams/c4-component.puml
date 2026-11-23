@@ -2,28 +2,32 @@
 !include <C4/C4_Component>
 title Hisaab: components inside app.js (C4 level 3)
 
-ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops")
+ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops; v1.2: no new key, hisaab.lang holds one of twelve codes")
 Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
 Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
-Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: cache hisaab-v3, the app shell also lists profile.css, profile.js, shops.css, shops.js")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; the i18n files are cached the first time each is fetched")
 Container_Ext(profile, "Shop profile add-on", "profile.js, profile.css", "v1.1: owner, address and logo in Shop settings, the header and the printed statement; balance history line as inline SVG on the customer page")
 Container_Ext(shops, "Several shops add-on", "shops.js, shops.css", "v1.1: add, switch and remove shops, Import as a new shop; the current shop stays under hisaab.v1")
+Container_Ext(langs, "More languages add-on", "langs.js", "v1.2: nine more languages (Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia, Urdu); fetches a language file only when that language is chosen")
+Container_Ext(i18nfiles, "Language files", "i18n/*.json", "v1.2: one file per language code; sections core, profile, shops, customer, extras; 216 text keys each; not precached")
+Container_Ext(extras, "Extras add-on", "extras.js, extras.css", "v1.2: note shortcut buttons under the note field; a one-line total of what is unpaid for 30 days or more above the overdue list")
+Container_Ext(customer, "Customer page add-on", "customer.js, customer.css", "v1.2: total given and total received, days since the last payment, Call and WhatsApp chat links, change phone number, delete customer with Undo")
 
 Container_Boundary(app, "app.js (one IIFE)") {
   Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")
   Component(store, "State and storage", "load, save, fromShopFile, balances, totalOutstanding, overdueRows", "The shop object, its validation and every computed figure")
-  Component(i18n, "i18n", "I18N, t, applyLabels, translit, money, digits", "English, Hindi and Telugu labels, names in local script, rupee formatting")
+  Component(i18n, "i18n", "I18N, t, applyLabels, translit, money, digits", "English, Hindi and Telugu labels, names in local script, rupee formatting; v1.2: more languages arrive through addLanguage")
   Component(render, "Rendering", "render, renderCustomer, entryHtml, runningBalances", "Builds the overview, lists and customer page from state, escaping text")
   Component(router, "Routing and navigation", "route, goTo, spy, closeSheet", "Hash routes #/, #/s/section, #/c/phone; left nav, bottom bar, More sheet")
   Component(form, "Entry form and validation", "onEntrySubmit, startEdit, deleteEntry, onAddCustomer, toast", "Adds, edits and deletes entries and customers; Undo through the toast")
-  Component(quick, "Quick entry and voice", "parseQuick, applyQuick, onQuick, setupVoice", "Parses Sunita 500 udhaar, typed or spoken, and fills the form")
+  Component(quick, "Quick entry and voice", "parseQuick, applyQuick, onQuick, setupVoice", "Parses Sunita 500 udhaar, typed or spoken, and fills the form; v1.2: quickWords adds each language's words for gave and got")
   Component(remind, "Reminders", "reminderText, waLink, upiLink, receiptLink, renderRemindAll", "WhatsApp links with name, balance and UPI pay link; remind-all queue")
   Component(qr, "QR", "loadQr, qrSvg, showQr", "UPI QR code on the customer page")
   Component(stmt, "Statement", "printStatement", "Printable customer statement with totals and a scan-to-pay QR")
   Component(io, "Import and export", "doImport, fromCsv, csvRows, exportEntries, exportBalances, exportJson, csvCell", "Replaces the shop from JSON or CSV with Undo; writes CSV and JSON files")
   Component(shot, "Screenshot reading", "onShotChange, loadTesseract, readAmount, pickAmount", "Resizes to a 640 px JPEG and reads the paid amount")
   Component(theme, "Theme", "currentTheme, toggleTheme", "Light and dark, following the system until chosen")
-  Component(hook, "Add-on hook", "window.Hisaab: on(event, fn), state(), replace(shop), save(), render()", "v1.1: emits render, statement, imported and export to the add-ons; each listener runs in its own guard")
+  Component(hook, "Add-on hook", "window.Hisaab: on(event, fn), state(), replace(shop), save(), render()", "v1.1: emits render, statement, imported and export to the add-ons; each listener runs in its own guard; v1.2: also addLanguage, hasLanguage, setLang, text, balances, overdue, quickWords and a few read-only helpers")
 }
 
 Rel(init, store, "load(); an empty shop on first visit")
@@ -54,6 +58,13 @@ Rel(hook, store, "state(), replace(shop), save()")
 Rel(profile, hook, "Listens and reads the shop", "window.Hisaab")
 Rel(shops, hook, "Listens, replaces the shop", "window.Hisaab")
 Rel(shops, ls, "Parks the other shops", "hisaab.shops")
+Rel(langs, hook, "v1.2: adds a language and its quick entry words", "addLanguage, hasLanguage, setLang, quickWords")
+Rel(langs, i18nfiles, "v1.2: fetches the chosen language", "fetch")
+Rel(swc, i18nfiles, "v1.2: caches on first fetch", "Cache API")
+Rel(extras, hook, "v1.2: listens to render, reads overdue rows and labels", "overdue, text")
+Rel(customer, hook, "v1.2: listens to render, reads balances, changes the shop", "balances, text, replace, save")
+Rel(hook, i18n, "v1.2: addLanguage, setLang, text")
+Rel(hook, quick, "v1.2: quickWords")
 
 LAYOUT_WITH_LEGEND()
 @enduml

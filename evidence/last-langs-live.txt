@@ -1,0 +1,26 @@
+PASS a visit in English fetches no language file | 
+PASS the language menu has twelve languages, the first three as before | en,hi,te,bn,mr,ta,gu,kn,ml,pa,or,ur
+PASS six note shortcuts under the note field | groceries, milk, rice, oil, paid on UPI, cash
+PASS a shortcut fills the note, a second one is added after a comma | milk, oil
+PASS the overdue line gives the unpaid total and the number of customers | ₹5,260 unpaid for 30 days or more, from 4 customers
+PASS bn: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | দোকানের সেটিংস | total 11820 | width 375
+PASS mr: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | दुकानाची सेटिंग | total 11820 | width 375
+PASS ta: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | கடை அமைப்புகள் | total 11820 | width 375
+PASS gu: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | દુકાનનાં સેટિંગ | total 11820 | width 375
+PASS kn: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | ಅಂಗಡಿ ಸೆಟ್ಟಿಂಗ್ | total 11820 | width 375
+PASS ml: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | കട സെറ്റിംഗ്സ് | total 11820 | width 375
+PASS pa: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | ਦੁਕਾਨ ਦੀ ਸੈਟਿੰਗ | total 11820 | width 375
+PASS or: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | ଦୋକାନ ସେଟିଂ | total 11820 | width 375
+PASS ur: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px | دکان کی سیٹنگ | total 11820 | width 375
+PASS each language file was fetched once, when chosen | 9
+PASS bn: its own example "Sunita 500 বাকি" fills the form: Sunita Devi, 500, credit | {"amount":"500","cust":"9000000102","type":"credit"}
+PASS ta: its own example "Sunita 500 கடன்" fills the form: Sunita Devi, 500, credit | {"amount":"500","cust":"9000000102","type":"credit"}
+PASS ur: its own example "Sunita 500 ادھار" fills the form: Sunita Devi, 500, credit | {"amount":"500","cust":"9000000102","type":"credit"}
+PASS kn: its own example "Sunita 500 ಉದ್ರಿ" fills the form: Sunita Devi, 500, credit | {"amount":"500","cust":"9000000102","type":"credit"}
+PASS the chosen language is still there after a reload | ta
+PASS a customer page in Tamil: its own script, no sideways scroll
+PASS Hindi, built in, still works after the others
+PASS back in English everything reads exactly as at the start
+PASS a language whose file cannot be fetched falls back to English
+PASS no page errors 
+ALL PASS (25 checks)

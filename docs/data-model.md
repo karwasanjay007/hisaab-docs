@@ -77,7 +77,7 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.theme` | `light` or `dark` | the theme button is pressed | by a small script in the `<head>` of `index.html` before the page paints; when absent the device setting decides |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v3` so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v4` so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`), so one online visit is enough; on activate it deletes older caches such as
 `hisaab-v1`. At run time it fetches from the network first and keeps a copy of the app's own files, the

@@ -1,8 +1,8 @@
-1.1.0.0
+1.2.0.0
 
 # Hisaab release baseline
 #
-# Version:     1.1.0.0
+# Version:     1.2.0.0
 # Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://hisaab-hazel.vercel.app
@@ -18,3 +18,8 @@
 # statement; a balance history line on each customer page; more than one shop
 # on the same phone, with a switcher and "Import as a new shop". The add-ons
 # live in profile.js and shops.js; the ledger itself is unchanged.
+#
+# Version 1.2.0.0 (22 to 23 November 2026) adds, as add-on files beside the
+# ledger: nine more languages (twelve in all), customer page tools (totals, days
+# since the last payment, call, WhatsApp chat, change phone, delete with undo),
+# note shortcuts, an overdue total and the date the figures are for.

@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
-| Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`, team elodos) |
+| Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
 | Last revised | 20 Nov 2026 |
 
@@ -58,7 +58,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-4 | Screenshots resized in the browser to at most 640 px and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v3`: the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v4`: the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
@@ -90,7 +90,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | --- | --- | --- |
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
 | localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`. A `storage` event listener reloads the shop when another tab changes it |
-| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v3` on install; network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
+| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v4` on install; network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
 | Lazy-loaded libraries | qrcode-generator 1.4.4, Tesseract.js 5.1.1 | QR codes as inline SVG; text recognition of payment screenshots |
 | Web Speech API | `SpeechRecognition` or `webkitSpeechRecognition` | Voice quick entry in `en-IN`, `hi-IN` or `te-IN`. The microphone button stays hidden when the browser has no support |
 
@@ -145,7 +145,7 @@ every figure is computed (F-3).
 ![Deployment](docs/diagrams/deployment.svg)
 
 - Source: private GitHub repository karwasanjay007/hisaab.
-- Hosting: Vercel static hosting, project `hisaab` in team elodos, at https://hisaab-hazel.vercel.app.
+- Hosting: Vercel static hosting, project `hisaab`, at https://hisaab-hazel.vercel.app.
   No functions, no environment variables used by the app.
 - Release, from PowerShell in the project folder: `vercel deploy --prod --yes`.
 - `.vercelignore` keeps `brief`, `brand`, `tests`, `docs`, `*.md`, the editor and agent folders
@@ -206,7 +206,7 @@ Breakpoints in `styles.css`:
 Below 1024 px navigation is a bottom bar with a More sheet.
 
 ### Offline
-- On install the service worker precaches the app shell in `hisaab-v3` (`./`, `index.html`, `styles.css`,
+- On install the service worker precaches the app shell in `hisaab-v4` (`./`, `index.html`, `styles.css`,
   `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`); on activate it deletes
   older caches. After one online visit the app opens with no signal, and the ledger works fully offline
   because the data is local.
@@ -271,5 +271,16 @@ Further minor findings are listed in `review/functional.md`.
 | Add-on hooks | `app.js` (end of file) | `window.Hisaab`: `on(event, fn)`, `state()`, `replace(shop)`, `save()`, `render()`, `blank()` and formatting helpers. Events: `render`, `statement`, `imported`, `export`. Each listener runs in its own guard, so an add-on that fails cannot stop the ledger |
 | Shop profile and balance history | `profile.js`, `profile.css` | `#profile-form` inside Shop settings (`#shop-owner`, `#shop-address`, `#shop-logo`); state fields `owner`, `address`, `logo`; `#shop-logo-img` in the header; `#bal-history` on the customer page, an inline SVG |
 | Several shops | `shops.js`, `shops.css` | `#sec-shops` inside the Shop settings card; `#shop-add`, `[data-shop-switch]`, `[data-shop-remove]`, `#import-new`. Storage key `hisaab.shops` = `{ active, list: [{ id, name, data }] }`; the active shop's `data` is null because its ledger is under `hisaab.v1` |
-| Service worker | `sw.js` | Cache `hisaab-v3`; the app shell now also lists `profile.css`, `profile.js`, `shops.css`, `shops.js` |
+| Service worker | `sw.js` | Cache `hisaab-v4`; the app shell now also lists `profile.css`, `profile.js`, `shops.css`, `shops.js` |
 | Tests | `tests/profile.mjs`, `tests/shops.mjs`, `tests/addons-width.mjs` | 36, 25 and 54 checks |
+
+## Version 1.2.0.0 additions (22 to 23 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Add-on hooks, extended | `app.js` (end of file) | `window.Hisaab` gained `addLanguage`, `hasLanguage`, `setLang`, `text`, `balances`, `overdue`, `quickWords`, `forgetUndo` and a few read-only helpers |
+| More languages | `langs.js`, `i18n/<code>.json` | Nine language files (sections core, profile, shops, customer, extras; 216 keys each), fetched only when chosen and registered through `addLanguage`; the choice stays in the existing key `hisaab.lang` |
+| Customer tools | `customer.js`, `customer.css` | `#cust-tools` after the entries on the customer page: totals, days since the last payment, `#cust-tools-call`, `#cust-tools-chat`, change phone (`#cust-new-phone`), delete with `#cust-undo-bar` |
+| Note shortcuts, overdue total, date | `extras.js`, `extras.css` | `#note-chips` under `#entry-note`, `#overdue-total` above the overdue list, `#as-of` under the total |
+| Service worker | `sw.js` | Cache `hisaab-v4`; the app shell also lists the five new add-on files; a language file is cached the first time it is fetched |
+| Tests | `tests/i18n-check.cjs`, `tests/langs.mjs`, `tests/customer.mjs` | 11 languages checked; 25 and 36 checks |

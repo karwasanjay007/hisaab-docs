@@ -63,6 +63,17 @@ else valid (any 10 digits)
 end
 == Record an entry ==
 Owner -> UI : choose customer (fixed on a customer page), Credit or Payment,\namount, date, note
+opt v1.2: note shortcuts (add-on extras.js)
+  note right of UI : v1.2: six buttons under the note field, in the chosen language:\ngroceries, milk, rice, oil, paid on UPI, cash
+  Owner -> UI : tap a shortcut
+  UI -> App : click (extras.js)
+  alt the note is empty
+    App -> UI : the note field is filled with that word
+  else the note already has a different word
+    App -> UI : the word is added after a comma
+  end
+  note right of App : the note is saved with the entry as before
+end
 Owner -> UI : press Save entry
 UI -> App : submit: onEntrySubmit()
 alt no customer
@@ -86,6 +97,7 @@ else valid
     App -> UI : toast "Storage is full. Export a backup..."
   end
   App -> App : resetEntryForm() (keeps the customer); render()
+  App -> UI : v1.2 (extras.js): above the overdue list, a line with the total unpaid\nfor 30 days or more and the number of customers, after each render
   alt edited entry
     App -> UI : toast "Entry updated." with Undo and a "Send receipt" link (7 s)
   else new entry
