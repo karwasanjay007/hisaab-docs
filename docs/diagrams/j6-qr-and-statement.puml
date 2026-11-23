@@ -48,6 +48,7 @@ App -> App : currentPhone = phone; show #view-customer;\nmove the entry form int
 App -> App : render(), renderCustomer(b)
 App -> UI : name with local script, phone, balance, last paid, entries newest first\nwith the running balance after each
 App -> UI : #cust-remind, #cust-upi and #cust-qr (the last two only when bal above zero)
+note right of UI : v1.2 add-on profile.js, on each render:\na "Balance over time" line drawn as inline SVG,\none point per entry, with the highest and lowest balance
 == UPI QR code ==
 Owner -> UI : tap UPI QR code (#cust-qr)
 UI -> App : showQr(): open #qr-card, show amount and UPI ID (demo note if not set)

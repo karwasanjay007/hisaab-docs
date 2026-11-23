@@ -5,6 +5,7 @@ title Hisaab: containers (C4 level 2)
 Person(owner, "Shop owner", "Uses Hisaab in a phone or desktop browser")
 System_Ext(whatsapp, "WhatsApp", "Chat opened from a wa.me link")
 System_Ext(upi, "UPI app", "Opens upi://pay links")
+System_Ext(dialer, "Phone dialer", "Opens tel: links")
 System_Ext(cdn, "cdnjs and jsDelivr", "Public script CDNs")
 System_Ext(vercel, "Vercel static hosting", "Serves the site over HTTPS")
 
@@ -33,6 +34,8 @@ Rel(libs, cdn, "Downloaded from", "HTTPS")
 Rel(spa, speech, "Starts listening when the microphone is tapped")
 Rel(spa, whatsapp, "Opens reminder, receipt and remind-all links", "wa.me")
 Rel(spa, upi, "Pay link inside the reminder and the QR code", "upi://pay")
+Rel(addons12, whatsapp, "v1.2: customer.js opens a plain chat", "wa.me")
+Rel(addons12, dialer, "v1.2: customer.js Call link", "tel:+91")
 
 LAYOUT_WITH_LEGEND()
 @enduml

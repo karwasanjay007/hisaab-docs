@@ -69,7 +69,7 @@ package "localStorage key hisaab.v1 (one JSON document)" {
 
 package "Separate localStorage keys" {
   class Preferences <<per browser>> {
-    hisaab.lang : en | hi | te
+    {field} hisaab.lang : en | hi | te  (v1.2: also bn, mr, ta, gu, kn, ml, pa, or, ur)
     hisaab.theme : light | dark
   }
 }

@@ -5,7 +5,7 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 20 Nov 2026 |
+| Last revised | 23 Nov 2026 (version 1.2.0.0) |
 | Additions | Versions 1.1.0.0 and 1.2.0.0 (22 to 23 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
@@ -41,7 +41,7 @@ Focus:
 | Item | Why | Where it goes instead |
 | --- | --- | --- |
 | Sending reminders automatically | Needs a messaging account and consent | Phase 3 |
-| Several shops or staff logins | One owner, one phone | Phase 3 |
+| Staff logins | One owner, one phone. Several shops on one phone is built since 1.1.0.0 (V-3) | Phase 3 |
 | Stock and billing | Not asked | Not planned |
 
 ## 3. Open questions
@@ -105,12 +105,13 @@ Focus:
 | 20 Nov 2026 | D-3 and A-1 revised: total outstanding is the sum of all balances, with the owed figure in brackets when some customers are in advance |
 | 20 Nov 2026 | D-3: the owed figure moved out of the total into a note just below it, so the total shows one figure |
 | 23 Nov 2026 | Section added for the additions of versions 1.1.0.0 and 1.2.0.0 |
+| 23 Nov 2026 | Requirements traced back from the app: V-11 to V-19 added for what 1.0.0.0 does beyond sections 1 to 5; section 2.2 corrected (several shops is built) |
 
 ## Version 1.1.0.0 and 1.2.0.0: additions (22 to 23 Nov 2026)
 
 Why they were added. After the first release the app was compared with other builds of the same batch. Only
 the screens of those builds were read. What they showed that Hisaab did not have was added, in two steps:
-three additions in 1.1.0.0 and seven in 1.2.0.0. The sections above are unchanged and still describe
+three additions in 1.1.0.0 and seven in 1.2.0.0. The sections above still describe
 version 1.0.0.0.
 
 Who they are for. Every addition is for the shop owner. Nothing changes for the customer, who still receives
@@ -131,6 +132,20 @@ Requirements:
 | V-9 | 1.2.0.0 | Note shortcuts | Six buttons under the note field fill in a common note: groceries, milk, rice, oil, paid on UPI, cash. The entry is saved by the same button as before |
 | V-10 | 1.2.0.0 | Total unpaid for 30 days or more, and the date of the figures | A line above the overdue list gives the amount unpaid for 30 days or more and the number of customers. The date the figures are for shows under the total (F-4) |
 
+Built in version 1.0.0.0 but not stated in sections 1 to 5 (found when the requirements were traced back from the app on 23 Nov 2026):
+
+| ID | Version | Feature | Requirement |
+| --- | --- | --- | --- |
+| V-11 | 1.0.0.0 | Quick entry, typed or spoken | The owner can type or say one line, such as a name, gave or got, and an amount, and the entry form fills in. An unclear line asks the owner to choose, and nothing is saved until the owner saves |
+| V-12 | 1.0.0.0 | Load a spreadsheet | Besides a shop file, the owner can load a spreadsheet with name, phone, type, amount and date columns. Rows that cannot be read are skipped and listed |
+| V-13 | 1.0.0.0 | Backup and balances files | Besides the entries spreadsheet, the owner can save a balances spreadsheet with a total row and a full backup file that loads back |
+| V-14 | 1.0.0.0 | Key figures and recent entries | The overview shows who owes the most, what was collected and given in the last 30 days, who has gone longest without paying, and the newest entries |
+| V-15 | 1.0.0.0 | Remind all overdue | One button opens the reminders for every overdue customer, one at a time. The owner still presses Send each time |
+| V-16 | 1.0.0.0 | Pay code and statement | A customer page shows a pay code for the balance and gives a statement that can be printed or saved |
+| V-17 | 1.0.0.0 | Receipt after an entry | After an entry is saved, the owner can send the customer a receipt message with the new balance |
+| V-18 | 1.0.0.0 | Names and digits in the local script | The owner can correct a customer's name and add its Hindi and Telugu spelling. Figures can be shown in Hindi or Telugu digits |
+| V-19 | 1.0.0.0 | Works offline and can be installed | After the first visit the ledger opens with no network and can be added to the home screen. Reading the amount from a screenshot still needs a network |
+
 Constraints:
 
 | ID | Constraint |
@@ -145,6 +160,6 @@ Out of scope for these versions:
 | Item | Why | Where it goes instead |
 | --- | --- | --- |
 | A server or an account | D-1 still holds: everything stays in the browser, on the owner's phone | Not planned |
-| Staff logins | Several shops on one phone is now in (V-3, which revises the row in section 2.2); logins need an account | Phase 3 |
+| Staff logins | Several shops on one phone is now in (V-3, and the row in section 2.2 now says so); logins need an account | Phase 3 |
 | Translation review by a native speaker | The nine new languages were checked by a script for keys, placeholders and script, not read by a native speaker | Still to come |
 | Voice entry in the nine new languages | The browser's speech service is used in English | Not planned |

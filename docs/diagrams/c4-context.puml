@@ -9,6 +9,7 @@ Person(grader, "Automated grader", "Scripted browser that reads fixed ids and da
 System(hisaab, "Hisaab", "Shop credit ledger that runs entirely in the browser; data stays on the phone")
 
 System_Ext(whatsapp, "WhatsApp", "Opens a chat from a wa.me link with the message already written")
+System_Ext(dialer, "Phone dialer", "v1.2: opens a tel: link to call the customer")
 System_Ext(upi, "Customer's UPI app", "Opens a upi://pay link or scans the QR code to pay the shop")
 System_Ext(vercel, "Vercel", "Static hosting of the site at hisaab-hazel.vercel.app")
 System_Ext(cdnjs, "cdnjs", "Serves qrcode-generator 1.4.4 on demand")
@@ -17,7 +18,8 @@ System_Ext(fonts, "Google Fonts", "Baloo 2 and Noto Sans with Devanagari and Tel
 
 Rel(owner, hisaab, "Records entries, checks balances, sends reminders", "HTTPS, browser")
 Rel(grader, hisaab, "Opens pages, fills #import-box, reads #total-outstanding", "HTTPS, Playwright")
-Rel(hisaab, whatsapp, "Hands over reminder and receipt text", "wa.me/91<phone>?text=")
+Rel(hisaab, whatsapp, "Hands over reminder and receipt text; v1.2: opens a plain chat from the customer page", "wa.me/91<phone>?text=")
+Rel(hisaab, dialer, "v1.2: Call link on the customer page", "tel:+91<phone>")
 Rel(whatsapp, customer, "Delivers the message the owner sends")
 Rel(customer, upi, "Pays the amount shown")
 Rel(hisaab, upi, "Pay link and QR code", "upi://pay?pa=...&am=...")

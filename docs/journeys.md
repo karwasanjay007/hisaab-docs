@@ -1,7 +1,8 @@
 # Hisaab: user journeys
 
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
-is drawn from `app.js`, `index.html` and `sw.js` as built: the function names, the order of calls, what is
+is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
+`langs.js`, `extras.js` and `customer.js`: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -34,7 +35,7 @@ grader contract.
 | J10 | Several shops (added in 1.1.0.0) | Shop owner | In Shop settings types a name and presses "Add shop", presses "Switch" or "Remove", or presses "Import as a new shop" on the import card | More than one shop on the same phone; the shop in use stays under `hisaab.v1`, the others are parked under `hisaab.shops` | E6 |
 | J11 | Customer tools (added in 1.2.0.0) | Shop owner | Opens a customer page and presses Call, WhatsApp chat, the change of phone number or Delete customer | Totals and days since the last payment shown; the phone app or a WhatsApp chat opens; the customer and their entries move to a new number, or are deleted with Undo for eight seconds | E4, E1 |
 
-All nine journeys asked for are supported by the code; none was dropped or merged. J10 was added in version 1.1.0.0 and J11 in version 1.2.0.0.
+All eleven journeys are supported by the code. The first nine were asked for in the brief; none was dropped or merged. J10 was added in version 1.1.0.0 and J11 in version 1.2.0.0.
 
 ## J1 First open
 
@@ -86,7 +87,9 @@ Source: [j1-first-open.puml](diagrams/j1-first-open.puml)
    spaces and + ( ) - . that is 10 digits after `phone10()` strips `+91` or a leading `0` (`validPhone()`)
    and that no other customer has; it saves, renders and selects the new customer in the entry form.
 2. The owner picks the customer (on a customer page it is fixed), Credit or Payment, the amount, the date
-   and a note, and presses Save entry.
+   and a note, and presses Save entry. Since 1.2.0.0 six note shortcuts sit under the note field
+   (`#note-chips`, from `extras.js`): groceries, milk, rice, oil, paid on UPI and cash, in the chosen
+   language. A tap fills the note.
 3. `onEntrySubmit()` checks, in this order: a customer is chosen, the amount is above zero, the amount is
    at most ₹1,00,00,000, the date is valid, the date is not after today.
 4. A new entry is pushed with an id and a sequence number; an edited entry is first copied
@@ -153,6 +156,8 @@ Source: [j3-quick-entry-voice.puml](diagrams/j3-quick-entry-voice.puml)
 - On a customer page the customer is already known, so only the amount, type and note are read.
 - Recognition errors show "Did not catch that..." (no speech) or "Could not use the microphone...".
 - Amounts must be said or typed as digits; number words such as "paanch" are not read.
+- In the nine languages fetched by `langs.js`, that language's words for credit and payment are taught to
+  the parser (`H.quickWords`) when the language loads.
 
 ## J4 WhatsApp reminder
 
@@ -210,6 +215,9 @@ Source: [j5-remind-all.puml](diagrams/j5-remind-all.puml)
 - Tapping after the last reminder starts the queue again from the top.
 - If an entry changes who is overdue, the queue is rebuilt and starts again at the first customer.
 - The app opens chats only; nothing is sent without the owner.
+- Since 1.2.0.0 `extras.js` adds one line by the overdue list (`#overdue-total`): the amount unpaid for 30
+  days or more and from how many customers. It also adds `#as-of` under the total, the date the figures
+  are for.
 
 ## J6 UPI QR code and statement
 
@@ -220,13 +228,17 @@ owes money. The QR library needs a network connection the first time.
 
 **Steps.**
 1. Tapping a customer opens `#/c/{phone}`; `route()` shows the customer page and `renderCustomer()` fills
-   the name, phone, balance, last payment and the entries with the running balance after each.
+   the name, phone, balance, last payment and the entries with the running balance after each. Since
+   1.2.0.0 `profile.js` also draws a "Balance over time" line as inline SVG, with the highest and lowest
+   balance.
 2. UPI QR code: `showQr()` opens the card with the amount and UPI ID. `loadQr()` adds
    `qrcode-generator` 1.4.4 from cdnjs the first time, then `qrSvg()` draws the `upi://pay` link as an SVG
    QR code in the page. Tapping again closes it.
 3. Statement (PDF): the app waits for the QR library for at most 1.5 seconds, then `printStatement()`
    builds the statement (shop, customer, date, entries oldest first with gave, got and balance, totals),
    adds a scan-to-pay QR when money is owed and the library is loaded, and calls `window.print()`.
+   Before printing, `profile.js` puts the shop logo and a line with the owner name and address in the
+   statement head when the shop profile has them. The same logo shows in the top bar.
 4. The browser's print dialog lets the owner print or save as PDF; afterwards the page returns to normal.
 
 ![J6 QR and statement](diagrams/j6-qr-and-statement.svg)
@@ -282,7 +294,8 @@ Source: [j7-import-export.puml](diagrams/j7-import-export.puml)
   bad rows loads and lists what was skipped.
 - There is no confirm dialog; Undo is the safety net.
 - CSV cells that start with `=`, `+`, `-` or `@` get a leading quote so a spreadsheet does not run them.
-- The JSON export leaves out screenshots.
+- The JSON export leaves out screenshots. It carries the shop profile (owner, address, logo), and a file
+  with a profile brings it back on import (`profile.js`).
 - The Entries CSV loads back through the same box to the same totals.
 
 ## J8 Payment screenshot
@@ -330,12 +343,14 @@ Source: [j8-payment-screenshot.puml](diagrams/j8-payment-screenshot.puml)
 the service worker has installed and cached the app shell.
 
 **Steps.**
-1. The owner picks English, हिंदी or తెలుగు. The choice is saved as `hisaab.lang`; `applyLabels()`
+1. The owner picks one of the twelve languages in `#lang`. English, हिंदी and తెలుగు are built into
+   `app.js`; the other nine are fetched by `langs.js` from `i18n/{code}.json` when chosen. The choice is saved as `hisaab.lang`; `applyLabels()`
    changes every label and placeholder and `render()` redraws: names with the local script in brackets,
    dates in the chosen locale, reminders and receipts in the chosen language.
 2. Optional: Hindi or Telugu digits (`#native-digits`, saved in the shop) and the light or dark theme
    (`hisaab.theme`).
-3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, `sample.js`,
+3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, the add-ons
+   `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `sample.js`,
    `sample-data.json`, `icon.svg`, `manifest.webmanifest`) in the `hisaab-v4` cache; on activate it deletes
    older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to

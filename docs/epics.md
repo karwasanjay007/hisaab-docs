@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` as built on 20 Nov 2026 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.0.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 20 Nov 2026 |
+| Last revised | 23 Nov 2026 (version 1.2.0.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -42,19 +42,19 @@ prints after it.
 | Epic | Title | Features | Acceptance criteria | PRD trace |
 | --- | --- | --- | --- | --- |
 | E1 | Customers and entries | 7 | 41 | F-1, F-2, F-3, F-5, D-4, S-3, stage 1, stage 2 (screenshot, edit and delete) |
-| E2 | Shop overview | 5 | 20 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search) |
-| E3 | Reminders and getting paid | 5 | 17 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link) |
-| E4 | Customer page and statement | 5 | 16 | F-1, stage 1 (customer page newest first) |
-| E5 | Quick entry, typed and by voice | 4 | 19 | Not in the PRD (added at final review) |
-| E6 | Shop data | 6 | 33 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is not in the PRD |
-| E7 | Languages, themes and layout | 5 | 18 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), success measures |
-| E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check" |
-| E9 | Shop profile and balance history (1.1.0.0) | 2 | 12 | V-1, V-2, C-1, C-2 (PRD, last section) |
+| E2 | Shop overview | 5 | 21 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search), V-14 |
+| E3 | Reminders and getting paid | 5 | 17 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link), V-15, V-16 |
+| E4 | Customer page and statement | 5 | 16 | F-1, stage 1 (customer page newest first), V-16, V-17, V-18 |
+| E5 | Quick entry, typed and by voice | 4 | 19 | V-11 (PRD, last section) |
+| E6 | Shop data | 6 | 33 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is V-12, backup and balances files V-13 |
+| E7 | Languages, themes and layout | 5 | 19 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), V-18, success measures |
+| E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check", V-19 |
+| E9 | Shop profile and balance history (1.1.0.0) | 2 | 13 | V-1, V-2, C-1, C-2 (PRD, last section) |
 | E10 | Several shops (1.1.0.0) | 3 | 11 | V-3, C-1, C-2, C-3 (PRD, last section) |
 | E11 | More languages (1.2.0.0) | 2 | 8 | V-4, C-1, C-4 (PRD, last section) |
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
-| **Total** | | **55** | **244** | |
+| **Total** | | **55** | **247** | |
 
 ---
 
@@ -82,7 +82,7 @@ As the shop owner, I want to add a customer with a name and a phone number so th
 
 Note: any 10 digit number is accepted, as the brief says (`validPhone`); a number that is not an Indian
 mobile (`validMobile`) only brings the warning. Import accepts any 10 digits too (E6.F2), with no warning.
-There is no way to delete a customer or change a customer's phone.
+Since 1.2.0.0 a customer can be deleted (E12.F4) and given a new phone number (E12.F3).
 
 ### E1.F2 Record a credit or a payment
 
@@ -353,8 +353,8 @@ As the shop owner, I want to correct the customer's name and its Hindi and Telug
 ## E5 Quick entry, typed and by voice
 
 Goal: the owner types or says one short line, for example "Sunita 500 udhaar", and the entry form fills
-itself. The app never saves on its own: focus moves to Save entry and the owner checks and saves. This was
-not in the PRD; it was added at the final review.
+itself. The app never saves on its own: focus moves to Save entry and the owner checks and saves. It was added at the final review
+and is stated in the PRD as V-11 since 23 Nov 2026.
 
 ### E5.F1 Quick-entry parser
 
@@ -549,6 +549,7 @@ As the shop owner, I want the app to fit my phone so that I can use it with one 
 | AC-E7.F4.2 | A 375 px wide screen | The app is shown | A bottom bar carries the main sections and a More button opens a sheet with the rest | `nav.mjs` |
 | AC-E7.F4.3 | A long shop name at 375 px | The header is drawn | The name is cut short with an ellipsis and does not overlap the language list | manual |
 | AC-E7.F4.4 | Buttons and fields | The owner taps them | Edit, Delete, the language list, the icon buttons and the logo link are at least 44 px tall, and customer-name links in entry lists have a 44 px tall tap area | `brief.mjs "375 {hash}: scrollWidth 375; small targets: none"` (on `#/`, `#/s/record`, `#/s/customers`, `#/s/data` and a customer page; the test flags any visible button, link, field, list or label button under 40 px, except inline text links) |
+| AC-E7.F4.5 | Any shop | The app is shown | The Customers item in the menu shows the number of customers and the Overdue item the number of overdue customers, marked as a warning; a count of 0 shows nothing | manual |
 
 ### E7.F5 Wide layouts
 
@@ -653,6 +654,7 @@ As the shop owner, I want my name, address and logo on the app and on the statem
 | AC-E9.F1.6 | A profile and a logo are set | The owner clears the profile | The header logo goes away | `profile.mjs "the profile can be cleared; the header logo goes away"` |
 | AC-E9.F1.7 | The sample shop | The page is read with the add-on and without it | The total and the customer rows are the same, and the add-on adds none of the attributes the tester reads | `profile.mjs "total outstanding is the same with and without profile.js ..."`, `profile.mjs "the customer rows are the same with and without profile.js ..."`, `profile.mjs "the add-on adds none of the reserved data attributes"` |
 | AC-E9.F1.8 | A phone 320 px or 375 px wide | A logo is set | There is no sideways scroll, and the header is no taller than before | `profile.mjs "the header is no taller with a logo at 320 px ..."`, `addons-width.mjs "320 px en light #/s/settings: no sideways scroll ..."` |
+| AC-E9.F1.9 | A logo is set | The owner presses Remove logo | The logo is dropped from the header and the shop, and the owner name and address stay | manual |
 
 Note: the printed statement was checked by its markup, not on paper.
 
@@ -873,16 +875,17 @@ As the shop owner, I want the total unpaid for 30 days or more, and the date the
 | Success: no sideways scroll at 375 px; WCAG AA | | E7.F3, E7.F4, E7.F5 |
 | Brief "How they check" selectors | | E8.F3 |
 | Projects page "Done when" lines (`brief/spec-page.md`) | Followed literally by `tests/brief.mjs` in a fresh browser | E1.F1, E1.F3, E1.F7, E2.F1, E2.F3, E3.F1, E4.F2, E6.F1, E6.F5, E7.F4, E8.F5 |
-| Not in the PRD (added at final review) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
+| V-11, V-15, V-16, V-17, V-19 (added at final review; in the PRD since 23 Nov 2026) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
+| V-12, V-13, V-14, V-18 (in the PRD since 23 Nov 2026) | Spreadsheet import, backup and balances files, key figures and recent entries, local-script names and digits | E6.F6, E6.F4, E2.F2, E2.F5, E4.F5, E7.F2 |
 | V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
-| Not in the PRD (added after the final review) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
+| Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out
 
 From the PRD (section 2.2, out of scope):
 - Sending reminders automatically. Every reminder, including Remind all overdue, opens a WhatsApp chat and
   the owner presses Send.
-- Several shops or staff logins. One shop per browser, no login.
+- Staff logins. There is no login. Several shops on one phone is built since 1.1.0.0 (E10).
 - Stock and billing.
 
 Found in the code against the PRD or the reviews:
@@ -891,12 +894,14 @@ Found in the code against the PRD or the reviews:
 - Import applies only part of the entry form's checks: missing, blank, negative, unreadable and over
   ₹1 crore amounts are skipped, but an amount of 0 and a future date are accepted, and a missing or
   unreadable date becomes today (counted in the message).
-- No way to delete a customer or change a customer's phone number.
 - Any 10 digit phone is accepted, not only mobile numbers, as the brief says: a typed number that does not
   start with 6, 7, 8 or 9 is added with a warning (E1.F1), and import accepts it with no warning (E6.F2).
 - The JSON backup leaves out payment screenshots.
-- Undo is one level deep and lasts as long as the toast (7 seconds).
-- Some strings stay in English in Hindi and Telugu, and some counts stay in Latin digits (E7.F1, E7.F2).
+- Undo is one level deep. For an entry or a load it lasts as long as the toast (7 seconds); for a deleted
+  customer it lasts eight seconds (E12.F4).
+- A few strings stay in English in every language (the storage-full toast, the shop-file problem
+  descriptions, the screenshot alt text and the statement footer), and some counts stay in Latin digits
+  (E7.F1, E7.F2).
 - The screenshot reader needs a network: Tesseract.js and its language data are not cached for offline.
 - Ideas from `review/industry.md` not built: opening balance when adding a customer, a credit limit per
   customer, a backup reminder, a customer pay page opened from the reminder, and a "today's collection

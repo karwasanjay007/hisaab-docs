@@ -66,6 +66,7 @@ else typed path
   UI -> App : submit: onQuick()
 end
 App -> App : parseQuick(text)
+note right of App : v1.2: in the nine languages from langs.js, that language's\ncredit and payment words are taught to the parser (H.quickWords)
 note right of App
   Hindi and Telugu digits become 0-9; ₹ and Rs dropped; 1,500 and 5k read as numbers
   first number = amount; hazaar, sau, lakh, thousand, hundred multiply it

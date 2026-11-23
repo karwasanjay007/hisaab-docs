@@ -271,7 +271,7 @@ Further minor findings are listed in `review/functional.md`.
 | Add-on hooks | `app.js` (end of file) | `window.Hisaab`: `on(event, fn)`, `state()`, `replace(shop)`, `save()`, `render()`, `blank()` and formatting helpers. Events: `render`, `statement`, `imported`, `export`. Each listener runs in its own guard, so an add-on that fails cannot stop the ledger |
 | Shop profile and balance history | `profile.js`, `profile.css` | `#profile-form` inside Shop settings (`#shop-owner`, `#shop-address`, `#shop-logo`); state fields `owner`, `address`, `logo`; `#shop-logo-img` in the header; `#bal-history` on the customer page, an inline SVG |
 | Several shops | `shops.js`, `shops.css` | `#sec-shops` inside the Shop settings card; `#shop-add`, `[data-shop-switch]`, `[data-shop-remove]`, `#import-new`. Storage key `hisaab.shops` = `{ active, list: [{ id, name, data }] }`; the active shop's `data` is null because its ledger is under `hisaab.v1` |
-| Service worker | `sw.js` | Cache `hisaab-v4`; the app shell now also lists `profile.css`, `profile.js`, `shops.css`, `shops.js` |
+| Service worker | `sw.js` | Cache `hisaab-v3`; the app shell now also lists `profile.css`, `profile.js`, `shops.css`, `shops.js` |
 | Tests | `tests/profile.mjs`, `tests/shops.mjs`, `tests/addons-width.mjs` | 36, 25 and 54 checks |
 
 ## Version 1.2.0.0 additions (22 to 23 Nov 2026)
@@ -279,7 +279,7 @@ Further minor findings are listed in `review/functional.md`.
 | Part | File | What it holds |
 | --- | --- | --- |
 | Add-on hooks, extended | `app.js` (end of file) | `window.Hisaab` gained `addLanguage`, `hasLanguage`, `setLang`, `text`, `balances`, `overdue`, `quickWords`, `forgetUndo` and a few read-only helpers |
-| More languages | `langs.js`, `i18n/<code>.json` | Nine language files (sections core, profile, shops, customer, extras; 216 keys each), fetched only when chosen and registered through `addLanguage`; the choice stays in the existing key `hisaab.lang` |
+| More languages | `langs.js`, `i18n/<code>.json` | Twelve language files (sections core, profile, shops, customer, extras; 216 keys each). English, Hindi and Telugu are also built into the scripts; the other nine are fetched only when chosen and registered through `addLanguage`; the choice stays in the existing key `hisaab.lang` |
 | Customer tools | `customer.js`, `customer.css` | `#cust-tools` after the entries on the customer page: totals, days since the last payment, `#cust-tools-call`, `#cust-tools-chat`, change phone (`#cust-new-phone`), delete with `#cust-undo-bar` |
 | Note shortcuts, overdue total, date | `extras.js`, `extras.css` | `#note-chips` under `#entry-note`, `#overdue-total` above the overdue list, `#as-of` under the total |
 | Service worker | `sw.js` | Cache `hisaab-v4`; the app shell also lists the five new add-on files; a language file is cached the first time it is fetched |
