@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Last revised | 23 Nov 2026 (versions 1.1.0.0 to 1.2.4.0 added at the end) |
+| Last revised | 25 Nov 2026 (versions 1.1.0.0 to 1.2.5.0 added at the end) |
 
 ## Steps
 
@@ -85,6 +85,7 @@ test and the suites it touches. The documents were brought up to date after the 
 | 1.2.3.0 | A WhatsApp check when a customer is added by hand | `wacheck.js` | `tests/wacheck.mjs` (16 checks) | The first customer added after a shop file load was not offered the check. Fixed before the deploy |
 | 1.2.3.1 | A wrong answer to the WhatsApp check is switched with one tap | `wacheck.js` (the button `#wa-check-flip`) | `tests/wacheck.mjs` (19 checks) | Nothing. Asked for by the owner after he pressed "No" by mistake in his own trial |
 | 1.2.4.0 | Voice entry never ends in silence: a failure says why, with the keyboard microphone or the computer's own dictation as the way that always works | `app.js` (`listen` inside `setupVoice`); two text keys in every language file | `tests/voice-quiet.mjs` (11 checks); `tests/voice.mjs` (15, unchanged) | A laptop with a touch screen was taken for a phone and offered the wrong tip. A phone is now recognised by what it is. Fixed before the deploy |
+| 1.2.5.0 | Controls that say what they did, after the project feedback: the theme button, a navigation press and the skip link; quick entry offers to add a customer it does not know | `assist.js` (new, loaded last); `index.html` (one script tag); `sw.js` (the shell list, cache `hisaab-v10`) | `tests/assist.mjs` (38 checks); `tests/quick.mjs` unchanged | The first version replaced the question "Which customer?", which the earlier quick-entry test expects; it failed on the live site only, because locally the page was read before the add-on ran. The add-on now keeps the question |
 
 ### Left for later
 

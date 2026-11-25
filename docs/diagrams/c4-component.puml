@@ -5,7 +5,7 @@ title Hisaab: components inside app.js (C4 level 3)
 ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops; v1.2: no new key, hisaab.lang holds one of twelve codes; v1.2.3: hisaab.wa")
 Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
 Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
-Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, also assist.js), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
 Container_Ext(profile, "Shop profile add-on", "profile.js, profile.css", "v1.1: owner, address and logo in Shop settings, the header and the printed statement; balance history line as inline SVG on the customer page")
 Container_Ext(shops, "Several shops add-on", "shops.js, shops.css", "v1.1: add, switch and remove shops, Import as a new shop; the current shop stays under hisaab.v1")
 
@@ -17,6 +17,7 @@ Container_Ext(customer, "Customer page add-on", "customer.js, customer.css", "v1
 Container_Ext(names, "Names add-on", "names.js", "v1.2.1: customer names in nine more scripts, built from the Devanagari spelling; registers nameIn")
 Container_Ext(sendways, "Send ways add-on", "sendways.js", "v1.2.2: the reminder as SMS, to a contact chosen in WhatsApp, or copied")
 Container_Ext(wacheck, "WhatsApp check add-on", "wacheck.js", "v1.2.3: hello message after a customer is added; stores the owner's answer in hisaab.wa")
+Container_Ext(assist, "Assist add-on", "assist.js", "v1.2.5: says which theme is on and which view is showing; the skip link; quick entry offers to add a customer it does not know. Stores nothing")
 
 Container_Boundary(app, "app.js (one IIFE)") {
   Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")
@@ -75,6 +76,7 @@ Rel(names, hook, "v1.2.1: registers nameIn, uses translit", "nameIn, translit")
 Rel(i18n, hook, "v1.2.1: asks nameIn for a name in a newer script")
 Rel(sendways, hook, "v1.2.2: listens to render, reads the reminder", "window.Hisaab")
 Rel(wacheck, hook, "v1.2.3: hears a customer added by hand", "window.Hisaab")
+Rel(assist, hook, "v1.2.5: reads the language, the text and the quick-entry parse", "window.Hisaab")
 Rel(wacheck, ls, "v1.2.3: the owner's answer", "hisaab.wa")
 
 LAYOUT_WITH_LEGEND()

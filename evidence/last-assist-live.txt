@@ -1,0 +1,39 @@
+PASS phone: the theme button starts as not pressed in the light theme
+PASS phone: one press switches to dark and the colours change | rgb(246, 242, 233) -> rgb(11, 21, 17)
+PASS phone: dark text on its background is at least 4.5 to 1 | 15.3
+PASS phone: the page says the dark theme is on and the button is pressed
+PASS phone: a second press is back to light
+PASS phone: the total is untouched | ₹0 0
+PASS phone: pressing Overview on the Overview says "Overview" | Overview
+PASS phone: Overview is marked as the current view
+PASS phone: pressing Customers opens it and says "Customers"
+PASS phone: Overview comes back, at the top
+PASS phone: the skip link is on screen when it has the focus | {"x":8,"y":8,"width":156.390625,"height":40.796875}
+PASS phone: Enter on the skip link puts the focus on the ledger
+PASS phone: a click does the same and leaves the address alone
+PASS phone: the question stays, and a line under it names the name no customer has | No customer matches "Sunita".
+PASS phone: and a button offers to add that customer | Add a customer: Sunita
+PASS phone: the button opens Add a customer with the name filled and the cursor on the phone number
+PASS phone: after adding her, the same text fills the form | Filled: Sunita, gave ₹500. Check it, then press Save entry.
+PASS phone: with no name typed the question "Which customer?" stands
+PASS phone: no page error | 
+PASS desktop: the theme button starts as not pressed in the light theme
+PASS desktop: one press switches to dark and the colours change | rgb(246, 242, 233) -> rgb(11, 21, 17)
+PASS desktop: dark text on its background is at least 4.5 to 1 | 15.3
+PASS desktop: the page says the dark theme is on and the button is pressed
+PASS desktop: a second press is back to light
+PASS desktop: the total is untouched | ₹0 0
+PASS desktop: pressing Overview on the Overview says "Overview" | Overview
+PASS desktop: Overview is marked as the current view
+PASS desktop: pressing Customers opens it and says "Customers"
+PASS desktop: Overview comes back, at the top
+PASS desktop: the skip link is on screen when it has the focus | {"x":8,"y":8,"width":156.390625,"height":40.796875}
+PASS desktop: Enter on the skip link puts the focus on the ledger
+PASS desktop: a click does the same and leaves the address alone
+PASS desktop: the question stays, and a line under it names the name no customer has | No customer matches "Sunita".
+PASS desktop: and a button offers to add that customer | Add a customer: Sunita
+PASS desktop: the button opens Add a customer with the name filled and the cursor on the phone number
+PASS desktop: after adding her, the same text fills the form | Filled: Sunita, gave ₹500. Check it, then press Save entry.
+PASS desktop: with no name typed the question "Which customer?" stands
+PASS desktop: no page error | 
+ALL PASS (38 checks)

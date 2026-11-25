@@ -4,7 +4,7 @@
 | --- | --- |
 | Expected users | one shop owner per phone; the grader's automated browser |
 | Budget a month | $0 |
-| Last revised | 23 Nov 2026 (version 1.2.4.0; rows for versions 1.1.0.0, 1.2.0.0, 1.2.1.0 to 1.2.3.0 and 1.2.4.0 added) |
+| Last revised | 25 Nov 2026 (version 1.2.5.0; rows for versions 1.1.0.0, 1.2.0.0, 1.2.1.0 to 1.2.3.0, 1.2.4.0 and 1.2.5.0 added) |
 
 ## Constraints from the PRD
 
@@ -31,9 +31,10 @@
 | WhatsApp check (1.2.3.0) | The owner is asked, after a hello message, whether the number is on WhatsApp; the answer is kept in `hisaab.wa` | No lookup of a number exists without a WhatsApp business account and a server | The official business platform: needs an account and a server | $0 |
 | Voice quick entry (1.2.4.0) | The browser's own speech service (Web Speech API). The app cannot repair it: it can fail on a network, in an in-app browser or with dictation turned off. When it fails the app says why, or "Did not catch that", and adds a tip: the keyboard's microphone key on a phone or tablet, the computer's own dictation (Windows key and H) elsewhere | No server and no key; typing always works | Recording the voice and sending it to a speech service: needs a server | $0 |
 | Tests (1.2.1.0 to 1.2.3.0) | `tests/layout.mjs`, `names.mjs`, `pay.mjs`, `sendways.mjs`, `wacheck.mjs`, Playwright like the rest | Each new add-on has its own test | | $0 |
-| Offline | A service worker, `sw.js`, with the cache `hisaab-v9` (v4 at 1.2.0.0, v8 at 1.2.3.1, v9 at 1.2.4.0). It holds the app shell, the add-on files and `pay.html`, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
+| Controls that say what they did (1.2.5.0) | `assist.js`, plain JavaScript like the other add-ons, with `tests/assist.mjs` | A press that changed nothing on screen now names what happened, without touching the ledger code | Changing `app.js`: it is the graded code | $0 |
+| Offline | A service worker, `sw.js`, with the cache `hisaab-v10` (v4 at 1.2.0.0, v8 at 1.2.3.1, v9 at 1.2.4.0, v10 at 1.2.5.0). It holds the app shell, the add-on files and `pay.html`, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
 
-Still no server, no account and no build step, in version 1.2.4.0 as in 1.0.0.0. Version 1.2.4.0 adds `tests/voice-quiet.mjs`.
+Still no server, no account and no build step, in version 1.2.5.0 as in 1.0.0.0. Version 1.2.4.0 adds `tests/voice-quiet.mjs`; version 1.2.5.0 adds `assist.js` and `tests/assist.mjs`.
 
 **Total a month:** $0
 

@@ -1,8 +1,8 @@
-1.2.4.0
+1.2.5.0
 
 # Hisaab release baseline
 #
-# Version:     1.2.4.0
+# Version:     1.2.5.0
 # Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://hisaab-hazel.vercel.app
@@ -39,3 +39,7 @@
 # Version 1.2.4.0 (23 November 2026): voice quick entry never ends in silence. A speech service that
 # stops without hearing anything now says so, with the way that always works: the keyboard's microphone
 # key on a phone, the computer's own dictation on a laptop.
+#
+# Version 1.2.5.0 (25 November 2026), after the project feedback (assist.js): the light and dark button says
+# which theme is on; a press on a navigation item says which view is showing; the skip link puts the focus on
+# the ledger in every browser; quick entry with a name no customer has says so and offers to add that customer.

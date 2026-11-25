@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 23 Nov 2026, version 1.2.4.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 25 Nov 2026, version 1.2.5.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 23 Nov 2026 (version 1.2.4.0) |
+| Last revised | 25 Nov 2026 (version 1.2.5.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -40,6 +40,7 @@ differently, or not built, the text says so.
 | `sweep.mjs "..."` | `tests/sweep.mjs`, the sweep of hidden shops in `tests/fixtures/sweep.json`, written by two reviewers who read only the brief: each shop is pasted into `#import-box` in a fresh browser and every figure the tester reads is compared with the expected one (last live run: `evidence/last-sweep-live.txt`, ALL PASS) |
 | `voice.mjs "..."` | `tests/voice.mjs`, voice quick entry with a stand-in for the browser's speech service: a heard sentence fills the form and each kind of failure gets its own message (last live run: `evidence/last-voice-live.txt`, 15 checks) |
 | `voice-quiet.mjs "..."` | `tests/voice-quiet.mjs`, added in 1.2.4.0: voice quick entry never ends in silence, on a laptop and on a phone, with the way that always works (last live run: `evidence/last-voice-quiet-live.txt`, 11 checks) |
+| `assist.mjs "..."` | `tests/assist.mjs`, added in 1.2.5.0: the theme button, the navigation, the skip link and quick entry on an empty ledger, at phone and desktop width (last live run: `evidence/last-assist-live.txt`, 38 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -55,7 +56,7 @@ prints after it.
 | E2 | Shop overview | 5 | 23 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search), V-14 |
 | E3 | Reminders and getting paid | 5 | 18 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link), V-15, V-16 |
 | E4 | Customer page and statement | 5 | 16 | F-1, stage 1 (customer page newest first), V-16, V-17, V-18 |
-| E5 | Quick entry, typed and by voice | 5 | 27 | V-11, V-25 (PRD, last section) |
+| E5 | Quick entry, typed and by voice | 6 | 31 | V-11, V-25, V-26 (PRD, last section) |
 | E6 | Shop data | 6 | 34 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is V-12, backup and balances files V-13 |
 | E7 | Languages, themes and layout | 5 | 20 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), V-18, success measures |
 | E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check", V-19 |
@@ -64,8 +65,8 @@ prints after it.
 | E11 | More languages (1.2.0.0) | 2 | 8 | V-4, C-1, C-4 (PRD, last section) |
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
-| E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.3.0) | 5 | 40 | V-20 to V-24, C-1, C-4 (PRD, last section) |
-| **Total** | | **61** | **302** | |
+| E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
+| **Total** | | **63** | **312** | |
 
 ---
 
@@ -433,6 +434,17 @@ As the shop owner, I want every voice try to end with a message so that I am nev
 | AC-E5.F5.4 | A phone or tablet | The same ending, or a blocked microphone | The message offers the microphone key of the keyboard | `voice-quiet.mjs "phone: the same ending offers the microphone key of the keyboard ..."`, `voice-quiet.mjs "phone: a blocked microphone says so, with the tip"` |
 | AC-E5.F5.5 | Hindi on a laptop, Tamil on a phone | The message shows | The message and the tip are in that language | `voice-quiet.mjs "laptop, Hindi: the message and the tip are in Hindi ..."`, `voice-quiet.mjs "phone, Tamil: the message and the tip are in Tamil ..."` |
 | AC-E5.F5.6 | A 375 px wide screen | The longer message shows | Nothing scrolls sideways and the page has no errors | `voice-quiet.mjs "phone: the longer message does not scroll sideways at 375 px ..."`, `voice-quiet.mjs "phone: no page errors"` |
+
+### E5.F6 Quick entry offers to add a customer it does not know (1.2.5.0)
+
+As the shop owner on a new ledger, I want a quick entry with an unknown name to tell me that name is not a customer yet, so that I know what to do next.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E5.F6.1 | An empty ledger | The owner types "Sunita 500 udhaar" and presses Fill | The question "Which customer?" stays, and a line under it says 'No customer matches "Sunita".' | `assist.mjs "the question stays, and a line under it names the name no customer has"` |
+| AC-E5.F6.2 | That line shows | The page is read | A button offers "Add a customer: Sunita" | `assist.mjs "and a button offers to add that customer"` |
+| AC-E5.F6.3 | The button shows | The owner presses it | Add a customer opens with the name filled and the cursor on the phone number | `assist.mjs "the button opens Add a customer with the name filled and the cursor on the phone number"` |
+| AC-E5.F6.4 | She has been added | The same text is sent again | The entry form is filled; with no name typed, the question stands alone | `assist.mjs "after adding her, the same text fills the form"`, `assist.mjs "with no name typed the question "Which customer?" stands"` |
 
 Note: a stand-in plays the browser's speech service in both voice tests. Real speech needs a person and a microphone and was not tried.
 
@@ -963,6 +975,19 @@ As the shop owner, I want to find out once, when I add a customer, whether the n
 | AC-E14.F5.10 | Hindi or Tamil | The check is shown | The status, the button and the hello message are in that language's script | `wacheck.mjs "hi: status, button and hello message in its own script ..."`, `wacheck.mjs "ta: status, button and hello message in its own script ..."` |
 | AC-E14.F5.11 | A number has an answer (added in 1.2.3.1) | The owner presses the button that offers the other answer | The answer switches with one tap, without opening WhatsApp again, and can be switched back | `wacheck.mjs "one tap switches it to "on WhatsApp", and the button now offers "No""`, `wacheck.mjs "and back again; still no sideways scroll at 375 px"` |
 
+### E14.F6 Controls that say what they did (1.2.5.0)
+
+As the shop owner, or anyone using a screen reader or a keyboard, I want every press to say what it did so that no control looks dead.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E14.F6.1 | The light theme | The light and dark button is pressed | The colours change, dark text is at least 4.5 to 1, the button is pressed and the page says "Dark theme on" | `assist.mjs "one press switches to dark and the colours change"`, `assist.mjs "dark text on its background is at least 4.5 to 1"`, `assist.mjs "the page says the dark theme is on and the button is pressed"` |
+| AC-E14.F6.2 | The dark theme | The button is pressed again | The light theme is back, the page says so, and the total is untouched | `assist.mjs "a second press is back to light"`, `assist.mjs "the total is untouched"` |
+| AC-E14.F6.3 | Overview is showing | Overview is pressed | The page says "Overview" and Overview is marked as the current view | `assist.mjs "pressing Overview on the Overview says "Overview""`, `assist.mjs "Overview is marked as the current view"` |
+| AC-E14.F6.4 | Any view | Another navigation item is pressed, then Overview | Each view opens and is named; Overview comes back at the top | `assist.mjs "pressing Customers opens it and says "Customers""`, `assist.mjs "Overview comes back, at the top"` |
+| AC-E14.F6.5 | The skip link has the keyboard focus | Enter, or a click | It is on screen while focused, the focus lands on the ledger and the address is left alone | `assist.mjs "the skip link is on screen when it has the focus"`, `assist.mjs "Enter on the skip link puts the focus on the ledger"`, `assist.mjs "a click does the same and leaves the address alone"` |
+| AC-E14.F6.6 | Phone and desktop width | All of the above is done | The page has no errors | `assist.mjs "no page error"` |
+
 Note: no app can look a number up on WhatsApp beforehand. The check depends on the owner's answer.
 
 ---
@@ -1007,6 +1032,7 @@ Note: no app can look a number up on WhatsApp beforehand. The check depends on t
 | V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
 | V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check (the answer switched with one tap since 1.2.3.1) | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
 | V-25 (PRD, last section) | Voice entry never ends in silence (1.2.4.0) | E5.F5, E5.F4 |
+| V-26 (PRD, last section) | Controls that say what they did (1.2.5.0) | E14.F6, E5.F6 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

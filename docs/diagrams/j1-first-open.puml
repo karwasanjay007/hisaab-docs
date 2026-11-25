@@ -83,7 +83,9 @@ note right of App
   #lang menu with twelve languages (langs.js);
   a saved extra language is fetched from i18n/
   names.js, sendways.js and wacheck.js
-  draw on a customer page only (J9, J11, J12)
+  draw on a customer page only (J9, J11, J12);
+  assist.js (v1.2.5) loads last and only
+  says what a press did
 end note
 alt the shop has customers
   UI --> Owner : Overview: total outstanding and every balance

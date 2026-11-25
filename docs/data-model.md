@@ -80,7 +80,7 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.wa` | (1.2.3.0) a map from the 10-digit number to `{ s: "ok" or "no", d: date }`, the owner's answer to the WhatsApp check | the owner answers after a hello message to a customer added by hand | when a customer is added; not part of a shop file or a backup |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v9` (version 1.2.4.0) so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v10` (version 1.2.5.0) so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
 `profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
@@ -203,3 +203,11 @@ shape of the key is the same. Version 1.2.4.0 changes only what voice quick entr
 
 - **Cache:** `hisaab-v8` at 1.2.3.1, `hisaab-v9` at 1.2.4.0.
 - **Text keys:** 235 per language at 1.2.4.0 (233 at 1.2.3.0); `quickKeyTip` and `quickPcTip` were added.
+
+## Version 1.2.5.0 (25 Nov 2026)
+
+Nothing new is stored. The add-on `assist.js` reads `hisaab.theme` only through the page (the attribute
+`data-theme`) and writes no key.
+
+- **Cache:** `hisaab-v10` at 1.2.5.0; the app shell also lists `assist.js`.
+- **Text keys:** 235 per language, unchanged.

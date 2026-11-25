@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.2.4.0 (23 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.2.5.0 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -71,8 +71,9 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | Other ways to send a reminder when WhatsApp refuses a number: SMS, a chosen contact, or copied | Yes | 1.2.2 |
 | N/A | WhatsApp check when a customer is added: a hello message, and the answer remembered per number (switched with one tap) | Yes | 1.2.3 |
 | N/A | Voice entry never ends in silence: a failure says why, and offers the keyboard microphone or the computer's dictation | Yes | 1.2.4 |
+| N/A | Controls that say what they did: the light and dark button names the theme, a navigation press names the view, and quick entry offers to add a customer whose name it does not know | Yes | 1.2.5 |
 
-All 17 rows of the brief pass, and all 27 rows beyond it are in place. The same table with three other builds of
+All 17 rows of the brief pass, and all 28 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes

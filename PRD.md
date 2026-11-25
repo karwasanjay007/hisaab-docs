@@ -5,8 +5,8 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 23 Nov 2026 (version 1.2.4.0) |
-| Additions | Versions 1.1.0.0 to 1.2.4.0 (22 to 23 Nov 2026): see the last section of this document |
+| Last revised | 25 Nov 2026 (version 1.2.5.0) |
+| Additions | Versions 1.1.0.0 to 1.2.5.0 (22 to 25 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
 
@@ -108,6 +108,7 @@ Focus:
 | 23 Nov 2026 | Requirements traced back from the app: V-11 to V-19 added for what 1.0.0.0 does beyond sections 1 to 5; section 2.2 corrected (several shops is built) |
 | 23 Nov 2026 | Baseline 1.2.3.0 approved by the owner: V-20 to V-24 added for versions 1.2.1.0, 1.2.2.0 and 1.2.3.0; an out-of-scope row for an automatic check of a number; the note on who the additions are for corrected (the customer now gets a pay link, and a hello message when the owner checks a number) |
 | 23 Nov 2026 | Version 1.2.4.0: V-24 now says that a wrong answer is put right with one tap (built in 1.2.3.1); V-25 added, voice quick entry never ends in silence |
+| 25 Nov 2026 | Version 1.2.5.0: V-26 added after the project feedback, controls that say what they did and quick entry that offers to add a customer it does not know |
 
 ## Versions 1.1.0.0 to 1.2.4.0: additions (22 to 23 Nov 2026)
 
@@ -161,6 +162,7 @@ Added in versions 1.2.1.0 to 1.2.4.0 (23 Nov 2026), from the owner's use of the 
 | V-23 | 1.2.2.0 | Other ways to send a reminder | For the owner, when WhatsApp refuses a number. The same reminder can go as an SMS to the customer's number, to any contact chosen in WhatsApp, or be copied. A sample number says that it is made up |
 | V-24 | 1.2.3.0 | Check a number on WhatsApp | For the owner, so that a refusal is found once, when the customer is added, and not at every reminder. After a customer is added by hand, the owner can send a hello message to the number with the name and the shop and no balance. The owner then says whether the chat opened. The answer is kept for that number, apart from the ledger. A refused number reads "Not on WhatsApp" and offers the other ways to send (V-23). A wrong answer is put right with one tap, without opening WhatsApp again (1.2.3.1). No app can look a number up beforehand; this is a limit, not a choice |
 | V-25 | 1.2.4.0 | Voice entry never ends in silence | For the owner who speaks the entry, so that a try that hears nothing is never left showing "Listening" with no word on screen. When the speech service stops without hearing anything, or cannot be reached, the app says so, for example "Did not catch that". Every failure also names the way that always works: the microphone key of the keyboard on a phone or tablet, and the computer's own dictation on a laptop, including a laptop with a touch screen. The message is in the chosen language and fits a phone screen. When the sentence is heard, the form fills and no tip shows |
+| V-26 | 1.2.5.0 | Controls that say what they did | For the owner, and for anyone using a screen reader or a keyboard, so that no press looks as if nothing happened. The light and dark button says which theme is on. A press on a navigation item names the view that is showing, also when it was already open. The skip link puts the focus on the ledger. When quick entry holds a name that no customer has, the app says so under its question and offers to add that customer with the name filled in |
 
 Constraints:
 

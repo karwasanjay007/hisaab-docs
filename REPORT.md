@@ -376,6 +376,44 @@ of 100), the 61-shop sweep, languages, phone width, layout and offline: all pass
 **Not tried.** Real speech: a stand-in plays the speech service in the tests. Dictation on the owner's own laptop.
 Why his browser returned no text is not known.
 
+## Version 1.2.5.0 (25 Nov 2026)
+
+The project feedback of 25 Nov 2026 came from a browser that opened the empty ledger at 375 px, opened Record and
+typed one quick entry. It did not load the sample shop, add a customer, save an entry or open a reminder. It named
+four things. Each was reproduced before anything was changed.
+
+**The light and dark button.** The colours did switch: the page background went from rgb(246, 242, 233) to
+rgb(11, 21, 17), with text at 15.3 to 1 in dark. Nothing in the page text or on the button said so. The button
+now carries its pressed state, and a status line for screen readers says "Dark theme on" or "Light theme on", in
+all twelve languages.
+
+**The Overview tab.** The page was already on Overview, so a press changed nothing. A press on any navigation
+item now writes the name of the view to the same status line, also when that view was already showing.
+
+**The skip link.** It is off screen until it has the keyboard focus, which is the usual design, so a pointer
+cannot reach it. A click or Enter now puts the focus on the ledger in every browser and leaves the address alone.
+
+**Quick entry on an empty ledger.** "Sunita 500 udhaar" was answered with "Which customer?" because no customer
+existed yet, although a name had been typed. The question stays, and under it a line now says 'No customer
+matches "Sunita".' with a button "Add a customer: Sunita". The button opens the add form with the name filled
+and the cursor on the phone number; after she is added the same text fills the entry form. With no name typed,
+nothing is added to the question.
+
+**How it was built.** One new add-on, `assist.js`, loaded last. The ledger code `app.js` is not changed; no id,
+total or stored value changed. The offline cache is `hisaab-v10` and lists the new file.
+
+**The test.** `tests/assist.mjs`, 38 checks, from an empty ledger at phone and desktop width. No earlier test was
+edited. The first version of the add-on replaced the question "Which customer?"; the earlier quick-entry test
+expects that question, failed on the live site, and the add-on was changed to keep it.
+
+**Tests on the live site.** `evidence/last-assist-live.txt` ALL PASS (38 checks); quick entry, the brief, the
+navigation and offline suites ALL PASS; the checker 100/100; `evidence/last-addons-width-live.txt` ALL PASS (54
+checks); `evidence/last-voice-quiet-live.txt` (11) and `evidence/last-langs-live.txt` (25) ALL PASS.
+
+**Not covered.** The sweep of 61 shops, the critic, phone import, profile, shops, contrast, names, pay, send ways
+and the WhatsApp check were not rerun, because this change does not touch what they test. The two theme lines in
+the nine newer languages have not been read by a native speaker.
+
 ## Requirement and feature map (23 Nov 2026)
 
 Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it
@@ -435,6 +473,6 @@ most of its rows cannot be judged.
 | N/A | WhatsApp check when a customer is added | Yes (1.2.3) | Not tested | Not tested | Not tested |
 | N/A | A voice failure says why and offers another way to speak | Yes (1.2.4) | Not tested | Not tested | Not tested |
 
-Hisaab: all 17 rows of the brief pass, and all 27 rows outside the brief are in place (the last five were added in
-1.2.1.0 to 1.2.4.0 and were not looked for on the other builds). None of the features seen on
+Hisaab: all 17 rows of the brief pass, and all 28 rows outside the brief are in place (the last six were added in
+1.2.1.0 to 1.2.5.0 and were not looked for on the other builds). None of the features seen on
 the three other builds is missing.

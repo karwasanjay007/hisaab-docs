@@ -2,8 +2,8 @@
 
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
-`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js` and `wacheck.js`, the layout sheet
-`polish.css` and the customer's pay page `pay.html`, at version 1.2.4.0: the function names, the order of calls, what is
+`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js` and `assist.js`, the layout sheet
+`polish.css` and the customer's pay page `pay.html`, at version 1.2.5.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -52,7 +52,7 @@ localhost.
 1. The head script in `index.html` reads `hisaab.theme` and sets light or dark before anything draws.
 2. `sample.js` sets `window.HISAAB_SAMPLE` (used only as the fallback for Load sample shop); `app.js` reads
    `hisaab.lang` (English when missing or not built in). The add-ons follow: `profile.js`, `shops.js`,
-   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`. `langs.js` adds nine
+   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`. `langs.js` adds nine
    languages to the menu `#lang` (twelve in all) and, when one of them was chosen before, fetches its file
    from `i18n/` and switches to it. `names.js`, `sendways.js` and `wacheck.js` draw only on a customer page
    (J9, J11, J12). The stylesheet `polish.css` loads last and changes the layout only.
@@ -170,6 +170,11 @@ Source: [j3-quick-entry-voice.puml](diagrams/j3-quick-entry-voice.puml)
   site..." (not allowed), "No microphone was found..." (no microphone), "This browser's speech service did
   not answer..." (network), or "Could not use the microphone..." (anything else). A language the service
   refuses is tried once more in `en-IN`.
+- Since 1.2.5.0 (`assist.js`), when a typed quick entry finds no customer and the text held a name, the
+  question "Which customer?" stays and `#quick-choices` shows 'No customer matches "Sunita".' with the button
+  `#quick-add-customer`. The button opens Add a customer (`#/s/add`) with `#customer-name` filled and the cursor
+  on `#customer-phone`. The same add-on says which theme is on after `#theme-toggle` is pressed, names the
+  view after a press on a navigation item, and puts the focus on `#main` from the skip link.
 - Since 1.2.4.0 voice never ends in silence: when the service stops with no result and no error, the app
   says "Did not catch that. Try again or type it." A service that gives nothing for 9 seconds is stopped,
   with "This browser's speech service did not answer...".
@@ -393,9 +398,9 @@ the service worker has installed and cached the app shell.
 3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, the add-ons
    `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `names.js`, `sendways.js`,
    `wacheck.js`, `polish.css`, `pay.html`, `sample.js`, `sample-data.json`, `icon.svg`,
-   `manifest.webmanifest`) in the `hisaab-v9` cache; on activate it deletes older caches.
+   `manifest.webmanifest`) in the `hisaab-v10` cache; on activate it deletes older caches.
 4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v9`.
+   Google Fonts from the network first and keeps a copy in `hisaab-v10`.
 5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
    `?today=` still works), or `index.html`.
 6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.
