@@ -5,10 +5,27 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 25 Nov 2026 (version 1.2.5.0) |
+| Last revised | 26 Nov 2026 (approach rebuild 2.0.0.0; prior 1.2.5.0) |
 | Additions | Versions 1.1.0.0 to 1.2.5.0 (22 to 25 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
+
+
+## Approach rebuild 2.0.0.0 (26 Nov 2026)
+
+Rebuild to the published approach stack. Same product and the same tester contract. No accounts, login, backend, multiple shops or AI.
+
+**Must do** (unchanged): customers, credit/payment entries, balances, total outstanding, newest-first entries, payment screenshot, WhatsApp reminder, persist, import replace-all, 375 px, light and dark.
+
+**Tester contract** (exact): `#total-outstanding`, `[data-customer]` + `[data-balance]`, `a[data-remind]`, `#import-box` / `#import-go`, `#shot-input` / `img[data-shot]`, `?today=`.
+
+**Bonus picks (6):** search; edit and delete; CSV export; overdue list; UPI pay link in the reminder (shop UPI id empty by default, link only when set); Hindi or Telugu labels. OCR from screenshot is out (needs AI).
+
+**Not in scope:** accounts, login, backend, multiple shops, AI.
+
+**How we know:** Vitest for ledger maths; Playwright for hooks; independent checker from the brief; cold-open empty first session at 375 px (theme and nav announce; unknown-name offer).
+
+---
 
 ## 1. The product and the focus
 
