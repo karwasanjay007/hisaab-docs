@@ -1,19 +1,19 @@
-PASS [desktop] sec-overview -> (none) in 117 ms; scrollY 0; cards shown 7; active true
-PASS [desktop] entry-card -> #/s/record in 46 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-customers -> #/s/customers in 71 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-overdue -> #/s/overdue in 97 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-recent -> #/s/recent in 100 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-add -> #/s/add in 71 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-import -> #/s/data in 60 ms; scrollY 0; cards shown 1; active true
-PASS [desktop] sec-settings -> #/s/settings in 69 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-overview -> (none) in 137 ms; scrollY 0; cards shown 7; active true
+PASS [desktop] entry-card -> #/s/record in 68 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-customers -> #/s/customers in 108 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-overdue -> #/s/overdue in 120 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-recent -> #/s/recent in 95 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-add -> #/s/add in 104 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-import -> #/s/data in 97 ms; scrollY 0; cards shown 1; active true
+PASS [desktop] sec-settings -> #/s/settings in 195 ms; scrollY 0; cards shown 1; active true
 INFO [desktop] after Back: #/s/data
-PASS [phone] sec-overview -> (none) in 65 ms; scrollY 0; cards shown 7; active true
-PASS [phone] sec-customers -> #/s/customers in 58 ms; scrollY 0; cards shown 1; active true
-PASS [phone] entry-card -> #/s/record in 62 ms; scrollY 0; cards shown 1; active true
-PASS [phone] sec-overdue -> #/s/overdue in 63 ms; scrollY 0; cards shown 1; active true
-PASS [phone] sec-recent -> #/s/recent in 65 ms; scrollY 0; cards shown 1; active true
-PASS [phone] sec-add -> #/s/add in 63 ms; scrollY 0; cards shown 1; active true
-PASS [phone] sec-import -> #/s/data in 64 ms; scrollY 0; cards shown 1; active true
-PASS [phone] sec-settings -> #/s/settings in 88 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-overview -> (none) in 209 ms; scrollY 0; cards shown 7; active true
+PASS [phone] sec-customers -> #/s/customers in 121 ms; scrollY 0; cards shown 1; active true
+PASS [phone] entry-card -> #/s/record in 114 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-overdue -> #/s/overdue in 107 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-recent -> #/s/recent in 80 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-add -> #/s/add in 98 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-import -> #/s/data in 91 ms; scrollY 0; cards shown 1; active true
+PASS [phone] sec-settings -> #/s/settings in 97 ms; scrollY 0; cards shown 1; active true
 INFO [phone] after Back: #/s/data
 ALL PASS

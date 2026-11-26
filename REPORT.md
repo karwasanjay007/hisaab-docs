@@ -410,9 +410,15 @@ expects that question, failed on the live site, and the add-on was changed to ke
 navigation and offline suites ALL PASS; the checker 100/100; `evidence/last-addons-width-live.txt` ALL PASS (54
 checks); `evidence/last-voice-quiet-live.txt` (11) and `evidence/last-langs-live.txt` (25) ALL PASS.
 
-**Not covered.** The sweep of 61 shops, the critic, phone import, profile, shops, contrast, names, pay, send ways
-and the WhatsApp check were not rerun, because this change does not touch what they test. The two theme lines in
-the nine newer languages have not been read by a native speaker.
+**Full regression on the live site (26 Nov 2026).** 25 suites and the language-file check, all pass, no earlier test
+edited: the checker 100/100, the brief, the sweep of 61 shops, critic 14, phone import 12, navigation, final, gaps,
+quick entry, voice 15, offline, profile 36, shops 25, add-on widths 54, contrast, languages 25, customer 36, layout 7
+(120 screens), names 33, pay 15, send ways 16, the WhatsApp check 19, voice-quiet 11 and the new assist 38; the
+language files, 11 languages. The results are the `last-*-live.txt` files in `evidence/`.
+
+**Not covered.** The two theme lines in the nine newer languages have not been read by a native speaker. A real
+microphone and a real WhatsApp chat are not part of any run: a stand-in plays the speech service, and reminder links
+are read, not opened.
 
 ## Requirement and feature map (23 Nov 2026)
 
