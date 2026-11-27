@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.4.1.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.5.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -79,8 +79,9 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | The + sheet in all twelve languages: its labels and button names follow the chosen language | Pass | 1.4.1 |
 | N/A | Fonts and the QR library served from the site itself: a plain visit, a QR code and a language change ask no other host (the screenshot reader still loads on demand from its host) | Pass | 1.4.1 |
 | N/A | The ledger maths tested on their own (balances, totals, order, imports, overdue days, the side sums), without a browser | Yes | 1.4.1 |
+| N/A | Desktop layout like the best chat apps (768 px and up, on the overview of a shop with customers): a total strip at most 110 px, the customer list gets the height with its search on the title line, quick entry as a sticky pill with a "+" popover; from 1200 px a right panel with the entry form, overdue and recent entries | Pass | 1.5 |
 
-All 17 rows of the brief pass, and all 35 rows beyond it are in place. The same table with three other builds of
+All 17 rows of the brief pass, and all 36 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes
@@ -160,7 +161,8 @@ shop's phones (for example with Supabase sign-in) is the natural next step, list
   అప్పు") and the form fills itself. The owner checks it and presses Save; it never saves by itself.
 - **Shop data.** Load a shop file (JSON) or a spreadsheet saved as CSV, with checks and Undo; export
   entries or balances as CSV, or a full backup as JSON.
-- **Reads on any screen.** One column on a phone, up to three columns on a wide screen, light and dark,
+- **Reads on any screen.** One column on a phone; on a desktop the customer list gets the screen, with quick
+  entry as a pill at the bottom and, from 1200 px, a right panel; light and dark,
   and it opens offline after one visit.
 
 How the pieces fit is drawn in SVG: the C4 views in [ARCHITECTURE.md](ARCHITECTURE.md) and one sequence

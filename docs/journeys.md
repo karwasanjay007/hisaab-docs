@@ -3,7 +3,7 @@
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
 `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
-`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.4.1.0: the function names, the order of calls, what is
+`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.0.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -529,7 +529,7 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
 - **J1 on a phone (1.4.0.0, `compact.js`):** below phone width the top bar is 56 px, the total is compact, quick
   entry is one pill at the bottom and a slim tab row sits above it. Every other action (add a customer, an entry,
   import, export, settings) is in the + sheet, opened by tap, Enter or Space and closed by Escape or a tap outside.
-  With the sample shop, 4 customer rows are fully on the first screen at 375 x 667. The desktop is unchanged.
+  With the sample shop, 4 customer rows are fully on the first screen at 375 x 667. The desktop was unchanged at 1.4.0.0 (see 1.5.0.0 below).
 - **J1 on first open (1.2.6.0, `guard.js`):** when the browser blocks storage, a lasting notice says nothing can
   be kept in this mode and points to a normal window or a backup file. The sai4b mark is first in the top bar
   (1.3.0.0, `brand.css`); no green anywhere.
@@ -547,7 +547,21 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
   in all twelve.
 - **J1, J6 and J9:** the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`) come from the site
   itself, so a plain visit, opening a QR code or a statement, and a language change ask no other host. The
-  service worker cache is `hisaab-v15` and precaches both. J8's screenshot reader still loads on demand from
+  service worker cache was `hisaab-v15` (`hisaab-v16` since 1.5.0.0) and precaches both. J8's screenshot reader still loads on demand from
   jsDelivr.
 - **J11 and the overview:** the customer page totals and the overdue line use the ledger's one balance function; the
   figures are the same.
+
+## Version 1.5.0.0 (27 Nov 2026): what changed in the journeys
+
+- **J1, first open on a desktop (`compact.css`, `compact.js`, 768 px and up):** with a shop that has customers, the
+  overview opens as a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and
+  "…" for the full overview), then the customer list with its search on the title line, and quick entry as the same
+  pill kept at the bottom of the main column. Its "+" (`#desk-plus`) opens the + sheet as a popover above the pill,
+  by click, Enter or Space; arrows move through it, and Escape closes it and returns the focus to "+". From 1200 px
+  a right panel (`aside#desk-aside`) holds the entry form, overdue and recent entries, moved there and not copied.
+  Between 768 and 1199 px there is no right panel: the form folds away, opens above the pill when quick entry fills
+  it or a screenshot is chosen, and folds again after Save. With the sample shop there is room for 8, 10 and 12
+  customer rows at 1024 x 768, 1280 x 800 and 1440 x 900.
+- **J1 on an empty shop, the section views and the customer page (J11):** as before.
+- **J9:** the service worker cache is `hisaab-v16`; the app shell lists the same files.

@@ -20,7 +20,7 @@ Container_Ext(wacheck, "WhatsApp check add-on", "wacheck.js", "v1.2.3: hello mes
 Container_Ext(assist, "Assist add-on", "assist.js", "v1.2.5: says which theme is on and which view is showing; the skip link; quick entry offers to add a customer it does not know. Stores nothing")
 Container_Ext(guard, "Guard add-on", "guard.js, guard.css", "v1.2.6: a refused or blocked store said plainly; an oversized imported picture dropped and counted; an edit keeps its date. v1.3: whole rupees: typed paise held, imports rounded halves up, stored paise offered a round with Undo")
 Container_Ext(brand, "Brand sheet", "brand.css, brand-mark.svg", "v1.3: navy, cream, slate blue and amber; Fraunces and Inter; the sai4b mark first in the top bar; no green")
-Container_Ext(compact, "Phone layout add-on", "compact.js, compact.css", "v1.4: on a phone a 56 px top bar, a compact total, a quick-entry pill, a slim tab row and a + sheet; desktop unchanged")
+Container_Ext(compact, "Phone and desktop layout add-on", "compact.js, compact.css", "v1.4: on a phone a 56 px top bar, a compact total, a quick-entry pill, a slim tab row and a + sheet; v1.5: from 768 px a total strip, the customer list and the pill with a + popover, and from 1200 px a right panel")
 
 Container_Boundary(app, "app.js (one IIFE)") {
   Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")

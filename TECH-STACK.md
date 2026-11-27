@@ -4,7 +4,7 @@
 | --- | --- |
 | Expected users | one shop owner per phone; the grader's automated browser |
 | Budget a month | $0 |
-| Last revised | 27 Nov 2026 (version 1.4.1.0; rows for versions 1.1.0.0, 1.2.0.0, 1.2.1.0 to 1.2.3.0, 1.2.4.0, 1.2.5.0, 1.2.6.0 to 1.4.0.0 and 1.4.1.0 added) |
+| Last revised | 27 Nov 2026 (version 1.5.0.0; rows for versions 1.1.0.0, 1.2.0.0, 1.2.1.0 to 1.2.3.0, 1.2.4.0, 1.2.5.0, 1.2.6.0 to 1.4.0.0, 1.4.1.0 and 1.5.0.0 added) |
 
 ## Constraints from the PRD
 
@@ -35,13 +35,14 @@
 | Storage and input guards (1.2.6.0) | `guard.js` and `guard.css`, plain JavaScript and CSS like the other add-ons, with `tests/guard.mjs` | A refused or blocked store, an oversized imported picture and a lost edit date are said, without touching the ledger code | Changing `app.js`: it is the graded code (only the screenshot size, 640 to 600 px, changed there) | $0 |
 | Whole rupees (1.3.0.0) | Inside `guard.js`, with `tests/rupees.mjs` | The course guideline keeps money as whole-rupee integers; typed paise are held, imports rounded halves up and counted | Rounding inside `app.js`: the graded code | $0 |
 | Brand look (1.3.0.0) | `brand.css`, `brand-mark.svg`, `icon.svg` in navy; Fraunces and Inter (from the site itself in `fonts/` since 1.4.1.0, from Google Fonts before), with `tests/brand.mjs` | One sheet loaded after the others sets the palette and fonts; no green | Editing `styles.css`: the graded layout | $0 |
-| Phone layout (1.4.0.0) | `compact.css` and `compact.js`, with `tests/phone-ledger.mjs` | On a phone the ledger gets the screen: a slim top bar, a compact total, a quick-entry pill and a + sheet; the desktop layout is unchanged | A separate phone page: two places to keep in step | $0 |
+| Phone layout (1.4.0.0) | `compact.css` and `compact.js`, with `tests/phone-ledger.mjs` | On a phone the ledger gets the screen: a slim top bar, a compact total, a quick-entry pill and a + sheet; the desktop layout was unchanged at 1.4.0.0 | A separate phone page: two places to keep in step | $0 |
 | Files from the site itself (1.4.1.0) | `fonts/fonts.css` with woff2 files (OFL notes), the QR library qrcode-generator 1.4.4 as `vendor/qrcode.min.js` (MIT notice), with `tests/local-assets.mjs` | A plain visit asks no other host, so nothing about the visit reaches a font or script host; the screenshot reader, Tesseract.js, still loads on demand from jsDelivr | Fonts and the QR library from Google Fonts and cdnjs: two other hosts on every visit | $0 |
 | + sheet in twelve languages (1.4.1.0) | `compact.js` and `langs.js`, a `compact` section of 19 keys in each `i18n/*.json` | The phone sheet follows the chosen language like the rest of the app | | $0 |
 | Ledger unit tests (1.4.1.0) | `tests/ledger.cjs`, a Node script with a small stand-in for the browser; it calls the ledger's own functions through `window.Hisaab.ledger` | The ledger maths are tested on their own; `customer.js` and `extras.js` use the one balance function, so their sums cannot drift | | $0 |
-| Offline | A service worker, `sw.js`, with the cache `hisaab-v15` (v4 at 1.2.0.0, v8 at 1.2.3.1, v9 at 1.2.4.0, v10 at 1.2.5.0, v11 at 1.2.6.0, v14 at 1.4.0.0, v15 at 1.4.1.0). It holds the app shell, the add-on files, `pay.html`, and since 1.4.1.0 the fonts and the QR library, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
+| Desktop layout (1.5.0.0) | `compact.css` and `compact.js` (768 px and up), with `tests/desk-ledger.mjs` | The same add-on gives the desktop overview a total strip, the customer list, the sticky quick-entry pill with a "+" popover and, from 1200 px, a right panel; nothing new to load | A separate desktop sheet: one more file for the shell and the cache | $0 |
+| Offline | A service worker, `sw.js`, with the cache `hisaab-v16` (v4 at 1.2.0.0, v8 at 1.2.3.1, v9 at 1.2.4.0, v10 at 1.2.5.0, v11 at 1.2.6.0, v14 at 1.4.0.0, v15 at 1.4.1.0, v16 at 1.5.0.0). It holds the app shell, the add-on files, `pay.html`, and since 1.4.1.0 the fonts and the QR library, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
 
-Still no server, no account and no build step, in version 1.4.1.0 as in 1.0.0.0. Version 1.2.4.0 adds `tests/voice-quiet.mjs`; version 1.2.5.0 adds `assist.js` and `tests/assist.mjs`; versions 1.2.6.0 to 1.4.0.0 add `guard.js`, `guard.css`, `brand.css`, `brand-mark.svg`, `compact.css` and `compact.js`, with `tests/guard.mjs`, `tests/brand.mjs`, `tests/rupees.mjs` and `tests/phone-ledger.mjs`; version 1.4.1.0 adds `fonts/`, `vendor/qrcode.min.js`, `tests/local-assets.mjs` and `tests/ledger.cjs`.
+Still no server, no account and no build step, in version 1.5.0.0 as in 1.0.0.0. Version 1.2.4.0 adds `tests/voice-quiet.mjs`; version 1.2.5.0 adds `assist.js` and `tests/assist.mjs`; versions 1.2.6.0 to 1.4.0.0 add `guard.js`, `guard.css`, `brand.css`, `brand-mark.svg`, `compact.css` and `compact.js`, with `tests/guard.mjs`, `tests/brand.mjs`, `tests/rupees.mjs` and `tests/phone-ledger.mjs`; version 1.4.1.0 adds `fonts/`, `vendor/qrcode.min.js`, `tests/local-assets.mjs` and `tests/ledger.cjs`; version 1.5.0.0 adds `tests/desk-ledger.mjs` and no new app file.
 
 **Total a month:** $0
 

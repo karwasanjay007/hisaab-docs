@@ -88,7 +88,12 @@ note right of App
   guard.js (v1.2.6) and compact.js (v1.4)
   load last; on a phone compact.js puts
   quick entry in a pill and the other
-  actions in a + sheet
+  actions in a + sheet; from 768 px (v1.5)
+  the overview of a shop with customers is
+  a total strip, the customer list and the
+  pill with a + popover, and from 1200 px
+  a right panel with the entry form,
+  overdue and recent entries
 end note
 alt the shop has customers
   UI --> Owner : Overview: total outstanding and every balance

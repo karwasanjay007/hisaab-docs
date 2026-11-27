@@ -459,6 +459,25 @@ offline, pay (15), customer (36), addons-width (54), sweep (61), final, rupees (
 checker 100 out of 100. Live at 1.4.1.0: the checker 27 pass, 0 fail (100 out of 100); local-assets 13 and
 phone-ledger 147 ALL PASS (`evidence/`). The other suites were not rerun live for this version.
 
+## Version 1.5.0.0 (27 Nov 2026)
+
+Added on top; nothing removed.
+
+- The desktop layout like the best chat apps (`compact.css`, `compact.js`), from 768 px, on the overview of a shop
+  with customers: a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and "…"
+  for the full overview); the customer list gets the height, with its search on the title line; quick entry as the
+  same pill, sticky at the bottom of the main column, with a "+" (`#desk-plus`) that opens the + sheet as a popover
+  above it.
+- From 1200 px a right panel (`aside#desk-aside`) with the entry form, overdue and recent entries; between 768 and
+  1199 px no right panel, and the form folds away and opens above the pill. An empty shop, the section views and the
+  customer page are as before. Service worker cache `hisaab-v16`.
+
+Test first: `tests/desk-ledger.mjs` (93). Local: desk-ledger, phone-ledger (147), nav, quick, voice (15),
+addons-width (54), layout, langs (25), brand (184), customer (36), shops (25), profile (36), final ALL PASS; the
+checker 100 out of 100. Live at 1.5.0.0: the checker 27 pass, 0 fail (100 out of 100); desk-ledger 93 and
+phone-ledger 147 ALL PASS (`evidence/`). The other suites were not rerun live for this version; the form folding
+between 768 and 1199 px and an empty shop on a desktop are not checked by a test.
+
 ## Requirement and feature map (23 Nov 2026)
 
 Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it

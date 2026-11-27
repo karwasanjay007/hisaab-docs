@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.4.1.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.0.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 27 Nov 2026 (version 1.4.1.0) |
+| Last revised | 27 Nov 2026 (version 1.5.0.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -44,9 +44,10 @@ differently, or not built, the text says so.
 | `guard.mjs "..."` | `tests/guard.mjs`, added in 1.2.6.0: a refused or blocked store, an imported picture that is too large, an edit with no date, the phone header and small labels (last live run: `evidence/last-guard-live.txt`, 48 checks) |
 | `rupees.mjs "..."` | `tests/rupees.mjs`, added in 1.3.0.0: whole rupees for typed entries, edits, JSON and CSV imports and stored paise, in three languages (last live run: `evidence/last-rupees-live.txt`, 28 checks) |
 | `brand.mjs "..."` | `tests/brand.mjs`, added in 1.3.0.0: the brand palette, fonts, mark and sizes on four screens at phone and desktop width, light and dark (last live run: `evidence/last-brand-live.txt`, 184 checks) |
-| `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and the desktop layout unchanged (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
+| `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and at 1280 x 800 no phone dock or phone "+" and the left menu shown (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
 | `local-assets.mjs "..."` | `tests/local-assets.mjs`, added in 1.4.1.0: a plain visit, a QR code and a language change ask no other host; the fonts and the QR library come from the site; the + sheet in Hindi, Telugu and Urdu (last live run: `evidence/last-local-assets-live.txt`, 13 checks) |
 | `ledger.cjs "..."` | `tests/ledger.cjs`, added in 1.4.1.0: unit tests of the ledger maths in Node, through `window.Hisaab.ledger`, without a browser (27 checks; run on the code, not on the live link) |
+| `desk-ledger.mjs "..."` | `tests/desk-ledger.mjs`, added in 1.5.0.0: the desktop layout at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, with the sample shop: the total strip, the customer rows, the pill, the "+" popover and the right panel (last live run: `evidence/last-desk-ledger-live.txt`, 93 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -72,8 +73,8 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| E15 | Guards, whole rupees, brand look and the phone layout (1.2.6.0 to 1.4.1.0) | 7 | 29 | V-27 to V-31, C-1 (PRD, last section) |
-| **Total** | | **70** | **341** | |
+| E15 | Guards, whole rupees, brand look, the phone and desktop layouts (1.2.6.0 to 1.5.0.0) | 8 | 37 | V-27 to V-32, C-1 (PRD, last section) |
+| **Total** | | **71** | **349** | |
 
 ---
 
@@ -612,9 +613,9 @@ As the shop owner, I want the app to use a large screen in full so that I see mo
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
 | AC-E7.F5.1 | 375, 768, 1366, 1920 and 2560 px wide | The overview, the Record view and a customer page are shown | No sideways scroll and the content reaches the right edge | `final.mjs "{width} {hash}: scrollWidth ..."` |
-| AC-E7.F5.2 | 1024 px and wider | The app is shown | A left menu replaces the bottom bar and the overview has two columns | `nav.mjs` (1440 px) |
+| AC-E7.F5.2 | 1024 px and wider | The app is shown | A left menu replaces the bottom bar; the overview of an empty shop has two columns (with customers it has the desktop layout of E15.F8 since 1.5.0.0) | `nav.mjs` (1440 px) |
 | AC-E7.F5.3 | 1280 px and wider | A section view is open | One related card shows beside it (for example Customers beside Overdue) | manual |
-| AC-E7.F5.4 | 1600 px and wider | The overview is open | It shows three columns | manual |
+| AC-E7.F5.4 | 1600 px and wider, an empty shop | The overview is open | It shows three columns (with customers, the desktop layout of E15.F8 since 1.5.0.0) | manual |
 
 ---
 
@@ -1045,7 +1046,7 @@ As the shop owner on a phone, I want the customer rows on the first screen so th
 | AC-E15.F4.2 | A phone | The overview is drawn | The pill and the tabs together are at most 112 px and nothing scrolls sideways | `phone-ledger.mjs "360x640 dark: the pill and the tabs together are at most 112 px"`, `phone-ledger.mjs "360x640 dark: no horizontal scroll"` |
 | AC-E15.F4.3 | A phone | "+" is tapped, or Enter or Space pressed on it | The sheet opens with aria-expanded and aria-controls; items are 44 px; Escape or a tap outside closes it and the focus returns to "+" | `phone-ledger.mjs "360x640 dark: the "+" sheet opens by tap with aria-expanded and aria-controls"`, `phone-ledger.mjs "360x640 dark: Enter opens, arrows move, Escape closes and returns focus to "+""`, `phone-ledger.mjs "360x640 dark: a tap outside closes the sheet"` |
 | AC-E15.F4.4 | A phone | The layout is drawn | Every grader hook exists and the quick-entry ids are not copied | `phone-ledger.mjs "360x640 dark: every grader hook exists and the quick-entry ids are not copied"` |
-| AC-E15.F4.5 | A desktop at 1280 x 800 | The page is drawn | The desktop layout is as before | `phone-ledger.mjs "1280x800: the desktop layout is as before"` |
+| AC-E15.F4.5 | A desktop at 1280 x 800 | The page is drawn | The phone dock and the phone "+" are hidden and the left menu shows (the desktop layout itself is E15.F8) | `phone-ledger.mjs "1280x800: the desktop layout is as before"` |
 
 ### E15.F5 The + sheet in the chosen language (1.4.1.0)
 
@@ -1078,6 +1079,23 @@ As the builder, I want the ledger maths tested without a browser so that every f
 | AC-E15.F7.4 | A shop file with paise | It is imported | Amounts are whole rupees, halves up, and the import replaces all data | `ledger.cjs "an import with paise is rounded to whole rupees, halves up: 10.5 -> 11, 10.4 -> 10, 2.5 -> 3"`, `ledger.cjs "an import replaces all data: only the imported shop, customer and entries remain"` |
 | AC-E15.F7.5 | Payments on several dates | The last payment and overdue days are computed | The last payment is the latest by date; overdue counts from the last payment, or from the first credit when none | `ledger.cjs "last payment date is the latest payment, not the latest entered"`, `ledger.cjs "days since last payment 2026-10-28 to 2026-11-27 = 30"`, `ledger.cjs "overdue days: A from last payment (30), B from first credit (10)"` |
 | AC-E15.F7.6 | Four shops | The customer page sums and the overdue line are computed | They equal the ledger's balances and owed total for every customer; the open shop is unchanged | `ledger.cjs "shop 1: credit total minus paid total (export and customer page) = the balance for every customer"`, `ledger.cjs "shop 1: the overdue line sum (extras.js) of all owing customers = the owed total from balances"`, `ledger.cjs "the open shop is unchanged after the read-only calls on other shops"` |
+
+### E15.F8 The ledger gets the desktop screen (1.5.0.0)
+
+As a shop owner at a desk, I want the customer list to get the screen and quick entry always at hand, so that I can find a customer and record an entry without scrolling.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F8.1 | A desktop at 1024 x 768, 1280 x 800 or 1440 x 900, light or dark, with the sample shop | The overview is drawn | The top bar is at most 64 px and the total strip at most 110 px | `desk-ledger.mjs "1024x768 light: the top bar is at most 64 px"`, `desk-ledger.mjs "1440x900 dark: the total strip is at most 110 px"` |
+| AC-E15.F8.2 | The same screens | The overview is drawn | There is room for at least 8, 10 and 12 customer rows on the first screen, and every sample row shows | `desk-ledger.mjs "1024x768 light: room for at least 8 customer rows on the first screen, and every sample row shown"`, `desk-ledger.mjs "1280x800 light: room for at least 10 customer rows on the first screen, and every sample row shown"`, `desk-ledger.mjs "1440x900 light: room for at least 12 customer rows on the first screen, and every sample row shown"` |
+| AC-E15.F8.3 | A desktop | The overview is drawn | The quick-entry pill is in view at the bottom, its field 16 px or more, and the "+" is 44 px | `desk-ledger.mjs "1280x800 light: the pill is in view at the bottom, its field 16 px or more"`, `desk-ledger.mjs "1280x800 light: the "+" button is 44 px"` |
+| AC-E15.F8.4 | 1024 px wide, then 1280 px wide | The overview is drawn | Below 1200 px there is no right panel; from 1200 px a right panel 320 to 380 px wide holds the entry form, overdue and recent entries | `desk-ledger.mjs "1024x768 light: right panel only from 1200 px, 320 to 380 px wide"`, `desk-ledger.mjs "1280x800 light: right panel only from 1200 px, 320 to 380 px wide"` |
+| AC-E15.F8.5 | A desktop | Enter or Space is pressed on "+" | A popover opens above the pill with every action, each 44 px; arrows move with a visible focus ring; Escape closes it and the focus returns to "+" | `desk-ledger.mjs "1024x768 light: Enter opens the popover above the pill"`, `desk-ledger.mjs "1024x768 light: Space opens the popover"`, `desk-ledger.mjs "1024x768 light: the popover holds every action, each 44 px"`, `desk-ledger.mjs "1024x768 light: arrows move with a visible focus ring, Escape closes and returns focus"` |
+| AC-E15.F8.6 | A desktop with the sample shop | "Sunita 500 udhaar" is typed in the pill and sent | Sunita Devi's balance rises by 500 | `desk-ledger.mjs "1280x800 light: typing "Sunita 500 udhaar" and sending raises Sunita Devi by 500"` |
+| AC-E15.F8.7 | A desktop | "Add a customer", "Import a shop", "Language" or "Light or dark" is chosen in the popover | It reaches the add-customer form, the import box or the language list, or changes the theme | `desk-ledger.mjs "1440x900 light: "Add a customer" reaches the add-customer form"`, `desk-ledger.mjs "1440x900 light: "Import a shop" reaches the import box"`, `desk-ledger.mjs "1440x900 light: "Language" reaches the language list"`, `desk-ledger.mjs "1440x900 light: "Light or dark" changes the theme"` |
+| AC-E15.F8.8 | A desktop, light or dark | The layout is drawn | Every grader hook exists, the quick-entry ids are not copied, nothing scrolls sideways and the page has no errors | `desk-ledger.mjs "1440x900 dark: every grader hook exists and the quick-entry ids are not copied"`, `desk-ledger.mjs "1440x900 dark: no horizontal scroll"`, `desk-ledger.mjs "1440x900 dark: no page error"` |
+
+Not checked by a test: between 768 and 1199 px the entry form folding away and opening above the pill, and an empty shop keeping the earlier desktop layout; both are read from `compact.css` and `compact.js`.
 
 ---
 
@@ -1124,6 +1142,7 @@ As the builder, I want the ledger maths tested without a browser so that every f
 | V-26 (PRD, last section) | Controls that say what they did (1.2.5.0) | E14.F6, E5.F6 |
 | V-27 to V-30 (PRD, last section) | Storage and input guards, whole rupees, the brand look and the phone layout (1.2.6.0 to 1.4.0.0) | E15.F1, E15.F2, E15.F3, E15.F4 |
 | V-31 (PRD, last section) | The + sheet in every language, the fonts and the QR library from the site, the ledger unit tests (1.4.1.0) | E15.F5, E15.F6, E15.F7 |
+| V-32 (PRD, last section) | The desktop layout like the best chat apps (1.5.0.0) | E15.F8 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

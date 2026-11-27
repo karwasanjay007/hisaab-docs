@@ -146,3 +146,5 @@ maths have unit tests; the customer page and the overdue line use the one balanc
 | Ledger maths (`ledger.cjs`, in Node, no browser) | ALL PASS (27 checks) | run on the code |
 
 The other suites passed on the local copy at 1.4.1.0 and were not rerun on the live link for this version.
+
+Version 1.5.0.0 (27 Nov 2026), on top with nothing removed: the desktop overview of a shop with customers is laid out like the best chat apps (`compact.css`, `compact.js`); live, the checker 27 pass, 0 fail (100 out of 100, `evidence/last-check-live.txt`), and the desktop layout (93 checks) and the phone layout (147 checks) ALL PASS (`evidence/last-desk-ledger-live.txt`, `evidence/last-phone-ledger-live.txt`).

@@ -1,0 +1,94 @@
+PASS 1024x768 light: the top bar is at most 64 px | 64
+PASS 1024x768 light: the total strip is at most 110 px | 102
+PASS 1024x768 light: room for at least 8 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 9
+PASS 1024x768 light: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1024x768 light: the "+" button is 44 px | 44
+PASS 1024x768 light: right panel only from 1200 px, 320 to 380 px wide | 0
+PASS 1024x768 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 light: no horizontal scroll | 0
+PASS 1024x768 light: Enter opens the popover above the pill
+PASS 1024x768 light: the popover holds every action, each 44 px | missing  small 0
+PASS 1024x768 light: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1024x768 light: Space opens the popover
+PASS 1024x768 light: typing "Sunita 500 udhaar" and sending raises Sunita Devi by 500 | 3470 -> 3970
+PASS 1024x768 light: "Add a customer" reaches the add-customer form
+PASS 1024x768 light: "Import a shop" reaches the import box
+PASS 1024x768 light: "Language" reaches the language list
+PASS 1024x768 light: "Light or dark" changes the theme | null -> dark
+PASS 1024x768 light: no page error | 
+PASS 1024x768 dark: the top bar is at most 64 px | 64
+PASS 1024x768 dark: the total strip is at most 110 px | 102
+PASS 1024x768 dark: room for at least 8 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 9
+PASS 1024x768 dark: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1024x768 dark: the "+" button is 44 px | 44
+PASS 1024x768 dark: right panel only from 1200 px, 320 to 380 px wide | 0
+PASS 1024x768 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 dark: no horizontal scroll | 0
+PASS 1024x768 dark: Enter opens the popover above the pill
+PASS 1024x768 dark: the popover holds every action, each 44 px | missing  small 0
+PASS 1024x768 dark: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1024x768 dark: Space opens the popover
+PASS 1024x768 dark: no page error | 
+PASS 1280x800 light: the top bar is at most 64 px | 64
+PASS 1280x800 light: the total strip is at most 110 px | 102
+PASS 1280x800 light: room for at least 10 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 10
+PASS 1280x800 light: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1280x800 light: the "+" button is 44 px | 44
+PASS 1280x800 light: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1280x800 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 light: no horizontal scroll | 0
+PASS 1280x800 light: Enter opens the popover above the pill
+PASS 1280x800 light: the popover holds every action, each 44 px | missing  small 0
+PASS 1280x800 light: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1280x800 light: Space opens the popover
+PASS 1280x800 light: typing "Sunita 500 udhaar" and sending raises Sunita Devi by 500 | 3470 -> 3970
+PASS 1280x800 light: "Add a customer" reaches the add-customer form
+PASS 1280x800 light: "Import a shop" reaches the import box
+PASS 1280x800 light: "Language" reaches the language list
+PASS 1280x800 light: "Light or dark" changes the theme | null -> dark
+PASS 1280x800 light: no page error | 
+PASS 1280x800 dark: the top bar is at most 64 px | 64
+PASS 1280x800 dark: the total strip is at most 110 px | 102
+PASS 1280x800 dark: room for at least 10 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 10
+PASS 1280x800 dark: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1280x800 dark: the "+" button is 44 px | 44
+PASS 1280x800 dark: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1280x800 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 dark: no horizontal scroll | 0
+PASS 1280x800 dark: Enter opens the popover above the pill
+PASS 1280x800 dark: the popover holds every action, each 44 px | missing  small 0
+PASS 1280x800 dark: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1280x800 dark: Space opens the popover
+PASS 1280x800 dark: no page error | 
+PASS 1440x900 light: the top bar is at most 64 px | 64
+PASS 1440x900 light: the total strip is at most 110 px | 102
+PASS 1440x900 light: room for at least 12 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 12
+PASS 1440x900 light: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1440x900 light: the "+" button is 44 px | 44
+PASS 1440x900 light: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1440x900 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 light: no horizontal scroll | 0
+PASS 1440x900 light: Enter opens the popover above the pill
+PASS 1440x900 light: the popover holds every action, each 44 px | missing  small 0
+PASS 1440x900 light: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1440x900 light: Space opens the popover
+PASS 1440x900 light: typing "Sunita 500 udhaar" and sending raises Sunita Devi by 500 | 3470 -> 3970
+PASS 1440x900 light: "Add a customer" reaches the add-customer form
+PASS 1440x900 light: "Import a shop" reaches the import box
+PASS 1440x900 light: "Language" reaches the language list
+PASS 1440x900 light: "Light or dark" changes the theme | null -> dark
+PASS 1440x900 light: no page error | 
+PASS 1440x900 dark: the top bar is at most 64 px | 64
+PASS 1440x900 dark: the total strip is at most 110 px | 102
+PASS 1440x900 dark: room for at least 12 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 12
+PASS 1440x900 dark: the pill is in view at the bottom, its field 16 px or more | 16
+PASS 1440x900 dark: the "+" button is 44 px | 44
+PASS 1440x900 dark: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1440x900 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 dark: no horizontal scroll | 0
+PASS 1440x900 dark: Enter opens the popover above the pill
+PASS 1440x900 dark: the popover holds every action, each 44 px | missing  small 0
+PASS 1440x900 dark: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
+PASS 1440x900 dark: Space opens the popover
+PASS 1440x900 dark: no page error | 
+ALL PASS (93 checks)

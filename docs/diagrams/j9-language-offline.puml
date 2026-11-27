@@ -82,16 +82,16 @@ end
 note right of App : v1.2: the figures, rows and reminder links are the same in every language;\non the next visit langs.js reads 'hisaab.lang' and fetches the file again
 == First online visit: install and activate ==
 App -> SW : register('sw.js') after the load event
-SW -> SW : install: skipWaiting(); caches.open('hisaab-v15').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest, and since v1.1 profile.css, profile.js,\nshops.css, shops.js, and since v1.2 extras.css, extras.js,\ncustomer.css, customer.js, langs.js, and since v1.2.1 to v1.2.3\nnames.js, sendways.js, wacheck.js, polish.css, pay.html,\nand since v1.2.5 assist.js, and since v1.2.6 to v1.4\nguard.js, guard.css, brand.css, brand-mark.svg,\ncompact.css, compact.js, and since v1.4.1\nfonts/fonts.css, its woff2 files, vendor/qrcode.min.js)
-SW -> SW : activate: delete every cache except 'hisaab-v15'; clients.claim()
+SW -> SW : install: skipWaiting(); caches.open('hisaab-v16').addAll(the app shell:\n./, index.html, styles.css, app.js, sample.js, sample-data.json,\nicon.svg, manifest.webmanifest, and since v1.1 profile.css, profile.js,\nshops.css, shops.js, and since v1.2 extras.css, extras.js,\ncustomer.css, customer.js, langs.js, and since v1.2.1 to v1.2.3\nnames.js, sendways.js, wacheck.js, polish.css, pay.html,\nand since v1.2.5 assist.js, and since v1.2.6 to v1.4\nguard.js, guard.css, brand.css, brand-mark.svg,\ncompact.css, compact.js, and since v1.4.1\nfonts/fonts.css, its woff2 files, vendor/qrcode.min.js)
+SW -> SW : activate: delete every cache except 'hisaab-v16'; clients.claim()
 == Online visits keep the cache fresh ==
 UI -> SW : GET for a same-origin file (since v1.4.1 the fonts\nand the QR library are same-origin files too)
 SW -> SW : fetch(request) from the network first
 alt network answers ok (or an opaque cross-origin reply)
-  SW -> SW : caches.open('hisaab-v15').put(request, copy)
+  SW -> SW : caches.open('hisaab-v16').put(request, copy)
   SW --> UI : fresh response
 end
-note right of SW : v1.2: i18n/<code>.json is a same-origin file, so it is kept in 'hisaab-v15'\nafter the first fetch and the language works with no signal afterwards
+note right of SW : v1.2: i18n/<code>.json is a same-origin file, so it is kept in 'hisaab-v16'\nafter the first fetch and the language works with no signal afterwards
 note right of SW : only GET; other origins, such as Tesseract.js\nfrom jsDelivr, are not handled or cached
 == Reopen with no signal ==
 Owner -> UI : open the app, no network

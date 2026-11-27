@@ -12,7 +12,7 @@ PASS [6-today] days-since-last-payment figures match ?today (11-15: 8/8, 12-15: 
 PASS [9-bonus overdue] overdue list of 8 sorted by days since last payment: 105:61d 104:44d 108:43d 102:42d 106:27d 103:27d 107:24d 101:21d
 PASS [9-bonus search] name "Sunita" -> 9000000102 only; phone 9000000105 -> that row only
 PASS [9-bonus CSV] hisaab-lakshmi-provision-store-fictional-entries.csv: entry CSV: 38 rows, credit sum 18280, payment sum 6460 match; header "date,name,phone,type,amount,note,has_screenshot"
-PASS [9-bonus language] selected "हिंदी": Indic characters 16 -> 1878
+PASS [9-bonus language] selected "हिंदी": Indic characters 16 -> 1809
 INFO [4-customer page order] Sunita Devi entries appear newest first (950, 1500, 340, 120, 1200, 1500)
 INFO [2-hidden data] 12 customers, 80 entries; overpaid 7164508469 = -450, no entries 8045128664 = 0; sum all 31000, sum positive 33045
 PASS [2-hidden total] #total-outstanding "₹31,000
@@ -29,9 +29,9 @@ PASS [5-shot reload] img[data-shot] survives reload (loaded true, src data:image
 PASS [9-bonus OCR] amount field filled with 750 after 1 s
 PASS [9-bonus edit/delete] deleting newest entry (payment 950) gave 4420; editing next (credit 1500 -> 1000) gave 3920
 PASS [7-phone] scrollWidth home 375, customer page 375
-PASS [8-contrast light home] 228 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast light home] 224 text elements, all meet 4.5:1 / 3:1
 PASS [8-contrast light customer] 126 text elements, all meet 4.5:1 / 3:1
-PASS [8-contrast dark home] 228 text elements, all meet 4.5:1 / 3:1
+PASS [8-contrast dark home] 224 text elements, all meet 4.5:1 / 3:1
 PASS [8-contrast dark customer] 126 text elements, all meet 4.5:1 / 3:1
 INFO [8-theme] body background light rgb(246, 241, 231), dark rgb(15, 28, 42)
 
