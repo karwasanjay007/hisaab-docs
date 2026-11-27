@@ -5,8 +5,8 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 27 Nov 2026 (version 1.5.1.0) |
-| Additions | Versions 1.1.0.0 to 1.5.1.0 (22 to 27 Nov 2026): see the last section of this document |
+| Last revised | 27 Nov 2026 (version 1.5.2.1) |
+| Additions | Versions 1.1.0.0 to 1.5.2.1 (22 to 27 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
 
@@ -113,7 +113,7 @@ Focus:
 | 27 Nov 2026 | Version 1.4.1.0: V-31 added, on top and with nothing removed |
 | 27 Nov 2026 | Version 1.5.0.0: V-32 added, on top and with nothing removed; V-30 corrected, the desktop has its own layout since 1.5.0.0 |
 | 27 Nov 2026 | Version 1.5.1.0: V-33 added, on top and with nothing removed |
-| 27 Nov 2026 | Version 1.5.1.0: V-33 added, on top and with nothing removed |
+| 27 Nov 2026 | Versions 1.5.2.0 and 1.5.2.1: V-34 and V-35 added, on top and with nothing removed; V-33 corrected, the right panel has no scroll boxes since 1.5.2.0 |
 
 ## Versions 1.1.0.0 to 1.2.4.0: additions (22 to 23 Nov 2026)
 
@@ -173,9 +173,10 @@ Added in versions 1.2.1.0 to 1.2.4.0 (23 Nov 2026), from the owner's use of the 
 | V-29 | 1.3.0.0 | The brand look | For the owner and the judges. Navy, cream, slate blue and amber; Fraunces for headings and Inter for text, with the Indian-script fonts kept first for those languages; the sai4b mark first in the top bar beside the Hisaab icon (the mark alone on a phone). No green anywhere: paid, the payment choice, success lines and the WhatsApp buttons are slate and navy |
 | V-30 | 1.4.0.0 | The ledger gets the phone screen | For the owner on a phone, like the best chat apps. A 56 px top bar, a compact total, quick entry as one pill at the bottom (type or speak "Sunita 500 udhaar" and send), a slim tab row, and a + sheet with every other action. With the sample shop, the customer rows fully on the first screen go from 0 to 4 at 375 x 667 and from 1 to 8 at 390 x 844. At 1.4.0.0 the desktop layout was as before; it has its own layout since 1.5.0.0 (V-32) |
 | V-31 | 1.4.1.0 | Every word in the chosen language, and nothing from another host | For the owner. The + sheet's labels and button names follow the chosen language in all twelve. The fonts and the QR library are served from the site itself, so a plain visit, a QR code and a language change ask no other host; only the screenshot reader still loads on demand from its host. The ledger maths are tested on their own, and the customer page and the overdue line use the one balance function |
-| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop the right panel fits the screen and its cards scroll on their own, and a row brought into view stays above the pill. Checked with a 40-customer shop. | Must |
-| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop the right panel fits the screen and its cards scroll on their own, and a row brought into view stays above the pill. Checked with a 40-customer shop. | Must |
+| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop a row brought into view stays above the pill. At 1.5.1.0 the right panel fitted the screen and its cards scrolled on their own; since 1.5.2.0 it shows every record with no scroll box (V-34). Checked with a 40-customer shop. | Must |
 | V-32 | 1.5.0.0 | The ledger gets the desktop screen | For the owner at a desk, like the best chat apps. From 768 px wide, on the overview of a shop with customers: a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and a "…" for the full overview); the customer list gets the height, with its search on the title line; quick entry as the same pill, kept at the bottom of the main column, with a "+" that opens every other action as a popover above it. From 1200 px a right panel holds the entry form, overdue and recent entries; between 768 and 1199 px there is no right panel and the form folds away and opens above the pill. An empty shop, the section views and the customer page are as before. Nothing removed |
+| V-34 | 1.5.2.0 | Every record in view on a desktop, and the sai4b mark | For the owner at a desk. From 1200 px the right panel has no scroll box: the entry form is shown in full, with every overdue customer and every recent entry, and the panel grows with the page. Each of the two lists has a filter box, 44 px high, that narrows the rows. The quick-entry pill is pinned to the bottom of the screen, as wide as the customer list, and the "+" menu never opens off screen. The sai4b mark in the top bar opens sai4b.com in a new tab; the app name beside it still goes home. Checked by `tests/desk-ledger.mjs` (151 checks). Nothing removed |
+| V-35 | 1.5.2.1 | The four findings of the fresh review | For the owner on a phone, and the owner who has not yet set a UPI ID. At 375 px the search box is 44 px high, the labels of the strip under the total are shown in full, and no letter of a bottom-bar label is cut. While the shop has no UPI ID of its own, a notice beside the reminder controls (under the customer list and on the customer page) says that reminders carry the demo pay address, with a link to Shop settings, in all twelve languages; it goes once a UPI ID is saved, and the reminder links are unchanged. Checked by `tests/review-fixes.mjs` (98 checks). Nothing removed |
 
 Constraints:
 

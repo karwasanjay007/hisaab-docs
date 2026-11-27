@@ -1,4 +1,4 @@
-1.5.1.2
+1.5.2.1
 
 # Hisaab release baseline
 #
@@ -61,3 +61,10 @@
 # Version 1.4.1.0 (27 November 2026): the + sheet in all twelve languages; fonts and the QR library served from the
 # site itself (fonts/, vendor/); unit tests for the ledger maths on window.Hisaab.ledger; the side sums use the one
 # balance function. Nothing removed.
+#
+# Version 1.5.2.0 (27 November 2026), added on top; nothing removed: the desktop right panel has no scroll boxes and
+# shows every record, with a filter; the sai4b mark in the top bar opens sai4b.com.
+#
+# Version 1.5.2.1 (27 November 2026), after a fresh review of the live link: the search box is 44 px high on a phone;
+# the labels under the total wrap instead of being cut; the "Record" label is whole in every language; a notice beside
+# the reminder says when it carries the demo pay address and links to Shop settings, in twelve languages.

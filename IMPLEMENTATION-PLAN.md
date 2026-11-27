@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Last revised | 27 Nov 2026 (versions 1.1.0.0 to 1.5.1.0 added at the end) |
+| Last revised | 27 Nov 2026 (versions 1.1.0.0 to 1.5.2.1 added at the end) |
 
 ## Steps
 
@@ -92,7 +92,8 @@ test and the suites it touches. The documents were brought up to date after the 
 | 1.4.1.0 | The + sheet in all twelve languages; the fonts and the QR library from the site itself; ledger unit tests; the side sums use the one balance function | `compact.js`, `langs.js`, `i18n/*.json` (a `compact` section of 19 keys), `fonts/`, `vendor/qrcode.min.js`, `sw.js` (cache `hisaab-v15`), `customer.js`, `extras.js` | `tests/local-assets.mjs` (13 checks), `tests/ledger.cjs` (27 checks); `tests/phone-ledger.mjs` (147, unchanged) | Nothing; the screenshot reader still loads on demand from its host |
 | 1.5.0.0 | The desktop layout like the best chat apps: a total strip, the customer list gets the height, the quick-entry pill with a "+" popover, a right panel from 1200 px | `compact.css`, `compact.js`, `sw.js` (cache `hisaab-v16`) | `tests/desk-ledger.mjs` (93 checks) | Nothing; the test was written first |
 | 1.5.1.0 | Urdu reads right to left (amounts and phone numbers left to right); the right panel fits the screen and its cards scroll on their own; a row brought into view stays above the pill | `compact.js`, `compact.css`, `sw.js` (cache `hisaab-v18`) | `tests/desk-ledger.mjs` (149 checks, with a 40-customer shop) | Nothing; the test was written first |
-| 1.5.1.0 | Urdu reads right to left (amounts and phone numbers left to right); the right panel fits the screen and its cards scroll on their own; a row brought into view stays above the pill | `compact.js`, `compact.css`, `sw.js` (cache `hisaab-v18`) | `tests/desk-ledger.mjs` (149 checks, with a 40-customer shop) | Nothing; the test was written first |
+| 1.5.2.0 | No scroll boxes in the desktop right panel: every overdue customer and recent entry shown, a filter box on each list; the pill pinned to the bottom of the screen; the "+" menu kept on screen; the sai4b mark opens sai4b.com | `compact.css`, `compact.js`, `sw.js` (cache `hisaab-v22`) | `tests/desk-ledger.mjs` (151 checks) | The panel checks of 1.5.1.0 asked for cards that scroll on their own; they were changed to match, at the owner's word |
+| 1.5.2.1 | The four findings of the fresh review: search box 44 px on a phone, the strip labels wrap, the "Record" label not clipped, a notice beside the reminder controls while the pay address is the demo one | `polish.css`, `sendways.js`, `i18n/*.json` (`demoPayNote`, `demoPaySet`; 256 text keys each) | `tests/review-fixes.mjs` (98 checks) | Nothing; the test was written first |
 
 ### Left for later
 

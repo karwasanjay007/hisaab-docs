@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.1.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.2.1 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 27 Nov 2026 (version 1.5.1.0) |
+| Last revised | 27 Nov 2026 (version 1.5.2.1) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -48,6 +48,7 @@ differently, or not built, the text says so.
 | `local-assets.mjs "..."` | `tests/local-assets.mjs`, added in 1.4.1.0: a plain visit, a QR code and a language change ask no other host; the fonts and the QR library come from the site; the + sheet in Hindi, Telugu and Urdu (last live run: `evidence/last-local-assets-live.txt`, 13 checks) |
 | `ledger.cjs "..."` | `tests/ledger.cjs`, added in 1.4.1.0: unit tests of the ledger maths in Node, through `window.Hisaab.ledger`, without a browser (27 checks; run on the code, not on the live link) |
 | `desk-ledger.mjs "..."` | `tests/desk-ledger.mjs`, added in 1.5.0.0: the desktop layout at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, with the sample shop: the total strip, the customer rows, the pill, the "+" popover and the right panel since 1.5.1.0 also Urdu right to left and a 40-customer shop (last live run: `evidence/last-desk-ledger-live.txt`, 149 checks) |
+| `review-fixes.mjs "..."` | `tests/review-fixes.mjs`, added in 1.5.2.1: the four findings of the fresh review at 375 px, light and dark: the search box, the label under the total, the bottom-bar labels and the demo pay notice, in the app's languages; 98 checks. A "..." at the start of a quoted line stands for the width, theme and language the line begins with |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -73,8 +74,8 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| E15 | Guards, whole rupees, brand look, the phone and desktop layouts, Urdu right to left (1.2.6.0 to 1.5.1.0) | 9 | 45 | V-27 to V-33, C-1 (PRD, last section) |
-| **Total** | | **72** | **357** | |
+| E15 | Guards, whole rupees, brand look, the phone and desktop layouts, Urdu right to left, the review fixes (1.2.6.0 to 1.5.2.1) | 11 | 55 | V-27 to V-35, C-1 (PRD, last section) |
+| **Total** | | **74** | **367** | |
 
 ---
 
@@ -1109,10 +1110,38 @@ As a shop owner who reads Urdu, I want the page to read right to left, and as an
 | AC-E15.F9.4 | The app in Urdu | English is chosen again | The dir attribute is removed | `desk-ledger.mjs "375x667 ur rtl: back in English the dir attribute is removed"`, `desk-ledger.mjs "1280x800 ur rtl: back in English the dir attribute is removed"` |
 | AC-E15.F9.5 | A desktop in Urdu at 1024 x 768 or 1280 x 800 | The overview is drawn and "+" is pressed | The right panel sits on the left of the customer list, and the popover opens above the pill, inside the screen, lined up with the pill's right edge | `desk-ledger.mjs "1280x800 ur: the right panel sits on the left (right to left) of the customer list"`, `desk-ledger.mjs "1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"`, `desk-ledger.mjs "1024x768 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"` |
 | AC-E15.F9.6 | A desktop at 1280 x 800 with a 40-customer shop | The overview is drawn | All 40 customers are listed, at least 10 rows are fully on the first screen, nothing scrolls sideways and the pill is in view | `desk-ledger.mjs "1280x800 big shop: all 40 customers are listed"`, `desk-ledger.mjs "1280x800 big shop: at least 10 customer rows fully on the first screen"`, `desk-ledger.mjs "1280x800 big shop: no horizontal scroll and the pill in view"` |
-| AC-E15.F9.7 | The same shop | The list is scrolled to the end, and the right panel's cards are scrolled | The last customer stays above the pill; overdue and recent scroll on their own inside the screen, no wider than the panel, and the page is not pushed wider | `desk-ledger.mjs "1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view"`, `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel scrolls on its own, inside the screen, and no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel scrolls on its own, inside the screen, and no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: the right panel does not push the page wider"` |
+| AC-E15.F9.7 | The same shop | The list is scrolled to the end, and the right panel is read | The last customer stays above the pill; overdue and recent are no wider than the panel and, since 1.5.2.0, have no scroll box of their own (they scrolled on their own at 1.5.1.0), and the page is not pushed wider | `desk-ledger.mjs "1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view"`, `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: the right panel does not push the page wider"` |
 | AC-E15.F9.8 | The same shop | Quick entry records 300 for a customer far down the list | That balance rises by 300 and the page has no errors | `desk-ledger.mjs "1280x800 big shop: quick entry records 300 for Ruksana Patel, far down the list"`, `desk-ledger.mjs "1280x800 big shop: no page error"` |
 
 Not checked by a test of its own: the skip link not scrolling the page sideways in Urdu; read from `compact.js` and covered by "nothing scrolls sideways" above.
+
+### E15.F10 Every record in view on a desktop, and the sai4b mark (1.5.2.0)
+
+As a shop owner at a desk, I want to see every overdue customer and every recent entry without a scroll box, and to narrow them with a filter, so that no record is hidden.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F10.1 | A desktop at 1280 x 800 with a 40-customer shop | The right panel is drawn | Overdue and recent have no scroll box of their own and are no wider than the panel | `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel has no scroll box of its own and is no wider than the panel"` |
+| AC-E15.F10.2 | The same shop | The filter box of a list is read, then text from one row is typed in it | Every row is shown before typing, the box is 44 px high or more, and typing leaves at least one row and fewer than all | `desk-ledger.mjs "1280x800 big shop: sec-overdue: every row shown, and its filter narrows the list"`, `desk-ledger.mjs "1280x800 big shop: sec-recent: every row shown, and its filter narrows the list"` |
+
+Not checked by a test of its own: the sai4b mark opening sai4b.com in a new tab, the pill pinned to the bottom of the screen and the "+" menu staying on screen when the page is scrolled; all three are read from `compact.js`.
+
+### E15.F11 The four findings of the fresh review (1.5.2.1)
+
+As a shop owner on a phone, I want every control easy to tap and every label readable, and as an owner who has not set a UPI ID, I want to be told where my reminders ask customers to pay, so that money does not go to a demo address.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F11.1 | A phone at 375 px, light or dark | The overview is drawn, with an empty shop and with the sample shop | The search box is 44 px high or more | `review-fixes.mjs "... F1 the search box is 44 px or more, empty shop"`, `review-fixes.mjs "... F1 the search box is 44 px or more, sample shop"` |
+| AC-E15.F11.2 | The same phone, in each language the test runs | The strip under the total is drawn | The label for money collected in the last 30 days is shown in full, 12 px or more, with no ellipsis | `review-fixes.mjs "... F2 "<the label>" is shown in full, 12 px or more"` |
+| AC-E15.F11.3 | The same phone, in each language the test runs | The bottom bar is drawn | No glyph of any of its five labels is cut | `review-fixes.mjs "... F3 no glyph of a bottom-bar label is cut"` |
+| AC-E15.F11.4 | A shop with no UPI ID of its own and a customer who owes | The overview is drawn | The reminder links are there as before, and one notice beside the customer list names the demo address; its link goes to Shop settings and is 44 px high or more; nothing scrolls sideways | `review-fixes.mjs "... F4 the reminder links are there and carry the pay link as before"`, `review-fixes.mjs "... F4 a notice beside the customer list names the demo address"`, `review-fixes.mjs "... F4 no horizontal scroll with the notice"` |
+| AC-E15.F11.5 | The same shop | The customer page is opened | The same notice is shown there, and the count of reminder links is unchanged | `review-fixes.mjs "... F4 the count of reminder links is unchanged on the customer page"` |
+| AC-E15.F11.6 | The notice | Its link is pressed | Shop settings opens with the UPI field | `review-fixes.mjs "... F4 the link opens Shop settings with the UPI field"` |
+| AC-E15.F11.7 | The same shop | The owner saves a UPI ID of the shop | The notice goes from the overview and from the customer page, the reminders carry the new ID, and the count of reminder links is the same | `review-fixes.mjs "... F4 no notice once the shop has its own UPI ID"`, `review-fixes.mjs "... F4 the count of reminder links is the same with and without the notice"`, `review-fixes.mjs "... F4 no notice on the customer page either"` |
+| AC-E15.F11.8 | A shop with no UPI ID of its own, in each language the test runs | The overview is drawn | The notice is there in that language and names the demo address | `review-fixes.mjs "... F4 the notice is there in this language"` |
+
+Not checked by a test: the wording of the notice in the eleven languages other than English has not been read by a native speaker.
 
 ---
 
@@ -1161,7 +1190,8 @@ Not checked by a test of its own: the skip link not scrolling the page sideways 
 | V-31 (PRD, last section) | The + sheet in every language, the fonts and the QR library from the site, the ledger unit tests (1.4.1.0) | E15.F5, E15.F6, E15.F7 |
 | V-32 (PRD, last section) | The desktop layout like the best chat apps (1.5.0.0) | E15.F8 |
 | V-33 (PRD, last section) | Urdu right to left, and a big shop on a desktop (1.5.1.0) | E15.F9 |
-| V-33 (PRD, last section) | Urdu right to left, and a big shop on a desktop (1.5.1.0) | E15.F9 |
+| V-34 (PRD, last section) | Every record in view on a desktop, and the sai4b mark (1.5.2.0) | E15.F10 |
+| V-35 (PRD, last section) | The four findings of the fresh review (1.5.2.1) | E15.F11 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

@@ -59,6 +59,7 @@ else bal is zero
   App -> App : "...Your account is settled, Rs 0 due. Thank you."
 end
 App -> UI : a[data-remind] href = wa.me/91{phone}?text={encoded message},\ntarget _blank (same link on the customer page as #cust-remind)
+note right of UI : since v1.5.2.1 (sendways.js): while no UPI ID is set,\na notice beside the reminder controls says the reminder\ncarries the demo ID, with a link to Shop settings
 opt Settings: owner saves shop name and UPI ID
   Owner -> UI : Shop settings form, Save
   alt UPI ID typed and validUpi() fails

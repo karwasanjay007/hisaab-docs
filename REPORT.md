@@ -484,7 +484,8 @@ Added on top; nothing removed.
 
 - Urdu reads right to left: `compact.js` sets `dir="rtl"` on the html element for Urdu; amounts and phone numbers
   stay left to right, and the skip link no longer scrolls the page sideways.
-- The desktop right panel fits the screen and its cards scroll on their own; a row brought into view stays above
+- The desktop right panel fits the screen and its cards scroll on their own (until 1.5.2.0, which shows every record
+  with no scroll box); a row brought into view stays above
   the pill. Checked with a 40-customer shop. Service worker cache `hisaab-v18`.
 
 Test first: `tests/desk-ledger.mjs`, now 149 checks. Local: desk-ledger (149), phone-ledger (147), layout (7),
@@ -566,3 +567,45 @@ Urdu. Offline cache `hisaab-v19`. Local: a heading check in English, Urdu and Hi
 
 On a phone the language box in the top bar is an icon button; Safari drew it white with only an "E" showing. Offline
 cache `hisaab-v20`. Local: phone-ledger (147), langs (25), brand (184), layout (7) ALL PASS; live: the checker 27 pass, 0 fail.
+
+## Version 1.5.2.0 and 1.5.2.1 (27 Nov 2026)
+
+Added on top; nothing removed.
+
+**1.5.2.0, at the owner's word.**
+
+- No scroll boxes in the desktop right panel. From 1200 px the panel shows the entry form in full, every overdue
+  customer and every recent entry, and it grows with the page. Each of the two lists has a filter box, 44 px high;
+  every row stays and the box narrows them (`compact.css`, `compact.js`).
+- The quick-entry pill is pinned to the bottom of the screen, as wide as the customer list, so it stays in reach
+  however long the page is. The "+" menu never opens off screen.
+- The sai4b mark in the top bar opens sai4b.com in a new tab. The app name beside it still goes home.
+- Offline cache `hisaab-v22`.
+
+**1.5.2.1, the four findings of a fresh review.**
+
+- On a phone the search box is 44 px high (it was 40).
+- The labels of the strip under the total wrap; "Collected, last 30 days" no longer ends in an ellipsis.
+- The "Record" label in the bottom bar is no longer clipped (all three in `polish.css`).
+- While the shop has no UPI ID of its own, a notice beside the reminder controls says that reminders carry the demo
+  pay address, with a link to Shop settings. It sits under the customer list and on the customer page, in twelve
+  languages (text keys `demoPayNote` and `demoPaySet`; `sendways.js`, `i18n/*.json`). It goes once a UPI ID is saved.
+
+**How the baseline is kept.** Both versions are added beside what is graded: the changes are in the add-on files
+(`compact.css`, `compact.js`, `polish.css`, `sendways.js`), not in `app.js` or `index.html`. The notice is a paragraph
+with one plain link; the reminder links are not touched and their count is the same with and without it. In 1.5.2.1
+no earlier test was edited; the new test, `tests/review-fixes.mjs`, was written first. In 1.5.2.0 the panel checks of
+`tests/desk-ledger.mjs` were changed, because the owner asked for the opposite of what 1.5.1.0 checked: the cards
+no longer scroll on their own. The grader hooks stay in place.
+
+**The fresh review.** An independent pass over the live link at 1.5.1.0 used only the specification page, the sample
+files and the link; it did not read the code, the tests or earlier reviews. Result: 40 pass, 4 fail, 9 not tested.
+No must-do line and no named hook failed. All four fails are fixed in 1.5.2.1, as listed above.
+
+**Tests.** Live on 27 Nov 2026: review-fixes (98), the checker 100 out of 100, brief, phone-ledger (147),
+desk-ledger (151), layout (7), sendways (16), langs (25) and brand (184) ALL PASS (`evidence/`).
+
+**Not covered.** No native speaker has read the new notice in the eleven languages other than English. Nothing
+was checked on a real phone; the checks ran in a headless browser. The sai4b link, the pinned pill and the "+" menu
+staying on screen have no check of their own in `tests/desk-ledger.mjs`; they are read from `compact.js`. The nine
+points the review did not test stay untested by it.

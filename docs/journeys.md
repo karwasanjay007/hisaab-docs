@@ -3,7 +3,7 @@
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
 `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
-`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.1.0: the function names, the order of calls, what is
+`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.2.1: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -191,7 +191,8 @@ Source: [j3-quick-entry-voice.puml](diagrams/j3-quick-entry-voice.puml)
 **Goal.** Ask a customer to pay in one tap, with the right amount and a way to pay.
 
 **Preconditions.** The customer has a 10 digit Indian number. The shop's UPI ID is set in Shop settings;
-until then the demo ID `hisaab.demo@upi` is used and Settings says so. Settings checks the UPI ID with
+until then the demo ID `hisaab.demo@upi` is used and Settings says so. Since 1.5.2.1 a notice beside the reminder
+controls says so too, with a link to Shop settings (`sendways.js`). Settings checks the UPI ID with
 `validUpi()` (`name@handle`, for example `shopname@okbank`); a bad ID shows "Enter a UPI ID like
 shopname@okbank, or leave it empty." and nothing is saved. Empty is allowed.
 
@@ -571,6 +572,22 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
 - **J9, choosing Urdu:** `compact.js` sets `dir="rtl"` on the html element, so the page reads right to left;
   amounts and phone numbers stay left to right, and the skip link no longer scrolls the page sideways. Back in
   another language the attribute is removed. On a desktop in Urdu the right panel sits on the left of the list.
-- **J1 on a desktop with many customers:** the right panel fits the screen and its cards scroll on their own; a
+- **J1 on a desktop with many customers:** the right panel fitted the screen and its cards scrolled on their own
+  (until 1.5.2.0, see below); a
   row brought into view stays above the pill. Checked with a 40-customer shop.
 - **J9:** the service worker cache is `hisaab-v18`; the app shell lists the same files.
+
+## Version 1.5.2.0 and 1.5.2.1 (27 Nov 2026): what changed in the journeys
+
+- **J1 on a desktop from 1200 px:** the right panel has no scroll box. The entry form, every overdue customer and
+  every recent entry are shown and the page grows. A filter box above each of the two lists narrows the rows as
+  the owner types; clearing it brings every row back. The quick-entry pill is pinned to the bottom of the screen.
+- **J1, the top bar:** the sai4b mark opens sai4b.com in a new tab; the app name beside it still goes home.
+- **J1 and J2 on a phone:** the search box is 44 px high, the labels under the total are shown in full and the
+  "Record" label is not clipped.
+- **J4 and J12, a shop with no UPI ID of its own:** when a reminder link is on the page, a notice under the
+  customer list says that reminders ask customers to pay the demo UPI ID, not the shop. The customer page shows the
+  same notice under its reminder buttons. Its link opens Shop settings with the cursor in the UPI field. After
+  the owner saves a UPI ID the notice goes and every reminder carries the new ID. The reminder links and the
+  message are as before, and the notice follows the app language.
+- **J9:** the service worker cache is `hisaab-v22`; the app shell lists the same files.

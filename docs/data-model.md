@@ -80,7 +80,7 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.wa` | (1.2.3.0) a map from the 10-digit number to `{ s: "ok" or "no", d: date }`, the owner's answer to the WhatsApp check | the owner answers after a hello message to a customer added by hand | when a customer is added; not part of a shop file or a backup |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v20` (version 1.5.1.0) so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v22` (version 1.5.2.0) so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
 `profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
@@ -247,5 +247,12 @@ Nothing new is stored. The add-on `assist.js` reads `hisaab.theme` only through 
 
 ## Version 1.5.1.0 (27 Nov 2026)
 
-- **Cache:** `hisaab-v20`; the app shell lists the same files.
+- **Cache:** `hisaab-v20` at 1.5.1.2 (`hisaab-v22` since 1.5.2.0); the app shell lists the same files.
 - Right to left for Urdu is the `dir` attribute on the html element, set from the chosen language; nothing new is stored and the shape of `hisaab.v1` is unchanged.
+
+## Version 1.5.2.0 and 1.5.2.1 (27 Nov 2026)
+
+- **Cache:** `hisaab-v22`; the app shell lists the same files.
+- The list filters, the pinned pill and the sai4b link (`compact.js`) store nothing; what is typed in a filter box is not kept.
+- The demo pay notice (`sendways.js`) only reads `upi` from the stored shop: empty means the demo ID `hisaab.demo@upi` is in use and the notice is shown. Nothing new is stored and the shape of `hisaab.v1` is unchanged.
+- **Language files:** 256 text keys each; `demoPayNote` and `demoPaySet` added in all twelve.

@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.5.1.2 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.5.2.1 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -60,7 +60,10 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | More than one shop on the same phone | Yes | 1.1 |
 | N/A | Twelve languages (nine more: Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia, Urdu) | Yes | 1.2 |
 | N/A | Urdu reads right to left (amounts and phone numbers stay left to right) | Yes | 1.5.1 |
-| N/A | Urdu reads right to left (amounts and phone numbers stay left to right) | Yes | 1.5.1 |
+| N/A | Desktop right panel with no scroll boxes: every overdue customer and every recent entry shown, with a filter box on each list | Yes | 1.5.2 |
+| N/A | The sai4b mark in the top bar opens sai4b.com in a new tab; the app name beside it still goes home | Yes | 1.5.2 |
+| N/A | A notice beside the reminder controls while the shop has no UPI ID of its own, with a link to Shop settings, in twelve languages | Yes | 1.5.2 |
+| N/A | On a phone: the search box 44 px high, the labels under the total shown in full, the "Record" label not clipped | Yes | 1.5.2 |
 | N/A | Customer page totals and days since the last payment | Yes | 1.2 |
 | N/A | Call and WhatsApp chat links for a customer | Yes | 1.2 |
 | N/A | Change a customer's phone number (rename since 1.0) | Yes | 1.2 |
@@ -133,7 +136,7 @@ offline after one visit and nothing ever leaves the phone.
 - Four separate reviews before release, kept in [review/](review/): a comparison with the leading ledger
   apps, an audit against the brief and the coaching, a functional test and a design critique. Every
   finding was fixed or recorded.
-- A full documentation set (below): 15 epics, 70 features and 341 acceptance criteria traced to the tests;
+- A full documentation set (below): 15 epics, 74 features and 367 acceptance criteria traced to the tests;
   nine user journeys as sequence diagrams; C4 architecture views; JSON Schemas for every file the app reads
   or writes. Every diagram is PlantUML source plus SVG.
 
