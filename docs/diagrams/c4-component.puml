@@ -2,10 +2,10 @@
 !include <C4/C4_Component>
 title Hisaab: components inside app.js (C4 level 3)
 
-ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops; v1.2: no new key, hisaab.lang holds one of twelve codes; v1.2.3: hisaab.wa")
+ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops; v1.2: no new key, hisaab.lang holds one of twelve codes; v1.2.3: hisaab.wa; v1.2.6: hisaab.guard, a probe")
 Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
 Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
-Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, also assist.js), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, also assist.js; v1.4: hisaab-v14, also guard.js, guard.css, brand.css, brand-mark.svg, compact.css, compact.js), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
 Container_Ext(profile, "Shop profile add-on", "profile.js, profile.css", "v1.1: owner, address and logo in Shop settings, the header and the printed statement; balance history line as inline SVG on the customer page")
 Container_Ext(shops, "Several shops add-on", "shops.js, shops.css", "v1.1: add, switch and remove shops, Import as a new shop; the current shop stays under hisaab.v1")
 
@@ -18,6 +18,9 @@ Container_Ext(names, "Names add-on", "names.js", "v1.2.1: customer names in nine
 Container_Ext(sendways, "Send ways add-on", "sendways.js", "v1.2.2: the reminder as SMS, to a contact chosen in WhatsApp, or copied")
 Container_Ext(wacheck, "WhatsApp check add-on", "wacheck.js", "v1.2.3: hello message after a customer is added; stores the owner's answer in hisaab.wa")
 Container_Ext(assist, "Assist add-on", "assist.js", "v1.2.5: says which theme is on and which view is showing; the skip link; quick entry offers to add a customer it does not know. Stores nothing")
+Container_Ext(guard, "Guard add-on", "guard.js, guard.css", "v1.2.6: a refused or blocked store said plainly; an oversized imported picture dropped and counted; an edit keeps its date. v1.3: whole rupees: typed paise held, imports rounded halves up, stored paise offered a round with Undo")
+Container_Ext(brand, "Brand sheet", "brand.css, brand-mark.svg", "v1.3: navy, cream, slate blue and amber; Fraunces and Inter; the sai4b mark first in the top bar; no green")
+Container_Ext(compact, "Phone layout add-on", "compact.js, compact.css", "v1.4: on a phone a 56 px top bar, a compact total, a quick-entry pill, a slim tab row and a + sheet; desktop unchanged")
 
 Container_Boundary(app, "app.js (one IIFE)") {
   Component(init, "Wire-up", "init()", "Loads state or starts an empty shop, binds every listener, registers the service worker")
@@ -31,7 +34,7 @@ Container_Boundary(app, "app.js (one IIFE)") {
   Component(qr, "QR", "loadQr, qrSvg, showQr", "UPI QR code on the customer page")
   Component(stmt, "Statement", "printStatement", "Printable customer statement with totals and a scan-to-pay QR")
   Component(io, "Import and export", "doImport, fromCsv, csvRows, exportEntries, exportBalances, exportJson, csvCell", "Replaces the shop from JSON or CSV with Undo; writes CSV and JSON files")
-  Component(shot, "Screenshot reading", "onShotChange, loadTesseract, readAmount, pickAmount", "Resizes to a 640 px JPEG and reads the paid amount")
+  Component(shot, "Screenshot reading", "onShotChange, loadTesseract, readAmount, pickAmount", "Resizes to a 600 px JPEG (640 px until v1.2.6) and reads the paid amount")
   Component(theme, "Theme", "currentTheme, toggleTheme", "Light and dark, following the system until chosen")
   Component(hook, "Add-on hook", "window.Hisaab: on(event, fn), state(), replace(shop), save(), render()", "v1.1: emits render, statement, imported and export to the add-ons; each listener runs in its own guard; v1.2: also addLanguage, hasLanguage, setLang, text, balances, overdue, quickWords and a few read-only helpers; v1.2.1: translit, and the slot nameIn that names.js fills")
 }

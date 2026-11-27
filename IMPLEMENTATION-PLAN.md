@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Last revised | 25 Nov 2026 (versions 1.1.0.0 to 1.2.5.0 added at the end) |
+| Last revised | 27 Nov 2026 (versions 1.1.0.0 to 1.4.0.0 added at the end) |
 
 ## Steps
 
@@ -86,6 +86,9 @@ test and the suites it touches. The documents were brought up to date after the 
 | 1.2.3.1 | A wrong answer to the WhatsApp check is switched with one tap | `wacheck.js` (the button `#wa-check-flip`) | `tests/wacheck.mjs` (19 checks) | Nothing. Asked for by the owner after he pressed "No" by mistake in his own trial |
 | 1.2.4.0 | Voice entry never ends in silence: a failure says why, with the keyboard microphone or the computer's own dictation as the way that always works | `app.js` (`listen` inside `setupVoice`); two text keys in every language file | `tests/voice-quiet.mjs` (11 checks); `tests/voice.mjs` (15, unchanged) | A laptop with a touch screen was taken for a phone and offered the wrong tip. A phone is now recognised by what it is. Fixed before the deploy |
 | 1.2.5.0 | Controls that say what they did, after the project feedback: the theme button, a navigation press and the skip link; quick entry offers to add a customer it does not know | `assist.js` (new, loaded last); `index.html` (one script tag); `sw.js` (the shell list, cache `hisaab-v10`) | `tests/assist.mjs` (38 checks); `tests/quick.mjs` unchanged | The first version replaced the question "Which customer?", which the earlier quick-entry test expects; it failed on the live site only, because locally the page was read before the add-on ran. The add-on now keeps the question |
+| 1.2.6.0 | Gaps against the course build approach closed on top: a refused or blocked store said plainly, an oversized imported picture left out and counted, an edit keeps its date, the shop name whole on a phone, small labels raised; screenshots at most 600 px | `guard.js`, `guard.css`; one number in `app.js` (640 to 600 px) | `tests/guard.mjs` (48 checks) | Nothing; the test was written first |
+| 1.3.0.0 | The brand look with no green, and money in whole rupees | `brand.css`, `brand-mark.svg`, `icon.svg` in navy; `guard.js` (whole rupees) | `tests/brand.mjs` (184 checks), `tests/rupees.mjs` (28 checks) | Five older expectations changed at the owner's word ("Full guideline"): four sweep shops with paise now expect whole rupees, and `tests/final.mjs` types 1 where it typed 0.5 |
+| 1.4.0.0 | The phone layout like the best chat apps: a 56 px top bar, a compact total, a quick-entry pill, a slim tab row and a + sheet | `compact.css`, `compact.js` | `tests/phone-ledger.mjs` (147 checks) | Nothing; customer rows on the first screen with the sample shop went from 0 to 4 at 375 x 667 and from 1 to 8 at 390 x 844 |
 
 ### Left for later
 
@@ -102,3 +105,6 @@ test and the suites it touches. The documents were brought up to date after the 
 - The pay page in languages other than English.
 - Real speech. A stand-in plays the browser's speech service in the voice tests; nobody has spoken an entry on a
   phone and on a laptop as a test, and the computer's own dictation was not tried on the owner's machine.
+
+- A fresh reviewer's read of versions 1.3.0.0 and 1.4.0.0.
+- Fonts and the QR library still load from other sites; no unit tests for the ledger maths; three places add amounts besides the one balance function.

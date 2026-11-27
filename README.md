@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.2.5.0 (25 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.4.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -72,8 +72,12 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | WhatsApp check when a customer is added: a hello message, and the answer remembered per number (switched with one tap) | Yes | 1.2.3 |
 | N/A | Voice entry never ends in silence: a failure says why, and offers the keyboard microphone or the computer's dictation | Yes | 1.2.4 |
 | N/A | Controls that say what they did: the light and dark button names the theme, a navigation press names the view, and quick entry offers to add a customer whose name it does not know | Yes | 1.2.5 |
+| N/A | A change the browser store refused, or a store that is blocked, is said plainly; an oversized imported picture is left out and counted; an edit cannot lose its date; screenshots at most 600 px | Yes | 1.2.6 |
+| N/A | Money in whole rupees: typed paise are held with the nearest whole amount offered, imports are rounded and counted, stored paise are offered a round with Undo | Yes | 1.3 |
+| N/A | Brand look: navy, cream, slate blue and amber, Fraunces and Inter, the sai4b mark first in the top bar; no green anywhere | Yes | 1.3 |
+| N/A | Phone layout: a 56 px top bar, a compact total, quick entry as one pill at the bottom, a slim tab row and a + sheet with every other action | Yes | 1.4 |
 
-All 17 rows of the brief pass, and all 28 rows beyond it are in place. The same table with three other builds of
+All 17 rows of the brief pass, and all 32 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes
@@ -89,7 +93,7 @@ Telugu and never auto-saves. Offline after one visit. Data stays in the browser.
 outstanding). Then:
 
 1. In **Record**, type or speak "Sunita 500 udhaar", check the fields, press Save.
-2. Tap the green WhatsApp button on any customer: name, Rs amount and a `upi://pay` link.
+2. Tap the WhatsApp button on any customer: name, Rs amount and a `upi://pay` link.
 3. Open a customer: entries newest first, UPI QR, printable statement.
 4. Switch language to हिंदी or తెలుగు, and the theme to dark.
 

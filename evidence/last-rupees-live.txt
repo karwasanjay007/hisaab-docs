@@ -1,0 +1,29 @@
+PASS JSON import: 10.5, 20.25, 0.4 and 100 are kept as 11, 20, 0 and 100 (halves up; a zero stays as the import keeps a zero) | {"live":[11,20,0,100],"stored":[11,20,0,100]}
+PASS JSON import: one line says 3 amounts were rounded | Loaded Paise shop: 2 customers, 4 entries. 3 amounts had paise and were rounded to whole rupees.
+PASS JSON import: the total and every balance are whole numbers | {"total":"131","balances":["100","31"],"ok":true}
+PASS JSON import: no stored-paise line afterwards
+PASS JSON import in Hindi: the line is in Hindi and 7.5 became 8 | Paise shop लोड हुई: 1 ग्राहक, 1 एंट्री। 1 रकम में पैसे थे, उसे पूरे रुपयों में बदला गया।
+PASS CSV import: 10.5 and 2.5 are kept as 11 and 3 | {"live":[11,3,40],"stored":[11,3,40]}
+PASS CSV import: one line says 2 amounts were rounded | Loaded Paise shop: 1 customers, 3 entries. 2 amounts had paise and were rounded to whole rupees.
+PASS CSV import: the total and every balance are whole numbers | {"total":"48","balances":["48"],"ok":true}
+PASS on open: stored paise are not changed and the ledger shows what is stored | {"live":[10.5,20.75,100],"stored":[10.5,20.75,100]} total 131.25
+PASS on open: one line counts 2 stored amounts with paise, with the button "Round them to whole rupees" | {"text":"2 stored amounts have paise. They are shown as stored.","button":"Round them to whole rupees","buttonH":44,"right":359,"page":375}
+PASS at 375 px the line fits and its button is a 44 px target | {"text":"2 stored amounts have paise. They are shown as stored.","button":"Round them to whole rupees","buttonH":44,"right":359,"page":375}
+PASS the line and its button are in Hindi when Hindi is chosen | {"text":"2 सहेजी गई रकमों में पैसे हैं। वे जैसी सहेजी गईं, वैसी ही दिख रही हैं।","button":"इन्हें पूरे रुपयों में बदलें","buttonH":44,"right":359,"page":375}
+PASS and in Telugu | {"text":"2 సేవ్ చేసిన మొత్తాల్లో పైసలు ఉన్నాయి. అవి సేవ్ చేసినట్లే చూపిస్తున్నాం.","button":"వీటిని పూర్తి రూపాయలకు మార్చండి","buttonH":44,"right":359,"page":375}
+PASS the button rounds them (halves up) and saves; the total is 132 | {"live":[11,21,100],"stored":[11,21,100]} {"total":"132","balances":["132"],"ok":true}
+PASS afterwards the line says 2 amounts were rounded and offers Undo | {"text":"2 amounts were rounded to whole rupees.","button":"Undo","buttonH":44,"right":359,"page":375}
+PASS Undo puts the stored amounts back, and the count line returns | {"live":[10.5,20.75,100],"stored":[10.5,20.75,100]}
+PASS rounding again after an Undo works
+PASS twelve entries of 10, 20 and 30: the total is 240 and every balance is a whole number | {"total":"240","balances":["240"],"ok":true}
+PASS a new entry of 20.75 is not saved and the form keeps what was typed | {"n":12,"f1":{"msg":"Amounts are in whole rupees, without paise. This was not saved yet.","offer":"Use Rs 21","offerH":44,"right":145,"page":375,"amount":"20.75","id":""}}
+PASS the form says amounts are in whole rupees and offers "Use Rs 21" | {"msg":"Amounts are in whole rupees, without paise. This was not saved yet.","offer":"Use Rs 21","offerH":44,"right":145,"page":375,"amount":"20.75","id":""}
+PASS at 375 px the offer fits and is a 44 px target | {"msg":"Amounts are in whole rupees, without paise. This was not saved yet.","offer":"Use Rs 21","offerH":44,"right":145,"page":375,"amount":"20.75","id":""}
+PASS one tap puts 21 in the form, and saving keeps 21 | {"f2":{"msg":"","offer":"","offerH":0,"right":0,"page":375,"amount":"21","id":""},"last":[21]}
+PASS in Hindi: 7.5 is not saved; the message and the offer of 8 are in Hindi | {"msg":"रकम पूरे रुपयों में लिखें, पैसे नहीं। यह अभी सेव नहीं हुआ।","offer":"Rs 8 लिखें","offerH":44,"right":138,"page":375,"amount":"7.5","id":""}
+PASS quick entry "Asha 20.5": not saved; the form offers "Use Rs 21" | {"msg":"Amounts are in whole rupees, without paise. This was not saved yet.","offer":"Use Rs 21","offerH":44,"right":145,"page":375,"amount":"20.5","id":""}
+PASS an edit to 30.4 is not saved: the edit stays open and offers "Use Rs 30" | {"fe":{"msg":"Amounts are in whole rupees, without paise. This was not saved yet.","offer":"Use Rs 30","offerH":44,"right":149,"page":375,"amount":"30.4","id":"emwytgych8jtcm"},"first":10}
+PASS a whole-rupee import says nothing about rounding and shows no line | Loaded Whole file: 1 customers, 2 entries.
+PASS the total, the balance attribute and the amount field are as before for whole-rupee data | {"total":"₹375","money":"₹375","bal":"375","field":true}
+PASS no page error | 
+ALL PASS (28 checks)

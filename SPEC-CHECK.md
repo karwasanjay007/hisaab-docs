@@ -112,3 +112,22 @@ Not covered by a run: storage-full during a shop switch, and a tab closed betwee
 native speaker has read the nine new languages. Since 1.2.1.0, also not checked by a person: the spellings of
 names in the nine newer scripts, the new strings in those languages, and the SMS link, the pay page and the
 WhatsApp check on a real phone.
+
+## After the baseline: versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026)
+
+Each version was added on top, with nothing removed. The ids, attributes, totals and the import that the tester
+uses are the same. One rule changed at the owner's word, as the course guideline asks: money is kept in whole
+rupees. An import with paise is rounded to the nearest rupee, halves up, and says how many; four shops of the
+sweep that hold paise now expect whole rupees. Screenshots are kept at most 600 px (640 px before).
+
+| What is checked | Latest result | Evidence |
+| --- | --- | --- |
+| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242, live at 1.4.0.0) | 27 pass, 0 fail; 100 out of 100 | `evidence/last-check-live.txt` |
+| Storage and input guards (`guard.mjs`) | ALL PASS (48 checks) | `evidence/last-guard-live.txt` |
+| Whole rupees (`rupees.mjs`) | ALL PASS (28 checks) | `evidence/last-rupees-live.txt` |
+| Brand look, no green (`brand.mjs`) | ALL PASS (184 checks) | `evidence/last-brand-live.txt` |
+| Phone layout (`phone-ledger.mjs`) | ALL PASS (147 checks) | `evidence/last-phone-ledger-live.txt` |
+| Layout, navigation, quick entry | ALL PASS | `evidence/last-layout-live.txt`, `evidence/last-nav-live.txt`, `evidence/last-quick-live.txt` |
+
+The other suites passed on the local copy at 1.4.0.0 and were not rerun on the live link for this version. No
+fresh reviewer has read 1.3.0.0 or 1.4.0.0 yet.

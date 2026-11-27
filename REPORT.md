@@ -42,7 +42,7 @@ Why it wins against a typical LLM demo. This is a product loop, not a chat wrapp
 What to click in 60 seconds.
 1. Open https://hisaab-hazel.vercel.app and press Load sample shop (total outstanding ₹11,820).
 2. In Record, type or speak "Sunita 500 udhaar", check the filled fields, press Save.
-3. Tap a green WhatsApp reminder: name, Rs amount, and a UPI pay link.
+3. Tap a WhatsApp reminder: name, Rs amount, and a UPI pay link.
 4. Open a customer for newest-first entries, UPI QR and Statement.
 
 Honest limits. Ledger is localStorage in this browser only (no multi-phone sync yet). Until the shop sets its own UPI ID, reminders may still carry the demo UPI shown in Settings. Spoken voice depends on the browser's speech support; typed Fill + Save is the reliable path for graders.
@@ -419,6 +419,28 @@ language files, 11 languages. The results are the `last-*-live.txt` files in `ev
 **Not covered.** The two theme lines in the nine newer languages have not been read by a native speaker. A real
 microphone and a real WhatsApp chat are not part of any run: a stand-in plays the speech service, and reminder links
 are read, not opened.
+
+## Versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026)
+
+Added on top after a check against the course build approach; nothing removed.
+
+- **1.2.6.0** (`guard.js`, `guard.css`): a change the browser store refused is said plainly and "Saved." is not
+  left standing; a lasting notice when the browser mode keeps nothing; an imported picture that is not an image
+  or is over 400,000 characters is left out, the entry kept and the count told; an edit cannot lose its date;
+  screenshots at most 600 px (one number in `app.js`); the shop name whole on a phone; small labels at 12 px.
+- **1.3.0.0** (`brand.css`, `brand-mark.svg`, `icon.svg` in navy; whole rupees in `guard.js`): navy, cream, slate
+  blue and amber, Fraunces and Inter, the sai4b mark first in the top bar, and no green anywhere. Money in whole
+  rupees: typed paise held with a one-tap nearest whole amount, imports rounded halves up and counted, stored
+  paise offered a round with Undo. At the owner's word five older expectations changed: four sweep shops with
+  paise now expect whole rupees, and `tests/final.mjs` types 1 where it typed 0.5.
+- **1.4.0.0** (`compact.css`, `compact.js`): on a phone the ledger gets the screen: a 56 px top bar, a compact
+  total, quick entry as one pill at the bottom, a slim tab row and a + sheet with every other action. Customer
+  rows fully on the first screen with the sample shop: 0 to 4 at 375 x 667, 1 to 8 at 390 x 844.
+
+Tests written first: `tests/guard.mjs` (48), `tests/brand.mjs` (184), `tests/rupees.mjs` (28),
+`tests/phone-ledger.mjs` (147). Live at 1.4.0.0: the checker 27 pass, 0 fail (100 out of 100); these four, layout,
+navigation and quick entry ALL PASS (`evidence/`). Every other suite passed on the local copy; not rerun live for
+this version. Not done yet: a fresh reviewer's read of 1.3.0.0 and 1.4.0.0.
 
 ## Requirement and feature map (23 Nov 2026)
 

@@ -84,8 +84,11 @@ note right of App
   a saved extra language is fetched from i18n/
   names.js, sendways.js and wacheck.js
   draw on a customer page only (J9, J11, J12);
-  assist.js (v1.2.5) loads last and only
-  says what a press did
+  assist.js (v1.2.5) says what a press did;
+  guard.js (v1.2.6) and compact.js (v1.4)
+  load last; on a phone compact.js puts
+  quick entry in a pill and the other
+  actions in a + sheet
 end note
 alt the shop has customers
   UI --> Owner : Overview: total outstanding and every balance

@@ -50,7 +50,7 @@ alt file is not an image
 else image
   App -> UI : set type to Payment
   App -> App : FileReader.readAsDataURL(file)
-  App -> App : draw on a canvas: longest side at most 640 px, white background
+  App -> App : draw on a canvas: longest side at most 600 px (640 until v1.2.6), white background
   App -> App : shotData = canvas.toDataURL('image/jpeg', 0.72)
   App -> UI : preview the picture
   App -> App : readAmount(original data URL)

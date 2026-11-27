@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 25 Nov 2026, version 1.2.5.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.4.0.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 25 Nov 2026 (version 1.2.5.0) |
+| Last revised | 27 Nov 2026 (version 1.4.0.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -41,6 +41,10 @@ differently, or not built, the text says so.
 | `voice.mjs "..."` | `tests/voice.mjs`, voice quick entry with a stand-in for the browser's speech service: a heard sentence fills the form and each kind of failure gets its own message (last live run: `evidence/last-voice-live.txt`, 15 checks) |
 | `voice-quiet.mjs "..."` | `tests/voice-quiet.mjs`, added in 1.2.4.0: voice quick entry never ends in silence, on a laptop and on a phone, with the way that always works (last live run: `evidence/last-voice-quiet-live.txt`, 11 checks) |
 | `assist.mjs "..."` | `tests/assist.mjs`, added in 1.2.5.0: the theme button, the navigation, the skip link and quick entry on an empty ledger, at phone and desktop width (last live run: `evidence/last-assist-live.txt`, 38 checks) |
+| `guard.mjs "..."` | `tests/guard.mjs`, added in 1.2.6.0: a refused or blocked store, an imported picture that is too large, an edit with no date, the phone header and small labels (last live run: `evidence/last-guard-live.txt`, 48 checks) |
+| `rupees.mjs "..."` | `tests/rupees.mjs`, added in 1.3.0.0: whole rupees for typed entries, edits, JSON and CSV imports and stored paise, in three languages (last live run: `evidence/last-rupees-live.txt`, 28 checks) |
+| `brand.mjs "..."` | `tests/brand.mjs`, added in 1.3.0.0: the brand palette, fonts, mark and sizes on four screens at phone and desktop width, light and dark (last live run: `evidence/last-brand-live.txt`, 184 checks) |
+| `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and the desktop layout unchanged (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -66,7 +70,8 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| **Total** | | **63** | **312** | |
+| E15 | Guards, whole rupees, brand look and the phone layout (1.2.6.0 to 1.4.0.0) | 4 | 18 | V-27 to V-30, C-1 (PRD, last section) |
+| **Total** | | **67** | **330** | |
 
 ---
 
@@ -108,7 +113,7 @@ As the shop owner, I want to record a credit or a payment in a few seconds so th
 | AC-E1.F2.4 | The amount is empty, zero, negative or not a number | The owner presses Save entry | "Enter an amount above zero." shows and nothing is saved | manual |
 | AC-E1.F2.5 | The amount is above 1,00,00,000 | The owner presses Save entry | "That amount looks too large. One entry can be up to ₹1,00,00,000." shows and nothing is saved | `final.mjs "large amount refused"` |
 | AC-E1.F2.6 | The date is after today | The owner presses Save entry | "The date is in the future. Use today or an earlier date." shows and nothing is saved | `final.mjs "future date refused"` |
-| AC-E1.F2.7 | The amount is 0.5 | The owner presses Save entry | It is saved; amounts are kept to two decimals and commas in the amount are ignored | `final.mjs "small amount 0.5 saved"` |
+| AC-E1.F2.7 | The amount is 1, or 0.5 | The owner presses Save entry | 1 is saved and commas in the amount are ignored. Since 1.3.0.0 an amount with paise, such as 0.5, is not saved: the form stays open and offers the nearest whole amount (E15.F2) | `final.mjs "small amount 1 saved"`, `final.mjs "small amount 0.5 is held, with the nearest whole amount offered"` |
 | AC-E1.F2.8 | The note is longer than 80 characters | The owner types it | The field stops at 80 characters; the saved note is trimmed of spaces | manual |
 
 ### E1.F3 Attach a payment screenshot
@@ -117,7 +122,7 @@ As the shop owner, I want to attach the customer's UPI screenshot to a payment s
 
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
-| AC-E1.F3.1 | The entry form | The owner chooses a picture in `#shot-input` | The type switches to Payment, the picture is shrunk to at most 640 px on its long side as a JPEG, and a preview with a Remove button shows | `check.mjs [5-shot img]` |
+| AC-E1.F3.1 | The entry form | The owner chooses a picture in `#shot-input` | The type switches to Payment, the picture is shrunk to at most 600 px on its long side as a JPEG, and a preview with a Remove button shows | `check.mjs [5-shot img]` |
 | AC-E1.F3.2 | A payment with a screenshot is saved | The list is drawn | The entry shows a 72 px thumbnail `img[data-shot]` | `check.mjs [5-shot img]`, `brief.mjs "payment shows img[data-shot]"` |
 | AC-E1.F3.3 | The page reloads | The entry is drawn again | The screenshot is still shown (it is stored inside the entry) | `check.mjs [5-shot reload]`, `brief.mjs "picture still there after reload"` |
 | AC-E1.F3.4 | The chosen file is not a picture | The file is chosen | "That file is not a picture." shows and the file is cleared | manual |
@@ -583,7 +588,7 @@ As the shop owner, I want light and dark themes so that the app is readable in a
 | --- | --- | --- | --- | --- |
 | AC-E7.F3.1 | No theme chosen | The app opens | It follows the device setting | `check.mjs [8-theme]` (INFO) |
 | AC-E7.F3.2 | The theme button | The owner taps it | The theme switches and the choice is kept, applied before the page draws | manual |
-| AC-E7.F3.3 | Either theme | Text is drawn on the home view and the customer page | Every text pair meets WCAG AA (4.5:1, or 3:1 for large text), including acted-on states (toasts, messages, edit mode, QR, the primary button hover with `--primary-hover`, the amber link on the green tile with `--accent-on-brand`) | `check.mjs [8-contrast light home]`, `check.mjs [8-contrast dark home]`, `check.mjs [8-contrast light customer]`, `check.mjs [8-contrast dark customer]`, `tests/contrast.mjs` |
+| AC-E7.F3.3 | Either theme | Text is drawn on the home view and the customer page | Every text pair meets WCAG AA (4.5:1, or 3:1 for large text), including acted-on states (toasts, messages, edit mode, QR, the primary button hover with `--primary-hover`, the amber link on the brand tile with `--accent-on-brand`) | `check.mjs [8-contrast light home]`, `check.mjs [8-contrast dark home]`, `check.mjs [8-contrast light customer]`, `check.mjs [8-contrast dark customer]`, `tests/contrast.mjs` |
 
 ### E7.F4 Phone layout
 
@@ -992,6 +997,56 @@ Note: no app can look a number up on WhatsApp beforehand. The check depends on t
 
 ---
 
+## E15 Guards, whole rupees, brand look and the phone layout
+
+### E15.F1 Nothing is lost without a word (1.2.6.0)
+
+As the shop owner, I want to be told when a change was not kept so that I never trust a figure that is not stored.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F1.1 | The browser store refuses a write | An entry is saved | The page says it was not kept, with what to do, and "Saved." is not left | `guard.mjs "desktop: an entry the store refused is said as NOT kept, with what to do, and "Saved." is not left"` |
+| AC-E15.F1.2 | The browser blocks storage | The app opens | A lasting notice says nothing can be kept in this browser mode; the sample still loads and the notice stays | `guard.mjs "blocked store: a lasting notice says nothing can be kept on this device in this browser mode"`, `guard.mjs "blocked store: the sample still loads, "Shop loaded." is not left, the notice stays"` |
+| AC-E15.F1.3 | A shop file holds a picture that is not an image or is over 400,000 characters | It is imported | The picture is dropped, the entry kept, and the count told | `guard.mjs "desktop: a picture that is not an image or is over 400,000 characters is dropped, the entry kept, and the count told"` |
+| AC-E15.F1.4 | An entry is being edited | The date is cleared and Save is pressed | The page says the date is needed and the edit stays open | `guard.mjs "desktop: an edit with the date cleared says the date is needed and stays open"` |
+
+### E15.F2 Money in whole rupees (1.3.0.0)
+
+As the shop owner, I want amounts in whole rupees, as the course guideline asks, so that every figure is plain.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F2.1 | The entry form | 20.75 is typed and Save is pressed | It is not saved and the form keeps what was typed, with the nearest whole amount offered | `rupees.mjs "a new entry of 20.75 is not saved and the form keeps what was typed"` |
+| AC-E15.F2.2 | An entry is being edited | 30.4 is typed and Save is pressed | It is not saved; the edit stays open and offers "Use Rs 30" | `rupees.mjs "an edit to 30.4 is not saved: the edit stays open and offers "Use Rs 30""` |
+| AC-E15.F2.3 | A JSON shop file with 10.5, 20.25, 0.4 and 100 | It is imported | They are kept as 11, 20, 0 and 100 (halves up) | `rupees.mjs "JSON import: 10.5, 20.25, 0.4 and 100 are kept as 11, 20, 0 and 100 (halves up; a zero stays as the import keeps a zero)"` |
+| AC-E15.F2.4 | A CSV with 10.5 and 2.5 | It is imported | They are kept as 11 and 3, and one line says 2 amounts were rounded | `rupees.mjs "CSV import: 10.5 and 2.5 are kept as 11 and 3"`, `rupees.mjs "CSV import: one line says 2 amounts were rounded"` |
+| AC-E15.F2.5 | A whole-rupee import | It is loaded | Nothing about rounding is said | `rupees.mjs "a whole-rupee import says nothing about rounding and shows no line"` |
+
+### E15.F3 The brand look (1.3.0.0)
+
+As the shop owner, I want Hisaab to look like its brand so that it is recognised, with no green anywhere.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F3.1 | Any screen, light or dark | It is drawn | The top bar and the total block are the brand navy and every primary button the brand amber | `brand.mjs "1280 dark: customer: the top bar is the brand navy"`, `brand.mjs "1280 dark: customer: the total block is the brand navy"`, `brand.mjs "1280 dark: customer: every primary button is the brand amber"` |
+| AC-E15.F3.2 | Any screen | It is drawn | Body text begins with Inter and headings with Fraunces | `brand.mjs "1280 dark: customer: body begins with Inter and headings with Fraunces"` |
+| AC-E15.F3.3 | The top bar | It is drawn | The brand mark is at least 32 px wide with half its width clear on each side | `brand.mjs "1280 dark: customer: the brand mark is at least 32 px wide with half its width clear on each side"` |
+| AC-E15.F3.4 | Any screen | It is drawn | No text under 12 px in overdue rows, badges, the tag line and the bottom bar; entry buttons at least 44 px | `brand.mjs "1280 dark: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar"`, `brand.mjs "1280 dark: customer: entry row buttons are at least 44 px"` |
+
+### E15.F4 The ledger gets the phone screen (1.4.0.0)
+
+As the shop owner on a phone, I want the customer rows on the first screen so that I see who owes without scrolling.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F4.1 | A phone at 360 x 640 with the sample shop | The overview is drawn | At least 4 customer rows are fully on the first screen and the compact total is at most 150 px | `phone-ledger.mjs "360x640 dark: at least 4 customer rows fully on the first screen"`, `phone-ledger.mjs "360x640 dark: the compact total is at most 150 px"` |
+| AC-E15.F4.2 | A phone | The overview is drawn | The pill and the tabs together are at most 112 px and nothing scrolls sideways | `phone-ledger.mjs "360x640 dark: the pill and the tabs together are at most 112 px"`, `phone-ledger.mjs "360x640 dark: no horizontal scroll"` |
+| AC-E15.F4.3 | A phone | "+" is tapped, or Enter or Space pressed on it | The sheet opens with aria-expanded and aria-controls; items are 44 px; Escape or a tap outside closes it and the focus returns to "+" | `phone-ledger.mjs "360x640 dark: the "+" sheet opens by tap with aria-expanded and aria-controls"`, `phone-ledger.mjs "360x640 dark: Enter opens, arrows move, Escape closes and returns focus to "+""`, `phone-ledger.mjs "360x640 dark: a tap outside closes the sheet"` |
+| AC-E15.F4.4 | A phone | The layout is drawn | Every grader hook exists and the quick-entry ids are not copied | `phone-ledger.mjs "360x640 dark: every grader hook exists and the quick-entry ids are not copied"` |
+| AC-E15.F4.5 | A desktop at 1280 x 800 | The page is drawn | The desktop layout is as before | `phone-ledger.mjs "1280x800: the desktop layout is as before"` |
+
+---
+
 ## Traceability: PRD requirement to features
 
 | PRD requirement | What it says, in short | Features |
@@ -1033,6 +1088,7 @@ Note: no app can look a number up on WhatsApp beforehand. The check depends on t
 | V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check (the answer switched with one tap since 1.2.3.1) | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
 | V-25 (PRD, last section) | Voice entry never ends in silence (1.2.4.0) | E5.F5, E5.F4 |
 | V-26 (PRD, last section) | Controls that say what they did (1.2.5.0) | E14.F6, E5.F6 |
+| V-27 to V-30 (PRD, last section) | Storage and input guards, whole rupees, the brand look and the phone layout (1.2.6.0 to 1.4.0.0) | E15.F1, E15.F2, E15.F3, E15.F4 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

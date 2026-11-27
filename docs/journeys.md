@@ -2,8 +2,8 @@
 
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
-`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js` and `assist.js`, the layout sheet
-`polish.css` and the customer's pay page `pay.html`, at version 1.2.5.0: the function names, the order of calls, what is
+`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
+`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.4.0.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -52,7 +52,7 @@ localhost.
 1. The head script in `index.html` reads `hisaab.theme` and sets light or dark before anything draws.
 2. `sample.js` sets `window.HISAAB_SAMPLE` (used only as the fallback for Load sample shop); `app.js` reads
    `hisaab.lang` (English when missing or not built in). The add-ons follow: `profile.js`, `shops.js`,
-   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`. `langs.js` adds nine
+   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js`, `compact.js`. `langs.js` adds nine
    languages to the menu `#lang` (twelve in all) and, when one of them was chosen before, fetches its file
    from `i18n/` and switches to it. `names.js`, `sendways.js` and `wacheck.js` draw only on a customer page
    (J9, J11, J12). The stylesheet `polish.css` loads last and changes the layout only.
@@ -351,7 +351,7 @@ Tesseract.js.
 
 **Steps.**
 1. The owner chooses a picture in `#shot-input`. `onShotChange()` sets the type to Payment.
-2. The picture is drawn on a canvas at most 640 px on its longest side, on white, and kept as a JPEG at
+2. The picture is drawn on a canvas at most 600 px on its longest side (640 px until 1.2.6.0), on white, and kept as a JPEG at
    quality 0.72; a preview shows.
 3. `readAmount()` loads Tesseract.js 5.1.1 the first time and reads the original picture with a worker:
    `eng+hin` for Hindi, `eng+tel` for Telugu, `eng` for English and the other nine languages, falling back
@@ -523,3 +523,20 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
 - The owner's answer is a record of what WhatsApp showed, not a check made by Hisaab.
 - A wrong answer is put right with one tap (since 1.2.3.1): once a number has an answer, a button beside Check on
   WhatsApp (`#wa-check-flip`) offers the other answer and switches it without opening WhatsApp again.
+
+## Versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026): what changed in the journeys
+
+- **J1 on a phone (1.4.0.0, `compact.js`):** below phone width the top bar is 56 px, the total is compact, quick
+  entry is one pill at the bottom and a slim tab row sits above it. Every other action (add a customer, an entry,
+  import, export, settings) is in the + sheet, opened by tap, Enter or Space and closed by Escape or a tap outside.
+  With the sample shop, 4 customer rows are fully on the first screen at 375 x 667. The desktop is unchanged.
+- **J1 on first open (1.2.6.0, `guard.js`):** when the browser blocks storage, a lasting notice says nothing can
+  be kept in this mode and points to a normal window or a backup file. The sai4b mark is first in the top bar
+  (1.3.0.0, `brand.css`); no green anywhere.
+- **J2 and J3 (1.3.0.0):** an amount with paise is not saved; the form, or the edit, stays open with "Use Rs n",
+  the nearest whole amount. An edit with the date cleared stays open and asks for the date (1.2.6.0). A change
+  the store refused is said as not kept, and "Saved." is not left standing.
+- **J7 (1.3.0.0):** an import rounds paise to whole rupees, halves up, and says how many; a picture that is not
+  an image or is over 400,000 characters is left out and counted (1.2.6.0). Stored paise get one line that
+  offers to round them, with Undo.
+- **J8 (1.2.6.0):** the screenshot is kept at most 600 px on its longest side.

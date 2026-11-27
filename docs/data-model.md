@@ -12,7 +12,7 @@ source of truth is `app.js`; the schemas in [schema/](schema/) give the exact fi
 | --- | --- | --- | --- |
 | Shop | the root of the `hisaab.v1` document | none (one per browser) | `shop` (name), `upi` (UPI ID, `""` when not set), `nativeDigits` (optional), and the two arrays below |
 | Customer | `customers[]` | `phone`, 10 digits | `name`, optional `name_hi` (Devanagari) and `name_te` (Telugu script) |
-| Entry | `entries[]` | `id` (made by `uid()`) | `phone`, `type` (`credit` or `payment`), `amount` (rupees, 2 decimals), `date` (`YYYY-MM-DD`), `note`, `shot` (JPEG data URL or `null`), `seq` |
+| Entry | `entries[]` | `id` (made by `uid()`) | `phone`, `type` (`credit` or `payment`), `amount` (whole rupees since 1.3.0.0; data stored earlier may hold paise, see the last section), `date` (`YYYY-MM-DD`), `note`, `shot` (JPEG data URL or `null`), `seq` |
 | Settings | the Shop fields `upi` and `nativeDigits`, plus the keys `hisaab.lang` and `hisaab.theme` | | UPI ID, digit style, language, theme |
 
 Field-by-field rules: [schema/stored-state.schema.json](schema/stored-state.schema.json).
@@ -80,7 +80,7 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.wa` | (1.2.3.0) a map from the 10-digit number to `{ s: "ok" or "no", d: date }`, the owner's answer to the WhatsApp check | the owner answers after a hello message to a customer added by hand | when a customer is added; not part of a shop file or a backup |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v10` (version 1.2.5.0) so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v14` (version 1.4.0.0) so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
 `profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
@@ -103,7 +103,7 @@ an entry also offers one undo for 7 seconds, which puts the old entry back; it i
 - Browsers give each site about 5 MB of `localStorage` (the exact amount depends on the browser). The
   whole shop, screenshots included, must fit in that one string.
 - A screenshot chosen with `#shot-input` is never stored as the original file. It is drawn on a white
-  canvas with its longer side scaled down to at most 640 px (smaller pictures are not enlarged) and saved
+  canvas with its longer side scaled down to at most 600 px (640 px until 1.2.6.0) (smaller pictures are not enlarged) and saved
   as a JPEG data URL at quality 0.72. Choosing a screenshot also
   switches the entry type to payment.
 - The amount reader (Tesseract OCR, loaded only when needed) reads the original picture, not the
@@ -211,3 +211,21 @@ Nothing new is stored. The add-on `assist.js` reads `hisaab.theme` only through 
 
 - **Cache:** `hisaab-v10` at 1.2.5.0; the app shell also lists `assist.js`.
 - **Text keys:** 235 per language, unchanged.
+
+## Versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026)
+
+- **Whole rupees (1.3.0.0):** an `amount` is a whole number of rupees. A new entry or an edit with paise is not
+  saved; the form stays open and offers the nearest whole amount. An import (JSON or CSV) rounds each amount
+  with paise to the nearest rupee, halves up (10.5 becomes 11, 20.25 becomes 20, 0.4 becomes 0), and says how
+  many were rounded. Amounts already stored with paise are shown as stored, with one line that offers to round
+  them all; Undo puts the stored values back once. Whole-rupee data is never touched. Balances and the total are
+  still rounded to 2 decimals after each step, so stored paise add up as before until they are rounded.
+- **Screenshots:** at most 600 px on the longest side (640 px until 1.2.6.0). A picture in an imported file that
+  is not a `data:image/` URL or is over 400,000 characters is dropped to `null`, the entry is kept, and the count
+  is told.
+- **Dates:** an edit with the date cleared is not saved; it stays open and asks for the date.
+- **New key `hisaab.guard` (1.2.6.0):** written as `1` and removed at once at start, only to find whether the
+  browser blocks storage. It never holds data.
+- **Cache:** `hisaab-v14` at 1.4.0.0 (`hisaab-v11` at 1.2.6.0); the app shell also lists `guard.js`, `guard.css`,
+  `brand.css`, `brand-mark.svg`, `compact.css` and `compact.js`.
+- The brand look (`brand.css`) and the phone layout (`compact.css`, `compact.js`) store nothing.

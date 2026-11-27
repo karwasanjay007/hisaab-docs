@@ -59,7 +59,7 @@ package "localStorage key hisaab.v1 (one JSON document)" {
     {field} <b>id</b> : string  (uid, key)
     {field} phone : string  (refers to Customer)
     type : credit | payment
-    {field} amount : number  (rupees, 2 dp)
+    {field} amount : number  (whole rupees since v1.3; older data may hold paise)
     date : YYYY-MM-DD
     note : string
     shot : JPEG data URL | null

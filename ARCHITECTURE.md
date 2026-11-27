@@ -5,7 +5,7 @@
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
 | Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
-| Last revised | 25 Nov 2026 (version 1.2.5.0) |
+| Last revised | 27 Nov 2026 (version 1.4.0.0) |
 
 Diagrams are C4 (PlantUML with the bundled C4 library), kept as `.puml` sources in `docs/diagrams/` and
 rendered to SVG.
@@ -55,10 +55,10 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-1 | Plain HTML, CSS and JavaScript; no framework, no build step. `app.js` is one IIFE in strict mode | Smallest and fastest; nothing to compile or break; every id the grader reads is under direct control | React with Vite: more weight, no benefit for one screen of forms and lists |
 | AD-2 | No server and no account; Vercel serves static files only | The brief allows browser storage; nothing to secure or pay for; no personal data leaves the phone | A backend with login: not needed for one owner on one phone |
 | AD-3 | One JSON document in localStorage under `hisaab.v1`, written in full after every change; preferences under `hisaab.lang` and `hisaab.theme` | Synchronous, simple, survives reload (F-5) | IndexedDB: only needed for many large photos |
-| AD-4 | Screenshots resized in the browser to at most 640 px and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
+| AD-4 | Screenshots resized in the browser to at most 600 px (640 px until 1.2.6.0) and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v10` (version 1.2.5.0): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v14` (version 1.4.0.0): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
@@ -95,7 +95,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
 | localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`; `hisaab.shops` (1.1.0.0); `hisaab.wa` (1.2.3.0, the owner's WhatsApp answer per number, outside the shop). A `storage` event listener reloads the shop when another tab changes it |
 | Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v10` on install (the add-on files and `pay.html` included); network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
-| Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js` and their style files, with `polish.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
+| Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js`, `compact.js` and their style files, with `polish.css` and `brand.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
 | Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 235 text keys per language |
 | Pay page | `pay.html` | A separate small page. Reads shop, UPI ID and amount from the part after `#`, shows them and opens the `upi://pay` link |
 | Lazy-loaded libraries | qrcode-generator 1.4.4, Tesseract.js 5.1.1 | QR codes as inline SVG; text recognition of payment screenshots |
@@ -180,7 +180,7 @@ every figure is computed (F-3).
 - A visually hidden plain number inside `#total-outstanding` (for example 125840 beside ₹1,25,840).
 - Text contrast checked to WCAG AA in both themes, including acted-on states (toasts, messages, edit mode,
   QR, hover; `tests/contrast.mjs`); the primary button hover has its own token `--primary-hover` and the
-  amber link on the green tile uses `--accent-on-brand`; field borders at 3:1; 44 px tap targets on Edit and
+  amber link on the brand tile (navy since 1.3.0.0) uses `--accent-on-brand`; field borders at 3:1; 44 px tap targets on Edit and
   Delete (REPORT.md).
 - `prefers-reduced-motion` stops the microphone pulse.
 
@@ -334,3 +334,17 @@ Nothing new is stored by either version.
 | Tests | `tests/assist.mjs` | 38 checks from an empty ledger, at 375 px and 1440 px |
 
 Nothing new is stored by this version.
+
+## Versions 1.2.6.0 to 1.4.0.0 additions (27 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Storage and input guards (1.2.6.0) | `guard.js`, `guard.css` | Loaded after `assist.js`. Wraps the store's writes: a refused write is said as not kept, and a success line written just after it is corrected. At start it writes and removes the key `hisaab.guard` to find a blocked store and shows a lasting notice. Drops an imported picture that is not an image or is over 400,000 characters and counts it. Holds an edit whose date was cleared |
+| Whole rupees (1.3.0.0) | `guard.js` | A new entry or an edit with paise is not saved and the nearest whole amount is offered; an import rounds paise halves up and says how many; stored paise get one line with Round and Undo. The lines are in English, Hindi and Telugu inside the add-on |
+| Screenshot size (1.2.6.0) | `app.js` | One number: the longest side is at most 600 px (was 640) |
+| Brand look (1.3.0.0) | `brand.css`, `brand-mark.svg`, `icon.svg` | Loaded after the other sheets: navy, cream, slate blue and amber; Fraunces and Inter, the Indian-script fonts first for those languages; the sai4b mark first in the top bar. No green: paid, the payment choice, success lines and WhatsApp buttons are slate and navy |
+| Phone layout (1.4.0.0) | `compact.css`, `compact.js` | Loaded last. Below phone width: a 56 px top bar, a compact total, quick entry as one pill at the bottom, a slim tab row, and a + sheet (`#compact-sheet`) with every other action, opened by tap, Enter or Space and closed by Escape or a tap outside. The grader hooks stay in place and are not copied. Desktop unchanged |
+| Service worker | `sw.js` | Cache `hisaab-v14`; the app shell also lists `guard.js`, `guard.css`, `brand.css`, `brand-mark.svg`, `compact.css`, `compact.js` |
+| Tests | `tests/guard.mjs`, `tests/rupees.mjs`, `tests/brand.mjs`, `tests/phone-ledger.mjs` | 48, 28, 184 and 147 checks, all passing on the live link |
+
+The only new stored key is `hisaab.guard`, a probe that is removed as soon as it is written.

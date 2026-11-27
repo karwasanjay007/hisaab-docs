@@ -1,0 +1,185 @@
+PASS 375 light: empty: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light: empty: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 light: empty: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 light: empty: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 5
+PASS 375 light: empty: no horizontal scroll | 0
+PASS 375 light: empty: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 light: empty: entry row buttons are at least 44 px | 99
+PASS 375 light: empty: the shop logo file field is at least 44 px tall | 56
+PASS 375 light: empty: one filled action, "add the first customer" | add-first
+PASS 375 light: empty: that action is the brand amber and the other primary buttons are still there, outlined | 7 primary buttons
+PASS 375 light: empty: the empty-state card is the first card under the total | sec-customers
+PASS 375 light: empty: the h1 is the largest heading | h1 15 against 15
+PASS 375 light: empty: #total-outstanding, #import-box, #import-go and #shot-input are in place | {"total":true,"customers":0,"balances":0,"reminds":0,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 light: home: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light: home: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 light: home: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 light: home: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 66
+PASS 375 light: home: no horizontal scroll | 0
+PASS 375 light: home: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 light: home: entry row buttons are at least 44 px | 44
+PASS 375 light: home: the shop logo file field is at least 44 px tall | 56
+PASS 375 light: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
+PASS 375 light: home: the h1 is the largest heading | h1 15 against 15
+PASS 375 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
+PASS 375 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light: customer: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 light: customer: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 light: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 5
+PASS 375 light: customer: no horizontal scroll | 0
+PASS 375 light: customer: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 light: customer: entry row buttons are at least 44 px | 44
+PASS 375 light: customer: the shop logo file field is at least 44 px tall | null
+PASS 375 light: customer: every primary button is the brand amber | entry-save=rgb(201, 122, 29) Save details=rgb(201, 122, 29)
+PASS 375 light: customer: #shot-input and the reminder link are in place
+PASS 375 light: overdue: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 light: overdue: the total block is the brand navy | 
+PASS 375 light: overdue: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 light: overdue: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 65
+PASS 375 light: overdue: no horizontal scroll | 0
+PASS 375 light: overdue: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 light: overdue: entry row buttons are at least 44 px | 99
+PASS 375 light: overdue: the shop logo file field is at least 44 px tall | null
+PASS 375 light: overdue: the overdue rows are shown | 65 small texts
+PASS 375 light: img[data-shot] is shown for an entry with a screenshot | 1
+PASS 375 light: no page error | 
+PASS 375 dark: empty: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: empty: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: empty: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 dark: empty: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 5
+PASS 375 dark: empty: no horizontal scroll | 0
+PASS 375 dark: empty: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 dark: empty: entry row buttons are at least 44 px | 99
+PASS 375 dark: empty: the shop logo file field is at least 44 px tall | 56
+PASS 375 dark: empty: one filled action, "add the first customer" | add-first
+PASS 375 dark: empty: that action is the brand amber and the other primary buttons are still there, outlined | 7 primary buttons
+PASS 375 dark: empty: the empty-state card is the first card under the total | sec-customers
+PASS 375 dark: empty: the h1 is the largest heading | h1 15 against 15
+PASS 375 dark: empty: #total-outstanding, #import-box, #import-go and #shot-input are in place | {"total":true,"customers":0,"balances":0,"reminds":0,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 dark: home: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: home: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: home: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 dark: home: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 66
+PASS 375 dark: home: no horizontal scroll | 0
+PASS 375 dark: home: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 dark: home: entry row buttons are at least 44 px | 44
+PASS 375 dark: home: the shop logo file field is at least 44 px tall | 56
+PASS 375 dark: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
+PASS 375 dark: home: the h1 is the largest heading | h1 15 against 15
+PASS 375 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
+PASS 375 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: customer: the total block is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: customer: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 dark: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 5
+PASS 375 dark: customer: no horizontal scroll | 0
+PASS 375 dark: customer: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 dark: customer: entry row buttons are at least 44 px | 44
+PASS 375 dark: customer: the shop logo file field is at least 44 px tall | null
+PASS 375 dark: customer: every primary button is the brand amber | entry-save=rgb(201, 122, 29) Save details=rgb(201, 122, 29)
+PASS 375 dark: customer: #shot-input and the reminder link are in place
+PASS 375 dark: overdue: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 375 dark: overdue: the total block is the brand navy | 
+PASS 375 dark: overdue: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 375 dark: overdue: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 65
+PASS 375 dark: overdue: no horizontal scroll | 0
+PASS 375 dark: overdue: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":22,"gap":16}
+PASS 375 dark: overdue: entry row buttons are at least 44 px | 99
+PASS 375 dark: overdue: the shop logo file field is at least 44 px tall | null
+PASS 375 dark: overdue: the overdue rows are shown | 65 small texts
+PASS 375 dark: no page error | 
+PASS 1280 light: empty: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: empty: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: empty: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 light: empty: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 1
+PASS 1280 light: empty: no horizontal scroll | 0
+PASS 1280 light: empty: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 light: empty: entry row buttons are at least 44 px | 99
+PASS 1280 light: empty: the shop logo file field is at least 44 px tall | 56
+PASS 1280 light: empty: one filled action, "add the first customer" | add-first
+PASS 1280 light: empty: that action is the brand amber and the other primary buttons are still there, outlined | 7 primary buttons
+PASS 1280 light: empty: the empty-state card is the first card under the total | sec-customers
+PASS 1280 light: empty: the h1 is the largest heading | h1 24 against 20.8
+PASS 1280 light: empty: the empty state spans the content width, no long blank column | 0.92
+PASS 1280 light: empty: #total-outstanding, #import-box, #import-go and #shot-input are in place | {"total":true,"customers":0,"balances":0,"reminds":0,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 light: home: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: home: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: home: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 light: home: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 62
+PASS 1280 light: home: no horizontal scroll | 0
+PASS 1280 light: home: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 light: home: entry row buttons are at least 44 px | 44
+PASS 1280 light: home: the shop logo file field is at least 44 px tall | 56
+PASS 1280 light: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
+PASS 1280 light: home: the h1 is the largest heading | h1 24 against 20.8
+PASS 1280 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
+PASS 1280 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: customer: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: customer: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 light: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 1
+PASS 1280 light: customer: no horizontal scroll | 0
+PASS 1280 light: customer: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 light: customer: entry row buttons are at least 44 px | 44
+PASS 1280 light: customer: the shop logo file field is at least 44 px tall | null
+PASS 1280 light: customer: every primary button is the brand amber | entry-save=rgb(201, 122, 29) Save details=rgb(201, 122, 29)
+PASS 1280 light: customer: #shot-input and the reminder link are in place
+PASS 1280 light: overdue: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 light: overdue: the total block is the brand navy | 
+PASS 1280 light: overdue: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 light: overdue: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 62
+PASS 1280 light: overdue: no horizontal scroll | 0
+PASS 1280 light: overdue: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 light: overdue: entry row buttons are at least 44 px | 99
+PASS 1280 light: overdue: the shop logo file field is at least 44 px tall | null
+PASS 1280 light: overdue: the overdue rows are shown | 62 small texts
+PASS 1280 light: img[data-shot] is shown for an entry with a screenshot | 1
+PASS 1280 light: no page error | 
+PASS 1280 dark: empty: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: empty: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: empty: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 dark: empty: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 1
+PASS 1280 dark: empty: no horizontal scroll | 0
+PASS 1280 dark: empty: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 dark: empty: entry row buttons are at least 44 px | 99
+PASS 1280 dark: empty: the shop logo file field is at least 44 px tall | 56
+PASS 1280 dark: empty: one filled action, "add the first customer" | add-first
+PASS 1280 dark: empty: that action is the brand amber and the other primary buttons are still there, outlined | 7 primary buttons
+PASS 1280 dark: empty: the empty-state card is the first card under the total | sec-customers
+PASS 1280 dark: empty: the h1 is the largest heading | h1 24 against 20.8
+PASS 1280 dark: empty: the empty state spans the content width, no long blank column | 0.92
+PASS 1280 dark: empty: #total-outstanding, #import-box, #import-go and #shot-input are in place | {"total":true,"customers":0,"balances":0,"reminds":0,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 dark: home: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: home: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: home: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 dark: home: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 62
+PASS 1280 dark: home: no horizontal scroll | 0
+PASS 1280 dark: home: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 dark: home: entry row buttons are at least 44 px | 44
+PASS 1280 dark: home: the shop logo file field is at least 44 px tall | 56
+PASS 1280 dark: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
+PASS 1280 dark: home: the h1 is the largest heading | h1 24 against 20.8
+PASS 1280 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
+PASS 1280 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: customer: the total block is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: customer: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 dark: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 1
+PASS 1280 dark: customer: no horizontal scroll | 0
+PASS 1280 dark: customer: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 dark: customer: entry row buttons are at least 44 px | 44
+PASS 1280 dark: customer: the shop logo file field is at least 44 px tall | null
+PASS 1280 dark: customer: every primary button is the brand amber | entry-save=rgb(201, 122, 29) Save details=rgb(201, 122, 29)
+PASS 1280 dark: customer: #shot-input and the reminder link are in place
+PASS 1280 dark: overdue: the top bar is the brand navy | rgb(18, 38, 58)
+PASS 1280 dark: overdue: the total block is the brand navy | 
+PASS 1280 dark: overdue: body begins with Inter and headings with Fraunces | Inter, "Noto Sans", "Not | Fraunces, "Baloo 2", "No
+PASS 1280 dark: overdue: no text under 12 px in overdue rows, badges, tag line and bottom bar | smallest 12 of 62
+PASS 1280 dark: overdue: no horizontal scroll | 0
+PASS 1280 dark: overdue: the brand mark is at least 32 px wide with half its width clear on each side | app/brand-mark.svg\")","w":32,"left":16,"above":18,"gap":56}
+PASS 1280 dark: overdue: entry row buttons are at least 44 px | 99
+PASS 1280 dark: overdue: the shop logo file field is at least 44 px tall | null
+PASS 1280 dark: overdue: the overdue rows are shown | 62 small texts
+PASS 1280 dark: no page error | 
+ALL PASS (184 checks)
