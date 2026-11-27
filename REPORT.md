@@ -555,3 +555,9 @@ most of its rows cannot be judged.
 Hisaab: all 17 rows of the brief pass, and all 28 rows outside the brief are in place (the last six were added in
 1.2.1.0 to 1.2.5.0 and were not looked for on the other builds). None of the features seen on
 the three other builds is missing.
+
+## Version 1.5.1.1 (27 Nov 2026)
+
+The desktop panel heading ("Record an entry") follows a change of language; it stayed in English after switching to
+Urdu. Offline cache `hisaab-v19`. Local: a heading check in English, Urdu and Hindi passed; desk-ledger (149) and langs
+(25) ALL PASS.
