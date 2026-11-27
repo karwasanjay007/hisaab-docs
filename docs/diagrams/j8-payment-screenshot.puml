@@ -1,32 +1,23 @@
 @startuml j8-payment-screenshot
-title J8 Payment screenshot: attach, shrink, read the amount, the owner saves
+title J8 Payment screenshot kept with an entry
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
 skinparam roundCorner 12
 skinparam shadowing false
-skinparam maxMessageSize 260
+skinparam maxMessageSize 280
 skinparam titleFontSize 17
 skinparam titleFontColor #0E5C45
 skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
 skinparam sequence {
   ArrowColor #0E5C45
   LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
   ParticipantBorderColor #0E5C45
   ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
   ActorBorderColor #0E5C45
   ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
   GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
   GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
 }
 skinparam database {
   BorderColor #0E5C45
@@ -38,55 +29,35 @@ skinparam note {
   FontSize 12
 }
 actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
+participant "React page\n(App.tsx)" as UI
+participant "lib/images" as Img
+participant "Shop store\n(useShopStore)" as Store
 database "localStorage" as LS
-participant "CDN library\n(Tesseract.js 5.1.1, jsDelivr)" as CDN
-autonumber
-Owner -> UI : in the entry form, Choose screenshot (#shot-input, accept image/*)
-UI -> App : change: onShotChange()
-alt file is not an image
-  App -> UI : #entry-msg "That file is not a picture."; clear the input
-else image
-  App -> UI : set type to Payment
-  App -> App : FileReader.readAsDataURL(file)
-  App -> App : draw on a canvas: longest side at most 640 px, white background
-  App -> App : shotData = canvas.toDataURL('image/jpeg', 0.72)
-  App -> UI : preview the picture
-  App -> App : readAmount(original data URL)
-  App -> UI : #ocr-msg "Reading the amount from the screenshot..."
-  App -> App : loadTesseract()
-  alt window.Tesseract not loaded yet
-    App -> CDN : add script cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js
-    CDN --> App : window.Tesseract
-  end
-  App -> CDN : createWorker(language by app language:\nhi 'eng+hin', te 'eng+tel', all others 'eng');\nread as scattered text, if no amount once more as one block
-  opt the combined language fails to load
-    App -> CDN : createWorker('eng'), the same two reads
-  end
-  CDN --> App : text
-  note right of CDN : language data is downloaded on first use\nand is not cached for offline
-  App -> App : qNorm(text): Devanagari and Telugu digits to 0 to 9
-  App -> App : pickAmount(text): the largest number after ₹, Rs, INR, amount, paid,\nरु, रुपये, राशि, రూ, మొత్తం or భుగతాన;\nelse the largest plain number that is not a year
-  alt amount found
-    opt Amount field empty, or last filled by the reader
-      App -> UI : put the amount into Amount
-    end
-    App -> UI : "Read Rs {amt} from the screenshot. Check it before saving."
-  else no amount, or the script or the reading failed
-    App -> UI : "Could not read an amount from this picture. Type it in."
+
+Owner -> UI : on a customer's page fills the entry form,\nchooses a picture in #shot-input, presses Save
+UI -> UI : keeps a reference to the form, reads the fields
+UI -> Img : resizeToDataUrl(file)
+Img -> Img : FileReader, then an Image, then a canvas
+Img -> Img : fitInside: longest side at most 600 px, never enlarged;\nwhite background; JPEG at quality 0.75
+loop data URL above 150,000 characters and quality above 0.35
+  Img -> Img : lowers the quality by 0.1 and encodes again
+end
+alt the file cannot be read as a picture
+  Img --> UI : error
+  UI --> Owner : "could not read the image"; nothing saved
+else resized
+  Img --> UI : JPEG data URL
+  UI -> Store : addEntry({phone, type, amount, date, note, shot})
+  Store -> LS : commit(): setItem("hisaab-shop-v2")
+  alt the browser's store is full
+    Store -> Store : puts the ledger back as it was
+    Store --> UI : storageFull
+    UI --> Owner : the message; the entry is not shown as saved
+  else written
+    UI --> Owner : form cleared; the entry shows a small picture ([data-shot])
   end
 end
-note right of UI : typing in Amount stops the reader\nfrom overwriting it
-Owner -> UI : check the amount, press Save entry
-UI -> App : onEntrySubmit() (checks as in J2)
-App -> App : entry.shot = shotData (the small JPEG)
-App -> LS : save(): the picture is stored inside 'hisaab.v1'
-opt storage is full
-  App -> UI : toast "Storage is full. Export a backup, then remove some screenshots."
-end
-App -> UI : render(): the entry shows img[data-shot]
-opt remove the picture (#shot-clear)
-  App -> App : shotData = ''; on Update the picture is removed from the entry
-end
+note over UI, Img
+  The picture never leaves the browser. 2.0.1.0 does not read the amount from the picture.
+end note
 @enduml

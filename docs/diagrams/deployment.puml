@@ -1,31 +1,30 @@
 @startuml deployment
 !include <C4/C4_Deployment>
-title Hisaab: deployment
+title Hisaab 2.0.1.0: deployment
 
-Deployment_Node(dev, "Developer PC", "Windows, PowerShell, Vercel CLI") {
-  Container(src, "Working copy", "Git", "App files plus brief, brand, tests, docs and *.md")
+Deployment_Node(dev, "Developer PC", "Node.js, npm, hosting CLI") {
+  Container(src, "Working copy", "Git", "src/, public/, index.html, tests, fixtures; legacy/ holds the version 1 code, which is not built")
+  Container(build, "Build", "npm run build: tsc -b, then vite build", "Writes dist/: index.html, assets/ (hashed script, style and font files), icon.svg, sw.js")
 }
-Deployment_Node(gh, "GitHub", "Private repository") {
-  Container(repo, "karwasanjay007/hisaab", "Git", "Source history and rollback")
+Deployment_Node(gh, "Git hosting", "Private repository") {
+  Container(repo, "Code repository", "Git", "Source history")
 }
-Deployment_Node(vc, "Vercel", "Project hisaab") {
-  Deployment_Node(edge, "Static hosting", "HTTPS, *.vercel.app") {
-    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; v1.1: profile.css, profile.js, shops.css, shops.js; v1.2: langs.js, extras.css, extras.js, customer.css, customer.js and the folder i18n with one JSON file per language; v1.2.3: names.js, sendways.js, wacheck.js, polish.css, pay.html; no functions, no server code")
-  }
+Deployment_Node(vc, "Static hosting", "HTTPS") {
+  Container(site, "Static site", "HTML, JavaScript, CSS, fonts, SVG", "The contents of dist/. vercel.json: build command npm run build, output dist, every address rewritten to /index.html. No functions, no server code, no database")
 }
-Deployment_Node(phone, "Owner's phone", "Mobile browser") {
-  Container(app, "Hisaab single-page app", "HTML, CSS, JavaScript", "Runs the ledger; v1.1: app.js exposes the window.Hisaab hook, and the add-ons profile.js and shops.js load after it; v1.2: langs.js, extras.js and customer.js load after it too, and the hook gained addLanguage, setLang, text, balances, overdue and quickWords; v1.2.3: names.js, sendways.js and wacheck.js load after customer.js, the hook gained nameIn and translit, and the reminder links to pay.html")
-  ContainerDb(store, "localStorage", "Web Storage", "The shop's data, never uploaded: hisaab.v1 for the current shop; v1.1: hisaab.shops for the other shops, once a second shop exists; v1.2: no new key, hisaab.lang holds one of twelve language codes; v1.2.3: hisaab.wa holds the owner's WhatsApp answer per number")
-  Container(swk, "Service worker", "sw.js", "v1.1: precaches the app shell with profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; the i18n files are not precached, each is cached the first time it is fetched; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, with assist.js), the app shell also lists names.js, sendways.js, wacheck.js, polish.css, pay.html")
+Deployment_Node(phone, "Owner's phone or PC", "Browser") {
+  Container(app, "Hisaab page", "React 19", "Runs the whole ledger in the browser")
+  ContainerDb(store, "localStorage", "Web Storage", "hisaab-shop-v2, hisaab-lang, hisaab-theme. The shop's data is never uploaded")
+  Container(swk, "Service worker", "sw.js, cache hisaab-v20", "Keeps a copy of what the page loaded; network first; removes older caches")
 }
 
 Rel(src, repo, "git push", "HTTPS")
-Rel(src, site, "vercel deploy --prod --yes; .vercelignore drops non-site files", "Vercel CLI")
-Rel(app, site, "Loads files from hisaab-hazel.vercel.app", "HTTPS")
-Rel(app, site, "v1.2: langs.js fetches i18n/*.json only for the chosen language", "HTTPS")
-Rel(app, store, "Reads and writes")
-Rel(app, swk, "Registers")
-Rel(swk, site, "Network first, cache as fallback", "HTTPS")
+Rel(src, build, "npm run build")
+Rel(build, site, "Production deploy", "hosting CLI")
+Rel(app, site, "Loads the page and its files", "HTTPS")
+Rel(app, store, "Reads and writes", "getItem, setItem")
+Rel(app, swk, "Registers; sends the loaded addresses")
+Rel(swk, site, "Network first, stored copy offline", "HTTPS")
 
-LAYOUT_WITH_LEGEND()
+SHOW_LEGEND()
 @enduml

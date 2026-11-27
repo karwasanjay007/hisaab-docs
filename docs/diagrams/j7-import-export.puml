@@ -1,32 +1,25 @@
 @startuml j7-import-export
-title J7 Load a shop file or CSV (replace, with Undo) and export CSV and JSON
+title J7 Load a shop file; export CSV
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
 skinparam roundCorner 12
 skinparam shadowing false
-skinparam maxMessageSize 260
+skinparam maxMessageSize 280
 skinparam titleFontSize 17
 skinparam titleFontColor #0E5C45
 skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
 skinparam sequence {
   ArrowColor #0E5C45
   LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
   ParticipantBorderColor #0E5C45
   ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
   ActorBorderColor #0E5C45
   ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
   GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
   GroupBackgroundColor #F3F8F6
   DividerBorderColor #0E5C45
   DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
 }
 skinparam database {
   BorderColor #0E5C45
@@ -37,78 +30,41 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
+actor "Shop owner\nor a tester" as Owner
+participant "ImportBox, App.tsx" as UI
+participant "Shop store\n(useShopStore)" as Store
+participant "lib/validate" as Val
+participant "lib/csv" as Csv
 database "localStorage" as LS
-autonumber
-== Load a shop ==
-alt paste
-  Owner -> UI : paste the shop JSON or a CSV into #import-box, press Load (#import-go)
-  UI -> App : click: doImport()
-else choose a file
-  Owner -> UI : #import-file (.json, .csv, .txt)
-  UI -> App : FileReader text into #import-box, then doImport()
-else load the sample again
-  Owner -> UI : #load-sample
-  UI -> App : fetch('sample-data.json', no-store) into #import-box, then doImport()\n(built-in sample if the fetch fails)
-end
-alt box empty
-  App -> UI : #import-msg "The file needs customers and entries lists."
-else text starts with { or [ but is not valid JSON
-  App -> UI : #import-msg "This is not valid JSON: " + the parser's message
-else any other text: fromCsv() finds no phone column, or no amount, credit,\npayment or name column
-  App -> UI : #import-msg errCsv "Paste a shop file (JSON) or a spreadsheet saved as CSV..."
-else fromShopFile(obj) throws
-  App -> UI : #import-msg: no customers[] or entries[] arrays,\nor no valid customer (first three problems listed)
-  note right of App : nothing is replaced
-else valid
-  opt CSV text
-    App -> App : csvRows(); fromCsv(): headers matched by meaning; a row gives a typed entry\nand/or credit and payment entries; the current shop name is kept
+
+== Load a shop file ==
+Owner -> UI : pastes JSON into #import-box, presses #import-go
+UI -> Store : importJson(text)
+Store -> Store : JSON.parse
+alt not JSON
+  Store --> UI : importError "That is not valid JSON. Nothing was changed."
+else parsed
+  Store -> Val : validateImport(object)
+  Val -> Val : customers: name, 10-digit phone (a number is accepted), no duplicate\nentries (may be absent): known phone, credit or payment,\nwhole amount above 0 ("500" is read as 500), date YYYY-MM-DD\nids from importIds() keep the order of the file
+  alt a row fails
+    Val --> Store : the first error, naming the row
+    Store --> UI : importError "... Nothing was changed."
+    UI --> Owner : the error under the box; the ledger is as it was
+  else all rows pass
+    Val --> Store : shop (or "Shop"), customers, entries
+    Store -> LS : commit(): the whole ledger replaced; shop UPI id kept; Undo memory cleared
+    alt the browser's store is full
+      Store --> UI : importError "Storage is full. Nothing was changed."
+    else written
+      UI --> Owner : box emptied; status "Imported N customers."; new balances and total
+    end
   end
-  App -> App : fromShopFile(obj): phone10(); 10 digit phones; duplicates dropped;\ntypes udhar, sale, debit = credit; paid, jama, receipt = payment;\namounts without Rs, commas; amount missing, not a number, negative or\nabove 10,000,000 skipped; dates YYYY-MM-DD or DD/MM/YYYY, missing or\nunreadable dated today and counted; a bad UPI ID skipped (current one kept);\ncustomers created from entries when missing; bad rows skipped
-  App -> App : snapshot: lastShop = JSON.stringify(state)
-  App -> App : state = the new shop (replaces, never merges)
-  App -> LS : save(): setItem('hisaab.v1', state)
-  App -> App : resetEntryForm(); hash to #/; clear search; render()
-  App -> UI : #import-msg "Loaded {shop}: {c} customers, {e} entries" + "{n} entries had no date\nand are dated today." + "Skipped {n}: ..." when rows were dropped
-  App -> UI : toast "Shop loaded." with Undo (7 s)
-  note right of UI : no confirm dialog
-  alt Undo within 7 s
-    Owner -> UI : tap Undo (#toast-undo)
-    UI -> App : state = JSON.parse(lastShop)
-    App -> LS : save()
-    App -> UI : render(): the previous shop is back
-  else 7 s pass
-    App -> App : hide the toast; lastShop = null
-  end
-  note right of LS : v1.1: the plain import still replaces only the current shop;\na file without a profile keeps the shop's saved owner, address and logo
 end
-== v1.1 alternative: Import as a new shop ==
-Owner -> UI : text in #import-box, press "Import as a new shop" (#import-new)
-UI -> App : click (shops.js)
-App -> LS : park the current shop in 'hisaab.shops'; open a blank shop under 'hisaab.v1'
-App -> App : the normal import (as above) runs into the blank shop
-alt file accepted
-  App -> LS : save(): setItem('hisaab.v1', the imported shop)
-  App -> UI : the new shop is open; the previous shop stays parked in 'hisaab.shops'
-else file refused
-  App -> LS : return to the previous shop under 'hisaab.v1'; drop the blank one
-  App -> UI : #import-msg with the reason; the previous shop is shown again
-end
+
 == Export ==
-alt Entries CSV (#export-csv)
-  Owner -> UI : tap
-  UI -> App : exportEntries(): date, name, phone, type, amount, note, has_screenshot;\noldest first
-else Balances CSV (#export-balances)
-  Owner -> UI : tap
-  UI -> App : exportBalances(): name, phone, total_credit, total_payment, balance,\nlast_payment, then a TOTAL OUTSTANDING row
-else Shop file JSON (#export-json)
-  Owner -> UI : tap
-  UI -> App : exportJson(): shop, upi, customers, entries\n(phone, type, amount, date, note; no screenshots)
-  note right of App : v1.1: the backup file also carries the shop profile\n(owner, address, logo) when one is set
-end
-note right of App : csvCell(): text that starts with = + - @ gets a leading quote
-App -> UI : download(): Blob, a[download] hisaab-{shop}-entries.csv,\n-balances.csv or hisaab-{shop}.json
-UI --> Owner : file saved by the browser
+Owner -> UI : presses Export balances or Export entries (home or Settings)
+UI -> Csv : balancesCsv(customers, entries) or entriesCsv(customers, entries)
+Csv --> UI : CSV text; the entries file has a running balance per customer
+UI --> Owner : hisaab-balances.csv or hisaab-entries.csv downloaded through a temporary Blob link
+note over UI, Csv : Built in the browser. Nothing is sent anywhere.
 @enduml
