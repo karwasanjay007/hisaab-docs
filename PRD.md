@@ -5,8 +5,8 @@
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
 | Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 27 Nov 2026 (version 1.5.0.0) |
-| Additions | Versions 1.1.0.0 to 1.5.0.0 (22 to 27 Nov 2026): see the last section of this document |
+| Last revised | 27 Nov 2026 (version 1.5.1.0) |
+| Additions | Versions 1.1.0.0 to 1.5.1.0 (22 to 27 Nov 2026): see the last section of this document |
 
 This document says what is being built and for whom, never how.
 
@@ -112,6 +112,8 @@ Focus:
 | 27 Nov 2026 | Versions 1.2.6.0 to 1.4.0.0: V-27 to V-30 added after a check against the course build approach, each on top and with nothing removed |
 | 27 Nov 2026 | Version 1.4.1.0: V-31 added, on top and with nothing removed |
 | 27 Nov 2026 | Version 1.5.0.0: V-32 added, on top and with nothing removed; V-30 corrected, the desktop has its own layout since 1.5.0.0 |
+| 27 Nov 2026 | Version 1.5.1.0: V-33 added, on top and with nothing removed |
+| 27 Nov 2026 | Version 1.5.1.0: V-33 added, on top and with nothing removed |
 
 ## Versions 1.1.0.0 to 1.2.4.0: additions (22 to 23 Nov 2026)
 
@@ -171,6 +173,8 @@ Added in versions 1.2.1.0 to 1.2.4.0 (23 Nov 2026), from the owner's use of the 
 | V-29 | 1.3.0.0 | The brand look | For the owner and the judges. Navy, cream, slate blue and amber; Fraunces for headings and Inter for text, with the Indian-script fonts kept first for those languages; the sai4b mark first in the top bar beside the Hisaab icon (the mark alone on a phone). No green anywhere: paid, the payment choice, success lines and the WhatsApp buttons are slate and navy |
 | V-30 | 1.4.0.0 | The ledger gets the phone screen | For the owner on a phone, like the best chat apps. A 56 px top bar, a compact total, quick entry as one pill at the bottom (type or speak "Sunita 500 udhaar" and send), a slim tab row, and a + sheet with every other action. With the sample shop, the customer rows fully on the first screen go from 0 to 4 at 375 x 667 and from 1 to 8 at 390 x 844. At 1.4.0.0 the desktop layout was as before; it has its own layout since 1.5.0.0 (V-32) |
 | V-31 | 1.4.1.0 | Every word in the chosen language, and nothing from another host | For the owner. The + sheet's labels and button names follow the chosen language in all twelve. The fonts and the QR library are served from the site itself, so a plain visit, a QR code and a language change ask no other host; only the screenshot reader still loads on demand from its host. The ledger maths are tested on their own, and the customer page and the overdue line use the one balance function |
+| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop the right panel fits the screen and its cards scroll on their own, and a row brought into view stays above the pill. Checked with a 40-customer shop. | Must |
+| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop the right panel fits the screen and its cards scroll on their own, and a row brought into view stays above the pill. Checked with a 40-customer shop. | Must |
 | V-32 | 1.5.0.0 | The ledger gets the desktop screen | For the owner at a desk, like the best chat apps. From 768 px wide, on the overview of a shop with customers: a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and a "…" for the full overview); the customer list gets the height, with its search on the title line; quick entry as the same pill, kept at the bottom of the main column, with a "+" that opens every other action as a popover above it. From 1200 px a right panel holds the entry form, overdue and recent entries; between 768 and 1199 px there is no right panel and the form folds away and opens above the pill. An empty shop, the section views and the customer page are as before. Nothing removed |
 
 Constraints:

@@ -301,7 +301,7 @@ navigation, quick entry, voice 15, offline, contrast, profile 36, shops 25, phon
 
 **Not covered.** Voice entry in the nine new languages uses the browser's English speech service; a name spoken
 in another script is not matched to a customer saved in Latin letters. Dates stay in the English short form in
-the nine new languages. Urdu is laid out left to right like the rest of the page.
+the nine new languages. Urdu was laid out left to right until 1.5.1.0, when it began to read right to left.
 
 ## Version 1.2.1.0 to 1.2.3.0 (23 Nov 2026)
 
@@ -477,6 +477,21 @@ addons-width (54), layout, langs (25), brand (184), customer (36), shops (25), p
 checker 100 out of 100. Live at 1.5.0.0: the checker 27 pass, 0 fail (100 out of 100); desk-ledger 93 and
 phone-ledger 147 ALL PASS (`evidence/`). The other suites were not rerun live for this version; the form folding
 between 768 and 1199 px and an empty shop on a desktop are not checked by a test.
+
+## Version 1.5.1.0 (27 Nov 2026)
+
+Added on top; nothing removed.
+
+- Urdu reads right to left: `compact.js` sets `dir="rtl"` on the html element for Urdu; amounts and phone numbers
+  stay left to right, and the skip link no longer scrolls the page sideways.
+- The desktop right panel fits the screen and its cards scroll on their own; a row brought into view stays above
+  the pill. Checked with a 40-customer shop. Service worker cache `hisaab-v18`.
+
+Test first: `tests/desk-ledger.mjs`, now 149 checks. Local: desk-ledger (149), phone-ledger (147), layout (7),
+langs (25), brand (184), names (33) ALL PASS; the checker 27 pass, 0 fail. Live at 1.5.1.0: the checker 27 pass,
+0 fail (100 out of 100); desk-ledger 149, phone-ledger 147 and langs 25 ALL PASS (`evidence/`). The other suites
+were not rerun live for this version; the skip link has no test of its own, and no native Urdu reader has checked
+the page.
 
 ## Requirement and feature map (23 Nov 2026)
 

@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.5.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.5.1.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -59,6 +59,8 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | Balance history line on the customer page | Yes | 1.1 |
 | N/A | More than one shop on the same phone | Yes | 1.1 |
 | N/A | Twelve languages (nine more: Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia, Urdu) | Yes | 1.2 |
+| N/A | Urdu reads right to left (amounts and phone numbers stay left to right) | Yes | 1.5.1 |
+| N/A | Urdu reads right to left (amounts and phone numbers stay left to right) | Yes | 1.5.1 |
 | N/A | Customer page totals and days since the last payment | Yes | 1.2 |
 | N/A | Call and WhatsApp chat links for a customer | Yes | 1.2 |
 | N/A | Change a customer's phone number (rename since 1.0) | Yes | 1.2 |

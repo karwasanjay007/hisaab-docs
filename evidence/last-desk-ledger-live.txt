@@ -91,4 +91,60 @@ PASS 1440x900 dark: the popover holds every action, each 44 px | missing  small 
 PASS 1440x900 dark: arrows move with a visible focus ring, Escape closes and returns focus | add desk-plus
 PASS 1440x900 dark: Space opens the popover
 PASS 1440x900 dark: no page error | 
-ALL PASS (93 checks)
+PASS 1280x800 hi: the page reads left to right
+PASS 1280x800 hi: no horizontal scroll | 0
+PASS 1280x800 hi: the total strip is at most 110 px | 102
+PASS 1280x800 hi: the pill is sticky and in view
+PASS 1280x800 hi: the pill stays in view after scrolling to the end
+PASS 1280x800 hi: no text cut off in the strip or the customer rows | 
+PASS 1280x800 hi: the "+" popover opens above the pill, inside the screen, lined up with the pill's left edge | 288-608 pill 288-880
+PASS 1280x800 hi: the right panel sits on the right of the customer list
+PASS 1280x800 hi: no page error | 
+PASS 1024x768 hi: the page reads left to right
+PASS 1024x768 hi: no horizontal scroll | 0
+PASS 1024x768 hi: the total strip is at most 110 px | 102
+PASS 1024x768 hi: the pill is sticky and in view
+PASS 1024x768 hi: the pill stays in view after scrolling to the end
+PASS 1024x768 hi: no text cut off in the strip or the customer rows | 
+PASS 1024x768 hi: the "+" popover opens above the pill, inside the screen, lined up with the pill's left edge | 288-608 pill 288-813
+PASS 1024x768 hi: no page error | 
+PASS 1280x800 ur: the page reads right to left
+PASS 1280x800 ur: no horizontal scroll | 0
+PASS 1280x800 ur: the total strip is at most 110 px | 102
+PASS 1280x800 ur: the pill is sticky and in view
+PASS 1280x800 ur: the pill stays in view after scrolling to the end
+PASS 1280x800 ur: no text cut off in the strip or the customer rows | 
+PASS 1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge | 672-992 pill 400-992
+PASS 1280x800 ur: the right panel sits on the left (right to left) of the customer list
+PASS 1280x800 ur: no page error | 
+PASS 1024x768 ur: the page reads right to left
+PASS 1024x768 ur: no horizontal scroll | 0
+PASS 1024x768 ur: the total strip is at most 110 px | 102
+PASS 1024x768 ur: the pill is sticky and in view
+PASS 1024x768 ur: the pill stays in view after scrolling to the end
+PASS 1024x768 ur: no text cut off in the strip or the customer rows | 
+PASS 1024x768 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge | 416-736 pill 247-736
+PASS 1024x768 ur: no page error | 
+PASS 375x667 ur rtl: the html element has dir="rtl" | rtl
+PASS 375x667 ur rtl: nothing scrolls sideways | 0
+PASS 375x667 ur rtl: the pill and the "+" are in view | pill true, plus true
+PASS 375x667 ur rtl: amounts and phone numbers read left to right | checked 20 
+PASS 375x667 ur rtl: back in English the dir attribute is removed
+PASS 375x667 ur rtl: no page error | 
+PASS 1280x800 ur rtl: the html element has dir="rtl" | rtl
+PASS 1280x800 ur rtl: nothing scrolls sideways | 0
+PASS 1280x800 ur rtl: the pill and the "+" are in view | pill true, plus true
+PASS 1280x800 ur rtl: amounts and phone numbers read left to right | checked 20 
+PASS 1280x800 ur rtl: back in English the dir attribute is removed
+PASS 1280x800 ur rtl: no page error | 
+PASS 1280x800 big shop: all 40 customers are listed | 40
+PASS 1280x800 big shop: at least 10 customer rows fully on the first screen | 10
+PASS 1280x800 big shop: no horizontal scroll and the pill in view | 0
+PASS 1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view
+PASS 1280x800 big shop: no horizontal scroll after scrolling | 0
+PASS 1280x800 big shop: sec-overdue in the right panel scrolls on its own, inside the screen, and no wider than the panel | {"scrolls":true,"moved":true,"pageStill":true,"fits":true,"wide":true,"h":214}
+PASS 1280x800 big shop: sec-recent in the right panel scrolls on its own, inside the screen, and no wider than the panel | {"scrolls":true,"moved":true,"pageStill":true,"fits":true,"wide":true,"h":140}
+PASS 1280x800 big shop: the right panel does not push the page wider | 0
+PASS 1280x800 big shop: quick entry records 300 for Ruksana Patel, far down the list | 3300 -> 3600
+PASS 1280x800 big shop: no page error | 
+ALL PASS (149 checks)

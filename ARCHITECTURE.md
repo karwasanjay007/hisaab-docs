@@ -5,7 +5,7 @@
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
 | Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
-| Last revised | 27 Nov 2026 (version 1.5.0.0) |
+| Last revised | 27 Nov 2026 (version 1.5.1.0) |
 
 Diagrams are C4 (PlantUML with the bundled C4 library), kept as `.puml` sources in `docs/diagrams/` and
 rendered to SVG.
@@ -58,7 +58,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-4 | Screenshots resized in the browser to at most 600 px (640 px until 1.2.6.0) and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v16` (version 1.5.0.0): the app shell, with the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`), is precached on install, older caches are deleted on activate, and GET requests for the app's own files are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v18` (version 1.5.1.0): the app shell, with the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`), is precached on install, older caches are deleted on activate, and GET requests for the app's own files are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from the site itself (`vendor/qrcode.min.js`, MIT, since 1.4.1.0; cdnjs before), Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
@@ -95,7 +95,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | --- | --- | --- |
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
 | localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`; `hisaab.shops` (1.1.0.0); `hisaab.wa` (1.2.3.0, the owner's WhatsApp answer per number, outside the shop). A `storage` event listener reloads the shop when another tab changes it |
-| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v16` on install (the add-on files, `pay.html`, the fonts and the QR library included); network first for the app's own files; on failure the cached copy, or the cached `index.html` |
+| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v18` on install (the add-on files, `pay.html`, the fonts and the QR library included); network first for the app's own files; on failure the cached copy, or the cached `index.html` |
 | Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js`, `compact.js` and their style files, with `polish.css` and `brand.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
 | Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 254 text keys per language (235 until 1.4.0.0; the 19 keys of the + sheet added in 1.4.1.0) |
 | Pay page | `pay.html` | A separate small page. Reads shop, UPI ID and amount from the part after `#`, shows them and opens the `upi://pay` link |
@@ -218,7 +218,7 @@ list, the quick-entry pill at the bottom of the main column, and from 1200 px a 
 "Version 1.5.0.0 additions"). An empty shop, the section views and the customer page keep the breakpoints above.
 
 ### Offline
-- On install the service worker precaches the app shell in `hisaab-v16` (`./`, `index.html`, `styles.css`,
+- On install the service worker precaches the app shell in `hisaab-v18` (`./`, `index.html`, `styles.css`,
   `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`, the add-on files,
   `pay.html`, `fonts/fonts.css` with its woff2 files and `vendor/qrcode.min.js`); on activate it deletes
   older caches. After one online visit the app opens with no signal, and the ledger works fully offline
@@ -376,6 +376,17 @@ No new stored key. The screenshot reader, Tesseract.js, still loads on demand fr
 | Right panel | `compact.js`, `aside#desk-aside` | From 1200 px (a media query listener), 340 px wide and sticky: `#desk-entry` with the entry form at the top, then overdue and recent entries, moved there (not copied) and moved back below 1200 px, in the section views, on the customer page and on an empty shop |
 | Folding form | `compact.js`, `compact.css` (`#entry-card.desk-open`) | Between 768 and 1199 px the entry form is folded; it opens above the pill when quick entry fills it or a screenshot is chosen, and folds again after Save or Escape |
 | Service worker | `sw.js` | Cache `hisaab-v16`; the app shell lists the same files |
-| Tests | `tests/desk-ledger.mjs` | 93 checks at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, all passing on the live link |
+| Tests | `tests/desk-ledger.mjs` | 93 checks at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, all passing on the live link (149 since 1.5.1.0) |
 
 No new stored key; the grader hooks stay in place and are not copied. Nothing removed.
+
+## Version 1.5.1.0 additions (27 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| Right to left | `compact.js` | For Urdu it sets `dir="rtl"` on the html element and removes it for every other language; amounts and phone numbers are kept left to right; the skip link no longer scrolls the page sideways. On a desktop in Urdu the right panel sits on the left of the list |
+| Right panel and list | `compact.css`, `compact.js` | The right panel fits the screen and its cards (overdue, recent) scroll on their own; a row brought into view stays above the pill; checked with a 40-customer shop |
+| Service worker | `sw.js` | Cache `hisaab-v18`; the app shell lists the same files |
+| Tests | `tests/desk-ledger.mjs` | 149 checks: the 1.5.0.0 screens, Urdu right to left at 375 x 667 and 1280 x 800, and a 40-customer shop at 1280 x 800, all passing on the live link |
+
+No new stored key; nothing removed.

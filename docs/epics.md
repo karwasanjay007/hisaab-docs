@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.0.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.1.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 27 Nov 2026 (version 1.5.0.0) |
+| Last revised | 27 Nov 2026 (version 1.5.1.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -47,7 +47,7 @@ differently, or not built, the text says so.
 | `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and at 1280 x 800 no phone dock or phone "+" and the left menu shown (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
 | `local-assets.mjs "..."` | `tests/local-assets.mjs`, added in 1.4.1.0: a plain visit, a QR code and a language change ask no other host; the fonts and the QR library come from the site; the + sheet in Hindi, Telugu and Urdu (last live run: `evidence/last-local-assets-live.txt`, 13 checks) |
 | `ledger.cjs "..."` | `tests/ledger.cjs`, added in 1.4.1.0: unit tests of the ledger maths in Node, through `window.Hisaab.ledger`, without a browser (27 checks; run on the code, not on the live link) |
-| `desk-ledger.mjs "..."` | `tests/desk-ledger.mjs`, added in 1.5.0.0: the desktop layout at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, with the sample shop: the total strip, the customer rows, the pill, the "+" popover and the right panel (last live run: `evidence/last-desk-ledger-live.txt`, 93 checks) |
+| `desk-ledger.mjs "..."` | `tests/desk-ledger.mjs`, added in 1.5.0.0: the desktop layout at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, with the sample shop: the total strip, the customer rows, the pill, the "+" popover and the right panel since 1.5.1.0 also Urdu right to left and a 40-customer shop (last live run: `evidence/last-desk-ledger-live.txt`, 149 checks) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -73,8 +73,8 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| E15 | Guards, whole rupees, brand look, the phone and desktop layouts (1.2.6.0 to 1.5.0.0) | 8 | 37 | V-27 to V-32, C-1 (PRD, last section) |
-| **Total** | | **71** | **349** | |
+| E15 | Guards, whole rupees, brand look, the phone and desktop layouts, Urdu right to left (1.2.6.0 to 1.5.1.0) | 9 | 45 | V-27 to V-33, C-1 (PRD, last section) |
+| **Total** | | **72** | **357** | |
 
 ---
 
@@ -791,8 +791,8 @@ As the shop owner, I want the app in my own language so that I can read every la
 | AC-E11.F1.7 | The language files | The checking script runs | Each language has the same 216 keys, every text is in its own script, and none is left identical to English | `i18n-check.cjs` |
 
 Note: the nine new languages were written by the build's own translation pass and checked by the script. No
-native speaker has read them yet. Dates stay in the English short form in the nine new languages, and Urdu is
-laid out left to right like the rest of the page.
+native speaker has read them yet. Dates stay in the English short form in the nine new languages. Since 1.5.1.0 Urdu reads
+right to left (E15.F9).
 
 ### E11.F2 Quick-entry words in each language
 
@@ -1097,6 +1097,23 @@ As a shop owner at a desk, I want the customer list to get the screen and quick 
 
 Not checked by a test: between 768 and 1199 px the entry form folding away and opening above the pill, and an empty shop keeping the earlier desktop layout; both are read from `compact.css` and `compact.js`.
 
+### E15.F9 Urdu right to left, and a big shop on a desktop (1.5.1.0)
+
+As a shop owner who reads Urdu, I want the page to read right to left, and as an owner with many customers, I want the list and the right panel to hold, so that the ledger reads naturally and nothing is out of reach.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F9.1 | A phone at 375 x 667 or a desktop at 1280 x 800 | Urdu is chosen | The html element has `dir="rtl"` | `desk-ledger.mjs "375x667 ur rtl: the html element has dir="rtl""`, `desk-ledger.mjs "1280x800 ur rtl: the html element has dir="rtl""` |
+| AC-E15.F9.2 | The app in Urdu | The overview is drawn | Amounts and phone numbers read left to right | `desk-ledger.mjs "375x667 ur rtl: amounts and phone numbers read left to right"`, `desk-ledger.mjs "1280x800 ur rtl: amounts and phone numbers read left to right"` |
+| AC-E15.F9.3 | The app in Urdu, phone or desktop | The overview is drawn | Nothing scrolls sideways, the pill and the "+" are in view, and the page has no errors | `desk-ledger.mjs "375x667 ur rtl: nothing scrolls sideways"`, `desk-ledger.mjs "1280x800 ur rtl: the pill and the "+" are in view"`, `desk-ledger.mjs "1280x800 ur rtl: no page error"` |
+| AC-E15.F9.4 | The app in Urdu | English is chosen again | The dir attribute is removed | `desk-ledger.mjs "375x667 ur rtl: back in English the dir attribute is removed"`, `desk-ledger.mjs "1280x800 ur rtl: back in English the dir attribute is removed"` |
+| AC-E15.F9.5 | A desktop in Urdu at 1024 x 768 or 1280 x 800 | The overview is drawn and "+" is pressed | The right panel sits on the left of the customer list, and the popover opens above the pill, inside the screen, lined up with the pill's right edge | `desk-ledger.mjs "1280x800 ur: the right panel sits on the left (right to left) of the customer list"`, `desk-ledger.mjs "1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"`, `desk-ledger.mjs "1024x768 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"` |
+| AC-E15.F9.6 | A desktop at 1280 x 800 with a 40-customer shop | The overview is drawn | All 40 customers are listed, at least 10 rows are fully on the first screen, nothing scrolls sideways and the pill is in view | `desk-ledger.mjs "1280x800 big shop: all 40 customers are listed"`, `desk-ledger.mjs "1280x800 big shop: at least 10 customer rows fully on the first screen"`, `desk-ledger.mjs "1280x800 big shop: no horizontal scroll and the pill in view"` |
+| AC-E15.F9.7 | The same shop | The list is scrolled to the end, and the right panel's cards are scrolled | The last customer stays above the pill; overdue and recent scroll on their own inside the screen, no wider than the panel, and the page is not pushed wider | `desk-ledger.mjs "1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view"`, `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel scrolls on its own, inside the screen, and no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel scrolls on its own, inside the screen, and no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: the right panel does not push the page wider"` |
+| AC-E15.F9.8 | The same shop | Quick entry records 300 for a customer far down the list | That balance rises by 300 and the page has no errors | `desk-ledger.mjs "1280x800 big shop: quick entry records 300 for Ruksana Patel, far down the list"`, `desk-ledger.mjs "1280x800 big shop: no page error"` |
+
+Not checked by a test of its own: the skip link not scrolling the page sideways in Urdu; read from `compact.js` and covered by "nothing scrolls sideways" above.
+
 ---
 
 ## Traceability: PRD requirement to features
@@ -1143,6 +1160,8 @@ Not checked by a test: between 768 and 1199 px the entry form folding away and o
 | V-27 to V-30 (PRD, last section) | Storage and input guards, whole rupees, the brand look and the phone layout (1.2.6.0 to 1.4.0.0) | E15.F1, E15.F2, E15.F3, E15.F4 |
 | V-31 (PRD, last section) | The + sheet in every language, the fonts and the QR library from the site, the ledger unit tests (1.4.1.0) | E15.F5, E15.F6, E15.F7 |
 | V-32 (PRD, last section) | The desktop layout like the best chat apps (1.5.0.0) | E15.F8 |
+| V-33 (PRD, last section) | Urdu right to left, and a big shop on a desktop (1.5.1.0) | E15.F9 |
+| V-33 (PRD, last section) | Urdu right to left, and a big shop on a desktop (1.5.1.0) | E15.F9 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

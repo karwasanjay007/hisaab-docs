@@ -3,7 +3,7 @@
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
 `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
-`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.0.0: the function names, the order of calls, what is
+`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.1.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -565,3 +565,12 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
   customer rows at 1024 x 768, 1280 x 800 and 1440 x 900.
 - **J1 on an empty shop, the section views and the customer page (J11):** as before.
 - **J9:** the service worker cache is `hisaab-v16`; the app shell lists the same files.
+
+## Version 1.5.1.0 (27 Nov 2026): what changed in the journeys
+
+- **J9, choosing Urdu:** `compact.js` sets `dir="rtl"` on the html element, so the page reads right to left;
+  amounts and phone numbers stay left to right, and the skip link no longer scrolls the page sideways. Back in
+  another language the attribute is removed. On a desktop in Urdu the right panel sits on the left of the list.
+- **J1 on a desktop with many customers:** the right panel fits the screen and its cards scroll on their own; a
+  row brought into view stays above the pill. Checked with a 40-customer shop.
+- **J9:** the service worker cache is `hisaab-v18`; the app shell lists the same files.
