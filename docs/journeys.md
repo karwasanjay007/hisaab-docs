@@ -3,7 +3,7 @@
 This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
 is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
 `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
-`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.4.0.0: the function names, the order of calls, what is
+`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.4.1.0: the function names, the order of calls, what is
 read from and written to `localStorage`, and the links that open. Nothing here is planned work.
 
 Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
@@ -540,3 +540,14 @@ Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and
   an image or is over 400,000 characters is left out and counted (1.2.6.0). Stored paise get one line that
   offers to round them, with Undo.
 - **J8 (1.2.6.0):** the screenshot is kept at most 600 px on its longest side.
+
+## Version 1.4.1.0 (27 Nov 2026): what changed in the journeys
+
+- **J1 on a phone (`compact.js`, `langs.js`):** the + sheet's labels and button names are in the chosen language,
+  in all twelve.
+- **J1, J6 and J9:** the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`) come from the site
+  itself, so a plain visit, opening a QR code or a statement, and a language change ask no other host. The
+  service worker cache is `hisaab-v15` and precaches both. J8's screenshot reader still loads on demand from
+  jsDelivr.
+- **J11 and the overview:** the customer page totals and the overdue line use the ledger's one balance function; the
+  figures are the same.

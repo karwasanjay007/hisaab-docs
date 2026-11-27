@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| Last revised | 27 Nov 2026 (versions 1.1.0.0 to 1.4.0.0 added at the end) |
+| Last revised | 27 Nov 2026 (versions 1.1.0.0 to 1.4.1.0 added at the end) |
 
 ## Steps
 
@@ -89,6 +89,7 @@ test and the suites it touches. The documents were brought up to date after the 
 | 1.2.6.0 | Gaps against the course build approach closed on top: a refused or blocked store said plainly, an oversized imported picture left out and counted, an edit keeps its date, the shop name whole on a phone, small labels raised; screenshots at most 600 px | `guard.js`, `guard.css`; one number in `app.js` (640 to 600 px) | `tests/guard.mjs` (48 checks) | Nothing; the test was written first |
 | 1.3.0.0 | The brand look with no green, and money in whole rupees | `brand.css`, `brand-mark.svg`, `icon.svg` in navy; `guard.js` (whole rupees) | `tests/brand.mjs` (184 checks), `tests/rupees.mjs` (28 checks) | Five older expectations changed at the owner's word ("Full guideline"): four sweep shops with paise now expect whole rupees, and `tests/final.mjs` types 1 where it typed 0.5 |
 | 1.4.0.0 | The phone layout like the best chat apps: a 56 px top bar, a compact total, a quick-entry pill, a slim tab row and a + sheet | `compact.css`, `compact.js` | `tests/phone-ledger.mjs` (147 checks) | Nothing; customer rows on the first screen with the sample shop went from 0 to 4 at 375 x 667 and from 1 to 8 at 390 x 844 |
+| 1.4.1.0 | The + sheet in all twelve languages; the fonts and the QR library from the site itself; ledger unit tests; the side sums use the one balance function | `compact.js`, `langs.js`, `i18n/*.json` (a `compact` section of 19 keys), `fonts/`, `vendor/qrcode.min.js`, `sw.js` (cache `hisaab-v15`), `customer.js`, `extras.js` | `tests/local-assets.mjs` (13 checks), `tests/ledger.cjs` (27 checks); `tests/phone-ledger.mjs` (147, unchanged) | Nothing; the screenshot reader still loads on demand from its host |
 
 ### Left for later
 

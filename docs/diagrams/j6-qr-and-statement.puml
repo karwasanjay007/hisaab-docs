@@ -40,7 +40,7 @@ skinparam note {
 actor "Shop owner" as Owner
 participant "Browser UI\n(index.html)" as UI
 participant "app.js" as App
-participant "cdnjs library\n(qrcode-generator 1.4.4)" as CDN
+participant "QR library on the site\n(vendor/qrcode.min.js, qrcode-generator 1.4.4)" as CDN
 autonumber
 Owner -> UI : tap a customer name (link #/c/{phone})
 UI -> App : hashchange: route(), spy()
@@ -56,7 +56,7 @@ App -> App : loadQr()
 alt window.qrcode already loaded
   App -> App : use it
 else first time
-  App -> CDN : add script cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js
+  App -> CDN : add script vendor/qrcode.min.js (from the site itself since v1.4.1; cdnjs before)
   CDN --> App : onload: window.qrcode
 end
 alt library ready

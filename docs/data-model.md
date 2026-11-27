@@ -80,15 +80,16 @@ Sample check (with `?today=2026-11-15`): Sunita Devi (`9000000102`) has credits 
 | `hisaab.wa` | (1.2.3.0) a map from the 10-digit number to `{ s: "ok" or "no", d: date }`, the owner's answer to the WhatsApp check | the owner answers after a hello message to a customer added by hand | when a customer is added; not part of a shop file or a backup |
 
 Outside `localStorage`, the service worker (`sw.js`) keeps copies of the app's files in the Cache Storage
-cache `hisaab-v14` (version 1.4.0.0) so the app opens without signal. On install it precaches the app shell (`./`,
+cache `hisaab-v15` (version 1.4.1.0) so the app opens without signal. On install it precaches the app shell (`./`,
 `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`,
 `manifest.webmanifest`, and since versions 1.1.0.0 and 1.2.0.0 the add-on files `profile.js`,
 `profile.css`, `shops.js`, `shops.css`, `langs.js`, `customer.js`, `customer.css`, `extras.js` and
 `extras.css`, and since 1.2.1.0 to 1.2.3.0 `names.js`, `sendways.js`, `wacheck.js`, `polish.css` and
-`pay.html`), so one online visit is enough; on activate it deletes older caches such as
+`pay.html`, and since 1.4.1.0 the fonts `fonts/fonts.css` with their woff2 files and the QR library
+`vendor/qrcode.min.js`), so one online visit is enough; on activate it deletes older caches such as
 `hisaab-v1`. At run time it fetches from the network first and keeps a copy of the app's own files
-(a language file `i18n/<code>.json` among them, the first time it is fetched), the
-`qrcode-generator` script from cdnjs and Google Fonts. Tesseract.js and its language data (jsDelivr) are
+(a language file `i18n/<code>.json` among them, the first time it is fetched); since 1.4.1.0 no font or QR
+library comes from another host. Tesseract.js and its language data (jsDelivr) are
 not cached. It never caches the shop data, which lives only in `localStorage`.
 
 On first start, or when `hisaab.v1` is missing, cannot be parsed, or lacks the `customers` and
@@ -229,3 +230,12 @@ Nothing new is stored. The add-on `assist.js` reads `hisaab.theme` only through 
 - **Cache:** `hisaab-v14` at 1.4.0.0 (`hisaab-v11` at 1.2.6.0); the app shell also lists `guard.js`, `guard.css`,
   `brand.css`, `brand-mark.svg`, `compact.css` and `compact.js`.
 - The brand look (`brand.css`) and the phone layout (`compact.css`, `compact.js`) store nothing.
+
+## Version 1.4.1.0 (27 Nov 2026)
+
+- **Cache:** `hisaab-v15`; the app shell also lists `fonts/fonts.css`, its woff2 files and `vendor/qrcode.min.js`.
+- **Ledger hook:** `window.Hisaab.ledger` is a frozen, read-only set of the ledger's own functions (`balances`,
+  `sums`, `totalOutstanding`, `owedTotal`, `newestFirst`, `entriesOf`, `lastPaymentDate`, `overdue`,
+  `fromShopFile`), each on a given shop or the open one; it never writes. `tests/ledger.cjs` uses it.
+- **Language files:** each `i18n/<code>.json` gains a `compact` section of 19 keys, the + sheet's labels.
+- No new stored key; the shape of `hisaab.v1` is unchanged.

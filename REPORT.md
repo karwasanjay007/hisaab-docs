@@ -442,6 +442,23 @@ Tests written first: `tests/guard.mjs` (48), `tests/brand.mjs` (184), `tests/rup
 navigation and quick entry ALL PASS (`evidence/`). Every other suite passed on the local copy; not rerun live for
 this version. Not done yet: a fresh reviewer's read of 1.3.0.0 and 1.4.0.0.
 
+## Version 1.4.1.0 (27 Nov 2026)
+
+Added on top; nothing removed.
+
+- The + sheet in all twelve languages (`compact.js`, `langs.js`, a `compact` section of 19 keys in each
+  `i18n/*.json`).
+- Fonts and the QR library served from the site itself (`fonts/fonts.css` and woff2 files with OFL notes,
+  `vendor/qrcode.min.js` with its MIT notice), so a plain visit asks no other host; the screenshot amount reader
+  still loads on demand from its host. Service worker cache `hisaab-v15`.
+- Ledger unit tests, `tests/ledger.cjs` (27), through `window.Hisaab.ledger`; `customer.js` and `extras.js` now
+  use the one balance function.
+
+Local: local-assets (13), i18n-check (11 languages), phone-ledger (147), brand (184), langs (25), layout (7),
+offline, pay (15), customer (36), addons-width (54), sweep (61), final, rupees (28), ledger (27) ALL PASS; the
+checker 100 out of 100. Live at 1.4.1.0: the checker 27 pass, 0 fail (100 out of 100); local-assets 13 and
+phone-ledger 147 ALL PASS (`evidence/`). The other suites were not rerun live for this version.
+
 ## Requirement and feature map (23 Nov 2026)
 
 Every requirement of the brief and every feature, in one table, with three other builds of the batch beside it

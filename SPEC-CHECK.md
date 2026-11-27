@@ -131,3 +131,18 @@ sweep that hold paise now expect whole rupees. Screenshots are kept at most 600 
 
 The other suites passed on the local copy at 1.4.0.0 and were not rerun on the live link for this version. No
 fresh reviewer has read 1.3.0.0 or 1.4.0.0 yet.
+
+## Version 1.4.1.0 (27 Nov 2026)
+
+Added on top, with nothing removed; the ids, attributes, totals and the import the tester uses are the same. The
++ sheet follows the chosen language; the fonts and the QR library are served from the site itself; the ledger
+maths have unit tests; the customer page and the overdue line use the one balance function.
+
+| What is checked | Latest result | Evidence |
+| --- | --- | --- |
+| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242, live at 1.4.1.0) | 27 pass, 0 fail; 100 out of 100 | `evidence/last-check-live.txt` |
+| No other host on a plain visit, a QR code or a language change; the + sheet in Hindi, Telugu and Urdu (`local-assets.mjs`) | ALL PASS (13 checks) | `evidence/last-local-assets-live.txt` |
+| Phone layout (`phone-ledger.mjs`) | ALL PASS (147 checks) | `evidence/last-phone-ledger-live.txt` |
+| Ledger maths (`ledger.cjs`, in Node, no browser) | ALL PASS (27 checks) | run on the code |
+
+The other suites passed on the local copy at 1.4.1.0 and were not rerun on the live link for this version.

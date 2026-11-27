@@ -15,7 +15,7 @@ This repository holds Hisaab's documentation: the specification check, product r
 | Stack | Plain HTML, CSS and JavaScript; no framework, no build step, no server |
 | Data | Stays in the browser (localStorage); nothing is sent anywhere |
 | Languages | English, हिंदी, తెలుగు built in; বাংলা, मराठी, தமிழ், ગુજરાતી, ಕನ್ನಡ, മലയാളം, ਪੰਜਾਬੀ, ଓଡ଼ିଆ, اردو since 1.2.0.0 |
-| Version | 1.4.0.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
+| Version | 1.4.1.0 (27 Nov 2026; baseline 1.0.0.0, Sanjay Karwa, 21 Nov 2026) |
 | Status | Finished; every line of the specification met and tested on the live site. Version 1.1.0.0 (22 Nov 2026) adds a shop profile, a balance history line and more than one shop on the same phone, as add-on files beside the ledger; every earlier test passes on the live site after it, unedited |
 
 ## What Hisaab supports
@@ -76,8 +76,11 @@ the feature is in place. The last column is the version it arrived in.
 | N/A | Money in whole rupees: typed paise are held with the nearest whole amount offered, imports are rounded and counted, stored paise are offered a round with Undo | Yes | 1.3 |
 | N/A | Brand look: navy, cream, slate blue and amber, Fraunces and Inter, the sai4b mark first in the top bar; no green anywhere | Yes | 1.3 |
 | N/A | Phone layout: a 56 px top bar, a compact total, quick entry as one pill at the bottom, a slim tab row and a + sheet with every other action | Yes | 1.4 |
+| N/A | The + sheet in all twelve languages: its labels and button names follow the chosen language | Pass | 1.4.1 |
+| N/A | Fonts and the QR library served from the site itself: a plain visit, a QR code and a language change ask no other host (the screenshot reader still loads on demand from its host) | Pass | 1.4.1 |
+| N/A | The ledger maths tested on their own (balances, totals, order, imports, overdue days, the side sums), without a browser | Yes | 1.4.1 |
 
-All 17 rows of the brief pass, and all 32 rows beyond it are in place. The same table with three other builds of
+All 17 rows of the brief pass, and all 35 rows beyond it are in place. The same table with three other builds of
 the batch beside it is in [REPORT.md](REPORT.md), section "Requirement and feature map".
 
 ## For the judges: Hisaab in two minutes
@@ -127,7 +130,7 @@ offline after one visit and nothing ever leaves the phone.
 - Four separate reviews before release, kept in [review/](review/): a comparison with the leading ledger
   apps, an audit against the brief and the coaching, a functional test and a design critique. Every
   finding was fixed or recorded.
-- A full documentation set (below): 8 epics, 42 features and 189 acceptance criteria traced to the tests;
+- A full documentation set (below): 15 epics, 70 features and 341 acceptance criteria traced to the tests;
   nine user journeys as sequence diagrams; C4 architecture views; JSON Schemas for every file the app reads
   or writes. Every diagram is PlantUML source plus SVG.
 

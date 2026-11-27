@@ -5,7 +5,7 @@
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
 | Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
-| Last revised | 27 Nov 2026 (version 1.4.0.0) |
+| Last revised | 27 Nov 2026 (version 1.4.1.0) |
 
 Diagrams are C4 (PlantUML with the bundled C4 library), kept as `.puml` sources in `docs/diagrams/` and
 rendered to SVG.
@@ -58,14 +58,14 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | AD-4 | Screenshots resized in the browser to at most 600 px (640 px until 1.2.6.0) and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
 | AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
-| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v14` (version 1.4.0.0): the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
-| AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
+| AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v15` (version 1.4.1.0): the app shell, with the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`), is precached on install, older caches are deleted on activate, and GET requests for the app's own files are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
+| AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from the site itself (`vendor/qrcode.min.js`, MIT, since 1.4.1.0; cdnjs before), Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
 | AD-11 | Money as ₹ with Indian grouping (`en-IN`) and Latin digits by default; Hindi or Telugu digits are an opt-in setting (`state.nativeDigits`) | Latin digits are what most Indian users and the grader read; the minus sits next to the digits in the text (₹-3,530) and is drawn before the rupee sign (-₹3,530) | Native digits whenever the language changes |
 | AD-12 | `?today=` in the address overrides today's date everywhere (`todayIso()`) | Lets tests fix the date for overdue days (F-4) | The system clock only: untestable |
 | AD-13 | A first visit starts with an empty shop (`blank()`: "My shop", no customers, no entries). The overview's empty state offers Add your first customer (`#add-first`) and Load sample shop (`#load-sample-home`, which loads `sample-data.json`, with `sample.js` as the fallback) | The projects page's "Done when" lines add Ravi Kumar 9000000101 to a fresh app and expect Rs 250 after a Rs 250 credit; with the sample preloaded he was a duplicate and read Rs 920. The sample stays one tap away | The sample shop preloaded on a first visit (the earlier design): breaks those lines |
-| AD-14 | Fonts: Baloo 2 for headings, Noto Sans with Devanagari and Telugu, from Google Fonts | Indian scripts render properly | System fonts: Telugu can fall back badly |
+| AD-14 | Fonts: Baloo 2 for headings, Noto Sans with Devanagari and Telugu (and Fraunces and Inter since 1.3.0.0), served from the site itself since 1.4.1.0: `fonts/fonts.css` and its woff2 files, with the OFL notes (Google Fonts before) | Indian scripts render properly | System fonts: Telugu can fall back badly |
 | AD-15 | Add customer accepts any 10 digit number (`validPhone`), as the brief says. Input with anything other than digits, spaces and + ( ) - . is refused (`errPhone`); a number that does not start with 6, 7, 8 or 9 is added with a warning (`warnMobile`, from `validMobile`). Import accepts any 10 digits with no warning | Follows the brief's rule and its "Done when" line (9 digits or letters refused with a message), while still telling the owner that WhatsApp may not reach a number that is not a mobile | Refusing numbers that are not mobiles (the earlier rule, `errMobile`): stricter than the brief |
 
 ## 3. Context
@@ -83,8 +83,9 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
   has no WhatsApp. The **phone dialer** (version 1.2.0.0) opens a `tel:` link from the customer page.
 - The **pay page** `pay.html` (version 1.2.1.0) is part of Hisaab. The reminder carries an https link to it,
   because WhatsApp may not make a `upi://` link tappable. It opens the customer's UPI app.
-- **Vercel** serves the static files. **cdnjs** and **jsDelivr** serve the two lazy libraries.
-  **Google Fonts** serves the web fonts.
+- **Vercel** serves the static files, the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`)
+  among them since 1.4.1.0, so a plain visit asks no other host. **jsDelivr** serves the screenshot reader,
+  loaded only when a screenshot is chosen.
 
 ## 4. Containers
 
@@ -94,11 +95,11 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 | --- | --- | --- |
 | Single-page app | `index.html`, `styles.css`, `sample.js`, `app.js` | All views, forms and figures. `index.html` holds every section; an inline script applies the saved theme before first paint |
 | localStorage | Web Storage | `hisaab.v1` (the shop), `hisaab.lang`, `hisaab.theme`; `hisaab.shops` (1.1.0.0); `hisaab.wa` (1.2.3.0, the owner's WhatsApp answer per number, outside the shop). A `storage` event listener reloads the shop when another tab changes it |
-| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v10` on install (the add-on files and `pay.html` included); network first for the app's own files, qrcode-generator from cdnjs and Google Fonts; on failure the cached copy, or the cached `index.html` |
+| Service worker and cache | `sw.js`, Cache API | Registered only on HTTPS or localhost. Precaches the app shell in `hisaab-v15` on install (the add-on files, `pay.html`, the fonts and the QR library included); network first for the app's own files; on failure the cached copy, or the cached `index.html` |
 | Add-ons | `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js`, `compact.js` and their style files, with `polish.css` and `brand.css` | Loaded after `app.js`; they reach the ledger only through `window.Hisaab` (see the version sections below) |
-| Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 235 text keys per language |
+| Language files | `i18n/<code>.json` | Nine languages fetched when chosen; 254 text keys per language (235 until 1.4.0.0; the 19 keys of the + sheet added in 1.4.1.0) |
 | Pay page | `pay.html` | A separate small page. Reads shop, UPI ID and amount from the part after `#`, shows them and opens the `upi://pay` link |
-| Lazy-loaded libraries | qrcode-generator 1.4.4, Tesseract.js 5.1.1 | QR codes as inline SVG; text recognition of payment screenshots |
+| Lazy-loaded libraries | qrcode-generator 1.4.4 (`vendor/qrcode.min.js`, on the site), Tesseract.js 5.1.1 (jsDelivr) | QR codes as inline SVG; text recognition of payment screenshots |
 | Web Speech API | `SpeechRecognition` or `webkitSpeechRecognition` | Voice quick entry in `en-IN`, `hi-IN` or `te-IN`. The microphone button stays hidden when the browser has no support. The service is the browser's own and can fail; since 1.2.4.0 every failure is said in words, with a tip for the keyboard's microphone key or the computer's own dictation |
 
 `manifest.webmanifest` makes the site installable as a standalone app (`start_url ./`, theme `#0E5C45`,
@@ -213,14 +214,13 @@ Breakpoints in `styles.css`:
 Below 1024 px navigation is a bottom bar with a More sheet.
 
 ### Offline
-- On install the service worker precaches the app shell in `hisaab-v10` (`./`, `index.html`, `styles.css`,
-  `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`, the add-on files and
-  `pay.html`); on activate it deletes
+- On install the service worker precaches the app shell in `hisaab-v15` (`./`, `index.html`, `styles.css`,
+  `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`, the add-on files,
+  `pay.html`, `fonts/fonts.css` with its woff2 files and `vendor/qrcode.min.js`); on activate it deletes
   older caches. After one online visit the app opens with no signal, and the ledger works fully offline
   because the data is local.
-- At run time it caches, network first, the app's own files plus qrcode-generator from cdnjs and Google
-  Fonts (fonts.googleapis.com, fonts.gstatic.com). So once a QR code has been shown online, it draws offline
-  too (`tests/offline.mjs`).
+- At run time it caches, network first, the app's own files; since 1.4.1.0 the fonts and the QR library are
+  among them and are precached, so the QR code draws offline after one online visit (`tests/offline.mjs`).
 - Tesseract.js from jsDelivr and its language data are not cached, so offline the screenshot reader reports
   that no amount was read.
 
@@ -348,3 +348,17 @@ Nothing new is stored by this version.
 | Tests | `tests/guard.mjs`, `tests/rupees.mjs`, `tests/brand.mjs`, `tests/phone-ledger.mjs` | 48, 28, 184 and 147 checks, all passing on the live link |
 
 The only new stored key is `hisaab.guard`, a probe that is removed as soon as it is written.
+
+## Version 1.4.1.0 additions (27 Nov 2026)
+
+| Part | File | What it holds |
+| --- | --- | --- |
+| + sheet in twelve languages | `compact.js`, `langs.js`, `i18n/*.json` | The sheet's labels and button names come from a `compact` section of 19 keys in each language file and change with the language |
+| Fonts from the site | `fonts/fonts.css`, woff2 files, OFL notes | Fraunces, Inter, Baloo 2 and Noto Sans (Latin, Devanagari, Telugu) under the same family names as before; `index.html` and `pay.html` link `fonts/fonts.css` |
+| QR library from the site | `vendor/qrcode.min.js`, MIT notice | `loadQr()` adds this script; nothing else changed in how the QR code is drawn |
+| One balance function | `customer.js`, `extras.js` | The customer page totals and the overdue line read the ledger's own sums, so they cannot drift from the balances |
+| Ledger hook | `app.js`, `window.Hisaab.ledger` | A frozen, read-only set of the ledger's own functions (balances, sums, totals, order, entries, last payment, overdue, reading a shop file), each on a given shop or the open one |
+| Service worker | `sw.js` | Cache `hisaab-v15`; the app shell also lists `fonts/fonts.css`, its woff2 files and `vendor/qrcode.min.js` |
+| Tests | `tests/local-assets.mjs`, `tests/ledger.cjs` | 13 and 27 checks; local-assets passes on the live link, the ledger tests run without a browser |
+
+No new stored key. The screenshot reader, Tesseract.js, still loads on demand from jsDelivr.

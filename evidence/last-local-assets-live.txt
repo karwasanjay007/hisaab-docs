@@ -1,0 +1,14 @@
+PASS a plain visit asks no other host for anything | 
+PASS the fonts come from the site itself | inter-latin.woff2, fraunces-latin.woff2, inter-latin-ext.woff2, fraunces-latin-ext.woff2
+PASS the brand fonts are loaded under the same family names | Fraunces, Inter
+PASS the QR code is drawn from the library on the site | {"open":true,"svg":true,"lib":"function"}
+PASS opening the QR code asks no other host for anything | 
+PASS no request failed | 
+PASS the sheet has its fifteen English labels | Record an entry, Add a customer, Remind all overdue, Import a shop, Export CSV
+PASS in hi every sheet label and its button names are in that language | एंट्री दर्ज करें, ग्राहक जोड़ें, सभी बकायादारों को याद दिलाएँ, दुकान लोड करें | और काम
+PASS in te every sheet label and its button names are in that language | ఎంట్రీ నమోదు చేయండి, కస్టమర్‌ను జోడించండి, బాకీ ఉన్న అందరికీ గుర్తు చేయండి, షాప్ లోడ్ చేయండి | మరిన్ని పనులు
+PASS in ur every sheet label and its button names are in that language | اندراج درج کریں, گاہک شامل کریں, سب بقایا داروں کو یاد دلائیں, دکان لوڈ کریں | مزید کام
+PASS back in English the labels are as before
+PASS changing the language asks no other host for anything | 
+PASS no page errors | 
+ALL PASS (13 checks)

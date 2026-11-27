@@ -4,9 +4,9 @@
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
 | Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.4.0.0 |
+| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.4.1.0 |
 | Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 27 Nov 2026 (version 1.4.0.0) |
+| Last revised | 27 Nov 2026 (version 1.4.1.0) |
 
 This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
 criterion describes behaviour found in the code. Where the PRD asked for something that was built
@@ -45,6 +45,8 @@ differently, or not built, the text says so.
 | `rupees.mjs "..."` | `tests/rupees.mjs`, added in 1.3.0.0: whole rupees for typed entries, edits, JSON and CSV imports and stored paise, in three languages (last live run: `evidence/last-rupees-live.txt`, 28 checks) |
 | `brand.mjs "..."` | `tests/brand.mjs`, added in 1.3.0.0: the brand palette, fonts, mark and sizes on four screens at phone and desktop width, light and dark (last live run: `evidence/last-brand-live.txt`, 184 checks) |
 | `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and the desktop layout unchanged (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
+| `local-assets.mjs "..."` | `tests/local-assets.mjs`, added in 1.4.1.0: a plain visit, a QR code and a language change ask no other host; the fonts and the QR library come from the site; the + sheet in Hindi, Telugu and Urdu (last live run: `evidence/last-local-assets-live.txt`, 13 checks) |
+| `ledger.cjs "..."` | `tests/ledger.cjs`, added in 1.4.1.0: unit tests of the ledger maths in Node, through `window.Hisaab.ledger`, without a browser (27 checks; run on the code, not on the live link) |
 
 `quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
 argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
@@ -70,8 +72,8 @@ prints after it.
 | E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
 | E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
 | E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| E15 | Guards, whole rupees, brand look and the phone layout (1.2.6.0 to 1.4.0.0) | 4 | 18 | V-27 to V-30, C-1 (PRD, last section) |
-| **Total** | | **67** | **330** | |
+| E15 | Guards, whole rupees, brand look and the phone layout (1.2.6.0 to 1.4.1.0) | 7 | 29 | V-27 to V-31, C-1 (PRD, last section) |
+| **Total** | | **70** | **341** | |
 
 ---
 
@@ -1045,6 +1047,38 @@ As the shop owner on a phone, I want the customer rows on the first screen so th
 | AC-E15.F4.4 | A phone | The layout is drawn | Every grader hook exists and the quick-entry ids are not copied | `phone-ledger.mjs "360x640 dark: every grader hook exists and the quick-entry ids are not copied"` |
 | AC-E15.F4.5 | A desktop at 1280 x 800 | The page is drawn | The desktop layout is as before | `phone-ledger.mjs "1280x800: the desktop layout is as before"` |
 
+### E15.F5 The + sheet in the chosen language (1.4.1.0)
+
+As a shop owner who reads Hindi, Telugu or Urdu, I want the + sheet in my language so that every action is clear.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F5.1 | A phone, the app in Hindi, Telugu or Urdu | The + sheet is opened | Every sheet label and its button names are in that language | `local-assets.mjs "in hi every sheet label and its button names are in that language"`, `local-assets.mjs "in te every sheet label and its button names are in that language"`, `local-assets.mjs "in ur every sheet label and its button names are in that language"` |
+| AC-E15.F5.2 | A phone in English | The sheet is opened, and again after a switch back from another language | It has its fifteen English labels, as before | `local-assets.mjs "the sheet has its fifteen English labels"`, `local-assets.mjs "back in English the labels are as before"` |
+
+### E15.F6 Fonts and the QR library from the site itself (1.4.1.0)
+
+As a shop owner, I want a visit to ask no other host so that nothing about my shop reaches anyone else.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F6.1 | A fresh browser | The app is opened | No other host is asked for anything and no request fails | `local-assets.mjs "a plain visit asks no other host for anything"`, `local-assets.mjs "no request failed"` |
+| AC-E15.F6.2 | Any screen | It is drawn | The fonts come from the site under the same family names (Fraunces, Inter) | `local-assets.mjs "the fonts come from the site itself"`, `local-assets.mjs "the brand fonts are loaded under the same family names"` |
+| AC-E15.F6.3 | A customer who owes | The UPI QR code is opened, or the language is changed | The QR code is drawn from the library on the site; no other host is asked; no page errors | `local-assets.mjs "the QR code is drawn from the library on the site"`, `local-assets.mjs "opening the QR code asks no other host for anything"`, `local-assets.mjs "changing the language asks no other host for anything"`, `local-assets.mjs "no page errors"` |
+
+### E15.F7 The ledger maths tested on their own (1.4.1.0)
+
+As the builder, I want the ledger maths tested without a browser so that every figure the owner sees rests on checked functions.
+
+| ID | Given | When | Then | Verified by |
+| --- | --- | --- | --- | --- |
+| AC-E15.F7.1 | Customers with credit, payments, an advance and no entries | The balances are computed | Each is credit less payments; an advance is below zero; no entries is 0 | `ledger.cjs "balance of A = 500 - 200 + 120 = 420"`, `ledger.cjs "balance of C = 100 - 250 = -150 (an advance)"`, `ledger.cjs "a customer with no entries has balance 0"` |
+| AC-E15.F7.2 | Those balances | The totals are computed | The total outstanding is the sum of all balances, the owed total only the positive ones, and long sums stay whole | `ledger.cjs "total outstanding = sum of all balances 420 + 300 - 150 = 570"`, `ledger.cjs "owed total = positive balances only 420 + 300 = 720"`, `ledger.cjs "sums of 10, 20, 30 repeated 300 times stay whole integers (3000)"` |
+| AC-E15.F7.3 | Entries on one date | They are listed | Newest first, the later entry first on the same date | `ledger.cjs "newest first, the later entry first on the same date"`, `ledger.cjs "newestFirst puts the higher seq first on one date"` |
+| AC-E15.F7.4 | A shop file with paise | It is imported | Amounts are whole rupees, halves up, and the import replaces all data | `ledger.cjs "an import with paise is rounded to whole rupees, halves up: 10.5 -> 11, 10.4 -> 10, 2.5 -> 3"`, `ledger.cjs "an import replaces all data: only the imported shop, customer and entries remain"` |
+| AC-E15.F7.5 | Payments on several dates | The last payment and overdue days are computed | The last payment is the latest by date; overdue counts from the last payment, or from the first credit when none | `ledger.cjs "last payment date is the latest payment, not the latest entered"`, `ledger.cjs "days since last payment 2026-10-28 to 2026-11-27 = 30"`, `ledger.cjs "overdue days: A from last payment (30), B from first credit (10)"` |
+| AC-E15.F7.6 | Four shops | The customer page sums and the overdue line are computed | They equal the ledger's balances and owed total for every customer; the open shop is unchanged | `ledger.cjs "shop 1: credit total minus paid total (export and customer page) = the balance for every customer"`, `ledger.cjs "shop 1: the overdue line sum (extras.js) of all owing customers = the owed total from balances"`, `ledger.cjs "the open shop is unchanged after the read-only calls on other shops"` |
+
 ---
 
 ## Traceability: PRD requirement to features
@@ -1089,6 +1123,7 @@ As the shop owner on a phone, I want the customer rows on the first screen so th
 | V-25 (PRD, last section) | Voice entry never ends in silence (1.2.4.0) | E5.F5, E5.F4 |
 | V-26 (PRD, last section) | Controls that say what they did (1.2.5.0) | E14.F6, E5.F6 |
 | V-27 to V-30 (PRD, last section) | Storage and input guards, whole rupees, the brand look and the phone layout (1.2.6.0 to 1.4.0.0) | E15.F1, E15.F2, E15.F3, E15.F4 |
+| V-31 (PRD, last section) | The + sheet in every language, the fonts and the QR library from the site, the ledger unit tests (1.4.1.0) | E15.F5, E15.F6, E15.F7 |
 | Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
 
 ## Not built, or deliberately left out

@@ -3,9 +3,9 @@
 title Hisaab: components inside app.js (C4 level 3)
 
 ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.lang, hisaab.theme; v1.1: hisaab.shops; v1.2: no new key, hisaab.lang holds one of twelve codes; v1.2.3: hisaab.wa; v1.2.6: hisaab.guard, a probe")
-Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded from CDNs on demand")
+Container_Ext(cdnlibs, "Lazy libraries", "qrcode-generator, Tesseract.js", "Loaded on demand: the QR library from the site (vendor/qrcode.min.js) since v1.4.1, Tesseract.js from jsDelivr")
 Container_Ext(speechapi, "Web Speech API", "Built into the browser", "SpeechRecognition")
-Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, also assist.js; v1.4: hisaab-v14, also guard.js, guard.css, brand.css, brand-mark.svg, compact.css, compact.js), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
+Container_Ext(swc, "Service worker", "sw.js", "Offline fallback; v1.1: the app shell also lists profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, also assist.js; v1.4: hisaab-v14, also guard.js, guard.css, brand.css, brand-mark.svg, compact.css, compact.js; v1.4.1: hisaab-v15, also fonts/fonts.css, its woff2 files, vendor/qrcode.min.js), also names.js, sendways.js, wacheck.js, polish.css, pay.html; the i18n files are cached the first time each is fetched")
 Container_Ext(profile, "Shop profile add-on", "profile.js, profile.css", "v1.1: owner, address and logo in Shop settings, the header and the printed statement; balance history line as inline SVG on the customer page")
 Container_Ext(shops, "Several shops add-on", "shops.js, shops.css", "v1.1: add, switch and remove shops, Import as a new shop; the current shop stays under hisaab.v1")
 
