@@ -561,3 +561,8 @@ the three other builds is missing.
 The desktop panel heading ("Record an entry") follows a change of language; it stayed in English after switching to
 Urdu. Offline cache `hisaab-v19`. Local: a heading check in English, Urdu and Hindi passed; desk-ledger (149) and langs
 (25) ALL PASS.
+
+## Version 1.5.1.2 (27 Nov 2026)
+
+On a phone the language box in the top bar is an icon button; Safari drew it white with only an "E" showing. Offline
+cache `hisaab-v20`. Local: phone-ledger (147), langs (25), brand (184), layout (7) ALL PASS; live: the checker 27 pass, 0 fail.
