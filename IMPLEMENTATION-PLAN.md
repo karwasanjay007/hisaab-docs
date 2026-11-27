@@ -2,55 +2,103 @@
 
 | | |
 | --- | --- |
-| Version described | 2.0.1.0, as built |
-| Last revised | 27 Nov 2026 |
+| Last revised | 25 Nov 2026 (versions 1.1.0.0 to 1.2.5.0 added at the end) |
 
-## Rebuild phases (2.0.0.0, 26 Nov 2026)
+## Steps
 
-| Phase | What | Done when | Result |
+| # | Slice | Done when | Requirement |
 | --- | --- | --- | --- |
-| P0 | Vite, React, TypeScript, Tailwind, Zustand, Vitest, Playwright, theme button | The empty app builds; tests run with one command | Done |
-| P1 | Ledger sums: balance, total, newest first, days since the last payment | The sample shop and a second, hand-checked shop pass in Vitest (`src/lib/ledger.test.ts`) | Done |
-| P2 | Store and import: replace the shop, refuse a bad file | `src/store/store.test.ts`; `e2e/hooks.spec.ts` P2 | Done |
-| P3 | Home: total, customer rows, the grader selectors | `e2e/hooks.spec.ts` P3 | Done |
-| P4 | Customer page: add an entry, newest first | `e2e/hooks.spec.ts` P4 | Done |
-| P5 | Reminder link and payment screenshot | `e2e/hooks.spec.ts` P5 | Done |
-| P6 | Six bonus items: search, edit and delete, CSV, overdue, UPI link, Hindi and Telugu | `e2e/hooks.spec.ts` P6 | Done |
-| P7 | First open: theme and navigation say what they did; a name with no match offers to add it | `e2e/hooks.spec.ts` P7 | Done |
+| 1 | Page shell, light and dark theme, 375 px layout | Page loads locally; no sideways scroll at 375 px | 5.2 stage 1 |
+| 2 | Store, balances, total, rows with the grader's attributes | Sample loaded: `#total-outstanding` shows 11820; every `[data-balance]` matches `sample-expected.json` | F-1, F-3, S-1 |
+| 3 | Import box `#import-box` and `#import-go`, with validation | A different shop replaces the data; a bad file changes nothing | D-2, S-4 |
+| 4 | Add customer, add entry, customer page newest first | Entries persist after reload | F-2, F-5, S-3 |
+| 5 | Reminder link `a[data-remind]` to `https://wa.me/91<phone>?text=` | Message holds name and balance in rupees | S-2 |
+| 6 | Payment screenshot `#shot-input`, `img[data-shot]` | Saved payment shows the picture after reload | 5.2 stage 2 |
+| 7 | Bonus: overdue list, edit and delete, CSV export, search, UPI link, Hindi and Telugu, amount from screenshot | Each checked by script | 5.2 stage 2 |
+| 8 | `?today=` honoured everywhere | Overdue days computed from the given date | F-4 |
+| 9 | Independent checker (separate agent, brief only) passes on local and live | All checks green | All |
 
-At the end of P7: Vitest 10, Playwright 7, checker 23 PASS and 2 FAIL (no pay link by default; the screenshot
-amount reader), estimate 95/100.
+## Where the build will likely get stuck
 
-## Fix pass (2.0.1.0, 26 to 27 Nov 2026)
+- The grader reads the form on the page it lands on: keep the entry form and the import box on the home
+  view, with recent entries (and their screenshots) visible there too.
+- Pop-up dialogs stall automated browsers: no `alert` or `confirm`; delete uses undo.
+- localStorage quota with photos: resize before saving.
 
-A read-only review of the rebuild found 12 defects. Each was fixed with a new test written first
-(`src/lib/fixes.test.ts`, `src/store/quota.test.ts`, `e2e/fixes.spec.ts`).
+## Release
 
-| # | Fix |
-| --- | --- |
-| 1 | A pay link in every reminder for money owed; the demo UPI id until the shop sets its own |
-| 2 | A ledger, language and theme saved by 1.x are carried over on first open |
-| 3 | Saving an entry with a screenshot clears the form |
-| 4 | Nothing is shown as saved that storage refused; the store rolls the change back |
-| 5 | A screenshot fits inside 600 px on both sides and under 150,000 characters |
-| 6 | Delete has Undo and no window dialog |
-| 7 | An edit needs a date |
-| 8 | Total and CSV use the same sign rule as the balance |
-| 9 | Import reads an amount written as digits in a string, and a file with no entries list |
-| 10 | Import keeps the order of the file for entries on the same date |
-| 11 | Reminder text follows the chosen language |
-| 12 | Fonts come with the site; a new service worker replaces the 1.x one and clears its caches |
+| # | Step | Done when |
+| --- | --- | --- |
+| R1 | Security pass: no secrets, imported text escaped | Review output in REPORT.md |
+| R2 | Deploy to a `*.vercel.app` address (never sai4b.com) | Live URL fetched, 200 pasted |
+| R3 | Check at 1440 px and 375 px, light and dark | Screenshots looked at; fixes in REPORT.md |
 
-One earlier assertion was changed: `e2e/hooks.spec.ts` P6 had expected no pay link by default, against the checker.
+## Versions 1.1.0.0 to 1.2.4.0, as built (22 to 23 Nov 2026)
 
-Result: Vitest 32, Playwright 22 (local). Deployed 27 Nov 2026. Checker on the live link, seeds 4242 and 90210:
-25 PASS, 1 FAIL (the screenshot amount reader, not built), estimate 100/100.
+The method was the same for 1.1.0.0 and 1.2.0.0. The method for the later versions is given with their table.
 
-## Not planned in 2.0
+- Each addition is an add-on file beside the ledger. The main script gained only a small hook,
+  `window.Hisaab`, at its end. The ids, attributes, totals and the import that the tester uses did not change.
+- No earlier test was edited.
+- Each change was tested as a delta, with its own new test.
+- One review round by an independent reviewer, before the deploy.
+- One full regression before the deploy and one after it, on the live site.
+- One deploy per version, with the earlier deployment noted for rollback.
+- Translations were produced as one file per language and checked by a script (`tests/i18n-check.cjs`).
 
-The features of 1.x that were not rebuilt are listed in `PRD.md`, section 7. No date is set for any of them.
+### Version 1.1.0.0
 
-## Earlier plan (1.x)
+| What was built | File | Test that covers it | What the review changed |
+| --- | --- | --- | --- |
+| Add-on hook: events `render`, `statement`, `imported`, `export`, each listener in its own guard | `app.js` (end of file) | The earlier suites, unedited | Undo in a second tab after a shop switch was fixed |
+| Shop profile: owner, address, logo, on the header, the statement and in the backup | `profile.js`, `profile.css` | `tests/profile.mjs` (36 checks) | Unsaved profile text is kept through a render |
+| Balance history line on the customer page, as SVG | `profile.js`, `profile.css` | `tests/profile.mjs` | Nothing |
+| Several shops: add, switch, remove, "Import as a new shop" | `shops.js`, `shops.css` | `tests/shops.mjs` (25 checks) | The Shops block now sits inside the Shop settings card. A message is shown when a refused "Import as a new shop" cannot switch back |
+| Phone width of the add-ons at 320 and 375 px | the add-on style files | `tests/addons-width.mjs` (54 checks) | Nothing |
+| Service worker lists the new files | `sw.js` | The offline suite, unedited | Nothing |
 
-Versions 1.0.0.0 to 1.2.5.0 were built in slices as plain scripts and add-on files between 20 and 25 Nov 2026.
-The results of those versions are in `REPORT.md`. That code no longer runs.
+### Version 1.2.0.0
+
+| What was built | File | Test that covers it | What the review changed |
+| --- | --- | --- | --- |
+| Hook extended: `addLanguage`, `hasLanguage`, `setLang`, `text`, `balances`, `overdue`, `quickWords`, `forgetUndo` | `app.js` (end of file) | The earlier suites, unedited | Nothing |
+| Nine more languages, 216 text keys each, fetched when chosen | `langs.js`, `i18n/<code>.json` | `tests/i18n-check.cjs` (11 languages), `tests/langs.mjs` (25 checks) | The quick-entry hint showed an example the parser did not understand in the new languages. The parser now learns each language's words, and the example uses the customer's name as stored |
+| Customer page tools: totals, days since the last payment, Call and chat links, change phone, delete with Undo | `customer.js`, `customer.css` | `tests/customer.mjs` (36 checks) | The ledger's own Undo is cleared when a number changes or a customer is deleted. Two quick taps on Delete count as one press |
+| Note shortcuts, overdue total, the date the figures are for | `extras.js`, `extras.css` | `tests/langs.mjs` | A note shortcut respects the field's length |
+| Service worker: cache `hisaab-v4`, the five new add-on files, a language file kept after its first fetch | `sw.js` | The offline suite, unedited | Nothing |
+
+One review point was left as it is: entries are put back in a slightly different order after Undo of a customer
+delete. Nothing is lost.
+
+### Versions 1.2.1.0 to 1.2.4.0
+
+Method: each change was measured first, on the live site. After 1.2.1.0 only the delta was tested, with the new
+test and the suites it touches. The documents were brought up to date after the owner approved the baseline
+1.2.3.0 on 23 Nov 2026.
+
+| Version | What was built | File | Test that covers it | What testing found |
+| --- | --- | --- | --- | --- |
+| 1.2.1.0 | A layout that holds in every language and width | `polish.css` (layout only) | `tests/layout.mjs` (7 checks, 120 screens) | The new layout check found the defects before the fix; all pass after it |
+| 1.2.1.0 | Customer names in nine more scripts, built automatically | `names.js`; hook `nameIn` used by `localName`, and `translit`, in `app.js` | `tests/names.mjs` (33 checks) | Nothing after the spelling corrections |
+| 1.2.1.0 | A pay link the customer can tap, before the UPI link in the reminder | `pay.html`; `payPage` and `reminderText` in `app.js` | `tests/pay.mjs` (15 checks) | Nothing |
+| 1.2.2.0 | Other ways to send a reminder: SMS, any WhatsApp contact, copy; a note on sample numbers | `sendways.js` | `tests/sendways.mjs` (16 checks) | Nothing |
+| 1.2.3.0 | A WhatsApp check when a customer is added by hand | `wacheck.js` | `tests/wacheck.mjs` (16 checks) | The first customer added after a shop file load was not offered the check. Fixed before the deploy |
+| 1.2.3.1 | A wrong answer to the WhatsApp check is switched with one tap | `wacheck.js` (the button `#wa-check-flip`) | `tests/wacheck.mjs` (19 checks) | Nothing. Asked for by the owner after he pressed "No" by mistake in his own trial |
+| 1.2.4.0 | Voice entry never ends in silence: a failure says why, with the keyboard microphone or the computer's own dictation as the way that always works | `app.js` (`listen` inside `setupVoice`); two text keys in every language file | `tests/voice-quiet.mjs` (11 checks); `tests/voice.mjs` (15, unchanged) | A laptop with a touch screen was taken for a phone and offered the wrong tip. A phone is now recognised by what it is. Fixed before the deploy |
+| 1.2.5.0 | Controls that say what they did, after the project feedback: the theme button, a navigation press and the skip link; quick entry offers to add a customer it does not know | `assist.js` (new, loaded last); `index.html` (one script tag); `sw.js` (the shell list, cache `hisaab-v10`) | `tests/assist.mjs` (38 checks); `tests/quick.mjs` unchanged | The first version replaced the question "Which customer?", which the earlier quick-entry test expects; it failed on the live site only, because locally the page was read before the add-on ran. The add-on now keeps the question |
+
+### Left for later
+
+- A native speaker's read of the nine new languages. The wording may be improved by one.
+- Voice entry in those languages. It uses the browser's English speech service today, and a name spoken in
+  another script is not matched to a customer saved in Latin letters.
+- Dates stay in the English short form in the nine new languages.
+- Urdu is laid out left to right like the rest of the page.
+- Storage-full during a shop switch, and a tab closed between the two writes of a switch: traced in the code,
+  not run.
+- The printed statement was checked by its markup, not on paper.
+- A native speaker's read of the names in the nine newer scripts and of the strings added in 1.2.1.0 to 1.2.3.0.
+- The SMS link, the pay page and the WhatsApp check on a real phone.
+- The pay page in languages other than English.
+- Real speech. A stand-in plays the browser's speech service in the voice tests; nobody has spoken an entry on a
+  phone and on a laptop as a test, and the computer's own dictation was not tried on the owner's machine.

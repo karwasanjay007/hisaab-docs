@@ -1,23 +1,36 @@
 @startuml j4-whatsapp-reminder
-title J4 WhatsApp reminder with a pay address
+title J4 WhatsApp reminder from a customer row, with the pay page (since v1.2.1)
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
 skinparam roundCorner 12
 skinparam shadowing false
-skinparam maxMessageSize 280
+skinparam maxMessageSize 260
 skinparam titleFontSize 17
 skinparam titleFontColor #0E5C45
 skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
 skinparam sequence {
   ArrowColor #0E5C45
   LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
   ParticipantBorderColor #0E5C45
   ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
   ActorBorderColor #0E5C45
   ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
   GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
   GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
 }
 skinparam note {
   BorderColor #B08A2E
@@ -25,32 +38,63 @@ skinparam note {
   FontSize 12
 }
 actor "Shop owner" as Owner
-participant "CustomerRow" as Row
-participant "lib/ledger" as Ledger
-participant "WhatsApp" as WA
-actor "Customer" as Cust
-participant "UPI app" as UPI
-
-Row -> Ledger : balanceOf(customer)
-Row -> Ledger : reminderHref(phone, name, balance, shopUpi, lang)
-Ledger -> Ledger : reminderText: owes, advance or zero wording\nin English, Hindi or Telugu; the figure always "Rs 3,470"
-alt balance above 0
-  Ledger -> Ledger : adds " Pay: upi://pay?pa=<id>&am=<balance>&cu=INR"\nid = the shop's UPI id, or hisaab.demo@upi until one is set
-else balance 0 or an advance
-  Ledger -> Ledger : no pay address
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
+database "localStorage" as LS
+participant "WhatsApp / UPI app" as WA
+participant "pay.html\n(customer's browser)" as Pay
+autonumber
+== Built at every render, before any tap ==
+App -> App : render(): bal = balances()[phone] for each customer
+App -> App : reminderText(c, bal)
+alt bal above zero
+  App -> App : payPage(c, bal): https link to pay.html on the app's own address,\n#pn={shop}&tn=Hisaab {name}&pa={UPI ID}&am={bal, two decimals}
+  App -> App : upiLink(c, bal): upi:~//pay?pa={UPI ID}&am={bal, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}
+  App -> App : the message, line by line:\n"Namaste {name}, this is a reminder from {shop}. Your balance is Rs {amt}."\n(blank line)\n"UPI pay link: {pay.html link}"\n(blank line)\n"Pay by UPI: {upi link}"\n(blank line)\n"Thank you."
+  note right of App : the details ride after "#",\nwhich a browser never sends to a server
+  note right of App : UPI ID from Settings (state.upi);\nuntil set, the demo ID hisaab.demo@upi
+else bal below zero (advance)
+  App -> App : "...You have Rs {amt} in advance with us. Thank you."
+else bal is zero
+  App -> App : "...Your account is settled, Rs 0 due. Thank you."
 end
-Ledger --> Row : https://wa.me/91<phone>?text=<encoded text>
-Row --> Owner : every row shows a Remind link with that address
-Owner -> Row : taps Remind
-Row -> WA : opens the link in a new tab
-WA --> Owner : chat with the customer, the text already typed
-Owner -> WA : presses Send
-WA --> Cust : the reminder
-opt the customer pays
-  Cust -> UPI : uses the upi://pay address from the message
+App -> UI : a[data-remind] href = wa.me/91{phone}?text={encoded message},\ntarget _blank (same link on the customer page as #cust-remind)
+opt Settings: owner saves shop name and UPI ID
+  Owner -> UI : Shop settings form, Save
+  alt UPI ID typed and validUpi() fails
+    App -> UI : #settings-msg "Enter a UPI ID like shopname@okbank, or leave it empty."
+    note right of App : nothing is saved; empty is allowed\n(the demo ID is then used)
+  else valid or empty
+    UI -> App : submit: state.shop, state.upi
+    App -> LS : save()
+    App -> App : render(): every reminder link is rebuilt
+  end
 end
-note over Row, Ledger
-  Hisaab sends nothing itself and does not know whether the message was sent or paid.
-  The owner records the payment as an entry (J2).
-end note
+== The reminder ==
+Owner -> UI : tap the WhatsApp button on a customer row
+note right of UI : a plain link; no click handler in app.js
+UI -> WA : open wa.me in a new tab or the WhatsApp app
+WA --> Owner : chat with +91{phone}, message typed in, not sent
+Owner -> WA : read it, press Send in WhatsApp
+note right of WA : the app never sends by itself
+== The customer pays ==
+opt customer taps the https "UPI pay link" (WhatsApp makes it tappable)
+  WA -> Pay : open pay.html#pn=...&tn=...&pa=...&am=...
+  Pay -> Pay : read the part after "#" in the page itself;\nnothing is stored or sent anywhere
+  alt UPI ID and amount are good
+    Pay -> Pay : show the shop, the amount and the UPI ID,\nthe button "Open your UPI app" and a Copy button
+    Pay -> WA : on a phone, after 0.4 s, open upi:~//pay?... by itself;\nthe button stays for a second try
+    WA -> WA : the customer's UPI app opens with payee, amount and note filled
+  else link broken or cut short
+    Pay -> Pay : "This payment link is not complete.\nAsk the shop to send it again."
+  end
+end
+opt customer taps the upi:~// link, where the phone makes it tappable
+  WA -> WA : the UPI app opens the same way
+end
+Owner -> UI : later records the payment (journey J2)
+opt on the customer page: UPI pay link (#cust-upi), shown when bal above zero
+  Owner -> UI : tap UPI pay link
+  UI -> WA : open upi:~//pay?... in a UPI app on this phone
+end
 @enduml

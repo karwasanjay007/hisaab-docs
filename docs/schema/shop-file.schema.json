@@ -1,58 +1,154 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hisaab.local/docs/schema/shop-file.schema.json",
-  "title": "Hisaab shop file (import), version 2.0.1.0",
-  "description": "The JSON pasted into #import-box and loaded with #import-go, checked by validateImport() in src/lib/validate.ts. The check is all or nothing: the first row that fails stops the import with a message naming the row (for example \"Entry 3: unknown phone 9876543210. Nothing was changed.\") and the ledger stays exactly as it was. A file that passes replaces the whole ledger (shop name, customers, entries); the shop's UPI id set in Settings is kept; there is no Undo. Text that is not JSON gives \"That is not valid JSON. Nothing was changed.\". Unknown properties are ignored. Only JSON is read: 2.0.1.0 has no CSV import.",
+  "title": "Hisaab shop file",
+  "description": "The JSON pasted into #import-box (or chosen with #import-file, or loaded by \"Load sample\") and read by fromShopFile() in app.js. A spreadsheet saved as CSV or tab-separated text is accepted in the same box as an alternative: any text that does not start with { or [ is read by fromCsv(), which turns it into an object of this shape (keeping the current shop name) before the same checks run; see export-entries.csv.md, \"Importing a CSV\". This schema describes a clean file: one where every record is loaded and every value is kept as written. The validator is more lenient in these ways, which a schema cannot express exactly: (1) a customer or entry that fails a rule is skipped and listed under \"Skipped {n}: \" in #import-msg (the label is translated in English, Hindi and Telugu); the whole import fails only when the text is neither JSON nor a readable CSV, is not an object, lacks the customers or entries array, or when some record failed and no customer at all was loaded; (2) a phone that repeats an earlier customer is silently dropped (first one wins); (3) an entry whose phone is not in customers creates that customer, named from the entry's \"name\" or else the phone; (4) a missing or unreadable date becomes today (honouring ?today=), and the message counts such entries: \"{n} entries had no date and are dated today.\"; (5) a note longer than 200 characters is cut to 200; (6) a \"shot\" that is not a data:image/ URL is dropped; (7) a upi or upi_id that is not a valid UPI ID is listed under Skipped and the UPI ID already saved in the app is kept. Unknown properties are ignored everywhere. Import replaces the whole stored shop (one undo is offered in the toast).",
   "type": "object",
-  "required": ["customers"],
+  "required": [
+    "customers",
+    "entries"
+  ],
   "properties": {
     "shop": {
       "type": "string",
-      "description": "Shop name, trimmed. Missing, empty or not a string: \"Shop\" is used."
+      "description": "Shop name, trimmed. If shop is missing or empty the validator tries shop_name, then name, then uses \"My shop\"."
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Fallback for shop."
+    },
+    "name": {
+      "type": "string",
+      "description": "Second fallback for shop."
+    },
+    "upi": {
+      "type": "string",
+      "description": "UPI ID (VPA) for pay links, trimmed. Optional; if missing or empty, upi_id is tried, then the UPI ID already saved in the app is kept. A value must pass validUpi(): 2 to 256 letters, digits, dots, underscores or hyphens, then @, then a letter and 1 to 63 more letters or digits (for example shopname@okbank). A value that fails is listed under Skipped and the saved UPI ID is kept; the rest of the file still loads.",
+      "pattern": "^\\s*(?:[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9]{1,63})?\\s*$"
+    },
+    "upi_id": {
+      "type": "string",
+      "description": "Fallback for upi, with the same validUpi() check.",
+      "pattern": "^\\s*(?:[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9]{1,63})?\\s*$"
     },
     "customers": {
       "type": "array",
-      "description": "Customers, in the order to keep. May be empty.",
+      "description": "Customers. May be empty when every customer appears in entries.",
       "items": {
         "type": "object",
-        "required": ["name", "phone"],
+        "required": [
+          "phone"
+        ],
         "properties": {
-          "name": { "type": "string", "pattern": "\\S", "description": "Required, trimmed. Error: \"Customer N: name is required.\"" },
+          "name": {
+            "type": "string",
+            "description": "Display name, trimmed. Optional: an empty or missing name is replaced by the phone number. Other JSON types are converted to text."
+          },
           "phone": {
-            "description": "Exactly 10 digits, as a string (trimmed) or as a whole number. Error: \"Customer N: phone must be 10 digits.\" A phone used twice: \"Duplicate phone P.\"",
-            "oneOf": [
-              { "type": "string", "pattern": "^\\s*\\d{10}\\s*$" },
-              { "type": "integer", "minimum": 1000000000, "maximum": 9999999999 }
+            "description": "Indian mobile number. The validator removes every character that is not 0-9, then drops a leading 91 when 12 digits are left, or a leading 0 when 11 are left; the result must be exactly 10 digits. So \"9000000101\", \"+91 90000 00101\", \"09000000101\" and the JSON number 9000000101 are all accepted and stored as \"9000000101\". There is no check on the first digit (6-9) on import, so a file is never refused because of its numbers; the Add customer form does check it. A record whose phone fails is skipped, not fatal.",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[^0-9]*(?:9[^0-9]*1[^0-9]*|0[^0-9]*)?(?:[0-9][^0-9]*){10}$"
+              },
+              {
+                "type": "integer",
+                "minimum": 1000000000,
+                "maximum": 9999999999
+              },
+              {
+                "type": "integer",
+                "minimum": 910000000000,
+                "maximum": 919999999999
+              }
             ]
+          },
+          "name_hi": {
+            "type": "string",
+            "description": "Optional name in Devanagari, kept when not empty. When absent the app shows a transliteration it works out itself."
+          },
+          "name_te": {
+            "type": "string",
+            "description": "Optional name in Telugu script, kept when not empty."
           }
         }
       }
     },
     "entries": {
       "type": "array",
-      "description": "Optional. Missing or null is read as no entries. The order of the file is kept: of two entries with the same date the later row is the newer one.",
+      "description": "Ledger entries, in any order. The position in this array becomes the entry's seq, used to order entries that share a date.",
       "items": {
         "type": "object",
-        "required": ["phone", "type", "amount", "date"],
+        "required": [
+          "phone",
+          "type",
+          "amount"
+        ],
         "properties": {
           "phone": {
-            "description": "The phone of a customer in this file. Errors: \"Entry N: phone must be 10 digits.\", \"Entry N: unknown phone P.\"",
-            "oneOf": [
-              { "type": "string", "pattern": "^\\s*\\d{10}\\s*$" },
-              { "type": "integer", "minimum": 1000000000, "maximum": 9999999999 }
+            "description": "Indian mobile number. The validator removes every character that is not 0-9, then drops a leading 91 when 12 digits are left, or a leading 0 when 11 are left; the result must be exactly 10 digits. So \"9000000101\", \"+91 90000 00101\", \"09000000101\" and the JSON number 9000000101 are all accepted and stored as \"9000000101\". There is no check on the first digit (6-9) on import, so a file is never refused because of its numbers; the Add customer form does check it. A record whose phone fails is skipped, not fatal.",
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[^0-9]*(?:9[^0-9]*1[^0-9]*|0[^0-9]*)?(?:[0-9][^0-9]*){10}$"
+              },
+              {
+                "type": "integer",
+                "minimum": 1000000000,
+                "maximum": 9999999999
+              },
+              {
+                "type": "integer",
+                "minimum": 910000000000,
+                "maximum": 919999999999
+              }
             ]
           },
-          "type": { "enum": ["credit", "payment"], "description": "Error: \"Entry N: type must be credit or payment.\"" },
+          "type": {
+            "type": "string",
+            "pattern": "^\\s*(?:[cC][rR][eE][dD][iI][tT]|[pP][aA][yY][mM][eE][nN][tT]|[dD][eE][bB][iI][tT]|[uU][dD][hH][aA][rR]|[sS][aA][lL][eE]|[pP][aA][iI][dD]|[jJ][aA][mM][aA]|[rR][eE][cC][eE][iI][pP][tT])\\s*$",
+            "description": "credit (the shop gave goods on credit) or payment (the customer paid). Case and surrounding spaces are ignored. Aliases: debit, udhar and sale are read as credit; paid, jama and receipt are read as payment. Anything else skips the entry."
+          },
           "amount": {
-            "description": "A whole number above 0, or a string of digits (\"500\" is read as 500). A fraction is refused. Error: \"Entry N: amount must be a positive whole number.\"",
-            "oneOf": [
-              { "type": "integer", "minimum": 1 },
-              { "type": "string", "pattern": "^\\s*\\d*[1-9]\\d*\\s*$" }
+            "description": "Rupees, from 0 to 10,000,000. A JSON number is used as it is. A string has every comma and space removed, then one leading \"Rs\", \"Rs.\", \"INR\" or the rupee sign (any case) removed, then is read with JavaScript Number(); it must give a finite number from 0 to 10,000,000. An amount that is missing, blank, not a number, negative or above 10,000,000 skips the entry, which is listed under Skipped. The pattern below covers the plain decimal forms only: Number() also accepts forms such as \"1.\" and \".5\", exponent and hexadecimal forms, and the pattern cannot express the upper limit for a string. Zero is accepted on import (the entry form refuses it). The value is rounded to 2 decimal places.",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10000000
+              },
+              {
+                "type": "string",
+                "pattern": "^[\\s,]*(?:(?:[rR][sS]\\.?|[iI][nN][rR]|₹)[\\s,]*)?(?:[0-9][\\s,]*)+(?:\\.[\\s,]*(?:[0-9][\\s,]*)+)?$"
+              }
             ]
           },
-          "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$", "description": "Error: \"Entry N: date must be YYYY-MM-DD.\"" },
-          "note": { "type": "string", "description": "Optional; anything that is not a string becomes \"\"." },
-          "shot": { "type": "string", "description": "Optional. Kept only when it starts with data:image/ and has at most 400,000 characters; otherwise dropped without an error." }
+          "date": {
+            "type": "string",
+            "description": "Date of the entry. Kept when, after trimming, its first 10 characters are YYYY-MM-DD and JavaScript Date.parse accepts them (any text after the 10 characters is ignored), or when the whole value is day-first D/M/YYYY with \"/\", \".\" or \"-\" between the parts (stored as YYYY-MM-DD). In Chrome and Node a day up to 31 is accepted in any month, so 2026-02-30 is kept as written. A missing or unreadable date is not an error: the entry gets today's date (or the ?today= date), and the import message counts such entries. Future dates are accepted on import (the entry form refuses them).",
+            "anyOf": [
+              {
+                "pattern": "^\\s*[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])"
+              },
+              {
+                "pattern": "^\\s*(?:0?[1-9]|[12][0-9]|3[01])[/.-](?:0?[1-9]|1[0-2])[/.-][0-9]{4}\\s*$"
+              }
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Short note. Optional. Longer text is cut to 200 characters, not rejected. Other JSON types are converted to text; a falsy value becomes \"\"."
+          },
+          "shot": {
+            "type": "string",
+            "pattern": "^data:image/",
+            "description": "Optional payment screenshot as a data URL. Kept only when it is a string starting \"data:image/\"; anything else is dropped. No size limit is applied on import."
+          },
+          "name": {
+            "type": "string",
+            "description": "Used only when this phone is not in customers: the new customer gets this name (or the phone when missing)."
+          }
         }
       }
     }

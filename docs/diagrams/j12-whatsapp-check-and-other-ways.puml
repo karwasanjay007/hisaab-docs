@@ -1,0 +1,87 @@
+@startuml j12-whatsapp-check-and-other-ways
+title J12 Checking a number on WhatsApp when it is added, and other ways to send (v1.2.2, v1.2.3)
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Shop owner" as Owner
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
+database "localStorage" as LS
+participant "WhatsApp / SMS app" as WA
+autonumber
+note over App, LS : add-ons wacheck.js (v1.2.3) and sendways.js (v1.2.2),\nthrough the window.Hisaab hooks of app.js.\nNo app can ask WhatsApp beforehand whether a number\nhas an account, so the owner answers.
+== Check the number when the customer is added ==
+Owner -> UI : add a customer by hand (name and phone), press Add
+UI -> App : onAddCustomer(): save, render()
+App -> UI : under the add form (#wa-added):\n"<name> added. Check the number on WhatsApp now,\nso reminders reach them." and Check on WhatsApp
+note right of App : a loaded shop file offers nothing
+opt Owner taps Check on WhatsApp (#wa-added-go)
+  UI -> WA : open wa.me/91<phone> with a hello message:\nname and shop, no balance
+  UI -> App : the page moves to #/c/<phone>
+  App -> UI : #wa-check asks\n"Did WhatsApp open a chat with this number?"
+  alt the chat opened
+    Owner -> UI : tap Yes (#wa-check-yes)
+    UI -> LS : setItem('hisaab.wa', phone: ok and the date)
+    App -> UI : "Checked: this number is on WhatsApp."
+  else WhatsApp said the number is not on WhatsApp
+    Owner -> UI : tap No (#wa-check-no)
+    UI -> LS : setItem('hisaab.wa', phone: no and the date)
+    App -> UI : "Not on WhatsApp. Send by SMS, or change the number."
+    App -> UI : open "Other ways to send" (#send-ways)
+  end
+end
+note right of UI : any customer page has Check on WhatsApp\n(#wa-check-go); the same question follows
+opt v1.2.3.1: the answer was wrong
+  Owner -> UI : one tap on the button beside Check on WhatsApp\n(#wa-check-flip, labelled with the other answer)
+  UI -> LS : setItem('hisaab.wa', phone: the other answer and the date)
+end
+== The reminder to a refused number ==
+Owner -> UI : open the customer page
+App -> UI : under the reminder buttons, the fold-out\n"Other ways to send" with the same message\nas the WhatsApp reminder (J4)
+opt sample number (starts 90000001)
+  App -> UI : the fold-out opens by itself, with a note\nthat the number is made up
+end
+alt Send as SMS (#send-sms)
+  UI -> WA : open sms:+91<phone> with the message
+else Choose a contact in WhatsApp (#send-pick)
+  UI -> WA : open wa.me with no number;\nthe owner picks any contact
+else Copy the message (#send-copy)
+  UI -> UI : copy to the clipboard;\n"Message copied" for 2.5 s
+end
+Owner -> WA : press Send
+note right of WA : the app never sends by itself
+@enduml

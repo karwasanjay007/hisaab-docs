@@ -1,0 +1,77 @@
+@startuml j5-remind-all
+title J5 Remind all overdue: one WhatsApp chat at a time, longest overdue first
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Shop owner" as Owner
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
+participant "WhatsApp / UPI app" as WA
+autonumber
+App -> App : render(): od = overdueRows(balances())
+note right of App
+  only customers with a balance above zero
+  days = todayIso() minus the last payment date,
+  or minus the first credit date when never paid
+  sorted by days, most first; ties by larger balance
+end note
+App -> App : renderRemindAll(od)
+alt fewer than 2 overdue customers
+  App -> UI : #remind-all stays hidden
+else 2 or more
+  App -> App : queue = phones in od order; if the queue changed, index = 0
+  App -> UI : #remind-all visible, text "Remind all overdue ({n})"
+  App -> UI : href = waLink(queue[0])
+end
+loop for each customer in the queue
+  Owner -> UI : tap the Remind all anchor
+  UI -> App : click: remindNextOne(): index + 1, schedule a re-render
+  UI -> WA : the link opens the chat for the current href (new tab, target _blank)
+  App -> App : setTimeout 0: renderRemindAll(overdueRows(balances()))
+  App -> UI : href moves to the next customer;\ntext "Next reminder: {name} ({i} of {n})"
+  WA --> Owner : chat with the reminder and UPI link, not sent
+  Owner -> WA : press Send in WhatsApp, come back to Hisaab
+  note right of WA : the app never sends by itself
+end
+App -> UI : after the last: "All {n} reminders opened"; href back to the first
+opt owner taps again after the last
+  App -> App : index restarts, the queue goes round again
+end
+opt an entry changes who is overdue
+  App -> App : the queue differs, index resets to 0 at the next render
+end
+@enduml

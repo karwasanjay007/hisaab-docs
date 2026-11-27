@@ -4,45 +4,46 @@
 | --- | --- |
 | Expected users | one shop owner per phone; the grader's automated browser |
 | Budget a month | $0 |
-| Version described | 2.0.1.0 |
-| Last revised | 27 Nov 2026, from `package.json` and the code |
+| Last revised | 25 Nov 2026 (version 1.2.5.0; rows for versions 1.1.0.0, 1.2.0.0, 1.2.1.0 to 1.2.3.0, 1.2.4.0 and 1.2.5.0 added) |
 
-## Stack of 2.0.1.0
+## Constraints from the PRD
 
-| Layer | Choice | Why | Not this |
-| --- | --- | --- | --- |
-| Build | Vite 6 | Fast build to static files | A server framework: there is no server |
-| Screen | React 19 with TypeScript 5.7 | Typed components; the ledger shapes are checked at build time | Plain scripts, as 1.x was |
-| Styles | Tailwind CSS 4 (Vite plugin) | Light and dark from one set of classes | A component library |
-| State and storage | Zustand 5 with its `persist` middleware, to `localStorage` | One store; every change is written to the browser at once | A database or a server |
-| Fonts | Fraunces and Source Sans 3, bundled with the site (`@fontsource-variable`) | The page asks no other site for anything | A font service |
-| Offline | A hand-written service worker, `public/sw.js`, cache `hisaab-v20`, network first | A new release is never hidden behind an old copy | A precache plugin |
-| Unit tests | Vitest 3 with jsdom | Ledger sums, import rules, carry-over and the full-store case | |
-| Browser tests | Playwright (Chromium) against the built site | The grader hooks and the fixes of 2.0.1.0 | |
-| Checker | `tests/check.mjs`, written from the brief alone | The same checker 1.x was scored with | |
-| Hosting | Static files on Vercel; every address is served `index.html` | Free, one command to deploy | |
+- No server data (D-1); must survive reload (F-5); must load instantly on a cheap phone.
+- Graded by an automated browser reading fixed ids and data attributes.
 
-There are five runtime packages: `react`, `react-dom`, `zustand` and the two font packages. There is no AI
-service, no key and no backend.
+## Choices
 
-## Commands
+| Layer | Choice | Why | Simpler alternative considered | Cost a month |
+| --- | --- | --- | --- | --- |
+| Front end | Plain HTML, CSS and JavaScript, no framework, no build step | Smallest, fastest, nothing to break; every id under our control | React with Vite: more weight, no benefit here | $0 |
+| Storage | Browser localStorage, one JSON document | Brief allows it; synchronous and simple | IndexedDB: needed only for many large photos | $0 |
+| Screenshots | Resized in the browser to 640 px JPEG before saving | Keeps storage well under the browser limit | Store the original: fills storage fast | $0 |
+| Amount from screenshot | Tesseract.js, loaded only when a screenshot is chosen | Free, runs on the phone, no key | A vision model: needs a key and a server | $0 |
+| Fonts | Baloo 2 (headings), Noto Sans with Devanagari and Telugu. Marathi uses the Devanagari font. The eight other scripts added in 1.2.0.0 (Bengali, Tamil, Gujarati, Kannada, Malayalam, Gurmukhi, Odia, Arabic for Urdu) are drawn with the phone's own fonts; no further font is loaded | Indian scripts render properly | System fonts: Telugu can fall back badly | $0 |
+| Hosting | Vercel, static, project `hisaab`, `*.vercel.app` | Free, HTTPS, deploy from GitHub | Netlify | $0 |
+| Code | Private GitHub repository | History and rollback | | $0 |
+| Tests | Playwright against the local and live site; an independent checker written from the brief only | Mirrors how the grader checks | Manual clicking | $0 |
+| Add-ons (1.1.0.0 and 1.2.0.0) | Plain script files beside the ledger: `profile.js`, `shops.js`, `langs.js`, `extras.js`, `customer.js`, each with its own style file where it needs one. They reach the ledger through one hook, `window.Hisaab`, at the end of `app.js` | The ledger and what the tester reads stay as they were; an add-on that fails cannot stop the ledger | Writing the features into `app.js`: every change would touch tested code | $0 |
+| Languages (1.2.0.0) | English, Hindi and Telugu built in; nine more as `i18n/<code>.json`, twelve languages in all, 216 text keys each at 1.2.0.0, 233 at 1.2.3.0 and 235 at 1.2.4.0, fetched when chosen | A visit in a built-in language fetches nothing extra | All twelve inside `app.js`: more weight on every visit | $0 |
+| Translation checker (1.2.0.0) | `tests/i18n-check.cjs`, a Node script: same keys, same placeholders, the right script, the words that stay in Latin | Finds a missing or broken text before the deploy | | $0 |
+| Add-ons (1.2.1.0 to 1.2.3.0) | `names.js` (names in nine more scripts, through the hook `nameIn` and `translit`), `sendways.js` (the reminder as SMS, to a chosen contact, or copied), `wacheck.js` (a hello message on WhatsApp after a customer is added), `polish.css` (layout only) | Same pattern as the earlier add-ons; nothing in the ledger changed | | $0 |
+| Pay page (1.2.1.0) | `pay.html`, a separate static page. The details ride after `#`, so they never reach a server | WhatsApp may not make a `upi://` link tappable; an https link always is | Only the QR code | $0 |
+| WhatsApp check (1.2.3.0) | The owner is asked, after a hello message, whether the number is on WhatsApp; the answer is kept in `hisaab.wa` | No lookup of a number exists without a WhatsApp business account and a server | The official business platform: needs an account and a server | $0 |
+| Voice quick entry (1.2.4.0) | The browser's own speech service (Web Speech API). The app cannot repair it: it can fail on a network, in an in-app browser or with dictation turned off. When it fails the app says why, or "Did not catch that", and adds a tip: the keyboard's microphone key on a phone or tablet, the computer's own dictation (Windows key and H) elsewhere | No server and no key; typing always works | Recording the voice and sending it to a speech service: needs a server | $0 |
+| Tests (1.2.1.0 to 1.2.3.0) | `tests/layout.mjs`, `names.mjs`, `pay.mjs`, `sendways.mjs`, `wacheck.mjs`, Playwright like the rest | Each new add-on has its own test | | $0 |
+| Controls that say what they did (1.2.5.0) | `assist.js`, plain JavaScript like the other add-ons, with `tests/assist.mjs` | A press that changed nothing on screen now names what happened, without touching the ledger code | Changing `app.js`: it is the graded code | $0 |
+| Offline | A service worker, `sw.js`, with the cache `hisaab-v10` (v4 at 1.2.0.0, v8 at 1.2.3.1, v9 at 1.2.4.0, v10 at 1.2.5.0). It holds the app shell, the add-on files and `pay.html`, and keeps a language file after its first fetch | The app opens without signal after one visit | | $0 |
 
-| Command | What it does |
-| --- | --- |
-| `npm test` | Vitest, 32 tests |
-| `npm run build` | Type check, then the static build |
-| `npm run test:e2e` | Build, then Playwright, 17 tests |
-| `node tests/check.mjs <address> <seed>` | The checker against a running site |
+Still no server, no account and no build step, in version 1.2.5.0 as in 1.0.0.0. Version 1.2.4.0 adds `tests/voice-quiet.mjs`; version 1.2.5.0 adds `assist.js` and `tests/assist.mjs`.
+
+**Total a month:** $0
 
 ## Security
 
-- No secrets exist: nothing to leak from the build or the browser.
-- Text from an imported file is shown as text by React, never as markup.
-- An imported picture is kept only when it is an image data URL of 400,000 characters or fewer.
-- CSV cells with a comma, a quote or a new line are quoted. A cell that starts with `=`, `+`, `-` or `@` is not prefixed in 2.0 (1.x did prefix it).
-- `npm audit` reports 3 advisories in build tools; not looked into.
+- No keys, no server, no personal data leaves the phone. WhatsApp and UPI links are built locally.
+- All text from imported files is escaped before display.
 
-## Earlier stack (1.x)
+## Not used, and why
 
-Versions 1.0.0.0 to 1.2.5.0 were plain HTML, CSS and JavaScript with no build step, plus add-on scripts. That
-code is no longer what runs. It is kept in the code repository under `legacy/`.
+- A database or login: not needed for one owner on one phone; the brief says browser storage is fine.
+- AI: the brief says Hisaab needs none; the screenshot reader runs on the phone.

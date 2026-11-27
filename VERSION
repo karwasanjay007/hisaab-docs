@@ -1,31 +1,45 @@
-2.0.1.0
+1.2.5.0
 
 # Hisaab release baseline
 #
-# Version:     2.0.1.0
-# Released:    27 November 2026
+# Version:     1.2.5.0
+# Released:    22 November 2026 (baseline 1.0.0.0: 21 November 2026)
 # Owner:       Sanjay Karwa, Smart AI for Business
 # Live:        https://hisaab-hazel.vercel.app
 # Docs:        https://github.com/karwasanjay007/hisaab-docs
 #
-# Version 2.0.1.0 is the shop credit ledger rebuilt on Vite, React, TypeScript, Tailwind and Zustand.
-# It replaced 1.2.5.0 at the live link on 27 November 2026; the 1.x code no longer runs.
-# It has the nine must-do items of the brief, the tester hooks, six bonus items (overdue list, edit and
-# delete, CSV export, search, UPI pay link, Hindi and Telugu), light and dark, a pay link in every reminder
-# for money owed (a demo UPI id until the shop sets its own), the carry-over of a ledger saved by 1.x,
-# delete with Undo and an offline copy. Reading the amount from a screenshot is not built.
-# Balances are computed from entries only; customer data stays in the browser.
-# What 1.x had and 2.0 does not is listed in PRD.md, section 7.
+# This file marks the first public baseline of the shop credit ledger
+# submitted for the Freedom With AI Batch 10 build project. All must-do
+# items, tester hooks and bonus menu items are included. Balances are
+# computed from entries only; customer data stays in the browser.
 #
-# Versions, newest first:
-# 2.0.1.0  27 November 2026        rebuild live; 12 defects of 2.0.0.0 fixed, each with a test
-# 2.0.0.0  26 November 2026        first rebuild on the new stack; tested locally, 95/100 on the checker
-# 1.2.5.0  25 November 2026        controls say what they did: theme, navigation, skip link, unknown name in quick entry
-# 1.2.4.0  23 November 2026        voice quick entry says why it heard nothing and offers another way
-# 1.2.3.1  23 November 2026        a wrong answer to the WhatsApp check is switched with one tap
-# 1.2.3.0  23 November 2026        WhatsApp check when a customer is added by hand
-# 1.2.2.0  23 November 2026        other ways to send a reminder: SMS, a chosen contact, copy
-# 1.2.1.0  23 November 2026        layout for every language and width; names in nine more scripts; pay page link
-# 1.2.0.0  22 to 23 November 2026  nine more languages; customer page tools; note shortcuts; overdue total
-# 1.1.0.0  22 November 2026        shop profile; balance history line; several shops on one phone
-# 1.0.0.0  21 November 2026        first public baseline, plain HTML and JavaScript; submitted for the build project
+# Version 1.1.0.0 adds, beside the baseline and without changing what it does:
+# a shop profile (owner, address, logo) shown in the header and on the
+# statement; a balance history line on each customer page; more than one shop
+# on the same phone, with a switcher and "Import as a new shop". The add-ons
+# live in profile.js and shops.js; the ledger itself is unchanged.
+#
+# Version 1.2.0.0 (22 to 23 November 2026) adds, as add-on files beside the
+# ledger: nine more languages (twelve in all), customer page tools (totals, days
+# since the last payment, call, WhatsApp chat, change phone, delete with undo),
+# note shortcuts, an overdue total and the date the figures are for.
+#
+# Version 1.2.1.0 (23 November 2026): layout polish for every language and width (polish.css),
+# customer names in the nine newer scripts (names.js), and a tappable pay link in the WhatsApp
+# reminder (pay.html), because WhatsApp does not make upi:// addresses tappable.
+#
+# Version 1.2.2.0 (23 November 2026): other ways to send the reminder when WhatsApp refuses a number
+# (sendways.js): as an SMS, to a contact chosen in WhatsApp, or copied; a note on sample numbers.
+#
+# Version 1.2.3.0 (23 November 2026): a WhatsApp check when a customer is added (wacheck.js): a hello
+# message to the number, and the owner's answer (chat opened, or refused) remembered per number.
+#
+# Version 1.2.3.1 (23 November 2026): a wrong answer to the WhatsApp check is switched with one tap.
+#
+# Version 1.2.4.0 (23 November 2026): voice quick entry never ends in silence. A speech service that
+# stops without hearing anything now says so, with the way that always works: the keyboard's microphone
+# key on a phone, the computer's own dictation on a laptop.
+#
+# Version 1.2.5.0 (25 November 2026), after the project feedback (assist.js): the light and dark button says
+# which theme is on; a press on a navigation item says which view is showing; the skip link puts the focus on
+# the ledger in every browser; quick entry with a name no customer has says so and offers to add that customer.

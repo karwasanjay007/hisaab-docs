@@ -1,86 +1,155 @@
 @startuml data-model
-title Hisaab 2.0.1.0 data model (browser localStorage)
+title Hisaab data model (browser localStorage)
 
 skinparam backgroundColor #FFFFFF
 skinparam shadowing false
 skinparam roundCorner 14
-skinparam defaultFontName "Noto Sans"
+skinparam defaultFontName "Segoe UI"
 skinparam defaultFontSize 13
 skinparam titleFontSize 18
 skinparam titleFontColor #0E5C45
 skinparam ArrowColor #0E5C45
 skinparam ArrowFontColor #33413C
+skinparam ArrowThickness 1.4
 skinparam class {
   BackgroundColor #FFFFFF
   BorderColor #0E5C45
+  BorderThickness 1.6
   HeaderBackgroundColor #E6F1ED
   FontColor #14211C
   AttributeFontColor #33413C
+  StereotypeFontColor #0E5C45
 }
 skinparam note {
   BackgroundColor #F5F8F6
   BorderColor #9DB8AD
+  FontColor #33413C
   FontSize 12
+}
+skinparam package {
+  BorderColor #9DB8AD
+  FontColor #0E5C45
+  BackgroundColor #FFFFFF
 }
 hide circle
 hide methods
+set separator none
 
-package "key hisaab-shop-v2 (written by the store's persist)" {
-  class Envelope {
-    state : ShopData
-    version : 0
-  }
-  class ShopData {
-    shop : string, may be empty
-    shopUpi : string, may be empty
+package "localStorage key hisaab.v1 (one JSON document)" {
+  class Shop <<root, one per browser>> {
+    shop : string
+    {field} upi : string  (empty = demo ID)
+    nativeDigits : boolean [optional]
     customers : Customer[]
     entries : Entry[]
+    .. v1.1 shop profile, each optional ..
+    {field} owner : string  (at most 60) [optional]
+    {field} address : string  (at most 160) [optional]
+    {field} logo : data:image/ URL  (96 px, under 40 KB) [optional]
   }
+
   class Customer {
-    name : string, not empty
-    phone : string, 10 digits, unique
+    {field} <b>phone</b> : string  (10 digits, key)
+    name : string
+    name_hi : string [optional]
+    name_te : string [optional]
   }
+
   class Entry {
-    id : string
-    phone : string, a customer's phone
-    type : "credit" or "payment"
-    amount : whole rupees, above 0
+    {field} <b>id</b> : string  (uid, key)
+    {field} phone : string  (refers to Customer)
+    type : credit | payment
+    {field} amount : number  (rupees, 2 dp)
     date : YYYY-MM-DD
-    note : string, may be empty
-    shot : JPEG data URL, optional
+    note : string
+    shot : JPEG data URL | null
+    {field} seq : integer  (same-date order)
   }
 }
 
-class "key hisaab-lang" as Lang {
-  "en", "hi" or "te"
-}
-class "key hisaab-theme" as Theme {
-  "light" or "dark"
-}
-class "Version 1 keys (read once, never changed)" as Old {
-  hisaab.v1 : the 1.x ledger
-  hisaab.lang
-  hisaab.theme
-}
-class "In memory only" as Mem {
-  lastDeleted : Entry or nothing
-  statusMessage : string
-  importError : string
+package "Separate localStorage keys" {
+  class Preferences <<per browser>> {
+    {field} hisaab.lang : en | hi | te  (v1.2: also bn, mr, ta, gu, kn, ml, pa, or, ur)
+    hisaab.theme : light | dark
+  }
 }
 
-Envelope *-- ShopData
-ShopData *-- "0..*" Customer
-ShopData *-- "0..*" Entry
-Customer "1" <-- "0..*" Entry : phone
-Old ..> ShopData : carried over on first open\nwhen hisaab-shop-v2 is absent
+package "localStorage key hisaab.shops (v1.1, only with two or more shops)" {
+  class Shops <<v1.1, one per browser>> {
+    {field} active : string  (id of the shop in use)
+    list : ShopSlot[]
+  }
+
+  class ShopSlot <<v1.1>> {
+    {field} <b>id</b> : string  (key)
+    name : string
+    {field} data : Shop | null  (null = the active shop)
+  }
+}
+
+package "localStorage key hisaab.wa (v1.2.3, per browser)" {
+  class WaChecks <<v1.2.3, one per browser>> {
+    {field} <b>number</b> : string  (10 digits, key)
+    {field} s : ok | no  (the owner's answer)
+    {field} d : string  (date, YYYY-MM-DD)
+  }
+}
+
+note bottom of WaChecks
+  <b>v1.2.3 WhatsApp check</b>
+  Keyed by number, not by shop.
+  Outside hisaab.v1: not in a
+  shop file or a backup.
+end note
+
+Shops "1" *-- "1..*" ShopSlot : list
+ShopSlot "1" o-- "0..1" Shop : data (parked ledger)
+
+note bottom of ShopSlot
+  <b>v1.1 several shops</b>
+  The active shop's data is null: its ledger
+  lives under hisaab.v1. A switch parks the
+  current ledger here and puts the chosen one
+  back under hisaab.v1.
+  hisaab.shops is not written until a second
+  shop is added and is removed again when
+  one shop is left.
+end note
+
+note top of Shop
+  <b>v1.1 backup file</b> (JSON export)
+  carries owner, address and logo
+  when they are set.
+end note
+
+Shop "1" *-- "0..*" Customer : customers
+Shop "1" *-- "0..*" Entry : entries
+Customer "1" -- "0..*" Entry : phone
+
+note right of Customer
+  <b>Derived, never stored</b>
+  balance = sum(credit amounts) - sum(payment amounts)
+  balance > 0 : owes the shop
+  balance < 0 : in advance
+  days overdue (balance > 0 only) =
+    max(0, today - last payment date,
+    or first credit date when never paid)
+  today = ?today=YYYY-MM-DD when valid, else the device date
+end note
 
 note bottom of Entry
-  No balance is stored.
-  Balance = sum of signedAmount(entry):
-  credit adds, payment takes away.
+  <b>Running balance</b> (customer page):
+  entries of one customer sorted by date, then seq,
+  oldest first; balance after each entry.
+  Shown newest first.
 end note
-note bottom of Mem
-  Not written to storage:
-  Undo is lost on reload.
+
+note left of Shop
+  <b>Total outstanding</b> =
+  sum of all balances, so a customer
+  in advance reduces it. The owed figure
+  (balances above 0) is in a note
+  below the total when it differs.
 end note
+
 @enduml

@@ -1,5 +1,5 @@
 @startuml j2-record-entry
-title J2 Add a customer; record a credit or payment; edit; delete with Undo
+title J2 Record a credit or payment; edit and delete with Undo
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -9,17 +9,24 @@ skinparam maxMessageSize 260
 skinparam titleFontSize 17
 skinparam titleFontColor #0E5C45
 skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
 skinparam sequence {
   ArrowColor #0E5C45
   LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
   ParticipantBorderColor #0E5C45
   ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
   ActorBorderColor #0E5C45
   ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
   GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
   GroupBackgroundColor #F3F8F6
   DividerBorderColor #0E5C45
   DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
 }
 skinparam database {
   BorderColor #0E5C45
@@ -31,54 +38,106 @@ skinparam note {
   FontSize 12
 }
 actor "Shop owner" as Owner
-participant "React page\n(App.tsx)" as UI
-participant "Shop store\n(useShopStore)" as Store
-participant "lib/ledger" as Ledger
+participant "Browser UI\n(index.html)" as UI
+participant "app.js" as App
 database "localStorage" as LS
-
-== Add a customer ==
-Owner -> UI : name and 10-digit phone, Save
-UI -> Store : addCustomer(name, phone)
-alt name empty, phone not 10 digits, or phone already used
-  Store --> UI : errName, errPhone or errPhoneDup
-  UI --> Owner : the message under the form; nothing saved
-else accepted
-  Store -> LS : commit(): setItem("hisaab-shop-v2")
-  UI --> Owner : status "customer added"; the row appears
+participant "WhatsApp / UPI app" as WA
+autonumber
+== Optional: add a customer ==
+Owner -> UI : Add customer form: name and phone
+UI -> App : submit: onAddCustomer()
+alt no name
+  App -> UI : #customer-msg "Enter a name."
+else phone has a character other than digits, spaces and + ( ) - ., or is not 10 digits after phone10()
+  App -> UI : "Enter a 10 digit phone number, digits only."
+else phone already used
+  App -> UI : "A customer with this phone already exists."
+else valid (any 10 digits)
+  App -> App : customers.push({name, phone})
+  App -> LS : save(): setItem('hisaab.v1')
+  App -> UI : "Customer added."
+  opt not a mobile: validMobile() wants 6, 7, 8 or 9 first
+    App -> UI : add "Check the number: Indian mobile numbers start with 6, 7, 8 or 9,\nso WhatsApp may not reach this one."
+  end
+  App -> UI : render(); preselect the new customer in the entry form
 end
-
 == Record an entry ==
-Owner -> UI : opens the customer, chooses credit or payment,\namount, date (today by default), note, Save
-UI -> Store : addEntry({phone, type, amount, date, note})
-alt amount not a whole number above 0, or date not YYYY-MM-DD
-  Store --> UI : errAmount or errDate
-  UI --> Owner : the message in the form; nothing saved
-else accepted
-  Store -> Ledger : newId()
-  Store -> LS : commit(): setItem("hisaab-shop-v2")
-  alt the browser's store is full
-    Store -> Store : puts the ledger back as it was
-    Store --> UI : storageFull
-  else written
-    UI -> Ledger : balanceOf, totalOutstanding, entriesNewestFirst
-    UI --> Owner : form cleared; entry on top; balance and total updated
+Owner -> UI : choose customer (fixed on a customer page), Credit or Payment,\namount, date, note
+opt v1.2: note shortcuts (add-on extras.js)
+  note right of UI : v1.2: six buttons under the note field, in the chosen language:\ngroceries, milk, rice, oil, paid on UPI, cash
+  Owner -> UI : tap a shortcut
+  UI -> App : click (extras.js)
+  alt the note is empty
+    App -> UI : the note field is filled with that word
+  else the note already has a different word
+    App -> UI : the word is added after a comma
+  end
+  note right of App : the note is saved with the entry as before
+end
+Owner -> UI : press Save entry
+UI -> App : submit: onEntrySubmit()
+alt no customer
+  App -> UI : #entry-msg "Choose a customer."
+else amount not above zero
+  App -> UI : "Enter an amount above zero."
+else amount above 1,00,00,000
+  App -> UI : "That amount looks too large..."
+else date not valid
+  App -> UI : "Enter a date."
+else date after todayIso()
+  App -> UI : "The date is in the future..."
+else valid
+  alt editing (#entry-id is set)
+    App -> App : lastEdited = a copy of the old entry; update that entry in place
+  else new entry
+    App -> App : entries.push({id: uid(), phone, type, amount, date,\nnote, shot, seq: nextSeq()})
+  end
+  App -> LS : save(): setItem('hisaab.v1', state)
+  opt storage is full
+    App -> UI : toast "Storage is full. Export a backup..."
+  end
+  App -> App : resetEntryForm() (keeps the customer); render()
+  App -> UI : v1.2 (extras.js): above the overdue list, a line with the total unpaid\nfor 30 days or more and the number of customers, after each render
+  alt edited entry
+    App -> UI : toast "Entry updated." with Undo and a "Send receipt" link (7 s)
+  else new entry
+    App -> UI : toast "Saved." with a "Send receipt" link (7 s)
+    note right of App : a new entry has no Undo; Undo is offered\nafter Edit, Delete and loading a shop
+  end
+  opt owner taps Send receipt
+    UI -> WA : open wa.me/91{phone}?text= receipt with amount, date, new balance
+    note right of WA : the owner presses Send;\nthe app never sends by itself
   end
 end
-
 == Edit ==
-Owner -> UI : Edit on an entry, changes type, amount, date or note, Save
-UI -> Store : updateEntry(id, patch)
-Store -> LS : commit()
-UI --> Owner : status "entry updated"; balances recomputed
-
-== Delete with Undo ==
-Owner -> UI : Delete on an entry
-UI -> Store : deleteEntry(id)
-Store -> LS : commit(): entry removed, lastDeleted kept in memory
-UI --> Owner : status "entry deleted" with an Undo button
-opt Owner presses Undo
-  UI -> Store : undoDelete()
-  Store -> LS : commit(): entry back, lastDeleted cleared
-  UI --> Owner : status "entry restored"
+Owner -> UI : tap Edit on an entry (button[data-edit])
+UI -> App : document click: startEdit(id)
+App -> UI : fill type, amount, date, note; show the picture;\nSave reads "Update"; show Cancel
+Owner -> UI : change fields, press Update (same checks and save as above)
+opt Cancel
+  App -> UI : resetEntryForm(), customer kept
+end
+alt Undo pressed within 7 s of Update
+  Owner -> UI : tap Undo (#toast-undo)
+  UI -> App : put lastEdited back in place of the changed entry
+  App -> LS : save()
+  App -> UI : render(); hide the toast
+else 7 s pass, or a delete or import
+  App -> App : lastEdited = null
+end
+== Delete ==
+Owner -> UI : tap Delete on an entry (button[data-del])
+note right of UI : no confirm dialog
+UI -> App : document click: deleteEntry(id)
+App -> App : lastDeleted = {entry, index}; lastEdited = null;\nentries.splice(index, 1)
+App -> LS : save()
+App -> UI : render(); toast "Entry deleted." with Undo (7 s)
+alt Undo pressed within 7 s
+  Owner -> UI : tap Undo (#toast-undo)
+  UI -> App : put the entry back at its index
+  App -> LS : save()
+  App -> UI : render(); hide the toast
+else 7 s pass
+  App -> App : hide the toast; lastDeleted = null
 end
 @enduml
