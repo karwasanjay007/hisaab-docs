@@ -79,7 +79,7 @@ skinparam participant<<external>> {
 skinparam database {
   BorderColor #2E6295
   BackgroundColor #438DD5
-  FontColor #FFFFFF
+  FontColor #0B2545
   FontStyle bold
 }
 skinparam database<<external>> {
