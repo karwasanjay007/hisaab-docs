@@ -36,6 +36,8 @@ at the top of the page. What reaches another party, and when, is under
 | `entries` | list of Entry | In the order added |
 
 A stored value without `customers` and `entries` lists is ignored, and the app starts with an empty shop.
+The diagram draws `shop`, `upi` and `nativeDigits` as Shop settings and `owner`, `address` and `logo` as Shop
+profile; all six sit at the top level of the document.
 
 ### Customer
 
@@ -82,11 +84,11 @@ Money is rounded to two decimals in the sums and shown with Indian grouping (1,0
 | Key | Written by | Holds |
 | --- | --- | --- |
 | `hisaab.v1` | `app.js` | The open shop, as one JSON document ([its shape](schema/stored-state.schema.json)) |
-| `hisaab.shops` | `shops.js` | `{ active: id, list: [{ id, name, data }] }`. The open shop's entry has `data: null`, because its ledger is under `hisaab.v1`. Not written until a second shop exists; removed when one shop is left |
+| `hisaab.shops` | `shops.js` | `{ active: id, list: [{ id, name, data }] }`, plus `pending: id` while a switch is under way. Each `id` is `s`, the time and random letters. The open shop's entry has `data: null`, because its ledger is under `hisaab.v1`; every other entry's `data` is a whole shop document. Not written until a second shop exists; removed when one shop is left |
 | `hisaab.lang` | `app.js` | The language code, one of the twelve; `en` when absent |
 | `hisaab.theme` | `app.js` | `light` or `dark`; absent means follow the device |
 | `hisaab.wa` | `wacheck.js` | `{ "<10 digits>": { s: "ok" or "no", d: "YYYY-MM-DD" } }`. Keyed by number, outside the ledger, so it is in no shop file and no backup |
-| `hisaab.guard` | `guard.js` | A test write when the page opens, removed at once, to find out whether storage works |
+| `hisaab.guard` | `guard.js` | A test write of `1` when the page opens, removed at once, to find out whether storage works |
 
 The service worker's cache is named `hisaab-v22`. It is in the browser's Cache API, not in `localStorage`
 ([what it holds](../ARCHITECTURE.md#offline)).
@@ -108,5 +110,12 @@ The service worker's cache is named `hisaab-v22`. It is in the browser's Cache A
   skipped.
 - [The exports](schema/export-entries.csv.md): the two CSV files, the backup file and reading a CSV. The
   backup file holds no screenshots, no `hisaab.wa` answers and no other shop.
+- `hisaab-<shop>.json`, the backup file: `shop`, `upi`, `customers` (`name`, `phone`, `name_hi`, `name_te`),
+  `entries` (`phone`, `type`, `amount`, `date`, `note`), and `owner`, `address`, `logo` when set. "Load shop"
+  also reads `shop_name` or `name` for the shop, `upi_id` for the UPI ID, and `shot` and `name` in an entry.
+- `hisaab-<shop>-entries.csv`: `date`, `name`, `phone`, `type`, `amount`, `note`, `has_screenshot` (`yes` or
+  `no`), one row per entry.
+- `hisaab-<shop>-balances.csv`: `name`, `phone`, `total_credit`, `total_payment`, `balance`, `last_payment`,
+  one row per customer, and a last row `TOTAL OUTSTANDING`.
 - [The stored state](schema/stored-state.schema.json), [the links](schema/links.md) and
   [the quick entry result](schema/quick-entry-result.schema.json).

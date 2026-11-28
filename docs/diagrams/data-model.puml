@@ -1,155 +1,173 @@
 @startuml data-model
-title Hisaab data model (browser localStorage)
+!include c4-erd.iuml
+title Hisaab data model: everything stays in the browser
+top to bottom direction
 
-skinparam backgroundColor #FFFFFF
-skinparam shadowing false
-skinparam roundCorner 14
-skinparam defaultFontName "Segoe UI"
-skinparam defaultFontSize 13
-skinparam titleFontSize 18
-skinparam titleFontColor #0E5C45
-skinparam ArrowColor #0E5C45
-skinparam ArrowFontColor #33413C
-skinparam ArrowThickness 1.4
-skinparam class {
-  BackgroundColor #FFFFFF
-  BorderColor #0E5C45
-  BorderThickness 1.6
-  HeaderBackgroundColor #E6F1ED
-  FontColor #14211C
-  AttributeFontColor #33413C
-  StereotypeFontColor #0E5C45
-}
-skinparam note {
-  BackgroundColor #F5F8F6
-  BorderColor #9DB8AD
-  FontColor #33413C
-  FontSize 12
-}
-skinparam package {
-  BorderColor #9DB8AD
-  FontColor #0E5C45
-  BackgroundColor #FFFFFF
-}
-hide circle
-hide methods
-set separator none
-
-package "localStorage key hisaab.v1 (the open shop, one JSON document)" {
-  class Shop <<root>> {
-    shop : string
-    {field} upi : string  (empty = demo ID)
-    nativeDigits : boolean [optional]
-    {field} owner : string  (at most 60) [optional]
-    {field} address : string  (at most 160) [optional]
-    {field} logo : data:image/ URL  (under 40 KB) [optional]
-    customers : Customer[]
-    entries : Entry[]
+package "Browser storage: localStorage (each device)" <<browser>> {
+  entity "hisaab.v1" as shop <<document>> {
+    * key "hisaab.v1" : string <<PK>>
+    --
+    * shop : string
+    * upi : string
+      nativeDigits : boolean <<NULL>>
+      owner : string <<NULL>>
+      address : string <<NULL>>
+      logo : string <<NULL>>
+    * customers : Customer[]
+    * entries : Entry[]
   }
 
-  class Customer {
-    {field} <b>phone</b> : string  (10 digits, key)
-    name : string
-    name_hi : string [optional]
-    name_te : string [optional]
+  entity "Shop settings" as settings <<record>> {
+    top-level fields of hisaab.v1
+    --
+    * shop : string (name, at most 60 typed; "My shop")
+    * upi : string (UPI ID, or "" for the demo ID)
+      nativeDigits : boolean <<NULL>> (Hindi or Telugu digits)
   }
 
-  class Entry {
-    {field} <b>id</b> : string  (key)
-    {field} phone : string  (refers to Customer)
-    type : credit | payment
-    {field} amount : number  (whole rupees)
-    date : YYYY-MM-DD
-    note : string
-    shot : JPEG data URL | null
-    {field} seq : integer  (same-date order)
-  }
-}
-
-package "localStorage keys hisaab.lang, hisaab.theme, hisaab.guard" {
-  class Preferences <<per browser>> {
-    {field} hisaab.lang : en, hi, te, bn, mr, ta, gu, kn, ml, pa, or, ur
-    hisaab.theme : light | dark
-    {field} hisaab.guard : test write  (removed at once)
-  }
-}
-
-package "localStorage key hisaab.shops (only with two or more shops)" {
-  class Shops <<one per browser>> {
-    {field} active : string  (id of the open shop)
-    list : ShopSlot[]
+  entity "Shop profile" as profile <<record>> {
+    top-level fields of hisaab.v1, from profile.js
+    --
+      owner : string <<NULL>> (at most 60)
+      address : string <<NULL>> (at most 160)
+      logo : string <<NULL>> (data:image/ URL, under 40 KB)
   }
 
-  class ShopSlot {
-    {field} <b>id</b> : string  (key)
-    name : string
-    {field} data : Shop | null  (null = the open shop)
+  entity "Customer" as customer <<record>> {
+    * phone : string <<PK>> (10 digits)
+    --
+    * name : string (at most 60 typed)
+      name_hi : string <<NULL>> (Devanagari)
+      name_te : string <<NULL>> (Telugu script)
   }
-}
 
-package "localStorage key hisaab.wa" {
-  class WaChecks <<one per browser>> {
-    {field} <b>number</b> : string  (10 digits, key)
-    {field} s : ok | no  (the owner's answer)
-    {field} d : string  (date, YYYY-MM-DD)
+  entity "Entry" as entry <<record>> {
+    * id : string <<PK>> ("e" + time + random, base 36)
+    --
+    * phone : string <<FK>> (Customer.phone)
+    * type : "credit" | "payment"
+    * amount : number (whole rupees)
+    * date : string (YYYY-MM-DD)
+    * note : string (may be "", up to 80 typed)
+      shot : string <<NULL>> (JPEG data URL, or null)
+    * seq : integer (order within a date)
+  }
+
+  entity "hisaab.shops" as shops <<key>> {
+    * active : string <<FK>> (ShopSlot.id of the open shop)
+    --
+      pending : string <<NULL>> (ShopSlot.id during a switch)
+    * list : ShopSlot[]
+  }
+
+  entity "ShopSlot" as slot <<record>> {
+    * id : string <<PK>> ("s" + time + random, base 36)
+    --
+    * name : string
+      data : object <<NULL>> (a whole hisaab.v1 document; null for the open shop)
+  }
+
+  entity "hisaab.wa" as wa <<key>> {
+    one object, keyed by phone number
+    --
+    * <phone> : string <<PK>> (10 digits)
+    * s : "ok" | "no" (the owner's answer)
+    * d : string (YYYY-MM-DD, when answered)
+  }
+
+  entity "hisaab.lang" as lang <<key>> {
+    value : string <<NULL>>
+    en, hi, te, bn, mr, ta, gu, kn, ml, pa, or, ur; en when absent
+  }
+
+  entity "hisaab.theme" as theme <<key>> {
+    value : "light" | "dark" <<NULL>>
+    absent: follow the device
+  }
+
+  entity "hisaab.guard" as guardk <<key>> {
+    value : "1"
+    written and removed at once when the page opens
   }
 }
 
-package "Cache API" {
-  class "Cache hisaab-v22" as Cache <<service worker>> {
-    copies of the site's own files
+package "Browser cache (service worker)" <<browser>> {
+  entity "hisaab-v22" as cache <<file>> {
+    the site's own files: pages, scripts, styles,
+    fonts, icons, QR library, sample-data.json
     no ledger data
   }
 }
 
-note bottom of WaChecks
-  Keyed by number, not by shop.
-  Outside hisaab.v1: not in a
-  shop file or a backup file.
-end note
+package "Files" <<file>> {
+  entity "hisaab-<shop>.json (shop file)" as shopfile <<file>> {
+    * customers : {name, phone, name_hi?, name_te?}[]
+    --
+      shop : string (also read as shop_name, name)
+      upi : string <<NULL>> (also read as upi_id)
+      entries : {phone, type, amount, date, note, shot?, name?}[]
+      owner : string <<NULL>>
+      address : string <<NULL>>
+      logo : string <<NULL>>
+  }
 
-Shops "1" *-- "1..*" ShopSlot : list
-ShopSlot "1" o-- "0..1" Shop : data (parked ledger)
+  entity "hisaab-<shop>-entries.csv" as csvE <<file>> {
+    date, name, phone, type, amount, note, has_screenshot (yes | no)
+  }
 
-note bottom of ShopSlot
-  The open shop's data is null: its ledger
-  is under hisaab.v1. A switch parks the
-  open ledger here and puts the chosen one
-  under hisaab.v1. The key is not written
-  until a second shop is added and is removed
-  when one shop is left.
-end note
+  entity "hisaab-<shop>-balances.csv" as csvB <<file>> {
+    name, phone, total_credit, total_payment, balance, last_payment
+    last row: TOTAL OUTSTANDING
+  }
+}
 
-Shop "1" *-- "0..*" Customer : customers
-Shop "1" *-- "0..*" Entry : entries
-Customer "1" -- "0..*" Entry : phone
+shop ||--|| settings : "holds\nthe settings"
+shop ||--o| profile : "holds zero or one\nprofile"
+shop ||--o{ customer : "customers[]"
+shop ||--o{ entry : "entries[]"
+customer ||..o{ entry : "by phone,\nnot enforced"
+shops ||--|{ slot : "list[]"
+shop |o..o{ slot : "data: a parked copy\nof a shop document"
+customer |o..o{ wa : "same phone,\nby value"
+shop |o..o{ shopfile : "Backup file writes;\nLoad shop reads"
+entry }o..o{ csvE : "one row\nper entry"
+customer }o..o{ csvB : "one row per customer,\nbalance worked out"
 
-note bottom of Customer
+settings -[hidden]right- profile
+customer -[hidden]down- wa
+entry -[hidden]down- shops
+wa -[hidden]right- shops
+slot -[hidden]down- lang
+lang -[hidden]right- theme
+theme -[hidden]right- guardk
+lang -[hidden]down- cache
+cache -[hidden]down- shopfile
+shopfile -[hidden]down- csvE
+csvE -[hidden]right- csvB
+
+note right of csvB
   <b>Worked out, never stored</b>
-  balance = credit amounts - payment amounts
-  balance > 0 : owes the shop
-  balance < 0 : in advance
-  days without paying (balance > 0 only) =
-    today - last payment date,
-    or first credit date when never paid
-  overdue = 30 days or more
+  balance = all credit - all payments
+  above 0: owes the shop; below 0: in advance
+  overdue = 30 days or more without a payment
+  (OVERDUE_DAYS = 30)
+  amounts are whole rupees
 end note
 
-note bottom of Entry
-  <b>Balance after</b> (customer page):
-  entries of one customer by date, then seq,
-  oldest first; the balance after each entry.
-  Shown newest first.
+note bottom of cache
+  Nothing leaves the device except what
+  the owner sends: a WhatsApp or SMS message,
+  a pay link, or a file the owner shares.
 end note
 
-note left of Shop
-  <b>Total outstanding</b> =
-  sum of all balances, so a customer
-  in advance lowers it.
-end note
-
-Shops -[hidden]right- WaChecks
-Entry -[hidden]down- Preferences
-Customer -[hidden]down- Cache
-
+legend bottom left
+  <b>Key</b>
+  PK primary key, FK foreign key
+  * mandatory, NULL optional
+  solid line: held inside the same document
+  dotted line: linked by value only, nothing enforces it
+  <b>Stores</b>
+  light blue: on the device (localStorage, cache)
+  grey: files the owner saves or loads
+endlegend
 @enduml

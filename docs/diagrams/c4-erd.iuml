@@ -1,0 +1,108 @@
+' C4 look for data models (entity-relationship diagrams). Include it after @startuml: !include c4-erd.iuml
+' Every data store is a package with a stereotype, every table, document or record an entity:
+'   package "Postgres on Neon (server)" <<store>> { ... }            a database the product runs (C4 ContainerDb, blue)
+'   package "Browser storage: localStorage (each device)" <<browser>> { ... }   storage on the user's device (light blue)
+'   package "Files shipped with the site" <<file>> { ... }            static files (grey)
+'   entity "tickets" as tickets <<table>> { ... }                     a SQL table
+'   entity "hisaab.v1" as shop <<document>> { ... }                   a JSON document under one key
+'   entity "Entry" as entry <<record>> { ... }                        a record inside a document (an array item)
+'   entity "clinic-data.json" as cf <<file>> { ... }                  a file
+' Columns: one per line, name : TYPE, then the key tag. Keys first, then a -- line, then the rest:
+'   * id : TEXT <<PK>>             mandatory (*) primary key
+'   * shopId : TEXT <<FK>>         mandatory foreign key
+'     note : TEXT <<NULL>>         optional
+'     data : JSONB                 a JSON column
+' Relations, crow's foot: ||--o{ one to zero or many, ||--|{ one to one or many, ||--o| one to zero or one,
+'   }o..o{ a link by value, not enforced (use dotted .. when no database enforces it). Label every relation.
+' Notes: retention, who can read it, what is derived and never stored. Keep a legend.
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 13
+skinparam defaultFontColor #1F2933
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+skinparam titleFontSize 20
+skinparam titleFontStyle bold
+skinparam titleFontColor #08427B
+skinparam wrapWidth 260
+hide circle
+hide empty methods
+set separator none
+
+skinparam ArrowColor #1F2933
+skinparam ArrowFontColor #1F2933
+skinparam ArrowFontSize 12
+skinparam ArrowThickness 1.4
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #2E6295
+  BorderThickness 1.6
+  HeaderBackgroundColor #438DD5
+  FontColor #FFFFFF
+  FontStyle bold
+  FontSize 14
+  AttributeFontColor #1F2933
+  AttributeFontSize 12
+  StereotypeFontColor #DCE8F5
+  StereotypeFontSize 11
+}
+skinparam class<<table>> {
+  HeaderBackgroundColor #438DD5
+  BorderColor #2E6295
+}
+skinparam class<<document>> {
+  HeaderBackgroundColor #438DD5
+  BorderColor #2E6295
+}
+skinparam class<<record>> {
+  HeaderBackgroundColor #85BBF0
+  BorderColor #3C7FC0
+  FontColor #0B2545
+  StereotypeFontColor #0B2545
+}
+skinparam class<<key>> {
+  HeaderBackgroundColor #85BBF0
+  BorderColor #3C7FC0
+  FontColor #0B2545
+  StereotypeFontColor #0B2545
+}
+skinparam class<<file>> {
+  HeaderBackgroundColor #8C8C8C
+  BorderColor #6B6B6B
+}
+
+skinparam package {
+  FontColor #08427B
+  FontStyle bold
+  FontSize 14
+  BorderThickness 1.6
+  Style rectangle
+}
+skinparam package<<store>> {
+  BorderColor #08427B
+  BackgroundColor #E8F0FA
+}
+skinparam package<<browser>> {
+  BorderColor #3C7FC0
+  BackgroundColor #F1F7FD
+}
+skinparam package<<file>> {
+  BorderColor #6B6B6B
+  BackgroundColor #F4F4F4
+}
+skinparam note {
+  BorderColor #C9A227
+  BackgroundColor #FFF4C2
+  FontColor #3D2E00
+  FontSize 12
+}
+skinparam legend {
+  BackgroundColor #FFFFFF
+  BorderColor #2E6295
+  FontSize 12
+}
