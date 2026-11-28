@@ -48,25 +48,25 @@ Goals the architecture serves (from PRD.md and TECH-STACK.md):
 ## 2. Constraints and decisions
 
 Constraints: no server data (D-1); loading a shop file replaces the current shop after it is checked (D-2);
-deleting can be undone straight away (D-4); graded by a scripted browser; one owner on one phone.
+deleting can be undone straight away (D-4); checked by automated tests in a browser; one owner on one phone.
 
 | ID | Decision | Reason | Alternative rejected |
 | --- | --- | --- | --- |
-| AD-1 | Plain HTML, CSS and JavaScript; no framework, no build step. `app.js` is one IIFE in strict mode | Smallest and fastest; nothing to compile or break; every id the grader reads is under direct control | React with Vite: more weight, no benefit for one screen of forms and lists |
-| AD-2 | No server and no account; Vercel serves static files only | The brief allows browser storage; nothing to secure or pay for; no personal data leaves the phone | A backend with login: not needed for one owner on one phone |
+| AD-1 | Plain HTML, CSS and JavaScript; no framework, no build step. `app.js` is one IIFE in strict mode | Smallest and fastest; nothing to compile or break; every id an automated test reads is under direct control | React with Vite: more weight, no benefit for one screen of forms and lists |
+| AD-2 | No server and no account; Vercel serves static files only | The specification allows browser storage; nothing to secure or pay for; no personal data leaves the phone | A backend with login: not needed for one owner on one phone |
 | AD-3 | One JSON document in localStorage under `hisaab.v1`, written in full after every change; preferences under `hisaab.lang` and `hisaab.theme` | Synchronous, simple, survives reload (F-5) | IndexedDB: only needed for many large photos |
 | AD-4 | Screenshots resized in the browser to at most 640 px and stored as JPEG (quality 0.72) data URLs on the entry | Keeps the stored document well under the browser's storage limit | Storing the original picture: fills storage fast |
 | AD-5 | Hash routing: `#/` overview, `#/s/<section>` for each nav item, `#/c/<10-digit phone>` for a customer page | Works on any static host with no rewrite rules; reload and back button keep the view | History API paths: need server rewrites to `index.html` |
-| AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block the grader and annoy the owner |
+| AD-6 | No `alert`, `confirm` or `prompt`. Delete, edit and import act at once and show a toast with Undo for 7 seconds | An automated browser stalls on, or cancels, a dialog; Undo is safer for a person too (D-4) | Confirm dialogs: block an automated test and annoy the owner |
 | AD-7 | Network-first service worker (`sw.js`), cache `hisaab-v2`: the app shell is precached on install, older caches are deleted on activate, and GET requests for the app's own files, qrcode-generator from cdnjs and Google Fonts are cached as they load | A new release shows at once; after one online visit the app, the QR code included, opens with no signal | Cache-first: owners would keep running an old release |
 | AD-8 | Libraries loaded only when needed by adding a script tag: qrcode-generator 1.4.4 from cdnjs, Tesseract.js 5.1.1 from jsDelivr | First load carries no library weight; most visits never need OCR | Bundling them: a much heavier first load |
 | AD-9 | Amount from a screenshot read on the phone with Tesseract.js, in English or English plus Hindi or Telugu by the app language; the owner checks it before saving | Free, no key, no server | A vision model API: needs a key and a server |
 | AD-10 | All stored and imported text passes through `esc()` before it goes into HTML; imported screenshots are kept only if they start with `data:image/` | Imported files are untrusted; stops markup or script injection | Trusting the file: an XSS hole |
-| AD-11 | Money as ₹ with Indian grouping (`en-IN`) and Latin digits by default; Hindi or Telugu digits are an opt-in setting (`state.nativeDigits`) | Latin digits are what most Indian users and the grader read; the minus sits next to the digits in the text (₹-3,530) and is drawn before the rupee sign (-₹3,530) | Native digits whenever the language changes |
+| AD-11 | Money as ₹ with Indian grouping (`en-IN`) and Latin digits by default; Hindi or Telugu digits are an opt-in setting (`state.nativeDigits`) | Latin digits are what most Indian users and automated tests read; the minus sits next to the digits in the text (₹-3,530) and is drawn before the rupee sign (-₹3,530) | Native digits whenever the language changes |
 | AD-12 | `?today=` in the address overrides today's date everywhere (`todayIso()`) | Lets tests fix the date for overdue days (F-4) | The system clock only: untestable |
 | AD-13 | A first visit starts with an empty shop (`blank()`: "My shop", no customers, no entries). The overview's empty state offers Add your first customer (`#add-first`) and Load sample shop (`#load-sample-home`, which loads `sample-data.json`, with `sample.js` as the fallback) | The projects page's "Done when" lines add Ravi Kumar 9000000101 to a fresh app and expect Rs 250 after a Rs 250 credit; with the sample preloaded he was a duplicate and read Rs 920. The sample stays one tap away | The sample shop preloaded on a first visit (the earlier design): breaks those lines |
 | AD-14 | Fonts: Baloo 2 for headings, Noto Sans with Devanagari and Telugu, from Google Fonts | Indian scripts render properly | System fonts: Telugu can fall back badly |
-| AD-15 | Add customer accepts any 10 digit number (`validPhone`), as the brief says. Input with anything other than digits, spaces and + ( ) - . is refused (`errPhone`); a number that does not start with 6, 7, 8 or 9 is added with a warning (`warnMobile`, from `validMobile`). Import accepts any 10 digits with no warning | Follows the brief's rule and its "Done when" line (9 digits or letters refused with a message), while still telling the owner that WhatsApp may not reach a number that is not a mobile | Refusing numbers that are not mobiles (the earlier rule, `errMobile`): stricter than the brief |
+| AD-15 | Add customer accepts any 10 digit number (`validPhone`), as the specification says. Input with anything other than digits, spaces and + ( ) - . is refused (`errPhone`); a number that does not start with 6, 7, 8 or 9 is added with a warning (`warnMobile`, from `validMobile`). Import accepts any 10 digits with no warning | Follows the specification's rule and its "Done when" line (9 digits or letters refused with a message), while still telling the owner that WhatsApp may not reach a number that is not a mobile | Refusing numbers that are not mobiles (the earlier rule, `errMobile`): stricter than the specification |
 
 ## 3. Context
 
@@ -75,7 +75,7 @@ deleting can be undone straight away (D-4); graded by a scripted browser; one ow
 - The **shop owner** uses Hisaab in a phone or desktop browser.
 - The **customer** never opens Hisaab. They receive a WhatsApp message the owner sends, and pay through
   their own UPI app from the `upi://pay` link or the QR code.
-- The **automated grader** is a scripted browser that opens the live site, loads hidden shops through
+- **Automated tests** run in a scripted browser that opens the live site, loads hidden shops through
   `#import-box` and `#import-go`, and reads the fixed ids.
 - **WhatsApp** is reached only through `https://wa.me/91<phone>?text=<message>` links that Hisaab builds
   locally. Hisaab never sends anything itself; the owner presses Send.
@@ -228,7 +228,7 @@ Below 1024 px navigation is a bottom bar with a More sheet.
 | `tests/offline.mjs` | One online visit, then offline: the ledger opens with 11,820 and the QR code draws. Usage `node tests/offline.mjs [baseUrl]` | ALL PASS |
 | `tests/brief.mjs` | Follows every "Done when" line of `brief/spec-page.md` literally in a fresh browser: 9 digits and letters refused, Ravi Kumar added to the empty app, a Rs 250 credit, reload, the sample loaded (11,820, Ravi 670, 8 customers), newest first, reminder, screenshot, a shop with a customer with no entries, 375 px with no small tap targets, no dialogs and no page errors. Usage `node tests/brief.mjs [baseUrl]` | `tests/last-brief-live.txt`: live site, ALL PASS |
 | `tests/seed.mjs` | Not a test: `withSample()` gives every new browser context the sample shop in localStorage, unless it already holds a shop, since the app now starts empty. Used by `nav.mjs`, `quick.mjs`, `final.mjs`, `gaps.mjs` and `offline.mjs` | |
-| Review agents | Industry comparison, brief and coaching audit, functional test, visual critique | `review/*.md`; fixes listed in REPORT.md |
+| Reviews | Industry comparison, specification audit, functional test, visual critique | Fixes listed in REPORT.md |
 
 Local run: `npx http-server . -p 4173 -c-1 --silent`, then `node tests/check.mjs http://localhost:4173/ [seed]`;
 the other scripts take the same base URL as their first argument.
@@ -239,17 +239,15 @@ the other scripts take the same base URL as their first argument.
 | --- | --- | --- |
 | Data lives in one browser on one phone | Clearing site data or losing the phone loses the shop; no sync between devices. Mitigation: JSON and CSV export. Next step (phase 3, PRD out of scope): optional cloud backup and sync across a shop's phones, for example Supabase sign-in, kept optional so the ledger never sits behind a login | AD-2, AD-3 |
 | localStorage size | Many screenshots can fill storage; `save` then shows "Storage is full" and the change is not kept | AD-4 |
-| Two readings of the total when a customer is in advance | `#total-outstanding` holds only the sum of all balances; the amount owed by those who owe is in `#total-note` just below it, so a grader expecting the owed-only figure must read the note | review/brief-audit.md R1 |
-| `upi://` links inside WhatsApp text | WhatsApp may not make them tappable; the QR code and statement are the fallback. Not checked on a real phone | review/industry.md |
-| Demo UPI ID `hisaab.demo@upi` until the owner sets one | Pay links point to a fake payee; shown as demo in Settings | PRD Q-1, review/brief-audit.md R5 |
-| Lenient import | Entries for an unknown phone create a customer named by the phone; a repeated phone is dropped silently; a missing or unreadable date becomes today (counted in the message); an amount of 0 and a future date are accepted | `fromShopFile`, review/brief-audit.md R4, review/functional.md 11 |
-| Phone numbers | Any 10 digits are accepted, typed or imported, not only Indian mobile numbers; a typed number that does not start with 6, 7, 8 or 9 is added with a warning that WhatsApp may not reach it, an imported one with none (AD-15) | `validPhone`, `validMobile`, review/functional.md 6 |
-| "Overdue" has no due date | It means days since the last payment (or the first credit if none), not a missed due date | `overdueRows`, review/industry.md |
+| Two readings of the total when a customer is in advance | `#total-outstanding` holds only the sum of all balances; the amount owed by those who owe is in `#total-note` just below it, so an automated test expecting the owed-only figure must read the note | |
+| `upi://` links inside WhatsApp text | WhatsApp may not make them tappable; the QR code and statement are the fallback. Not checked on a real phone | |
+| Demo UPI ID `hisaab.demo@upi` until the owner sets one | Pay links point to a fake payee; shown as demo in Settings | PRD Q-1 |
+| Lenient import | Entries for an unknown phone create a customer named by the phone; a repeated phone is dropped silently; a missing or unreadable date becomes today (counted in the message); an amount of 0 and a future date are accepted | `fromShopFile` |
+| Phone numbers | Any 10 digits are accepted, typed or imported, not only Indian mobile numbers; a typed number that does not start with 6, 7, 8 or 9 is added with a warning that WhatsApp may not reach it, an imported one with none (AD-15) | `validPhone`, `validMobile` |
+| "Overdue" has no due date | It means days since the last payment (or the first credit if none), not a missed due date | `overdueRows` |
 | OCR | A wrong amount is possible, so the owner checks it before saving; the language data is downloaded on first use and not cached, so the reader needs a signal | `readAmount` |
 | Voice | Depends on browser support for the Web Speech API | `setupVoice` |
 | Undo window | Undo lasts as long as the toast (7 seconds) and is one level deep | `toast` |
-
-Further minor findings are listed in `review/functional.md`.
 
 ## 12. Glossary
 

@@ -4,7 +4,7 @@ title Hisaab: system context (C4 level 1)
 
 Person(owner, "Shop owner", "Runs a kirana shop; records udhaar and jama on a phone and sends reminders")
 Person(customer, "Customer", "Buys on credit; receives a WhatsApp reminder and pays by UPI")
-Person(grader, "Automated grader", "Scripted browser that reads fixed ids and data attributes and loads hidden shops")
+Person(tester, "Automated tests", "Scripted browser that reads fixed ids and data attributes and loads other shops")
 
 System(hisaab, "Hisaab", "Shop credit ledger that runs entirely in the browser; data stays on the phone")
 
@@ -16,7 +16,7 @@ System_Ext(jsdelivr, "jsDelivr", "Serves Tesseract.js 5.1.1 on demand")
 System_Ext(fonts, "Google Fonts", "Baloo 2 and Noto Sans with Devanagari and Telugu")
 
 Rel(owner, hisaab, "Records entries, checks balances, sends reminders", "HTTPS, browser")
-Rel(grader, hisaab, "Opens pages, fills #import-box, reads #total-outstanding", "HTTPS, Playwright")
+Rel(tester, hisaab, "Opens pages, fills #import-box, reads #total-outstanding", "HTTPS, Playwright")
 Rel(hisaab, whatsapp, "Hands over reminder and receipt text", "wa.me/91<phone>?text=")
 Rel(whatsapp, customer, "Delivers the message the owner sends")
 Rel(customer, upi, "Pays the amount shown")

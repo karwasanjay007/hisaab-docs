@@ -2,9 +2,8 @@
 
 | | |
 | --- | --- |
-| Source | https://dashboard.freedomwithai.com/redesign/v3/projects (Hisaab section) |
+| Source | The projects page of the specification (Hisaab section) |
 | Captured | 20 Nov 2026, afternoon, word for word into `brief/spec-page.md` from the projects page |
-| Recaptured before submitting | To do on 21 Nov before 2:00 pm IST; the page changed once already (both projects may now be submitted) |
 | Literal test | `tests/brief.mjs`, live result `tests/last-brief-live.txt` |
 
 
@@ -33,7 +32,7 @@ Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh bro
 | `#shot-input` and `img[data-shot]` | Met |
 | `?today=` | Met: overdue days, default dates and the date limit follow it |
 
-| Bonus (5 each, 6 count) | Result |
+| Optional feature | Result |
 | --- | --- |
 | Overdue list by days since last payment | Built (full sorted list of everyone who owes; nav badge and Remind-all count only 30+ days without paying) |
 | Edit and delete with balances recalculated | Built, both with Undo |
@@ -43,21 +42,13 @@ Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh bro
 | Hindi or Telugu labels | Built (both) |
 | Amount from the payment screenshot | Built (English, Hindi, Telugu) |
 
-**Estimate:** 100 of 100 on our own checker (hidden data 60, bonus 30 of 35 possible, phone 5, light and
-dark 5), on four random shops. That is our checker, not the graders'.
+**Result:** every requirement passes on our own checker, on four randomly generated shops.
 
 **Version 1.0.0.0 (21 Nov 2026, Sanjay Karwa):** entry type labels are **You gave (credit) / You got (payment)** (radio values
-unchanged); Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted for the
-bonus; phone overview shows Customers and Overdue first, nothing hidden. Local checker still 27/27. See
-`evidence/release-1-0-0-0.md` and `VERSION`. Recapture of the projects page under auth is still **To do**.
+unchanged); Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted; phone overview shows Customers and Overdue first, nothing hidden. Local checker still 27/27. See `VERSION`.
 
-**What could still cost marks:**
-- The graders' tester is an AI reading the page; its exact steps are unknown. The likeliest differences
-  are covered: a fresh browser now starts empty, totals carry both the formatted and the plain number, and
-  no dialog ever blocks it.
+**Known limits:**
 - Total outstanding when a customer is in advance: #total-outstanding holds only the sum of all balances
-  (the brief's balance is all credit minus all payments); the owed-only figure is in the note #total-note
-  just below it, so a tester that reads only #total-outstanding gets the net figure.
+  (a balance is all credit minus all payments); the amount owed by those who owe is in the note #total-note
+  just below it.
 - Reading the amount from a real UPI screenshot is tested only on generated images.
-- Found late by reading the page word for word: the first-visit sample would have failed must-do 1 and 2.
-  The lesson is in the kickoff kit (capture the page verbatim, test every "Done when" literally).

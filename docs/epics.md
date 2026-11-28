@@ -42,7 +42,7 @@ prints after it.
 | E5 | Quick entry, typed and by voice | 4 | 19 | Not in the PRD (added at final review) |
 | E6 | Shop data | 6 | 33 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is not in the PRD |
 | E7 | Languages, themes and layout | 5 | 18 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), success measures |
-| E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check" |
+| E8 | Navigation, offline and the test contract | 5 | 25 | F-4, F-5, D-1, specification "How they check" |
 | **Total** | | **42** | **189** | |
 
 ---
@@ -69,7 +69,7 @@ As the shop owner, I want to add a customer with a name and a phone number so th
 | AC-E1.F1.6 | The phone has 10 digits after clean-up but does not start with 6, 7, 8 or 9 (for example 1234567890) | The owner presses Add customer | The customer is added, and "Customer added." is followed by "Check the number: Indian mobile numbers start with 6, 7, 8 or 9, so WhatsApp may not reach this one." | `gaps.mjs "non-mobile added with a warning: ..."` |
 | AC-E1.F1.7 | The phone contains anything other than digits, spaces and + ( ) - . (for example "90000abc01", "9000000101a" or "abcdefghij") | The owner presses Add customer | "Enter a 10 digit phone number, digits only." shows, focus goes to the phone field, nothing is saved | `brief.mjs 'phone "90000abc01" refused with a message: ...'`, `brief.mjs 'phone "9000000101a" refused with a message: ...'`, `brief.mjs 'phone "abcdefghij" refused with a message: ...'` |
 
-Note: any 10 digit number is accepted, as the brief says (`validPhone`); a number that is not an Indian
+Note: any 10 digit number is accepted, as the specification says (`validPhone`); a number that is not an Indian
 mobile (`validMobile`) only brings the warning. Import accepts any 10 digits too (E6.F2), with no warning.
 There is no way to delete a customer or change a customer's phone.
 
@@ -514,7 +514,7 @@ As the shop owner, I want numbers in Hindi or Telugu digits if I prefer them so 
 | --- | --- | --- | --- | --- |
 | AC-E7.F2.1 | The language is English | Shop settings opens | The native digits option is hidden; money uses ₹ with Indian grouping and Latin digits | manual |
 | AC-E7.F2.2 | Hindi or Telugu, option ticked | Figures are drawn | Money, days, dates and the KPI counts use Devanagari or Telugu digits; the choice is stored with the shop | manual |
-| AC-E7.F2.3 | Native digits are on | The grader reads the page | `data-balance`, `data-value` and the plain total copy keep Latin digits | manual |
+| AC-E7.F2.3 | Native digits are on | An automated test reads the page | `data-balance`, `data-value` and the plain total copy keep Latin digits | manual |
 
 Known gap: the customer count, the search count and the nav badges stay in Latin digits.
 
@@ -552,10 +552,10 @@ As the shop owner, I want the app to use a large screen in full so that I see mo
 
 ---
 
-## E8 Navigation, offline and the grader contract
+## E8 Navigation, offline and the test contract
 
 Goal: each part of the app has its own address, the Back button works, the app opens without a signal, and
-the page carries every hook the brief's automated tester reads, with no pop-up dialogs to stall it.
+the page keeps every id that automated tests read stable, with no pop-up dialogs to stall them.
 
 ### E8.F1 Hash routes
 
@@ -579,17 +579,17 @@ As the tester, I want to fix today's date in the address so that date-based figu
 | AC-E8.F2.1 | The address has `?today=YYYY-MM-DD` with a valid date | The app runs | Overdue days, 30-day KPIs, the default entry date, the latest allowed entry date, the statement date and the import fallback date all use it (F-4) | `check.mjs [6-today]` |
 | AC-E8.F2.2 | `?today=` is missing or not a valid date | The app runs | The device date is used | manual |
 
-### E8.F3 Grader selectors
+### E8.F3 Test selectors
 
-As the tester, I want the selectors named in the brief so that the hidden-data test can read the numbers.
+As the tester, I want the selectors named in the specification so that the hidden-data test can read the numbers.
 
 | ID | Given | When | Then | Verified by |
 | --- | --- | --- | --- | --- |
 | AC-E8.F3.1 | Any shop | The page is read | `#total-outstanding` contains the total as ₹ text and as a plain number | `check.mjs [1-sample total]`, `check.mjs [2-hidden total]` |
 | AC-E8.F3.2 | Any shop | The page is read | Each customer has `[data-customer="<phone>"]` with `[data-balance]` holding the plain balance as its attribute | `check.mjs [1-sample balances]`, `check.mjs [2-hidden balances]` |
 | AC-E8.F3.3 | Any shop | The page is read | Each row has `a[data-remind="<phone>"]` to `https://wa.me/91<phone>?text=` | `check.mjs [3-reminder]` |
-| AC-E8.F3.4 | The home view | The tester pastes JSON | `#import-box` and `#import-go` load it (E6.F1) | `check.mjs [2-hidden replace]` |
-| AC-E8.F3.5 | The entry form on the home view | The tester attaches a file | `#shot-input` takes it and the saved entry shows `img[data-shot]` | `check.mjs [5-shot img]` |
+| AC-E8.F3.4 | The home view | An automated test pastes JSON | `#import-box` and `#import-go` load it (E6.F1) | `check.mjs [2-hidden replace]` |
+| AC-E8.F3.5 | The entry form on the home view | An automated test attaches a file | `#shot-input` takes it and the saved entry shows `img[data-shot]` | `check.mjs [5-shot img]` |
 | AC-E8.F3.6 | A test script | It calls `window.hisaabParseQuick(text)` | It returns amount, type, matching phones and note without touching the form | `quick.mjs` (all parser lines) |
 
 ### E8.F4 Offline and install
@@ -655,7 +655,7 @@ As the shop owner, I want an app that never stalls on a pop-up and works with a 
 | Stage 2: Hindi and Telugu labels | | E7.F1, E7.F2 |
 | Stage 2: amount read from a screenshot | | E1.F4 |
 | Success: no sideways scroll at 375 px; WCAG AA | | E7.F3, E7.F4, E7.F5 |
-| Brief "How they check" selectors | | E8.F3 |
+| Specification "How they check" selectors | | E8.F3 |
 | Projects page "Done when" lines (`brief/spec-page.md`) | Followed literally by `tests/brief.mjs` in a fresh browser | E1.F1, E1.F3, E1.F7, E2.F1, E2.F3, E3.F1, E4.F2, E6.F1, E6.F5, E7.F4, E8.F5 |
 | Not in the PRD (added at final review) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
 | Not in the PRD (added after the final review) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
@@ -675,12 +675,12 @@ Found in the code against the PRD or the reviews:
   ₹1 crore amounts are skipped, but an amount of 0 and a future date are accepted, and a missing or
   unreadable date becomes today (counted in the message).
 - No way to delete a customer or change a customer's phone number.
-- Any 10 digit phone is accepted, not only mobile numbers, as the brief says: a typed number that does not
+- Any 10 digit phone is accepted, not only mobile numbers, as the specification says: a typed number that does not
   start with 6, 7, 8 or 9 is added with a warning (E1.F1), and import accepts it with no warning (E6.F2).
 - The JSON backup leaves out payment screenshots.
 - Undo is one level deep and lasts as long as the toast (7 seconds).
 - Some strings stay in English in Hindi and Telugu, and some counts stay in Latin digits (E7.F1, E7.F2).
 - The screenshot reader needs a network: Tesseract.js and its language data are not cached for offline.
-- Ideas from `review/industry.md` not built: opening balance when adding a customer, a credit limit per
+- Ideas from the industry review not built: opening balance when adding a customer, a credit limit per
   customer, a backup reminder, a customer pay page opened from the reminder, and a "today's collection
   round".

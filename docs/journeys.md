@@ -16,19 +16,19 @@ java -jar plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
 
 Epics: E1 Customers and entries, E2 Shop overview, E3 Reminders and getting paid, E4 Customer page and
 statement, E5 Quick entry, E6 Shop data, E7 Languages, themes and layout, E8 Navigation, offline and the
-grader contract.
+test contract.
 
 ## The journeys
 
 | ID | Name | Who | Trigger | Outcome | Epics |
 | --- | --- | --- | --- | --- | --- |
-| J1 | First open | Shop owner (or a tester) | Opens the app, optionally with `?today=` | Overview with the total outstanding and every balance; on a first visit an empty shop with two buttons, Add your first customer and Load sample shop | E2, E6, E7, E8 |
+| J1 | First open | Shop owner | Opens the app, optionally with `?today=` | Overview with the total outstanding and every balance; on a first visit an empty shop with two buttons, Add your first customer and Load sample shop | E2, E6, E7, E8 |
 | J2 | Record an entry | Shop owner | Fills the entry form and presses Save, or taps Edit or Delete | Entry saved, changed or removed; balances re-rendered; Undo after an edit or a delete | E1, E3 |
 | J3 | Quick entry by voice or typing | Shop owner | Taps the mic or types "Sunita 500 udhaar" | Entry form filled and Save focused; the owner saves | E5, E1, E7 |
 | J4 | WhatsApp reminder | Shop owner, then the customer | Taps the WhatsApp button on a customer row | WhatsApp opens with the name, balance and UPI pay link; the owner presses Send | E3 |
 | J5 | Remind all overdue | Shop owner | Taps "Remind all overdue" | One chat per overdue customer, longest overdue first | E3, E2 |
 | J6 | UPI QR and statement | Shop owner, then the customer | Opens a customer page, taps UPI QR code or Statement | QR drawn in the page; statement printed or saved as PDF with a scan-to-pay QR | E4, E3 |
-| J7 | Load a shop file and export | Shop owner (or a tester) | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
+| J7 | Load a shop file and export | Shop owner | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
 | J8 | Payment screenshot | Shop owner | Chooses a screenshot in the entry form | Picture shrunk and kept on the entry; amount read and offered for checking | E1, E3, E8 |
 | J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in English, Hindi or Telugu, kept after reload; the app opens offline with the same shop | E7, E8 |
 
@@ -48,7 +48,7 @@ localhost.
    `hisaab.lang` (English when missing).
 3. `init()` calls `load()`, which reads `hisaab.v1`. A saved shop is used as it is.
 4. On a first visit, or when the saved data cannot be read, `blank()` gives an empty shop ("My shop", no
-   customers, no entries) and it is saved. The sample is not loaded: the brief's "Done when" lines add
+   customers, no entries) and it is saved. The sample is not loaded: the specification's "Done when" lines add
    Ravi Kumar 9000000101 to a fresh app and expect Rs 250 after a Rs 250 credit.
 5. `applyLabels()` sets the language; `resetEntryForm()` sets the date and the latest allowed date to
    `todayIso()`, which uses `?today=` when it is a valid date.

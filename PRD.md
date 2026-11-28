@@ -4,14 +4,14 @@
 | --- | --- |
 | Product | Hisaab, a digital credit ledger for a local shop |
 | Owner | Sanjay Karwa, Smart AI for Business |
-| Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
+| Status | Approved for build (specification in `brief/brief.md`) |
 | Last revised | 20 Nov 2026 |
 
 This document says what is being built and for whom, never how.
 
 ## 1. The product and the focus
 
-The brief, quoted once:
+The specification, quoted once:
 
 > A simple digital ledger for a local shop, like the notebook a kirana keeps for who owes what, with a
 > WhatsApp reminder in one tap.
@@ -31,9 +31,9 @@ Focus:
 ### 2.1 Decisions taken
 | ID | Decision | What it settles | Source |
 | --- | --- | --- | --- |
-| D-1 | Data stays on the owner's phone; no account or server | Privacy and speed | Brief: "browser storage is fine" |
-| D-2 | Loading a shop from a file replaces the current shop, after it is checked | What import means | Brief: tester "loads a different shop" |
-| D-3 | Total outstanding is the sum of every customer's balance (all credit minus all payments), so a customer in advance reduces it; when some customers are in advance, the amount owed by those who owe is shown in a note just below the total, not in the same element [A-1]. Revised 20 Nov 2026: an external review noted that the earlier display began with the owed-only figure, so a tester reading the first number would miss a net expected value, and the brief defines balance as all credit minus all payments | Meaning of "total outstanding" | Brief: balance = credit minus payments; external review, 20 Nov 2026 |
+| D-1 | Data stays on the owner's phone; no account or server | Privacy and speed | Specification: "browser storage is fine" |
+| D-2 | Loading a shop from a file replaces the current shop, after it is checked | What import means | Specification: "loads a different shop" |
+| D-3 | Total outstanding is the sum of every customer's balance (all credit minus all payments), so a customer in advance reduces it; when some customers are in advance, the amount owed by those who owe is shown in a note just below the total, not in the same element [A-1]. Revised 20 Nov 2026: an external review noted that the earlier display began with the owed-only figure, so anyone reading the first number would miss the net figure, and the specification defines balance as all credit minus all payments | Meaning of "total outstanding" | Specification: balance = credit minus payments; external review, 20 Nov 2026 |
 | D-4 | Deleting an entry can be undone straight away | Safety without pop-ups | Owner on a phone |
 
 ### 2.2 Out of scope
@@ -100,6 +100,6 @@ Focus:
 
 | Date | Change |
 | --- | --- |
-| 20 Nov 2026 | First version, from the FWAI brief |
+| 20 Nov 2026 | First version, from the specification |
 | 20 Nov 2026 | D-3 and A-1 revised: total outstanding is the sum of all balances, with the owed figure in brackets when some customers are in advance |
 | 20 Nov 2026 | D-3: the owed figure moved out of the total into a note just below it, so the total shows one figure |
