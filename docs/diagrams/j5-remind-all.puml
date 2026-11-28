@@ -1,51 +1,19 @@
 @startuml j5-remind-all
+!include c4-sequence.iuml
 title J5 Remind all overdue
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Home screen\n(app.js)" as H
-participant "Overdue total\n(extras.js)" as E
-participant "WhatsApp" as WA
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Home screen\n(app.js)" as H <<container>>
+participant "Overdue total\n(extras.js)" as E <<component>>
+end box
+participant "WhatsApp" as WA <<external>>
+== Who is overdue ==
 H --> O : "Overdue": everyone who owes, longest without paying first;\n"30+ days" on those 30 days or more
 E --> O : "{amount} unpaid for 30 days or more, from {n} customers"
+== One chat per tap ==
 O -> H : tap "Remind all overdue (N)"
 H -> WA : open the first customer's chat with the reminder typed in
+note over WA : nothing is sent until the owner\npresses Send in WhatsApp
 O -> WA : press Send in WhatsApp, come back to Hisaab
 H --> O : the button reads "Next reminder: {name} ({i} of {n})"
 loop for each customer left

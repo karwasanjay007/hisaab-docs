@@ -1,68 +1,35 @@
 @startuml j4-whatsapp-reminder
+!include c4-sequence.iuml
 title J4 WhatsApp reminder with the pay link, and other ways to send
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 190
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Home screen\n(app.js)" as H
-participant "Customer page\n(sendways.js,\nwacheck.js)" as C
-database "Browser storage" as S
-participant "WhatsApp" as WA
-actor "Customer" as K
-participant "Pay page\n(pay.html)" as P
-participant "UPI app" as U
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Home screen\n(app.js)" as H <<container>>
+participant "Customer page\n(sendways.js,\nwacheck.js)" as C <<component>>
+database "Browser storage\n(localStorage)" as S <<store>>
+end box
+participant "WhatsApp" as WA <<external>>
+actor "Customer" as K <<person>>
+participant "Pay page\n(pay.html)" as P <<container>>
+participant "UPI app" as U <<external>>
 == The reminder ==
-O -> H : tap the WhatsApp button on a customer's row
-H -> WA : open a chat with +91 and the customer's number; the message is typed in:\nname, shop, balance, "UPI pay link" and "Pay by UPI"
-note over WA : this leaves the device\nonly when the owner\npresses Send
+O -> H : tap the WhatsApp button\non a customer's row
+H -> WA : open a chat with +91 and the customer's number;\nthe message is typed in: name, shop, balance,\n"UPI pay link" and "Pay by UPI"
+note over WA : nothing is sent until\nthe owner presses Send\nin WhatsApp
 O -> WA : press Send in WhatsApp
 == The customer pays ==
-K -> P : tap the "UPI pay link" in the message
-P --> K : "Pay to", the shop, the amount,\n"Open your UPI app" and "Copy"
-P -> U : on a phone, open the UPI app with the amount filled in
+K -> P : tap the "UPI pay link"\nin the message
+P --> K : "Pay to", the shop,\nthe amount, "Open your\nUPI app" and "Copy"
+P -> U : on a phone, open\nthe UPI app with\nthe amount filled in
+note over P, U : the money goes from the\ncustomer's UPI app to the shop;\nHisaab never handles it
 == When WhatsApp cannot reach the number ==
 O -> C : open the customer, open "Other ways to send"
-C --> O : "Send as SMS", "Choose a contact in WhatsApp",\n"Copy the message": the same message
+C --> O : "Send as SMS", "Choose a contact\nin WhatsApp", "Copy the message":\nthe same message
 O -> C : tap "Check on WhatsApp"
 C -> WA : open a chat with a short hello message
-O -> C : answer "Yes, the chat opened" or\n"No, it said the number is not on WhatsApp"
-C -> S : keep the answer for this number
-C --> O : "Checked: this number is on WhatsApp." or\n"Not on WhatsApp. Send by SMS, or change the number."
-== A shop with no UPI ID of its own ==
-C --> O : "Reminders now ask customers to pay the demo UPI ID\nhisaab.demo@upi, not your shop." with "Set your shop's UPI ID"
+O -> C : answer "Yes, the chat opened" or\n"No, it said the number is\nnot on WhatsApp"
+C -> S : keep the answer\nfor this number
+C --> O : "Checked: this number is on WhatsApp."\nor "Not on WhatsApp. Send by SMS,\nor change the number."
+opt the shop has no UPI ID of its own
+  C --> O : "Reminders now ask customers\nto pay the demo UPI ID\nhisaab.demo@upi, not your shop."\nwith "Set your shop's UPI ID"
+end
 @enduml

@@ -1,0 +1,95 @@
+' C4 look for sequence diagrams (journeys). Include it after @startuml: !include c4-sequence.iuml
+' Participants, in C4 terms:
+'   actor "Name" as X <<person>>                       a person (C4 Person, dark blue)
+'   participant "Screen\n(file.js)" as X <<container>>  a part of this product (C4 Container, blue)
+'   participant "Part\n(file.js)" as X <<component>>    a part inside a container (C4 Component, light blue)
+'   participant "WhatsApp" as X <<external>>           a system outside the product (C4 External, grey)
+'   database "Browser storage" as X <<store>>          where data is kept (C4 ContainerDb)
+' Decisions: alt / else / end for a choice, opt / end for something that may happen, loop / end for a repeat,
+' group / end for a named stage. Rules and facts the reader must know go in a note over the participant.
+
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam defaultFontColor #1F2933
+skinparam shadowing false
+skinparam roundCorner 10
+skinparam padding 4
+skinparam wrapWidth 240
+skinparam maxMessageSize 220
+skinparam titleFontSize 20
+skinparam titleFontStyle bold
+skinparam titleFontColor #08427B
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequenceArrowThickness 1.6
+skinparam ParticipantPadding 18
+skinparam BoxPadding 12
+skinparam stereotypeCBackgroundColor transparent
+hide stereotype
+hide footbox
+
+skinparam sequence {
+  ArrowColor #1F2933
+  ArrowFontColor #1F2933
+  ArrowFontSize 13
+  LifeLineBorderColor #5B6B7A
+  LifeLineBorderThickness 1.2
+  LifeLineBackgroundColor #DCE8F5
+  GroupBorderColor #08427B
+  GroupBorderThickness 1.6
+  GroupBackgroundColor #CFE0F3
+  GroupHeaderFontColor #08427B
+  GroupHeaderFontStyle bold
+  GroupFontColor #08427B
+  GroupFontStyle bold
+  DividerBorderColor #08427B
+  DividerBackgroundColor #08427B
+  DividerFontColor #FFFFFF
+  DividerFontStyle bold
+  ReferenceBorderColor #08427B
+  ReferenceBackgroundColor #E8F0FA
+  BoxBorderColor #08427B
+  BoxBackgroundColor #F4F8FC
+}
+
+skinparam actor {
+  BorderColor #052E56
+  BackgroundColor #08427B
+  FontColor #08427B
+  FontStyle bold
+}
+skinparam participant {
+  BorderColor #2E6295
+  BackgroundColor #438DD5
+  FontColor #FFFFFF
+  FontStyle bold
+  BorderThickness 1.5
+}
+skinparam participant<<component>> {
+  BorderColor #3C7FC0
+  BackgroundColor #85BBF0
+  FontColor #0B2545
+}
+skinparam participant<<external>> {
+  BorderColor #6B6B6B
+  BackgroundColor #8C8C8C
+  FontColor #FFFFFF
+}
+skinparam database {
+  BorderColor #2E6295
+  BackgroundColor #438DD5
+  FontColor #FFFFFF
+  FontStyle bold
+}
+skinparam database<<external>> {
+  BorderColor #6B6B6B
+  BackgroundColor #8C8C8C
+}
+skinparam note {
+  BorderColor #C9A227
+  BackgroundColor #FFF4C2
+  FontColor #3D2E00
+  FontSize 13
+}
+autonumber "<b>0."

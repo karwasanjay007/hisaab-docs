@@ -1,59 +1,32 @@
 @startuml j1-first-open
+!include c4-sequence.iuml
 title J1 First open and the sample shop
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Home screen\n(index.html, app.js)" as H
-participant "Layout\n(compact.js)" as L
-database "Browser storage" as S
-participant "Service worker\n(sw.js)" as W
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Home screen\n(index.html, app.js)" as H <<container>>
+participant "Layout\n(compact.js)" as L <<component>>
+database "Browser storage\n(localStorage)" as S <<store>>
+participant "Service worker\n(sw.js)" as W <<container>>
+end box
+== First open ==
 O -> H : open the live link
 H -> S : read the saved theme, language and shop
 S --> H : nothing saved yet: an empty shop, "My shop"
 H --> O : "No customers yet." with the buttons\n"Add your first customer" and "Load sample shop"
 H -> W : register the service worker once the page has loaded
+note over S : no account and no server:\nthe shop lives only in this browser
+== The sample shop ==
 O -> H : tap "Load sample shop"
 H -> H : fetch sample-data.json from the site itself\n(sample.js is the copy used if that fails)
 H -> S : save "Lakshmi Provision Store (fictional)"
 H --> O : "Loaded Lakshmi Provision Store (fictional):\n8 customers, 38 entries." and "Shop loaded." with "Undo"
 L --> O : "Total outstanding" with the strip "Customers", "Overdue",\n"Collected, last 30 days"; the customer list;\nthe quick entry pill with "+" at the bottom
-L --> O : on a screen 1200 px wide or more: a right panel with\n"Record an entry", "Overdue" and "Recent entries"
-O -> L : tap "…" in the strip
-L --> O : the full overview: "Owes the most", "Collected, last 30 days",\n"Given on credit, last 30 days", "Longest without paying"
+note right of L : balance = all credit minus all payments,\nworked out each time, never stored
+opt the screen is 1200 px wide or more
+  L --> O : on a screen 1200 px wide or more: a right panel with\n"Record an entry", "Overdue" and "Recent entries"
+end
+opt the owner wants the full overview
+  O -> L : tap "…" in the strip
+  L --> O : the full overview: "Owes the most", "Collected, last 30 days",\n"Given on credit, last 30 days", "Longest without paying"
+end
 @enduml

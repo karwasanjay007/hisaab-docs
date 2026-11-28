@@ -1,60 +1,29 @@
 @startuml j6-qr-and-statement
+!include c4-sequence.iuml
 title J6 UPI QR code and statement
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Customer page\n(app.js)" as C
-participant "QR library\n(vendor/qrcode.min.js)" as Q
-participant "Shop profile\n(profile.js)" as F
-participant "Browser's\nprint window" as B
-actor "Customer" as K
-participant "UPI app" as U
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Customer page\n(app.js)" as C <<container>>
+participant "QR library\n(vendor/qrcode.min.js)" as Q <<component>>
+participant "Shop profile\n(profile.js)" as F <<component>>
+end box
+participant "Browser's\nprint window" as B <<external>>
+actor "Customer" as K <<person>>
+participant "UPI app" as U <<external>>
 O -> C : tap a customer in the list
-C --> O : name, "Balance", "Entries, newest first" with\n"Balance after" on each, and "Balance over time"
+C --> O : name, "Balance", "Entries, newest first"\nwith "Balance after" on each,\nand "Balance over time"
 == Scan to pay ==
 O -> C : tap "UPI QR code"
-C -> Q : load the QR library from the site itself, the first time
-C --> O : the QR code with the amount, the UPI ID and\n"Scan with any UPI app to pay {shop}."
-K -> U : scan the code; the UPI app opens with the amount filled in
+C -> Q : load the QR library from\nthe site itself, the first time
+note right of Q : served by the site, not a CDN,\nso the code still draws offline
+C --> O : the QR code with the amount,\nthe UPI ID and "Scan with\nany UPI app to pay {shop}."
+K -> U : scan the code;\nthe UPI app opens\nwith the amount filled in
 == Statement ==
 O -> C : tap "Statement (PDF)"
-F -> C : add the shop logo, owner name and address, when the profile has them
-C -> B : "Account statement": Date, Note, You gave, You got, Balance,\n"Totals" and a "Scan to pay" code when money is owed
+opt the profile has a logo, owner name or address
+  F -> C : add the shop logo, owner name\nand address, when the profile has them
+end
+C -> B : "Account statement": Date, Note,\nYou gave, You got, Balance, "Totals"\nand a "Scan to pay" code when money is owed
 O -> B : choose "Save as PDF" or a printer
+note over C, B : the PDF is made by the browser's\nown print window; nothing is uploaded
 @enduml

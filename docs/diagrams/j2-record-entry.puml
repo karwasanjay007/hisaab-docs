@@ -1,48 +1,13 @@
 @startuml j2-record-entry
+!include c4-sequence.iuml
 title J2 Add a customer and record an entry
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "The + menu\n(compact.js)" as M
-participant "Home screen\n(app.js)" as H
-participant "Whole rupees\n(guard.js)" as G
-database "Browser storage" as S
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "The + menu\n(compact.js)" as M <<component>>
+participant "Home screen\n(app.js)" as H <<container>>
+participant "Whole rupees\n(guard.js)" as G <<component>>
+database "Browser storage\n(localStorage)" as S <<store>>
+end box
 == Add a customer ==
 O -> M : tap "+", then "Add a customer"
 O -> H : type "Name" and "Phone (10 digits)", press "Add customer"
@@ -51,12 +16,14 @@ H --> O : "Customer added."
 == Record a credit or a payment ==
 O -> M : tap "+", then "Record an entry"
 O -> H : choose "Customer", "You gave (credit)" or "You got (payment)",\n"Amount (₹)", "Date", "Note"; press "Save entry"
+note over G : whole rupees only
 alt the amount has paise
   G --> O : "Amounts are in whole rupees, without paise.\nThis was not saved yet." with the button "Use Rs {n}"
 else whole rupees
   H -> S : save the entry
   H --> O : "Saved." with the link "Send receipt";\nthe balance and "Total outstanding" change
 end
+note right of S : balance = all credit minus all payments,\nnever stored
 == Edit, delete and Undo ==
 O -> H : open the customer, press "Edit" on an entry,\nchange it, press "Update entry"
 H -> S : save the changed entry
@@ -64,6 +31,8 @@ H --> O : "Entry updated." with "Undo"
 O -> H : press "Delete" on an entry
 H -> S : save the shop without it
 H --> O : "Entry deleted." with "Undo"
-O -> H : tap "Undo"
-H -> S : put the entry back in the same place
+opt the owner changes their mind
+  O -> H : tap "Undo"
+  H -> S : put the entry back in the same place
+end
 @enduml

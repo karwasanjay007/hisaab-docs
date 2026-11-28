@@ -1,63 +1,33 @@
 @startuml j10-customer-tools
+!include c4-sequence.iuml
 title J10 Customer tools
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Customer page\n(app.js)" as H
-participant "More for this customer\n(customer.js)" as C
-database "Browser storage" as S
-participant "Phone app\nor WhatsApp" as T
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Customer page\n(app.js)" as H <<container>>
+participant "More for this customer\n(customer.js)" as C <<component>>
+database "Browser storage\n(localStorage)" as S <<store>>
+end box
+participant "Phone app\nor WhatsApp" as T <<external>>
 O -> H : tap a customer in the list
 C --> O : "Total given on credit", "Total received" and\n"{n} days since the last payment" or "No payment yet"
-O -> C : tap "Call" or "WhatsApp chat"
-C -> T : open the phone app with the number, or an empty WhatsApp chat
+opt the owner wants to talk to the customer
+  O -> C : tap "Call" or "WhatsApp chat"
+  C -> T : open the phone app with the number, or an empty WhatsApp chat
+end
 == Change the number ==
 O -> C : press "Change phone number", type the\n"New phone number (10 digits)", press "Save number"
 C -> S : move the customer and every entry to the new number
+note right of S : entries follow the customer's number,\nso all of them move with it
 C --> O : "Phone number changed."
 == Delete, with Undo ==
 O -> C : press "Delete customer", then\n"Press again to delete {name} and all their entries"
 C -> S : remove the customer and their entries
 C --> O : "Deleted {name}." with "Undo"
-O -> C : tap "Undo"
-C -> S : put the customer and the entries back
-C --> O : "Restored {name}."
+opt the owner changes their mind
+  O -> C : tap "Undo"
+  C -> S : put the customer and the entries back
+  C --> O : "Restored {name}."
+end
 == Correct the spelling ==
 O -> H : under "Customer details" change "Name", "Name in Hindi"\nor "Name in Telugu", press "Save details"
 H -> S : save the details

@@ -1,53 +1,19 @@
 @startuml j7-import-export
+!include c4-sequence.iuml
 title J7 Load a shop file or a CSV, and export
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "The + menu\n(compact.js)" as M
-participant "Shop file\n(app.js)" as H
-participant "Import checks\n(guard.js)" as G
-database "Browser storage" as S
-participant "Downloads\non the device" as D
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "The + menu\n(compact.js)" as M <<component>>
+participant "Shop file\n(app.js)" as H <<container>>
+participant "Import checks\n(guard.js)" as G <<component>>
+database "Browser storage\n(localStorage)" as S <<store>>
+end box
+participant "Downloads\non the device" as D <<external>>
 == Load ==
 O -> M : tap "+", then "Import a shop"
 O -> H : paste a shop file (JSON) or a CSV into the box,\nor use "Choose file"; press "Load shop"
 H -> H : read it; clean phones, kinds, amounts and dates;\nskip the rows that cannot be used
+note right of H : the file is read in the browser;\nnothing is uploaded
 H -> S : the loaded shop replaces the current one
 G -> S : round amounts with paise to whole rupees;\nleave out pictures that are not images or are too large
 H --> O : "Loaded {shop}: {c} customers, {e} entries.", what was skipped,\nand "Shop loaded." with "Undo"
@@ -58,4 +24,5 @@ end
 == Export ==
 O -> H : press "Export entries (CSV)", "Export balances (CSV)"\nor "Backup file (JSON)"
 H -> D : a file named after the shop is downloaded
+note over D : the backup file is the only copy\noutside this browser
 @enduml

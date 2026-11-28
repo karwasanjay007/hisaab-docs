@@ -1,47 +1,12 @@
 @startuml j8-payment-screenshot
+!include c4-sequence.iuml
 title J8 Payment screenshot and reading its amount
-skinparam backgroundColor white
-skinparam defaultFontName "Noto Sans"
-skinparam defaultFontSize 13
-skinparam roundCorner 12
-skinparam shadowing false
-skinparam maxMessageSize 260
-skinparam titleFontSize 17
-skinparam titleFontColor #0E5C45
-skinparam sequenceMessageAlign left
-skinparam responseMessageBelowArrow true
-skinparam sequence {
-  ArrowColor #0E5C45
-  LifeLineBorderColor #7FA89A
-  LifeLineBackgroundColor #E8F2EE
-  ParticipantBorderColor #0E5C45
-  ParticipantBackgroundColor #E8F2EE
-  ParticipantFontColor #0B3D2E
-  ActorBorderColor #0E5C45
-  ActorBackgroundColor #E8F2EE
-  ActorFontColor #0B3D2E
-  GroupBorderColor #0E5C45
-  GroupHeaderFontColor #0E5C45
-  GroupBackgroundColor #F3F8F6
-  DividerBorderColor #0E5C45
-  DividerBackgroundColor #E8F2EE
-  DividerFontColor #0B3D2E
-  BoxBorderColor #0E5C45
-}
-skinparam database {
-  BorderColor #0E5C45
-  BackgroundColor #E8F2EE
-}
-skinparam note {
-  BorderColor #B08A2E
-  BackgroundColor #FFF8E6
-  FontSize 12
-}
-actor "Owner" as O
-participant "Entry form\n(app.js)" as H
-participant "Screenshot reader\n(from cdn.jsdelivr.net)" as R
-database "Browser storage" as S
-autonumber
+actor "Owner" as O <<person>>
+box "Hisaab in the browser"
+participant "Entry form\n(app.js)" as H <<container>>
+database "Browser storage\n(localStorage)" as S <<store>>
+end box
+participant "Screenshot reader\n(from cdn.jsdelivr.net)" as R <<external>>
 O -> H : under "Payment screenshot (optional)" press\n"Choose screenshot" and pick the picture
 H -> H : switch to "You got (payment)"; shrink the picture\nto at most 600 px on its longest side
 H --> O : "Reading the amount from the screenshot..."
@@ -53,6 +18,7 @@ alt an amount was found
 else nothing readable, or no internet
   H --> O : "Could not read an amount from this picture. Type it in."
 end
+note right of H : the amount read only fills the form;\nthe owner checks it and saves
 O -> H : check "Amount (₹)", press "Save entry"
 H -> S : save the entry with the small picture
 H --> O : the picture shows on the entry
