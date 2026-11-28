@@ -11,14 +11,14 @@ participant "Layout\n(compact.js)" as L <<component>>
 database "Browser storage\n(localStorage)" as S <<store>>
 end box
 == A built-in language ==
-O -> H : choose हिंदी in the language box of the top bar
+O -> H : choose Hindi in the language box of the top bar
 H -> S : save the chosen language
 H --> O : every label, message and reminder in Hindi;\neach name also in Hindi in brackets
 O -> H : in "Shop settings" tick the box for Hindi or Telugu digits,\npress "Save settings"
 H -> S : save the choice with the shop
 H --> O : amounts and counts in Hindi digits
 == A language fetched when chosen ==
-O -> H : choose اردو in the language box
+O -> H : choose Urdu in the language box
 G -> I : fetch the Urdu file from the site itself
 alt the file is fetched
   I --> G : the texts; a missing one stays in English

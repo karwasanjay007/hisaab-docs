@@ -334,7 +334,7 @@ The owner reads the ledger in one of twelve languages, with numbers in Hindi or 
 
 ![J11 Languages, right to left and native digits](diagrams/j11-languages.svg)
 
-1. Choose हिंदी in the language box of the top bar. On a phone it is the round language button beside the
+1. Choose Hindi (हिंदी) in the language box of the top bar. On a phone it is the round language button beside the
    theme button; "Language" in the "+" menu goes to the same box.
 2. The choice is saved in the browser.
 3. Every label, message and reminder is in Hindi, and each customer's name is also written in Hindi in
@@ -343,7 +343,7 @@ The owner reads the ledger in one of twelve languages, with numbers in Hindi or 
    in Hindi and Telugu.
 5. The choice is saved with the shop.
 6. Amounts and counts are shown in Hindi digits.
-7. Now choose اردو in the language box.
+7. Now choose Urdu (اردو) in the language box.
 8. Urdu is one of nine languages that are not built in: its file is fetched from the site itself when chosen.
 9. The texts arrive; one that the file lacks stays in English.
 10. Each customer's name is also written in Urdu script in brackets.
