@@ -4,25 +4,21 @@ title Hisaab data model: everything stays in the browser
 top to bottom direction
 
 package "Browser storage: localStorage (each device)" <<browser>> {
-  entity "hisaab.v1" as shop <<document>> {
-    * key "hisaab.v1" : string <<PK>>
-    --
-    * shop : string
-    * upi : string
-      nativeDigits : boolean <<NULL>>
-      owner : string <<NULL>>
-      address : string <<NULL>>
-      logo : string <<NULL>>
-    * customers : Customer[]
-    * entries : Entry[]
-  }
-
   entity "Shop settings" as settings <<record>> {
     top-level fields of hisaab.v1
     --
     * shop : string (name, at most 60 typed; "My shop")
     * upi : string (UPI ID, or "" for the demo ID)
       nativeDigits : boolean <<NULL>> (Hindi or Telugu digits)
+  }
+
+  entity "hisaab.v1" as shop <<document>> {
+    * key "hisaab.v1" : string <<PK>>
+    --
+    * customers : Customer[]
+    * entries : Entry[]
+      the fields of Shop settings and
+      Shop profile, at the top level
   }
 
   entity "Shop profile" as profile <<record>> {
@@ -53,6 +49,14 @@ package "Browser storage: localStorage (each device)" <<browser>> {
     * seq : integer (order within a date)
   }
 
+  entity "hisaab.wa" as wa <<key>> {
+    one object, keyed by phone number
+    --
+    * <phone> : string <<PK>> (Customer.phone, 10 digits)
+    * s : "ok" | "no" (the owner's answer)
+    * d : string (YYYY-MM-DD, when answered)
+  }
+
   entity "hisaab.shops" as shops <<key>> {
     * active : string <<FK>> (ShopSlot.id of the open shop)
     --
@@ -64,20 +68,14 @@ package "Browser storage: localStorage (each device)" <<browser>> {
     * id : string <<PK>> ("s" + time + random, base 36)
     --
     * name : string
-      data : object <<NULL>> (a whole hisaab.v1 document; null for the open shop)
-  }
-
-  entity "hisaab.wa" as wa <<key>> {
-    one object, keyed by phone number
-    --
-    * <phone> : string <<PK>> (10 digits)
-    * s : "ok" | "no" (the owner's answer)
-    * d : string (YYYY-MM-DD, when answered)
+      data : object <<NULL>> (a whole hisaab.v1 document,
+      parked; null for the open shop)
   }
 
   entity "hisaab.lang" as lang <<key>> {
     value : string <<NULL>>
-    en, hi, te, bn, mr, ta, gu, kn, ml, pa, or, ur; en when absent
+    en, hi, te, bn, mr, ta, gu, kn, ml, pa, or, ur
+    en when absent
   }
 
   entity "hisaab.theme" as theme <<key>> {
@@ -87,7 +85,8 @@ package "Browser storage: localStorage (each device)" <<browser>> {
 
   entity "hisaab.guard" as guardk <<key>> {
     value : "1"
-    written and removed at once when the page opens
+    written and removed at once
+    when the page opens
   }
 }
 
@@ -99,53 +98,56 @@ package "Browser cache (service worker)" <<browser>> {
   }
 }
 
-package "Files" <<file>> {
+package "Files the owner saves or loads" <<file>> {
   entity "hisaab-<shop>.json (shop file)" as shopfile <<file>> {
-    * customers : {name, phone, name_hi?, name_te?}[]
+    made from: the whole hisaab.v1 document
+    (Backup file writes it; Load shop reads it)
     --
+    * customers : {name, phone, name_hi?, name_te?}[]
       shop : string (also read as shop_name, name)
       upi : string <<NULL>> (also read as upi_id)
       entries : {phone, type, amount, date, note, shot?, name?}[]
-      owner : string <<NULL>>
-      address : string <<NULL>>
-      logo : string <<NULL>>
+      owner, address, logo : string <<NULL>>
   }
 
   entity "hisaab-<shop>-entries.csv" as csvE <<file>> {
-    date, name, phone, type, amount, note, has_screenshot (yes | no)
+    made from: one row per Entry
+    --
+    date, name, phone, type, amount, note,
+    has_screenshot (yes | no)
   }
 
   entity "hisaab-<shop>-balances.csv" as csvB <<file>> {
-    name, phone, total_credit, total_payment, balance, last_payment
+    made from: one row per Customer
+    --
+    name, phone, total_credit, total_payment,
+    balance, last_payment
     last row: TOTAL OUTSTANDING
   }
 }
 
-shop ||--|| settings : "holds\nthe settings"
-shop ||--o| profile : "holds zero or one\nprofile"
-shop ||--o{ customer : "customers[]"
-shop ||--o{ entry : "entries[]"
-customer ||..o{ entry : "by phone,\nnot enforced"
-shops ||--|{ slot : "list[]"
-shop |o..o{ slot : "data: a parked copy\nof a shop document"
-customer |o..o{ wa : "same phone,\nby value"
-shop |o..o{ shopfile : "Backup file writes;\nLoad shop reads"
-entry }o..o{ csvE : "one row\nper entry"
-customer }o..o{ csvB : "one row per customer,\nbalance worked out"
+' the document and what it holds: a row of three, then a row of two
+shop ||-left-|| settings : "holds the\nsettings"
+shop ||-right-o| profile : "holds zero\nor one profile"
+shop ||-down-o{ customer : "customers[]"
+shop ||-down-o{ entry : "entries[]"
+customer ||.right.o{ entry : "by phone,\nnot enforced"
 
-settings -[hidden]right- profile
-customer -[hidden]down- wa
+' the keys beside the document
+customer ||.down.o| wa : "same phone,\nby value"
+shops ||-down-|{ slot : "list[]"
 entry -[hidden]down- shops
-wa -[hidden]right- shops
-slot -[hidden]down- lang
+
+' the small keys, the cache and the files below, in their own rows
+wa -[hidden]down- lang
 lang -[hidden]right- theme
 theme -[hidden]right- guardk
 lang -[hidden]down- cache
-cache -[hidden]down- shopfile
+cache -[hidden]right- shopfile
 shopfile -[hidden]down- csvE
 csvE -[hidden]right- csvB
 
-note right of csvB
+note bottom of csvB
   <b>Worked out, never stored</b>
   balance = all credit - all payments
   above 0: owes the shop; below 0: in advance
@@ -154,20 +156,17 @@ note right of csvB
   amounts are whole rupees
 end note
 
-note bottom of cache
-  Nothing leaves the device except what
-  the owner sends: a WhatsApp or SMS message,
-  a pay link, or a file the owner shares.
-end note
-
 legend bottom left
   <b>Key</b>
   PK primary key, FK foreign key
   * mandatory, NULL optional
   solid line: held inside the same document
   dotted line: linked by value only, nothing enforces it
+  "made from": the file is written from these records
   <b>Stores</b>
   light blue: on the device (localStorage, cache)
   grey: files the owner saves or loads
+  <b>Nothing leaves the device</b> except what the owner sends:
+  a WhatsApp or SMS message, a pay link, or a file the owner shares.
 endlegend
 @enduml
