@@ -8,7 +8,7 @@ Deployment_Node(dev, "Developer PC", "Windows, PowerShell, Vercel CLI") {
 Deployment_Node(gh, "GitHub", "Private repository") {
   Container(repo, "karwasanjay007/hisaab", "Git", "Source history and rollback")
 }
-Deployment_Node(vc, "Vercel", "Team elodos, project hisaab") {
+Deployment_Node(vc, "Vercel", "Project hisaab") {
   Deployment_Node(edge, "Static hosting", "HTTPS, *.vercel.app") {
     Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; no functions, no server code")
   }

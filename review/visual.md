@@ -4,7 +4,7 @@ Reviewed 20 Nov 2026 against the live build at https://hisaab-hazel.vercel.app/?
 Evidence: 71 screenshots (JPG, quality 60) at 375x812, 768x1024, 1366x768, 1440x900, 1920x1080 (plus one
 at 2560x1440), light and dark, English and हिंदी, for the overview, `#/s/customers` and `#/c/9000000102`,
 plus full-page shots of the overview and customer page and every section view at 1440. Folder:
-`C:\Users\sskar\AppData\Local\Temp\claude\a153659dba92c228\3568ccd8-320a-4379-8379-a3641d808a21\scratchpad\final\visual\`.
+a local folder.
 Contrast ratios below were computed (WCAG relative luminance), not judged by eye.
 
 Known issue confirmed, not reworked here: at 1920 the overview content stops at about 1408 px and section

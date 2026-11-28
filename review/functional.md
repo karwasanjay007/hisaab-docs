@@ -1,6 +1,6 @@
 # Hisaab functional test report
 
-Tested 20 November 2026 against the live app at https://hisaab-hazel.vercel.app/?today=2026-11-15 with Playwright (Chromium), at 1440x900 and 375x812, in light and dark colour schemes. Every result below was observed in the browser by script, not inferred from the code. Scripts and raw output are in `C:\Users\sskar\AppData\Local\Temp\claude\a153659dba92c228\3568ccd8-320a-4379-8379-a3641d808a21\scratchpad\final\qa\` (`qa1.mjs`, `qa2.mjs`, `qa1.txt`, `qa2.txt`, plus JSON results).
+Tested 20 November 2026 against the live app at https://hisaab-hazel.vercel.app/?today=2026-11-15 with Playwright (Chromium), at 1440x900 and 375x812, in light and dark colour schemes. Every result below was observed in the browser by script, not inferred from the code. Scripts and raw output are in a local folder (`qa1.mjs`, `qa2.mjs`, `qa1.txt`, `qa2.txt`, plus JSON results).
 
 Summary: no blockers. 3 major and 14 minor bugs. The core ledger (balances, totals, KPIs, overdue, running balance, receipt and reminder links, print, export, JSON import, navigation, persistence) works.
 

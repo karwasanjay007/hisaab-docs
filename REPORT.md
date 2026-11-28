@@ -7,7 +7,7 @@
   evidence: seeds 12345, 777 and 4242, 15 customers each, all balances and totals correct; import replaces the shop
 - Bonus menu: DONE, all 7 (UPI link, overdue list, search, CSV, Hindi and Telugu, amount from screenshot, edit and delete)
 - Phone 375 px and light/dark: DONE (scrollWidth 375; every text pair passes WCAG AA in both themes)
-- Live: https://hisaab-hazel.vercel.app (Vercel project hisaab, team elodos)
+- Live: https://hisaab-hazel.vercel.app (Vercel project hisaab)
 
 ## What broke and how I fixed it
 - WhatsApp button text was 4.31:1 on #128C4A; button green changed to #0F7A3F (5.42:1).

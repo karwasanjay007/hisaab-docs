@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | Product | Hisaab, a shop credit ledger (khata) for a local kirana shop |
-| Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`, team elodos) |
+| Live | https://hisaab-hazel.vercel.app (Vercel project `hisaab`) |
 | Code | private repository github.com/karwasanjay007/hisaab |
 | Last revised | 20 Nov 2026 |
 
@@ -145,7 +145,7 @@ every figure is computed (F-3).
 ![Deployment](docs/diagrams/deployment.svg)
 
 - Source: private GitHub repository karwasanjay007/hisaab.
-- Hosting: Vercel static hosting, project `hisaab` in team elodos, at https://hisaab-hazel.vercel.app.
+- Hosting: Vercel static hosting, project `hisaab`, at https://hisaab-hazel.vercel.app.
   No functions, no environment variables used by the app.
 - Release, from PowerShell in the project folder: `vercel deploy --prod --yes`.
 - `.vercelignore` keeps `brief`, `brand`, `tests`, `docs`, `*.md`, the editor and agent folders

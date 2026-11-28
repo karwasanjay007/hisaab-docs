@@ -1,5 +1,7 @@
 # Hisaab: khata, made simple
 
+> **This branch is the submitted version.** These are the documents of Hisaab 1.0.0.0 as they stood when the project was submitted on 21 November 2026. They are kept for comparison and are not updated. The documents of the live version (1.5.2.1) are on the [main branch](../../tree/main).
+
 A digital credit ledger for a local shop: the notebook a kirana keeps of who owes what, on the owner's
 phone, with a WhatsApp reminder in one tap. Built for the Freedom With AI Batch 10 build project.
 
