@@ -3,7 +3,7 @@ PASS 1024x768 light: the total strip is at most 110 px | 102
 PASS 1024x768 light: room for at least 8 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 9
 PASS 1024x768 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 light: the "+" button is 44 px | 44
-PASS 1024x768 light: right panel only from 1200 px, 320 to 380 px wide | 0
+PASS 1024x768 light: right panel only from 1200 px, 360 to 440 px wide | 0
 PASS 1024x768 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 light: no horizontal scroll | 0
 PASS 1024x768 light: Enter opens the popover above the pill
@@ -21,7 +21,7 @@ PASS 1024x768 dark: the total strip is at most 110 px | 102
 PASS 1024x768 dark: room for at least 8 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 9
 PASS 1024x768 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 dark: the "+" button is 44 px | 44
-PASS 1024x768 dark: right panel only from 1200 px, 320 to 380 px wide | 0
+PASS 1024x768 dark: right panel only from 1200 px, 360 to 440 px wide | 0
 PASS 1024x768 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 dark: no horizontal scroll | 0
 PASS 1024x768 dark: Enter opens the popover above the pill
@@ -34,7 +34,7 @@ PASS 1280x800 light: the total strip is at most 110 px | 102
 PASS 1280x800 light: room for at least 10 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 10
 PASS 1280x800 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 light: the "+" button is 44 px | 44
-PASS 1280x800 light: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1280x800 light: right panel only from 1200 px, 360 to 440 px wide | 384
 PASS 1280x800 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 light: no horizontal scroll | 0
 PASS 1280x800 light: Enter opens the popover above the pill
@@ -52,7 +52,7 @@ PASS 1280x800 dark: the total strip is at most 110 px | 102
 PASS 1280x800 dark: room for at least 10 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 10
 PASS 1280x800 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 dark: the "+" button is 44 px | 44
-PASS 1280x800 dark: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1280x800 dark: right panel only from 1200 px, 360 to 440 px wide | 384
 PASS 1280x800 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 dark: no horizontal scroll | 0
 PASS 1280x800 dark: Enter opens the popover above the pill
@@ -65,7 +65,7 @@ PASS 1440x900 light: the total strip is at most 110 px | 102
 PASS 1440x900 light: room for at least 12 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 12
 PASS 1440x900 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 light: the "+" button is 44 px | 44
-PASS 1440x900 light: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1440x900 light: right panel only from 1200 px, 360 to 440 px wide | 432
 PASS 1440x900 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 light: no horizontal scroll | 0
 PASS 1440x900 light: Enter opens the popover above the pill
@@ -83,7 +83,7 @@ PASS 1440x900 dark: the total strip is at most 110 px | 102
 PASS 1440x900 dark: room for at least 12 customer rows on the first screen, and every sample row shown | shown 8 of 8, room 12
 PASS 1440x900 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 dark: the "+" button is 44 px | 44
-PASS 1440x900 dark: right panel only from 1200 px, 320 to 380 px wide | 340
+PASS 1440x900 dark: right panel only from 1200 px, 360 to 440 px wide | 432
 PASS 1440x900 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 dark: no horizontal scroll | 0
 PASS 1440x900 dark: Enter opens the popover above the pill
@@ -97,7 +97,7 @@ PASS 1280x800 hi: the total strip is at most 110 px | 102
 PASS 1280x800 hi: the pill is sticky and in view
 PASS 1280x800 hi: the pill stays in view after scrolling to the end
 PASS 1280x800 hi: no text cut off in the strip or the customer rows | 
-PASS 1280x800 hi: the "+" popover opens above the pill, inside the screen, lined up with the pill's left edge | 288-608 pill 288-880
+PASS 1280x800 hi: the "+" popover opens above the pill, inside the screen, lined up with the pill's left edge | 288-608 pill 288-836
 PASS 1280x800 hi: the right panel sits on the right of the customer list
 PASS 1280x800 hi: no page error | 
 PASS 1024x768 hi: the page reads left to right
@@ -114,7 +114,7 @@ PASS 1280x800 ur: the total strip is at most 110 px | 102
 PASS 1280x800 ur: the pill is sticky and in view
 PASS 1280x800 ur: the pill stays in view after scrolling to the end
 PASS 1280x800 ur: no text cut off in the strip or the customer rows | 
-PASS 1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge | 672-992 pill 400-992
+PASS 1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge | 672-992 pill 444-992
 PASS 1280x800 ur: the right panel sits on the left (right to left) of the customer list
 PASS 1280x800 ur: no page error | 
 PASS 1024x768 ur: the page reads right to left
@@ -142,9 +142,11 @@ PASS 1280x800 big shop: at least 10 customer rows fully on the first screen | 10
 PASS 1280x800 big shop: no horizontal scroll and the pill in view | 0
 PASS 1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view
 PASS 1280x800 big shop: no horizontal scroll after scrolling | 0
-PASS 1280x800 big shop: sec-overdue in the right panel scrolls on its own, inside the screen, and no wider than the panel | {"scrolls":true,"moved":true,"pageStill":true,"fits":true,"wide":true,"h":214}
-PASS 1280x800 big shop: sec-recent in the right panel scrolls on its own, inside the screen, and no wider than the panel | {"scrolls":true,"moved":true,"pageStill":true,"fits":true,"wide":true,"h":140}
+PASS 1280x800 big shop: sec-overdue in the right panel has no scroll box of its own and is no wider than the panel | {"scrolls":false,"moved":false,"pageStill":true,"fits":false,"wide":true,"h":3073}
+PASS 1280x800 big shop: sec-recent in the right panel has no scroll box of its own and is no wider than the panel | {"scrolls":false,"moved":false,"pageStill":true,"fits":false,"wide":true,"h":1455}
+PASS 1280x800 big shop: sec-overdue: every row shown, and its filter narrows the list | {"card":"sec-overdue","all":40,"vis0":40,"vis1":1,"filter":true,"h":44}
+PASS 1280x800 big shop: sec-recent: every row shown, and its filter narrows the list | {"card":"sec-recent","all":8,"vis0":8,"vis1":1,"filter":true,"h":44}
 PASS 1280x800 big shop: the right panel does not push the page wider | 0
 PASS 1280x800 big shop: quick entry records 300 for Ruksana Patel, far down the list | 3300 -> 3600
 PASS 1280x800 big shop: no page error | 
-ALL PASS (149 checks)
+ALL PASS (151 checks)

@@ -12,7 +12,7 @@ reminder with a pay link in one tap.
 | Code | Private |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Made with | Plain HTML, CSS and JavaScript. No server of its own: the ledger is kept in the browser of the device, and the app works offline after one visit |
-| Versions | 1.5.2.1 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
+| Versions | 1.5.2.2 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
 | Status | Live. Every requirement of the specification is met ([the specification check](SPEC-CHECK.md)) and all 32 test records from the live link end in a pass ([latest results](REPORT.md#latest-results-on-the-live-link)) |
 
 ## Try it in two minutes

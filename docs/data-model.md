@@ -13,7 +13,7 @@ database, no account, no IndexedDB, no session storage and no cookie.
 | The other shops, when the owner keeps more than one | `localStorage` key `hisaab.shops` | The same | Until the shop is removed | Lost |
 | The owner's answer to the WhatsApp check, per phone number | `localStorage` key `hisaab.wa` | The same | Until the browser is cleared | Lost; numbers show as not checked |
 | The chosen language and theme | `localStorage` keys `hisaab.lang`, `hisaab.theme` | The same | Until changed | Back to English and the device's theme |
-| Copies of the site's files, for offline use | The browser cache `hisaab-v22`, written by the service worker | The same; it holds no ledger data | Until a newer cache replaces it | Fetched again on the next visit online |
+| Copies of the site's files, for offline use | The browser cache `hisaab-v23`, written by the service worker | The same; it holds no ledger data | Until a newer cache replaces it | Fetched again on the next visit online |
 | Exported files | The device's downloads folder, where the browser saves them | Whoever has the file | Until deleted | Not touched |
 
 A private window, or a browser that blocks storage, keeps nothing after the page is closed; the app says so
@@ -90,7 +90,7 @@ Money is rounded to two decimals in the sums and shown with Indian grouping (1,0
 | `hisaab.wa` | `wacheck.js` | `{ "<10 digits>": { s: "ok" or "no", d: "YYYY-MM-DD" } }`. Keyed by number, outside the ledger, so it is in no shop file and no backup |
 | `hisaab.guard` | `guard.js` | A test write of `1` when the page opens, removed at once, to find out whether storage works |
 
-The service worker's cache is named `hisaab-v22`. It is in the browser's Cache API, not in `localStorage`
+The service worker's cache is named `hisaab-v23`. It is in the browser's Cache API, not in `localStorage`
 ([what it holds](../ARCHITECTURE.md#offline)).
 
 ## Storage limits and screenshots

@@ -739,7 +739,7 @@ As a shop owner at the counter computer, I want the list, the overdue customers 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
 | AC-E11.F4.1 | A screen 768 px or wider | The app is shown | The left navigation lists Overview, Record, Customers, Overdue, Recent entries, Add a customer, Shop file and Shop settings, and the strip sits beside the total | `tests/desk-ledger.mjs`, `tests/nav.mjs` |
-| AC-E11.F4.2 | A screen 1200 px or wider, a shop with customers | The overview is shown | A right panel about 340 px wide holds "Record an entry" with the full form, then Overdue and Recent entries; below 1200 px there is no panel and the two cards are back in the page | `tests/desk-ledger.mjs` |
+| AC-E11.F4.2 | A screen 1200 px or wider, a shop with customers | The overview is shown | A right panel 360 to 440 px wide holds "Record an entry" with the full form, whole on a laptop screen with Save in view, then Overdue and Recent entries; below 1200 px there is no panel and the two cards are back in the page | `tests/desk-ledger.mjs` |
 | AC-E11.F4.3 | The right panel | The owner types in the filter box of Overdue or of Recent entries | Only the rows holding the typed text stay in that list | `tests/desk-ledger.mjs` |
 | AC-E11.F4.4 | The right panel with a long list | The page is scrolled | The panel has no scroll box of its own; it grows with the page | `tests/desk-ledger.mjs` |
 | AC-E11.F4.5 | Widths from 375 to 2560 px | The overview, Record and a customer page are shown | Nothing scrolls sideways | `tests/final.mjs`, `tests/layout.mjs` |
@@ -776,7 +776,7 @@ As a shop owner with a weak signal, I want one visit to be enough.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E12.F1.1 | A first visit on the live link | The page has loaded | The app's own files are kept in the browser cache named `hisaab-v22`; the list is under [Offline](../ARCHITECTURE.md#offline) | `tests/offline.mjs` |
+| AC-E12.F1.1 | A first visit on the live link | The page has loaded | The app's own files are kept in the browser cache named `hisaab-v23`; the list is under [Offline](../ARCHITECTURE.md#offline) | `tests/offline.mjs` |
 | AC-E12.F1.2 | A new version is released | The owner opens the app with a signal | The new files are used at once, because the network is tried first; caches under an older name are deleted | checked by hand |
 
 ### E12.F2 What works offline

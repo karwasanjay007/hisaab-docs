@@ -91,7 +91,7 @@ package "Browser storage: localStorage (each device)" <<browser>> {
 }
 
 package "Browser cache (service worker)" <<browser>> {
-  entity "hisaab-v22" as cache <<file>> {
+  entity "hisaab-v23" as cache <<file>> {
     the site's own files: pages, scripts, styles,
     fonts, icons, QR library, sample-data.json
     no ledger data

@@ -6,7 +6,7 @@ This is the only page that tells the history. Every other page describes the ver
 
 | Version | What it is | Where |
 | --- | --- | --- |
-| 1.5.2.1 | Today's version, on the live link | This branch, `main` |
+| 1.5.2.2 | Today's version, on the live link | This branch, `main` |
 | 1.0.0.0 | The first release, of 21 November 2026, with its documents as they were | Branch [`first-release-1.0.0.0`](../../tree/first-release-1.0.0.0) |
 
 What today's version has that the first release did not:
@@ -25,6 +25,13 @@ What today's version has that the first release did not:
 | Voice and quick entry | Voice always says why it failed; quick entry offers to add an unknown name |
 
 The entries below are newest first.
+
+## Version 1.5.2.2 (28 November 2026)
+
+- On a screen 1200 px wide or more the right panel is wider, and its "Record an entry" form fits a laptop
+  screen whole, Save included.
+- The screenshot button keeps its whole label in every language.
+- Phones pick up the new look the next time they open the app (offline copy `hisaab-v23`).
 
 ## Version 1.5.2.1 (27 November 2026)
 

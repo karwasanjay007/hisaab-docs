@@ -1,10 +1,10 @@
 PASS light 375: page scrollWidth 375
-PASS light 375: summary cards do not scroll sideways (scrollWidth 343, box 343, 4 cards)
-PASS light 375: every summary card ends inside the screen (right edge 359)
+PASS light 375: summary cards do not scroll sideways (scrollWidth 0, box 0, 0 cards)
+PASS light 375: every summary card ends inside the screen (right edge 0)
 PASS light 375: no page errors 
 PASS dark 375: page scrollWidth 375
-PASS dark 375: summary cards do not scroll sideways (scrollWidth 343, box 343, 4 cards)
-PASS dark 375: every summary card ends inside the screen (right edge 359)
+PASS dark 375: summary cards do not scroll sideways (scrollWidth 0, box 0, 0 cards)
+PASS dark 375: every summary card ends inside the screen (right edge 0)
 PASS dark 375: no page errors 
 PASS shop file without "entries": both customers are listed | message: "Loaded No entries yet: 2 customers, 0 entries."
 PASS shop file without "entries": total outstanding is 0 | "₹0 0"

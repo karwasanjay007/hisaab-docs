@@ -24,7 +24,7 @@ Container_Boundary(addons, "Add-on scripts, loaded after app.js") {
 }
 
 Container(i18nfiles, "Language files", "i18n/*.json", "One file per language; groups core, profile, shops, customer, extras, compact; 256 text keys")
-Container(swc, "Service worker", "sw.js", "Network first, the cache hisaab-v22 as the fallback")
+Container(swc, "Service worker", "sw.js", "Network first, the cache hisaab-v23 as the fallback")
 ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.shops, hisaab.wa, hisaab.guard")
 
 Lay_R(profile, extras)

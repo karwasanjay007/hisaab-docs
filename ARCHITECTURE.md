@@ -111,7 +111,7 @@ the specification, the brand folder, the tests and the notes out of the deploy. 
 
 ## Offline
 
-`sw.js` is registered when the page loads on https or on localhost. Its cache is named `hisaab-v22`; older
+`sw.js` is registered when the page loads on https or on localhost. Its cache is named `hisaab-v23`; older
 caches are deleted when a new worker takes over.
 
 - It answers every GET for the site's own files from the network first, keeps a copy of each good answer, and

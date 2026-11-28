@@ -19,7 +19,7 @@ System_Boundary(browser, "Owner's browser") {
   Container(qrlib, "QR library", "vendor/qrcode.min.js", "Loaded when a QR code or a statement is first drawn")
   Container(sw, "Service worker", "sw.js, Cache API", "Network first, the cache as the fallback; precaches 47 files of the site")
   ContainerDb(ls, "localStorage", "Web Storage, JSON", "Everything the shop records: hisaab.v1, hisaab.shops, hisaab.wa, hisaab.lang, hisaab.theme, hisaab.guard")
-  ContainerDb(cache, "Cache hisaab-v22", "Cache API", "Copies of the site's own files; no ledger data")
+  ContainerDb(cache, "Cache hisaab-v23", "Cache API", "Copies of the site's own files; no ledger data")
 }
 
 System_Ext(whatsapp, "WhatsApp", "Chat opened from a wa.me link")

@@ -28,9 +28,9 @@ PASS importing the backup brings the profile back, fields and header included
 PASS importing the sample file again keeps the saved profile
 PASS after export and import the ledger reads the same and the profile is still there after a reload
 PASS no sideways scroll on the home view at 320 px | 320
-PASS the header is no taller with a logo at 320 px | 64 vs 64
+PASS the header is no taller with a logo at 320 px | 56 vs 56
 PASS no sideways scroll on a customer page at 320 px, chart inside the screen | 320, chart 33 / 287 / 164
-PASS at 375 px the logo fits inside the top row | row 64, logo 20
+PASS at 375 px the logo fits inside the top row | row 56, logo 20
 PASS no chart for a customer with one entry
 PASS the chart comes back on a customer with 6 entries
 PASS no page errors 

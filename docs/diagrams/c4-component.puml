@@ -30,7 +30,7 @@ Container_Ext(addons, "Add-on scripts", "eleven files, see the add-ons diagram",
 Container_Ext(qrlib, "QR library", "vendor/qrcode.min.js", "Loaded when a QR code is first drawn")
 Container_Ext(reader, "Screenshot reader", "Tesseract.js 5.1.1 from jsDelivr", "Fetched only when a screenshot is chosen")
 Container_Ext(speechapi, "Browser's speech service", "SpeechRecognition", "Built into the browser; needs the internet")
-Container_Ext(swc, "Service worker", "sw.js", "Network first, the cache hisaab-v22 as the fallback")
+Container_Ext(swc, "Service worker", "sw.js", "Network first, the cache hisaab-v23 as the fallback")
 
 Lay_R(init, router)
 Lay_R(router, theme)

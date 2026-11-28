@@ -7,7 +7,8 @@ PASS next label: Next reminder: Anjali Reddy (2 of 4)
 PASS overdue badge is 30+ days only: 4
 PASS overdue list still lists every owing customer for the bonus sort
 PASS large amount refused
-PASS small amount 0.5 saved
+PASS small amount 0.5 is held, with the nearest whole amount offered
+PASS small amount 1 saved
 PASS Hindi search finds Ravi
 PASS +91 phone search
 PASS name + digits narrows to one
@@ -15,7 +16,7 @@ PASS no-match message
 PASS entries CSV downloads
 PASS import replaced shop
 PASS undo offered after import
-PASS undo restored the shop: ₹11,820.5 11820.5
+PASS undo restored the shop: ₹11,821 11821
 PASS QR button shown for owing customer
 PASS QR drawn
 PASS QR amount

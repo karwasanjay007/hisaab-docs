@@ -1,1 +1,396 @@
-ALL PASS
+--- light after import (toast, import msg)
+BLUE-BG 13.68 span.brand-app "Hisaab" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 span.brand-tag "Khata, made simple" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 h1#shop-name. "Lakshmi Provision Store (fictional)" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 p.hero-label "Total outstanding" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 p#total-outstanding.hero-total "₹11,820 11820" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 p#as-of.hero-asof "15 Nov 2026" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 b. "8" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Customers" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 b. "4" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Overdue" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 b. "₹3,120" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Collected, last 30 days" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 button#compact-more.cs-more "…" fg 246,241,231 bg 18,38,58
+BLUE-TEXT 5.95 span.shops-badge "Current" fg 62,92,118 bg 233,237,240
+BLUE-TEXT 7.01 p#import-msg.form-msg "Loaded Lakshmi Provision Store (fictional): 8 cust" fg 62,92,118 bg 255,255,255
+BLUE-TEXT 7.01 span. "You got (payment)" fg 62,92,118 bg 255,255,255
+BLUE-BG 13.68 span#remind-all-text. "Remind all overdue (4)" fg 246,241,231 bg 18,38,58
+BLUE-TEXT 5.93 span.entry-type "You got (payment)" fg 62,92,118 bg 230,237,243
+BLUE-TEXT 7.01 span.entry-amt "− ₹1,500" fg 62,92,118 bg 255,255,255
+BLUE-TEXT 5.93 span.entry-type "You got (payment)" fg 62,92,118 bg 230,237,243
+BLUE-TEXT 7.01 span.entry-amt "− ₹950" fg 62,92,118 bg 255,255,255
+BLUE-TEXT 5.93 span.entry-type "You got (payment)" fg 62,92,118 bg 230,237,243
+BLUE-TEXT 7.01 span.entry-amt "− ₹250" fg 62,92,118 bg 255,255,255
+BLUE-TEXT 5.93 span.entry-type "You got (payment)" fg 62,92,118 bg 230,237,243
+BLUE-TEXT 7.01 span.entry-amt "− ₹420" fg 62,92,118 bg 255,255,255
+--- light quick filled
+BLUE-TEXT 6.22 p#quick-msg.hint "Filled: Sunita Devi, gave ₹500. Check it, then pre" fg 62,92,118 bg 246,241,231
+--- light after save (toast with receipt link)
+BLUE-BG 13.68 p#total-outstanding.hero-total "₹12,320 12320" fg 246,241,231 bg 18,38,58
+BLUE-TEXT 7.01 p#quick-msg.hint "Filled: Sunita Devi, gave ₹500. Check it, then pre" fg 62,92,118 bg 255,255,255
+--- light settings saved
+BLUE-TEXT 7.01 p#settings-msg.form-msg "Settings saved." fg 62,92,118 bg 255,255,255
+--- light customer QR open
+BLUE-BG 10.37 a.back "All customers" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 h2#cust-name. "Sunita Devi" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 p#cust-phone.cust-phone "+91 90000 00102" fg 205,213,220 bg 18,38,58
+BLUE-BG 10.37 p.hero-label "Balance" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 p#cust-balance.cust-bal "₹3,470" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 p#cust-meta.cust-meta "owes · Last paid: 4 Oct 2026" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 span. "WhatsApp reminder" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 span. "UPI pay link" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 span. "UPI QR code" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 span. "Statement (PDF)" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 span. "Reminders now ask customers to pay the demo UPI ID" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 a. "Set your shop's UPI ID" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 strong#wa-check-title. "WhatsApp check:" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 span#wa-check-status. "This number has not been checked on WhatsApp yet." fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 a#wa-check-go.btn "Check on WhatsApp" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 summary#send-ways-title. "Other ways to send" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 p#send-ways-sample.sw-note "This is a sample number, not the customer's own. T" fg 246,241,231 bg 18,38,58
+BLUE-BG 10.37 p#send-ways-hint.sw-hint "If WhatsApp says this number is not on WhatsApp, u" fg 205,213,220 bg 18,38,58
+BLUE-BG 13.68 a#send-sms.btn "Send as SMS" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 a#send-pick.btn "Choose a contact in WhatsApp" fg 246,241,231 bg 18,38,58
+BLUE-BG 13.68 button#send-copy.btn "Copy the message" fg 246,241,231 bg 18,38,58
+BLUE-TEXT 5.93 p#quick-msg.hint "Filled: Sunita Devi, gave ₹500. Check it, then pre" fg 62,92,118 bg 230,237,243
+BLUE-TEXT 7.01 span.entry-amt "− ₹120" fg 62,92,118 bg 255,255,255
+--- dark after import (toast, import msg)
+BLUE-BG 12.10 a.skip "Skip to the ledger" fg 230,236,242 bg 24,43,64
+BLUE-BG 13.19 span.brand-app "Hisaab" fg 242,237,227 bg 18,38,58
+BLUE-BG 9.35 span.brand-tag "Khata, made simple" fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 h1#shop-name. "Lakshmi Provision Store (fictional)" fg 242,237,227 bg 18,38,58
+BLUE-BG 5.74 span. "Overview" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span. "Record" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Customers" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.24 span#nav-count-cust.nav-count "8" fg 159,178,197 bg 19,36,54
+BLUE-BG 12.10 span. "Overdue" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Recent entries" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Add a customer" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Shop file" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Shop settings" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p. "Your ledger stays on this phone. Nothing is sent a" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p.credit "Built by Smart AI for Business" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.34 a. "Smart AI for Business" fg 242,237,227 bg 24,43,64
+BLUE-BG 9.35 p.hero-label "Total outstanding" fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 p#total-outstanding.hero-total "₹11,820 11820" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 p#as-of.hero-asof "15 Nov 2026" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.68 b. "8" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Customers" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 b. "4" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Overdue" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 b. "₹3,120" fg 246,241,231 bg 18,38,58
+BLUE-BG 11.29 span. "Collected, last 30 days" fg 228,220,203 bg 18,38,58
+BLUE-BG 13.68 button#compact-more.cs-more "…" fg 246,241,231 bg 18,38,58
+BLUE-BG 12.10 button.btn "Fill" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#add-title. "Add a customer" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 label. "Name" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Phone (10 digits)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#settings-title. "Shop settings" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 label. "Shop name" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Shop UPI ID (for pay links)" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p#upi-hint.hint "Demo UPI ID in use. Put your shop's own UPI ID her" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.34 h3#profile-title. "Shop profile" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 label#shop-owner-label. "Owner name" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label#shop-address-label. "Shop address" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label#shop-logo-label. "Shop logo" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p#shop-logo-hint.hint "A small picture. It shows in the top bar and on st" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.34 h3#shops-title. "Shops" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 p#shops-hint.hint "Keep more than one shop on this phone. Each shop h" fg 159,178,197 bg 24,43,64
+BLUE-BG 10.50 span.shops-name "Lakshmi Provision Store (fictional)" fg 230,236,242 bg 30,53,80
+BLUE-BG 5.74 span.shops-badge "Current" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 label#shop-new-label. "Add a new shop" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#customers-title. "Customers" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 span#customer-count.count "8" fg 159,178,197 bg 24,43,64
+BLUE-BG 5.74 span.avatar "S" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Sunita DeviOwes the most" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000102 · 6 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹3,470" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "F" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Fatima Begum" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000106 · 6 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹2,830" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "M" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Mohd Irfan" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000103 · 6 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹2,810" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "A" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Anjali Reddy" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000104 · 4 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹1,260" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "R" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Ravi Kumar" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000101 · 6 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹670" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "K" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Kavitha S" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000108 · 4 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹300" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "V" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Venkat Naidu" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000107 · 3 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹250" fg 255,159,145 bg 24,43,64
+BLUE-BG 5.74 span.avatar "P" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 span.cust-name "Prakash Rao" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "9000000105 · 3 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹230" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 span. "Reminders now ask customers to pay the demo UPI ID" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 a. "Set your shop's UPI ID" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#import-title. "Load a shop" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 p.hint "Paste a shop file (JSON) or a spreadsheet saved as" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p#import-msg.form-msg "Loaded Lakshmi Provision Store (fictional): 8 cust" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 button#import-new.btn "Import as a new shop" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Choose file" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button#load-sample.btn "Load sample shop" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h3. "Export" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 button#export-csv.btn "Export entries (CSV)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button#export-balances.btn "Export balances (CSV)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button#export-json.btn "Backup file (JSON)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#desk-entry-h.desk-entry-title "Record an entry" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 label. "Customer" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span. "You gave (credit)" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 span. "You got (payment)" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 label. "Amount (₹)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Date" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Note" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "groceries" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "milk" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "rice" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "oil" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "paid on UPI" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.note-chip "cash" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Payment screenshot (optional)" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 span. "Choose screenshot" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.34 h2#overdue-title. "Overdue" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 span.count "owing, longest without paying first" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p#overdue-due-hint.hint "Remind after 30 days without paying" fg 159,178,197 bg 24,43,64
+BLUE-BG 8.19 span#remind-all-text. "Remind all overdue (4)" fg 246,241,231 bg 44,74,102
+BLUE-BG 12.10 p#overdue-total.hint "₹5,260 unpaid for 30 days or more, from 4 customer" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.days "61days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 small. "days" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.cust-name "Prakash Rao30+ days" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.due-badge "30+ days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 15 Sept 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹230" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.28 span.days "44days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 small. "days" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.cust-name "Anjali Reddy30+ days" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.due-badge "30+ days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 2 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹1,260" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.28 span.days "43days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 small. "days" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.cust-name "Kavitha S30+ days" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.due-badge "30+ days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 3 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹300" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.28 span.days "42days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 small. "days" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.cust-name "Sunita Devi30+ days" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.due-badge "30+ days" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 4 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹3,470" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.24 span.days "27days" fg 159,178,197 bg 19,36,54
+BLUE-BG 7.24 small. "days" fg 159,178,197 bg 19,36,54
+BLUE-BG 12.10 span.cust-name "Fatima Begum" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 19 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹2,830" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.24 span.days "27days" fg 159,178,197 bg 19,36,54
+BLUE-BG 7.24 small. "days" fg 159,178,197 bg 19,36,54
+BLUE-BG 12.10 span.cust-name "Mohd Irfan" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 19 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹2,810" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.24 span.days "24days" fg 159,178,197 bg 19,36,54
+BLUE-BG 7.24 small. "days" fg 159,178,197 bg 19,36,54
+BLUE-BG 12.10 span.cust-name "Venkat Naidu" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 22 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹250" fg 255,159,145 bg 24,43,64
+BLUE-BG 7.24 span.days "21days" fg 159,178,197 bg 19,36,54
+BLUE-BG 7.24 small. "days" fg 159,178,197 bg 19,36,54
+BLUE-BG 12.10 span.cust-name "Ravi Kumar" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.cust-sub "Last paid 25 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹670" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.34 h2#recent-title. "Recent entries" fg 242,237,227 bg 24,43,64
+BLUE-BG 5.74 span.entry-type "You got (payment)" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 a.cust-name "Ravi Kumar" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "paid on UPI" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "25 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 span.entry-amt "− ₹1,500" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-type "You gave (credit)" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 a.cust-name "Ravi Kumar" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "groceries" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "23 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹180" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 5.74 span.entry-type "You got (payment)" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 a.cust-name "Venkat Naidu" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "paid on UPI" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "22 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 span.entry-amt "− ₹950" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 5.74 span.entry-type "You got (payment)" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 a.cust-name "Fatima Begum" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "paid on UPI" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "19 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 span.entry-amt "− ₹250" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 5.74 span.entry-type "You got (payment)" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.10 a.cust-name "Mohd Irfan" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "paid on UPI" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "19 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 span.entry-amt "− ₹420" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-type "You gave (credit)" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 a.cust-name "Ravi Kumar" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "groceries" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "19 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹420" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-type "You gave (credit)" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 a.cust-name "Venkat Naidu" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "groceries" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "17 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹250" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-type "You gave (credit)" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 a.cust-name "Fatima Begum" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 p.entry-note "groceries" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "16 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹780" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Edit" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 button.link-btn "Delete" fg 159,178,197 bg 24,43,64
+--- dark quick unknown name
+BLUE-BG 6.62 p#quick-msg.hint "Which customer? Say the name, for example: Sunita " fg 159,178,197 bg 24,43,64
+--- dark quick filled
+BLUE-BG 6.62 p#quick-msg.hint "Filled: Sunita Devi, gave ₹500. Check it, then pre" fg 159,178,197 bg 24,43,64
+--- dark after save (toast with receipt link)
+BLUE-BG 13.19 p#total-outstanding.hero-total "₹12,320 12320" fg 242,237,227 bg 18,38,58
+BLUE-BG 6.62 span.cust-sub "9000000102 · 7 entries" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹3,970" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 p#overdue-total.hint "₹5,760 unpaid for 30 days or more, from 4 customer" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.bal "₹3,970" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.10 a.cust-name "Sunita Devi" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "15 Nov 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹500" fg 255,159,145 bg 24,43,64
+--- dark search no match
+BLUE-BG 6.62 span#customer-count.count "0 / 8" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p#search-empty.empty "No customer matches "zzz"." fg 159,178,197 bg 24,43,64
+--- dark search match
+BLUE-BG 6.62 span#customer-count.count "1 / 8" fg 159,178,197 bg 24,43,64
+--- dark edit mode
+BLUE-BG 12.10 button#entry-cancel.btn "Cancel edit" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button.link-btn "Edit" fg 230,236,242 bg 24,43,64
+--- dark customer error
+BLUE-BG 12.10 span. "Overview" fg 230,236,242 bg 24,43,64
+BLUE-BG 5.74 span. "Add a customer" fg 159,178,197 bg 30,53,80
+BLUE-BG 7.28 p#customer-msg.form-msg "Enter a 10 digit phone number, digits only." fg 255,159,145 bg 24,43,64
+--- dark settings saved
+BLUE-BG 5.74 span. "Shop settings" fg 159,178,197 bg 30,53,80
+BLUE-BG 6.62 p#settings-msg.form-msg "Settings saved." fg 159,178,197 bg 24,43,64
+--- dark customer QR open
+BLUE-BG 5.74 span. "Customers" fg 159,178,197 bg 30,53,80
+BLUE-BG 9.35 a.back "All customers" fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 h2#cust-name. "Sunita Devi" fg 242,237,227 bg 18,38,58
+BLUE-BG 9.35 p#cust-phone.cust-phone "+91 90000 00102" fg 191,203,216 bg 18,38,58
+BLUE-BG 9.35 p.hero-label "Balance" fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 p#cust-balance.cust-bal "₹3,470" fg 242,237,227 bg 18,38,58
+BLUE-BG 9.35 p#cust-meta.cust-meta "owes · Last paid: 4 Oct 2026" fg 191,203,216 bg 18,38,58
+BLUE-BG 8.19 span. "WhatsApp reminder" fg 246,241,231 bg 44,74,102
+BLUE-BG 13.19 span. "UPI pay link" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 span. "UPI QR code" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 span. "Statement (PDF)" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 span. "Reminders now ask customers to pay the demo UPI ID" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 a. "Set your shop's UPI ID" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 strong#wa-check-title. "WhatsApp check:" fg 242,237,227 bg 18,38,58
+BLUE-BG 9.35 span#wa-check-status. "This number has not been checked on WhatsApp yet." fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 a#wa-check-go.btn "Check on WhatsApp" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 summary#send-ways-title. "Other ways to send" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 p#send-ways-sample.sw-note "This is a sample number, not the customer's own. T" fg 242,237,227 bg 18,38,58
+BLUE-BG 9.35 p#send-ways-hint.sw-hint "If WhatsApp says this number is not on WhatsApp, u" fg 191,203,216 bg 18,38,58
+BLUE-BG 13.19 a#send-sms.btn "Send as SMS" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 a#send-pick.btn "Choose a contact in WhatsApp" fg 242,237,227 bg 18,38,58
+BLUE-BG 13.19 button#send-copy.btn "Copy the message" fg 242,237,227 bg 18,38,58
+BLUE-BG 12.34 h2#qr-title. "UPI QR code" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 p#qr-amt.qr-amt "₹3,470 · hisaab.demo@upi" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p#qr-hint.hint "Scan with any UPI app to pay Lakshmi Provision Sto" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.34 h2#entry-title. "Record credit (you gave) or payment (you got)" fg 242,237,227 bg 24,43,64
+BLUE-BG 10.50 label.quick-label "Quick entry: type or speak it" fg 230,236,242 bg 30,53,80
+BLUE-BG 10.50 button.btn "Fill" fg 230,236,242 bg 30,53,80
+BLUE-BG 5.74 p#quick-msg.hint "Filled: Sunita Devi, gave ₹500. Check it, then pre" fg 159,178,197 bg 30,53,80
+BLUE-BG 12.34 h2#bal-history-title. "Balance over time" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 text.[object "₹4,420" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 text.[object "₹1,500" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 text.[object "20 Sept 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 text.[object "4 Oct 2026" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p#bal-history-note.hint "Balance went from ₹0 to ₹3,470 over 6 entries. Hig" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.34 h2#hist-title. "Entries, newest first" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "4 Oct 2026 · Balance after ₹3,470" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹3,470" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "2 Oct 2026 · Balance after ₹4,420" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹4,420" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹1,500" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "27 Sept 2026 · Balance after ₹2,920" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹2,920" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹340" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "25 Sept 2026 · Balance after ₹2,580" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹2,580" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 span.entry-amt "− ₹120" fg 159,178,197 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "22 Sept 2026 · Balance after ₹2,700" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹2,700" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹1,200" fg 255,159,145 bg 24,43,64
+BLUE-BG 6.62 p.entry-meta "20 Sept 2026 · Balance after ₹1,500" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 span.run-bal "₹1,500" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 span.entry-amt "+ ₹1,500" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.34 h2#cust-tools-title. "More for this customer" fg 242,237,227 bg 24,43,64
+BLUE-BG 6.62 dt#cust-tools-credit-label. "Total given on credit" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 dd#cust-tools-credit. "₹4,540" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 dt#cust-tools-paid-label. "Total received" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 dd#cust-tools-paid. "₹1,070" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p#cust-tools-since.ct-since "42 days since the last payment" fg 159,178,197 bg 24,43,64
+BLUE-BG 12.10 a#cust-tools-call.btn "Call" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 a#cust-tools-chat.btn "WhatsApp chat" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 button#cust-tools-change.btn "Change phone number" fg 230,236,242 bg 24,43,64
+BLUE-BG 7.28 button#cust-tools-delete.btn "Delete customer" fg 255,159,145 bg 24,43,64
+BLUE-BG 12.34 h2#cust-form-title. "Customer details" fg 242,237,227 bg 24,43,64
+BLUE-BG 12.10 label. "Name in Hindi" fg 230,236,242 bg 24,43,64
+BLUE-BG 12.10 label. "Name in Telugu" fg 230,236,242 bg 24,43,64
+BLUE-BG 6.62 p.hint "Filled in automatically. Correct it if the spellin" fg 159,178,197 bg 24,43,64
+--- dark hover #/
+BLUE-BG 13.23 span. "Record" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Customers" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Overdue" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Recent entries" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Add a customer" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Shop file" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 13.23 span. "Shop settings" fg 230,236,242 bg 19,36,54
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "groceries" fg 230,236,242 bg 30,53,80
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "milk" fg 230,236,242 bg 30,53,80
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "rice" fg 230,236,242 bg 30,53,80
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "oil" fg 230,236,242 bg 30,53,80
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "paid on UPI" fg 230,236,242 bg 30,53,80
+--- dark hover #/
+BLUE-BG 10.50 button.note-chip "cash" fg 230,236,242 bg 30,53,80
+--- dark hover #/c/9000000102
+BLUE-BG 13.23 span. "Overview" fg 230,236,242 bg 19,36,54
+--- dark hover #/c/9000000102
+BLUE-BG 12.10 button.link-btn "Delete" fg 230,236,242 bg 24,43,64
+365 PROBLEMS

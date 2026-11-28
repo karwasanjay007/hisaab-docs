@@ -70,7 +70,7 @@ change pass.
 ## Release it
 
 1. **Raise the offline cache name.** In `sw.js`, raise the number in the cache name with every release (today
-   `hisaab-v22`). Without it a returning visitor can keep old files. A new file of the app is also added to the
+   `hisaab-v23`). Without it a returning visitor can keep old files. A new file of the app is also added to the
    list the worker keeps ([offline](ARCHITECTURE.md#offline)).
 2. **Set the version.** Put the new number on the first line of `VERSION`.
 3. **Run every test locally**, the two Node scripts first. All must pass.
