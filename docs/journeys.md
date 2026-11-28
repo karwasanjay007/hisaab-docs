@@ -1,593 +1,387 @@
 # Hisaab: user journeys
 
-This page walks through what the shop owner does with Hisaab and what the app does in reply. Each journey
-is drawn from `app.js`, `index.html` and `sw.js` as built, with the add-ons `profile.js`, `shops.js`,
-`langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js` and `compact.js`, the layout sheets
-`polish.css`, `brand.css` and `compact.css`, and the customer's pay page `pay.html`, at version 1.5.2.1: the function names, the order of calls, what is
-read from and written to `localStorage`, and the links that open. Nothing here is planned work.
+This page describes version 1.5.2, the version on the live link.
 
-Every diagram is a PlantUML sequence diagram rendered to SVG. Participants appear in the same order in
-each one: Shop owner, Browser UI (`index.html`), `app.js`, `localStorage`, Service worker (`sw.js`), the
-library loaded from a CDN, WhatsApp or a UPI app, and the pay page (`pay.html`). A diagram shows only the
-participants it uses.
+Each journey below is something a shop owner does with Hisaab, written as steps you can follow with
+[the live link](https://hisaab-hazel.vercel.app) open in another tab. The diagram under each heading shows the
+same steps with the same numbers. Start with the first journey: it loads a sample shop, and the others use it.
 
-To render again, from the project folder:
+Three things hold for every journey:
 
-```
-java -jar plantuml.jar -tsvg -charset UTF-8 docs/diagrams/j*.puml
-```
+- **The screen.** On a phone the home screen shows "Total outstanding" with a strip of three figures, then the
+  customer list, then the quick entry pill fixed at the bottom. The "+" at the start of the pill opens a menu of
+  every other action. A desktop shows the same, and from a width of 1200 px it adds a right panel with
+  "Record an entry", "Overdue" and "Recent entries". On a desktop the left navigation opens the same views as
+  the "+" menu.
+- **Where things are kept.** Everything a shop records stays in the browser of the device
+  ([where data is kept](data-model.md#where-data-is-kept)). A diagram names "Browser storage" each time
+  something is saved there.
+- **What leaves the device.** Only what a diagram shows crossing to WhatsApp, an SMS or UPI app, the browser's
+  speech service or the address the screenshot reader comes from. The files named in the diagrams are described
+  in [the files](../ARCHITECTURE.md#the-files).
 
-Epics: E1 Customers and entries, E2 Shop overview, E3 Reminders and getting paid, E4 Customer page and
-statement, E5 Quick entry, E6 Shop data, E7 Languages, themes and layout, E8 Navigation, offline and the
-grader contract.
+| Journey | Who does it and why |
+| --- | --- |
+| J1 First open and the sample shop | A new owner looks around before entering real customers |
+| J2 Add a customer and record an entry | The owner writes down a sale on credit or a payment, and corrects a mistake |
+| J3 Quick entry, typed or by voice | The owner records an entry in one sentence while serving |
+| J4 WhatsApp reminder with the pay link, and other ways to send | The owner asks one customer to pay, and the customer pays from the message |
+| J5 Remind all overdue | The owner works through everyone who has not paid for 30 days or more |
+| J6 UPI QR code and statement | A customer pays at the counter, or asks for their account on paper |
+| J7 Load a shop file or a CSV, and export | The owner brings a ledger in from a file and takes a copy out |
+| J8 Payment screenshot and reading its amount | The owner keeps the customer's proof of payment with the entry |
+| J9 Several shops and the shop profile | An owner with two shops keeps both on one device, each under its own name |
+| J10 Customer tools | The owner calls a customer, corrects a number or removes a customer |
+| J11 Languages, right to left and native digits | The owner reads the ledger in their own language |
+| J12 Offline and install | The owner keeps working in a shop with no signal |
 
-## The journeys
+## J1 First open and the sample shop
 
-| ID | Name | Who | Trigger | Outcome | Epics |
-| --- | --- | --- | --- | --- | --- |
-| J1 | First open | Shop owner (or a tester) | Opens the app, optionally with `?today=` | Overview with the total outstanding and every balance; on a first visit an empty shop with two buttons, Add your first customer and Load sample shop | E2, E6, E7, E8 |
-| J2 | Record an entry | Shop owner | Fills the entry form and presses Save, or taps Edit or Delete | Entry saved, changed or removed; balances re-rendered; Undo after an edit or a delete | E1, E3 |
-| J3 | Quick entry by voice or typing | Shop owner | Taps the mic or types "Sunita 500 udhaar" | Entry form filled and Save focused; the owner saves | E5, E1, E7 |
-| J4 | WhatsApp reminder | Shop owner, then the customer | Taps the WhatsApp button on a customer row | WhatsApp opens with the name, the balance, an https pay link to the pay page and the UPI link; the owner presses Send; the customer taps the pay link and their UPI app opens | E3 |
-| J5 | Remind all overdue | Shop owner | Taps "Remind all overdue" | One chat per overdue customer, longest overdue first | E3, E2 |
-| J6 | UPI QR and statement | Shop owner, then the customer | Opens a customer page, taps UPI QR code or Statement | QR drawn in the page; statement printed or saved as PDF with a scan-to-pay QR | E4, E3 |
-| J7 | Load a shop file and export | Shop owner (or a tester) | Pastes a shop file or a CSV into `#import-box` and presses `#import-go`, or taps an export button | Shop replaced after checks, with Undo; CSV or JSON file downloaded | E6, E8 |
-| J8 | Payment screenshot | Shop owner | Chooses a screenshot in the entry form | Picture shrunk and kept on the entry; amount read and offered for checking | E1, E3, E8 |
-| J9 | Language and offline | Shop owner | Picks a language; later opens the app with no signal | Labels in one of twelve languages (three built in, nine fetched when chosen), kept after reload; the app opens offline with the same shop | E7, E8 |
-| J10 | Several shops (added in 1.1.0.0) | Shop owner | In Shop settings types a name and presses "Add shop", presses "Switch" or "Remove", or presses "Import as a new shop" on the import card | More than one shop on the same phone; the shop in use stays under `hisaab.v1`, the others are parked under `hisaab.shops` | E6 |
-| J11 | Customer tools (added in 1.2.0.0) | Shop owner | Opens a customer page and presses Call, WhatsApp chat, the change of phone number or Delete customer | Totals and days since the last payment shown; the phone app or a WhatsApp chat opens; the customer and their entries move to a new number, or are deleted with Undo for eight seconds | E4, E1 |
-| J12 | Reaching a customer WhatsApp refuses, and checking a number when it is added (added in 1.2.2.0 and 1.2.3.0) | Shop owner | Adds a customer by hand and taps Check on WhatsApp, or opens "Other ways to send" on a customer page | The owner's answer (on WhatsApp or not) kept per number under `hisaab.wa`; the reminder sent as an SMS, to a contact chosen in WhatsApp, or copied | E3, E4 |
+A new owner opens Hisaab for the first time and wants to see a working ledger before typing anything.
 
-All twelve journeys are supported by the code. The first nine were asked for in the brief; none was dropped or merged. J10 was added in version 1.1.0.0, J11 in version 1.2.0.0 and J12 in versions 1.2.2.0 and 1.2.3.0.
+![J1 First open and the sample shop](diagrams/j1-first-open.svg)
 
-## J1 First open
+1. Open the live link in a browser that has not used Hisaab before.
+2. The home screen reads the saved theme, language and shop from the browser.
+3. Nothing is saved yet, so it starts an empty shop named "My shop".
+4. The screen says "No customers yet. Add your first customer, or load the sample shop to look around." with
+   the buttons "Add your first customer" and "Load sample shop".
+5. Once the page has loaded, the service worker is registered, which is what later lets the app open offline.
+6. Tap "Load sample shop".
+7. The sample is fetched from the site itself; a copy inside the app is used if that fails.
+8. The shop "Lakshmi Provision Store (fictional)" is saved in the browser.
+9. A message says "Loaded Lakshmi Provision Store (fictional): 8 customers, 38 entries." and a bar at the bottom
+   says "Shop loaded." with "Undo".
+10. The home screen now shows "Total outstanding", the strip "Customers", "Overdue" and "Collected, last 30
+    days", the customer list, and the quick entry pill with "+" at the bottom.
+11. On a screen 1200 px wide or more, a right panel shows "Record an entry", "Overdue" and "Recent entries",
+    each list with its own filter box.
+12. Tap "…" at the end of the strip.
+13. The full overview opens with "Owes the most", "Collected, last 30 days", "Given on credit, last 30 days"
+    and "Longest without paying". The same button, now "−", folds it again.
 
-**Goal.** See at a glance how much the shop is owed in total and by whom; on a first visit, start a new
-ledger or look around the sample shop.
+**What to check**
 
-**Preconditions.** A browser with `localStorage`. The service worker only registers over https or on
-localhost.
+- The customer list has eight names, those who owe first, and the first row carries the badge "Owes the most".
+- Reload the page: the same shop and the same total are there.
+- The light or dark button in the top bar changes the theme, and the choice is still there after a reload.
 
-**Steps.**
-1. The head script in `index.html` reads `hisaab.theme` and sets light or dark before anything draws.
-2. `sample.js` sets `window.HISAAB_SAMPLE` (used only as the fallback for Load sample shop); `app.js` reads
-   `hisaab.lang` (English when missing or not built in). The add-ons follow: `profile.js`, `shops.js`,
-   `langs.js`, `extras.js`, `customer.js`, `names.js`, `sendways.js`, `wacheck.js`, `assist.js`, `guard.js`, `compact.js`. `langs.js` adds nine
-   languages to the menu `#lang` (twelve in all) and, when one of them was chosen before, fetches its file
-   from `i18n/` and switches to it. `names.js`, `sendways.js` and `wacheck.js` draw only on a customer page
-   (J9, J11, J12). The stylesheet `polish.css` loads last and changes the layout only.
-3. `init()` calls `load()`, which reads `hisaab.v1`. A saved shop is used as it is.
-4. On a first visit, or when the saved data cannot be read, `blank()` gives an empty shop ("My shop", no
-   customers, no entries) and it is saved. The sample is not loaded: the brief's "Done when" lines add
-   Ravi Kumar 9000000101 to a fresh app and expect Rs 250 after a Rs 250 credit.
-5. `applyLabels()` sets the language; `resetEntryForm()` sets the date and the latest allowed date to
-   `todayIso()`, which uses `?today=` when it is a valid date.
-6. `route()` reads the address (`#/`, `#/s/{section}` or `#/c/{phone}`) and calls `render()`.
-7. `render()` works out every balance (all credit minus all payments) and the total outstanding (the sum
-   of all balances), then fills `#total-outstanding` (with `data-value` and a plain number copy), one `li[data-customer]` per customer with `span[data-balance]` and `a[data-remind]`, the
-   top defaulter, the overdue list, the KPI tiles, the recent entries and the customer list in the form.
-   With no customers it shows "No customers yet. Add your first customer, or load the sample shop to look
-   around." and two buttons: `#add-first` opens `#/s/add` and focuses the name field, and
-   `#load-sample-home` does the same as Load sample shop on the Shop file card (J7).
-   The add-ons then draw on each render: `extras.js` puts the date the figures are for (`#as-of`) under the
-   total and a line with the total unpaid for 30 days or more (`#overdue-total`, hidden when nobody is
-   overdue); `shops.js` adds the Shops block (`#sec-shops`) at the end of the Shop settings card;
-   `profile.js` adds the owner and address fields to Shop settings and a logo beside the shop name in the
-   header (`#shop-logo-img`, hidden until a logo is set).
-8. After the page's load event, `sw.js` is registered; it takes control at once (`skipWaiting`,
-   `clients.claim`).
+## J2 Add a customer and record an entry
 
-![J1 First open](diagrams/j1-first-open.svg)
+The owner sells on credit to someone new, records it, and later corrects or removes an entry.
 
-Source: [j1-first-open.puml](diagrams/j1-first-open.puml)
+![J2 Add a customer and record an entry](diagrams/j2-record-entry.svg)
 
-**Error and edge paths.**
-- An invalid `?today=` value is ignored and the device date is used.
-- If another tab changes `hisaab.v1`, the `storage` event reloads the state and renders again.
-- When some customers are in advance, `#total-outstanding` still holds one figure (the sum of all
-  balances); the note `#total-note` just below it, outside it, gives the amount owed and the advance, and
-  those rows show an "Advance" label with the balance drawn as -₹200 (text ₹-200).
+1. Tap "+", then "Add a customer".
+2. Type a "Name" and a "Phone (10 digits)", then press "Add customer". A number already in the shop is refused
+   with "A customer with this phone already exists."
+3. The customer is saved in the browser.
+4. The screen says "Customer added." and offers to check the number on WhatsApp, which is part of the reminder
+   journey below.
+5. Tap "+", then "Record an entry". From 1200 px the same form is already open in the right panel.
+6. Choose the "Customer", then "You gave (credit)" or "You got (payment)", type the "Amount (₹)", leave or
+   change the "Date", add a "Note" (the chips under it fill common notes), and press "Save entry".
+7. If the amount has paise, nothing is saved: the form says "Amounts are in whole rupees, without paise. This
+   was not saved yet." and offers the button "Use Rs {n}" with the nearest whole amount.
+8. Otherwise the entry is saved in the browser.
+9. A bar says "Saved." with the link "Send receipt", which opens a WhatsApp message for the customer. The
+   customer's balance and "Total outstanding" change at once.
+10. Tap the customer in the list, press "Edit" on an entry, change it and press "Update entry".
+11. The changed entry is saved.
+12. A bar says "Entry updated." with "Undo".
+13. Press "Delete" on an entry. There is no second question.
+14. The shop is saved without that entry.
+15. A bar says "Entry deleted." with "Undo".
+16. Tap "Undo" while the bar is showing, about seven seconds.
+17. The entry is put back in the same place.
 
-## J2 Record a credit or payment; edit and delete
+**What to check**
 
-**Goal.** Record a sale on credit or a payment in seconds, and correct mistakes safely.
+- Add "Ravi Test" with the number 9811111111 and give ₹250 on credit: the row shows a balance of ₹250.
+- An amount of 0 gives "Enter an amount above zero." and nothing is saved.
+- Delete the entry, tap "Undo": the entry and the balance return.
 
-**Preconditions.** At least one customer. A new customer can be added first with the Add customer form.
+## J3 Quick entry, typed or by voice
 
-**Steps.**
-1. Optional: the owner adds a customer. `onAddCustomer()` needs a name and a phone of only digits,
-   spaces and + ( ) - . that is 10 digits after `phone10()` strips `+91` or a leading `0` (`validPhone()`)
-   and that no other customer has; it saves, renders and selects the new customer in the entry form.
-2. The owner picks the customer (on a customer page it is fixed), Credit or Payment, the amount, the date
-   and a note, and presses Save entry. Since 1.2.0.0 six note shortcuts sit under the note field
-   (`#note-chips`, from `extras.js`): groceries, milk, rice, oil, paid on UPI and cash, in the chosen
-   language. A tap fills the note.
-3. `onEntrySubmit()` checks, in this order: a customer is chosen, the amount is above zero, the amount is
-   at most ₹1,00,00,000, the date is valid, the date is not after today.
-4. A new entry is pushed with an id and a sequence number; an edited entry is first copied
-   (`lastEdited`), then changed in place.
-5. `save()` writes the whole shop to `hisaab.v1`; the form resets (the customer stays); `render()` redraws
-   every figure.
-6. A toast says "Saved." with a "Send receipt" link: a `wa.me` message with the amount, the date and the
-   new balance. The owner presses Send in WhatsApp; the app never sends by itself.
-7. Edit: the Edit button calls `startEdit()`, which fills the form and turns Save into Update; Cancel
-   clears the form. After Update the toast says "Entry updated." with Undo and the "Send receipt" link for
-   7 seconds; Undo puts the old entry back in place.
-8. Delete: the Delete button calls `deleteEntry()` straight away (no confirm dialog), saves, renders and
-   shows "Entry deleted." with Undo for 7 seconds. Undo puts the entry back where it was.
+The owner is serving and wants to record an entry in one sentence, typed or spoken.
 
-![J2 Record an entry](diagrams/j2-record-entry.svg)
+![J3 Quick entry, typed or by voice](diagrams/j3-quick-entry.svg)
 
-Source: [j2-record-entry.puml](diagrams/j2-record-entry.puml)
+1. In the pill at the bottom, "Quick entry: type or speak it", type "Sunita 500 udhaar".
+2. Or tap the microphone, "Speak the entry". It shows only in a browser that can listen.
+3. The spoken words go to the browser's own speech service. This leaves the device and needs the internet.
+4. The words heard are written into the box. If nothing was heard the app says "Did not catch that. Try again
+   or type it."
+5. Tap the arrow at the end of the pill, "Send and save the entry".
+6. The pill hands the sentence to the home screen.
+7. The app reads the amount, whether it was given or received, and the customer, and fills the entry form. A
+   word such as "paid", "jama" or "upi" means a payment; "udhaar" or "gave" means credit; with no such word it
+   is taken as credit and the message says so.
+8. When one customer matches, the message says "Filled: {name}, {type} {amt}. Check it, then press Save entry."
+9. The arrow then presses "Save entry" for you.
+10. The entry is saved in the browser.
+11. A bar says "Saved."
+12. When several customers match, the app asks "More than one customer matches. Pick one:" with a button for
+    each.
+13. When no customer has that name, a line says "No customer matches "{name}"." with the button "Add a
+    customer: {name}", which opens the add form with the name filled in.
 
-**Error and edge paths.**
-- Each failed check shows its message in `#entry-msg` and focuses the field; nothing is saved.
-- Add customer with a phone that has letters or other symbols, or is not 10 digits after clean-up:
-  "Enter a 10 digit phone number, digits only." and nothing is saved.
-- Add customer with a 10 digit number that does not start with 6, 7, 8 or 9: the customer is added and
-  "Customer added." is followed by "Check the number: Indian mobile numbers start with 6, 7, 8 or 9, so
-  WhatsApp may not reach this one." (`validMobile()`). Loading a shop file (J7) accepts any 10 digits
-  with no warning.
-- If `localStorage` is full, a toast says "Storage is full. Export a backup, then remove some screenshots."
-- Saving a new entry has no Undo; Undo is offered after an edit, after a delete and after loading a shop
-  (J7). After 7 seconds the toast closes and the change can no longer be undone; a delete or an import
-  also clears the Undo of an edit.
+**What to check**
 
-## J3 Quick entry by voice or typing
+- With the sample shop, "Sunita 500 udhaar" and the arrow add ₹500 to Sunita Devi's balance.
+- "Sunita 200 paid" lowers it by ₹200.
+- "Zubin 100" shows "Which customer? Say the name, for example: Sunita 500 udhaar.", and under it the line
+  "No customer matches "Zubin"." and the button "Add a customer: Zubin".
 
-**Goal.** Say or type one short phrase, such as "Sunita 500 udhaar", and have the form filled.
+## J4 WhatsApp reminder with the pay link, and other ways to send
 
-**Preconditions.** The mic button shows only when the browser has `SpeechRecognition` or
-`webkitSpeechRecognition`; typing always works.
+The owner asks one customer to pay. The customer pays from the message. If WhatsApp cannot reach the number,
+the owner sends the same message another way.
 
-**Steps.**
-1. The owner taps the mic. `app.js` starts recognition in `hi-IN`, `te-IN` or `en-IN` to match the app
-   language, and shows "Listening...".
-2. The words heard are written into `#quick-input` as they come. When recognition ends with words heard,
-   `onQuick()` runs. Typing a phrase and pressing Fill (or Enter) runs `onQuick()` the same way.
-3. `parseQuick()` reads the phrase: Hindi and Telugu digits become 0 to 9; ₹, Rs and commas are dropped;
-   the first number is the amount, and hazaar, sau, lakh, thousand or hundred after it multiply it; a
-   payment word (paid, jama, mila, UPI, GPay) makes it a payment, a credit word (udhaar, diya, baki) a
-   credit; the remaining words are scored against each customer's name in English, Hindi and Telugu
-   script, and against the phone or its last four digits; leftover words become the note.
-4. `applyQuick()` fills the customer, type, amount, date (if empty) and note, says "Filled: ... Check it,
-   then press Save entry." and moves the focus to Save entry. Nothing is saved yet.
-5. The owner checks the form and presses Save entry, which follows J2.
+![J4 WhatsApp reminder with the pay link, and other ways to send](diagrams/j4-whatsapp-reminder.svg)
 
-![J3 Quick entry](diagrams/j3-quick-entry-voice.svg)
+1. Tap the WhatsApp button on a customer's row, or "WhatsApp reminder" on the customer's page.
+2. WhatsApp opens a chat with that number and the message typed in: the customer's name, the shop, the balance,
+   a "UPI pay link" and a "Pay by UPI" link. A customer who owes nothing gets a message that says so, with no
+   pay link.
+3. Press Send in WhatsApp. Hisaab never sends by itself; the message leaves the device only at this press.
+4. The customer taps the "UPI pay link" in the message.
+5. The pay page opens in the customer's browser with "Pay to", the shop, the amount, the button "Open your UPI
+   app" and "Copy" for the UPI ID. The shop, the name, the UPI ID and the amount travel inside the link itself.
+6. On a phone the page opens the customer's UPI app with the amount filled in.
+7. If WhatsApp says the number is not on WhatsApp, open the customer and open "Other ways to send".
+8. It offers "Send as SMS", "Choose a contact in WhatsApp" and "Copy the message", all with the same message.
+9. To find out before the first reminder, tap "Check on WhatsApp" on the customer's page.
+10. WhatsApp opens a chat with a short hello message that names the customer and the shop.
+11. Back in Hisaab, answer "Yes, the chat opened" or "No, it said the number is not on WhatsApp".
+12. The answer is kept in the browser for that number.
+13. The page then reads "Checked: this number is on WhatsApp." or "Not on WhatsApp. Send by SMS, or change the
+    number."
+14. While the shop has no UPI ID of its own, a notice says "Reminders now ask customers to pay the demo UPI ID
+    hisaab.demo@upi, not your shop." with the link "Set your shop's UPI ID".
 
-Source: [j3-quick-entry-voice.puml](diagrams/j3-quick-entry-voice.puml)
+**What to check**
 
-**Error and edge paths.**
-- Several customers tie: "More than one customer matches. Pick one:" with up to six buttons; tapping one
-  fills the form.
-- No customer matches: "Which customer? Say the name...".
-- A customer but no amount: the customer is selected, "Say or type an amount..." is shown and Amount gets
-  the focus.
-- No type word: the entry is taken as credit, and the message says so.
-- On a customer page the customer is already known, so only the amount, type and note are read.
-- Recognition errors say why: "Did not catch that..." (no speech), "The microphone is blocked for this
-  site..." (not allowed), "No microphone was found..." (no microphone), "This browser's speech service did
-  not answer..." (network), or "Could not use the microphone..." (anything else). A language the service
-  refuses is tried once more in `en-IN`.
-- Since 1.2.5.0 (`assist.js`), when a typed quick entry finds no customer and the text held a name, the
-  question "Which customer?" stays and `#quick-choices` shows 'No customer matches "Sunita".' with the button
-  `#quick-add-customer`. The button opens Add a customer (`#/s/add`) with `#customer-name` filled and the cursor
-  on `#customer-phone`. The same add-on says which theme is on after `#theme-toggle` is pressed, names the
-  view after a press on a navigation item, and puts the focus on `#main` from the skip link.
-- Since 1.2.4.0 voice never ends in silence: when the service stops with no result and no error, the app
-  says "Did not catch that. Try again or type it." A service that gives nothing for 9 seconds is stopped,
-  with "This browser's speech service did not answer...".
-- Since 1.2.4.0 every voice failure line is followed by a tip. On a phone or tablet (its user agent names
-  Android, iPhone, iPad or iPod) the tip is the microphone key of the keyboard (`quickKeyTip`). On anything
-  else it is the computer's own dictation, the Windows key and H (`quickPcTip`), so a laptop with a touch
-  screen gets the laptop tip.
-- Amounts must be said or typed as digits; number words such as "paanch" are not read.
-- In the nine languages fetched by `langs.js`, that language's words for credit and payment are taught to
-  the parser (`H.quickWords`) when the language loads.
-
-## J4 WhatsApp reminder
-
-**Goal.** Ask a customer to pay in one tap, with the right amount and a way to pay.
-
-**Preconditions.** The customer has a 10 digit Indian number. The shop's UPI ID is set in Shop settings;
-until then the demo ID `hisaab.demo@upi` is used and Settings says so. Since 1.5.2.1 a notice beside the reminder
-controls says so too, with a link to Shop settings (`sendways.js`). Settings checks the UPI ID with
-`validUpi()` (`name@handle`, for example `shopname@okbank`); a bad ID shows "Enter a UPI ID like
-shopname@okbank, or leave it empty." and nothing is saved. Empty is allowed.
-
-**Steps.**
-1. At every render, each row's `a[data-remind]` gets its link: `https://wa.me/91{phone}?text=` and the
-   message from `reminderText()`.
-2. When the customer owes money, the message reads, line by line: "Namaste {name}, this is a reminder
-   from {shop}. Your balance is Rs {amt}.", a blank line, "UPI pay link:" and an https link built by
-   `payPage()`, a blank line, "Pay by UPI:" and the link built by `upiLink()`, a blank line, "Thank you."
-   - The https link points at `pay.html` on the app's own address:
-     `pay.html#pn={shop}&tn=Hisaab {name}&pa={UPI ID}&am={balance, two decimals}`. WhatsApp makes only
-     https addresses tappable, so this is the link the customer taps.
-   - The UPI link is as before:
-     `upi://pay?pa={UPI ID}&am={balance, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}`.
-3. The owner taps the WhatsApp button. It is a plain link; WhatsApp (or WhatsApp Web) opens the chat with
-   the message typed in.
-4. The owner presses Send in WhatsApp. The app never sends by itself.
-5. The customer taps the "UPI pay link". `pay.html` opens in the customer's browser and reads the details
-   after "#" in the page itself. A browser never sends that part to a server, and the page stores and sends
-   nothing. It shows the shop, the amount and the UPI ID, a button "Open your UPI app" with the
-   `upi://pay` link, and a Copy button for the UPI ID. On a phone it opens the UPI app by itself after
-   0.4 seconds; the button stays for a second try. On a computer the customer copies the UPI ID.
-6. The customer pays in their UPI app; the owner then records the payment (J2).
-
-![J4 WhatsApp reminder](diagrams/j4-whatsapp-reminder.svg)
-
-Source: [j4-whatsapp-reminder.puml](diagrams/j4-whatsapp-reminder.puml)
-
-**Error and edge paths.**
-- A customer in advance gets a message stating the advance; a settled customer gets "Your account is
-  settled, Rs 0 due."; neither contains a pay link.
-- A pay link that is broken or cut short (a UPI ID not like `name@handle`, or an amount that is not above
-  zero and below 100,000,000) shows "This payment link is not complete. Ask the shop to send it again."
-- When the app is opened from a file rather than over http or https, `payPage()` gives nothing and the
-  message carries only the `upi://pay` link, as before 1.2.1.0.
-- When WhatsApp refuses the number, the customer page offers other ways to send the same message (J12).
-- Changing the shop name or UPI ID in Settings rebuilds every link at the next render.
-- The customer page has the same reminder (`#cust-remind`) and a UPI pay link button (`#cust-upi`, shown
-  only when money is owed).
-- The message follows the app language.
+- The numbers of the sample shop are made up. The customer's page says so and asks you to change the number to
+  your own before trying a reminder.
+- After that, the WhatsApp button opens a chat with the balance and the pay link in the message, not yet sent.
+- Opening the pay link shows the shop name and the same amount.
 
 ## J5 Remind all overdue
 
-**Goal.** Work through everyone who owes money, longest overdue first, without searching for each.
+The owner wants to remind everyone who has not paid for 30 days or more, one chat after another.
 
-**Preconditions.** At least two customers with a balance above zero; with fewer the button stays hidden.
+![J5 Remind all overdue](diagrams/j5-remind-all.svg)
 
-**Steps.**
-1. `overdueRows()` lists customers who owe money, with the days since their last payment (or since their
-   first credit when they never paid), counted to `todayIso()`; most days first, then the larger balance.
-2. `renderRemindAll()` keeps a queue of their phones, labels the button "Remind all overdue (n)" and
-   points its link at the first customer's `wa.me` reminder.
-3. The owner taps the button. The click handler `remindNextOne()` moves the queue on by one, the link
-   opens the current chat in a new tab, and straight after (`setTimeout` 0) the button's link moves to the
-   next customer and reads "Next reminder: {name} (i of n)".
-4. In each chat the owner presses Send in WhatsApp, then comes back and taps again.
-5. After the last one the button reads "All n reminders opened".
+1. Open "Overdue" (in the right panel, the left navigation or the "+" menu). The list holds everyone who owes,
+   longest without paying first, with "30+ days" on those at 30 days or more.
+2. A line above the list gives the amount unpaid for 30 days or more and from how many customers.
+3. Tap "Remind all overdue (N)". The button shows when two or more customers are at 30 days or more. The "+"
+   menu has the same action.
+4. WhatsApp opens the first customer's chat with the reminder typed in.
+5. Press Send in WhatsApp and come back to Hisaab.
+6. The button now reads "Next reminder: {name} ({i} of {n})".
+7. Tap the button again.
+8. WhatsApp opens the next customer's chat. Repeat for each customer left.
+9. After the last one the button reads "All {n} reminders opened".
 
-![J5 Remind all](diagrams/j5-remind-all.svg)
+**What to check**
 
-Source: [j5-remind-all.puml](diagrams/j5-remind-all.puml)
-
-**Error and edge paths.**
-- Tapping after the last reminder starts the queue again from the top.
-- If an entry changes who is overdue, the queue is rebuilt and starts again at the first customer.
-- The app opens chats only; nothing is sent without the owner.
-- Since 1.2.0.0 `extras.js` adds one line by the overdue list (`#overdue-total`): the amount unpaid for 30
-  days or more and from how many customers. It also adds `#as-of` under the total, the date the figures
-  are for.
+- The number in "Remind all overdue (N)" equals the number of rows with "30+ days".
+- Each press opens one chat and moves the label to the next name.
 
 ## J6 UPI QR code and statement
 
-**Goal.** Let a customer at the counter scan to pay, and give a customer a printed or PDF statement.
+A customer at the counter wants to pay by scanning, or asks for their account on paper.
 
-**Preconditions.** A customer page is open (`#/c/{phone}`). The QR button shows only when the customer
-owes money. The QR library needs a network connection the first time.
+![J6 UPI QR code and statement](diagrams/j6-qr-and-statement.svg)
 
-**Steps.**
-1. Tapping a customer opens `#/c/{phone}`; `route()` shows the customer page and `renderCustomer()` fills
-   the name, phone, balance, last payment and the entries with the running balance after each. Since
-   1.2.0.0 `profile.js` also draws a "Balance over time" line as inline SVG, with the highest and lowest
-   balance.
-2. UPI QR code: `showQr()` opens the card with the amount and UPI ID. `loadQr()` adds
-   `qrcode-generator` 1.4.4 from cdnjs the first time, then `qrSvg()` draws the `upi://pay` link as an SVG
-   QR code in the page. Tapping again closes it.
-3. Statement (PDF): the app waits for the QR library for at most 1.5 seconds, then `printStatement()`
-   builds the statement (shop, customer, date, entries oldest first with gave, got and balance, totals),
-   adds a scan-to-pay QR when money is owed and the library is loaded, and calls `window.print()`.
-   Before printing, `profile.js` puts the shop logo and a line with the owner name and address in the
-   statement head when the shop profile has them. The same logo shows in the top bar.
-4. The browser's print dialog lets the owner print or save as PDF; afterwards the page returns to normal.
+1. Tap a customer in the list.
+2. The customer's page shows the name, the "Balance", "Entries, newest first" with "Balance after" on each
+   entry, and the chart "Balance over time".
+3. Tap "UPI QR code". The button shows only when the customer owes money.
+4. The QR library is loaded from the site itself the first time.
+5. The code appears with the amount, the UPI ID and "Scan with any UPI app to pay {shop}."
+6. The customer scans it, and their UPI app opens with the amount filled in.
+7. Tap "Statement (PDF)".
+8. The shop's logo, owner name and address are added when the shop profile has them.
+9. The browser's print window opens with the "Account statement": a table of Date, Note, You gave, You got and
+   Balance, the "Totals", and a "Scan to pay" code when money is owed.
+10. Choose "Save as PDF" or a printer in that window.
 
-![J6 QR and statement](diagrams/j6-qr-and-statement.svg)
+**What to check**
 
-Source: [j6-qr-and-statement.puml](diagrams/j6-qr-and-statement.puml)
+- The amount under the QR code is the customer's balance.
+- The last balance in the statement table equals the "Balance" on the page.
+- A customer who owes nothing has no "UPI QR code" button.
 
-**Error and edge paths.**
-- If the library cannot load (offline or blocked), the card shows the `upi://pay` link as text, and the
-  next tap tries to load it again.
-- If the library is not ready within 1.5 seconds, the statement prints without the QR code.
-- A customer with nothing owed has no QR button and no QR on the statement.
+## J7 Load a shop file or a CSV, and export
 
-## J7 Load a shop file and export
+The owner brings a ledger in from a backup file or a spreadsheet, and takes a copy out.
 
-**Goal.** Replace the shop with another shop file or a spreadsheet, safely, and take the data out as CSV
-or JSON.
+![J7 Load a shop file or a CSV, and export](diagrams/j7-import-export.svg)
 
-**Preconditions.** For loading, a shop file in JSON with `customers` and `entries` lists, or a spreadsheet
-saved as CSV or tab-separated text with a phone column and at least one of amount, credit, payment or
-name.
+1. Tap "+", then "Import a shop".
+2. Paste a shop file (JSON) or a spreadsheet saved as CSV into the box, or use "Choose file", then press "Load
+   shop".
+3. The app reads it and cleans phones, kinds, amounts and dates. A row it cannot use is skipped, and an entry
+   with no readable date is dated today.
+4. The loaded shop replaces the current one in the browser. Nothing is merged.
+5. Amounts with paise are rounded to whole rupees, and a picture that is not an image or is too large is left
+   out while its entry is kept.
+6. A message says "Loaded {shop}: {c} customers, {e} entries." and lists what was skipped or changed. A bar
+   says "Shop loaded." with "Undo".
+7. If it was the wrong file, tap "Undo" while the bar is showing.
+8. The earlier shop is put back.
+9. To take data out, press "Export entries (CSV)", "Export balances (CSV)" or "Backup file (JSON)" in the same
+   view.
+10. A file named after the shop is downloaded to the device. The backup file leaves out screenshots.
 
-**Steps.**
-1. The owner pastes the file into `#import-box` and presses `#import-go` (Load). Choosing a `.json`,
-   `.csv` or `.txt` file, or "Load sample", puts the text in the same box and loads it the same way.
-2. `doImport()` reads text that starts with `{` or `[` as JSON and anything else as CSV: `csvRows()` and
-   `fromCsv()` match the headers by meaning (see [Importing a CSV](schema/export-entries.csv.md#importing-a-csv))
-   and turn the rows into a shop object, keeping the current shop name.
-3. `fromShopFile()` checks it: phones cut to 10 digits, duplicates dropped, Hindi words for credit and
-   payment accepted, amounts with Rs or commas cleaned, an amount that is missing, blank, not a number,
-   negative or above 10,000,000 skipped, dates as YYYY-MM-DD or DD/MM/YYYY, a missing or unreadable date
-   set to today and counted, a bad UPI ID in the file skipped (the current one is kept), customers created
-   from entries when missing, bad rows skipped.
-4. The current shop is kept as a snapshot, the new shop replaces it (no merge), is saved to `hisaab.v1`,
-   and the overview is rendered.
-5. The message gives the shop name and the counts of customers and entries, then "{n} entries had no date
-   and are dated today." when any were, then "Skipped {n}: " with the first three skipped rows (translated
-   in English, Hindi and Telugu); a toast "Shop loaded." offers Undo for 7 seconds, which restores the
-   snapshot.
-6. Export: Entries CSV, Balances CSV (with a TOTAL OUTSTANDING row) or the shop file as JSON, each
-   downloaded through a Blob link named after the shop.
+**What to check**
 
-![J7 Import and export](diagrams/j7-import-export.svg)
+- Press "Backup file (JSON)", then load that file again: the same customers and the same total return.
+- Text that is not a shop file gives a message that names what is missing, and the current shop is untouched.
+- "Export balances (CSV)" ends with a row "TOTAL OUTSTANDING" that equals the total on the home screen.
 
-Source: [j7-import-export.puml](diagrams/j7-import-export.puml)
+## J8 Payment screenshot and reading its amount
 
-**Error and edge paths.**
-- An empty box or a file without the two lists: "The file needs customers and entries lists."; invalid
-  JSON: "This is not valid JSON: " and the parser's message; a CSV without a phone column, or with no
-  amount, credit, payment or name column: "Paste a shop file (JSON) or a spreadsheet saved as CSV with
-  name, phone, type, amount and date columns." Nothing is replaced.
-- Amount 0 and future dates are accepted on import; impossible dates such as 2026-02-30 are kept.
-- A file in which no customer is valid is refused with the first three problems listed; a file with some
-  bad rows loads and lists what was skipped.
-- There is no confirm dialog; Undo is the safety net.
-- CSV cells that start with `=`, `+`, `-` or `@` get a leading quote so a spreadsheet does not run them.
-- The JSON export leaves out screenshots. It carries the shop profile (owner, address, logo), and a file
-  with a profile brings it back on import (`profile.js`).
-- The Entries CSV loads back through the same box to the same totals.
+A customer shows a payment screenshot. The owner keeps it with the entry and lets the app read the amount.
 
-## J8 Payment screenshot
+![J8 Payment screenshot and reading its amount](diagrams/j8-payment-screenshot.svg)
 
-**Goal.** Keep the customer's payment screenshot on the entry, and save typing by reading the amount
-from it.
+1. In the entry form, under "Payment screenshot (optional)", press "Choose screenshot" and pick the picture.
+2. The form switches to "You got (payment)" and the picture is shrunk to at most 600 px on its longest side.
+3. The form says "Reading the amount from the screenshot...".
+4. The first time, the reader is fetched from `cdn.jsdelivr.net`. That request leaves the device. The picture
+   does not: it is read in the browser.
+5. The reader returns the text it found in the picture.
+6. When an amount is found, the form fills it and says "Read Rs {amt} from the screenshot. Check it before
+   saving." An amount you typed yourself is not overwritten.
+7. When nothing can be read, or there is no internet, it says "Could not read an amount from this picture. Type
+   it in."
+8. Check "Amount (₹)" and press "Save entry".
+9. The entry is saved in the browser with the small picture.
+10. The picture shows on the entry in the customer's list of entries.
 
-**Preconditions.** The entry form is open. Reading the amount needs a network connection to load
-Tesseract.js.
+**What to check**
 
-**Steps.**
-1. The owner chooses a picture in `#shot-input`. `onShotChange()` sets the type to Payment.
-2. The picture is drawn on a canvas at most 600 px on its longest side (640 px until 1.2.6.0), on white, and kept as a JPEG at
-   quality 0.72; a preview shows.
-3. `readAmount()` loads Tesseract.js 5.1.1 the first time and reads the original picture with a worker:
-   `eng+hin` for Hindi, `eng+tel` for Telugu, `eng` for English and the other nine languages, falling back
-   to `eng` if the combined language fails to load. It reads the picture as scattered text first and, if
-   that finds no amount, once more as one block.
-4. `qNorm()` turns Devanagari and Telugu digits into 0 to 9. `pickAmount()` prefers the largest number after ₹, Rs,
-   INR, "amount", "paid", रु, रुपये, राशि, రూ, మొత్తం or భుగతాన, otherwise the largest plain number
-   that is not a year. A Hindi screenshot reading "भुगतान रु ४५०" fills 450. The amount goes into the Amount field only if the field is empty or was filled by
-   the reader, with "Read Rs {amt} from the screenshot. Check it before saving."
-5. The owner checks the amount and presses Save entry (J2). The small JPEG is stored on the entry inside
-   `hisaab.v1`, and the entry shows it as `img[data-shot]`.
+- A file that is not a picture gives "That file is not a picture."
+- After saving, the entry carries a small picture.
+- "Remove" beside "Choose screenshot" takes the picture off before saving.
 
-![J8 Payment screenshot](diagrams/j8-payment-screenshot.svg)
+## J9 Several shops and the shop profile
 
-Source: [j8-payment-screenshot.puml](diagrams/j8-payment-screenshot.puml)
+An owner with two shops keeps both on one device, each with its own ledger, name, UPI ID and logo.
 
-**Error and edge paths.**
-- A file that is not a picture: "That file is not a picture."
-- No amount found, or the library cannot load: "Could not read an amount from this picture. Type it in."
-- Once the owner types in Amount, the reader no longer overwrites it.
-- Remove picture clears it; on Update the picture is removed from the entry. Editing without a new
-  picture keeps the old one.
-- Pictures fill `localStorage` fastest; when it is full, the app says to export a backup and remove some
-  screenshots.
-- Unlike the QR library, Tesseract.js is loaded from jsDelivr (`cdn.jsdelivr.net`), not from cdnjs.
-- Tesseract.js downloads its language data on first use; neither is cached for offline.
+![J9 Several shops and the shop profile](diagrams/j9-shops-and-profile.svg)
 
-## J9 Language and offline
+1. Tap "+", then "Shops".
+2. Under "Add a new shop" type a name and press "Add shop".
+3. The open shop is set aside in the browser and an empty one is started.
+4. The app says 'Added "{name}". It is now the current shop.'
+5. Press "Switch" beside the first shop. The open one carries the mark "Current".
+6. This shop is set aside in the browser and the other one is opened.
+7. The app says 'Switched to "{name}".' and the home screen shows that shop's customers and total.
+8. Press "Remove" beside a shop that is not open, then "Press again to remove".
+9. The app says 'Removed "{name}".'
+10. Tap "+", then "Shop settings".
+11. Type the "Shop name" and the "Shop UPI ID (for pay links)", then press "Save settings".
+12. They are saved, and every reminder and pay link uses the new UPI ID.
+13. Tap "+", then "Shop profile".
+14. Type the "Owner name" and "Shop address", choose a "Shop logo" and press "Save profile".
+15. The profile is saved with the shop.
+16. The app says "Profile saved." The logo shows in the top bar and on statements.
 
-**Goal.** Use the app in English, Hindi or Telugu, or since 1.2.0.0 in Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia or Urdu, and keep working in a shop with no signal.
+**What to check**
 
-**Preconditions.** For offline use the app has been opened online over https (or on localhost) once, so
-the service worker has installed and cached the app shell.
+- A new shop starts empty, and switching back shows the first shop's total unchanged.
+- A UPI ID such as "abc" is refused with "Enter a UPI ID like shopname@okbank, or leave it empty."
+- "Import as a new shop" in the shop file view loads a file as one more shop and leaves the open one as it was.
 
-**Steps.**
-1. The owner picks one of the twelve languages in `#lang`. English, हिंदी and తెలుగు are built into
-   `app.js`; the other nine are fetched by `langs.js` from `i18n/{code}.json` when chosen. The choice is saved as `hisaab.lang`; `applyLabels()`
-   changes every label and placeholder and `render()` redraws: names with the local script in brackets,
-   dates in the chosen locale, reminders and receipts in the chosen language. Since 1.2.1.0 the name in
-   brackets is in the script of every language but English: Hindi and Telugu from `app.js`, the other nine
-   from the add-on `names.js` through the hook `Hisaab.nameIn`.
-2. Optional: Hindi or Telugu digits (`#native-digits`, saved in the shop) and the light or dark theme
-   (`hisaab.theme`).
-3. On install `sw.js` precaches the app shell (`./`, `index.html`, `styles.css`, `app.js`, the add-ons
-   `profile`, `shops`, `extras` and `customer` as `.css` and `.js`, `langs.js`, `names.js`, `sendways.js`,
-   `wacheck.js`, `polish.css`, `pay.html`, `sample.js`, `sample-data.json`, `icon.svg`,
-   `manifest.webmanifest`) in the `hisaab-v10` cache; on activate it deletes older caches.
-4. While online, `sw.js` answers each GET to the app's own origin, to `qrcode-generator` on cdnjs and to
-   Google Fonts from the network first and keeps a copy in `hisaab-v10`.
-5. With no signal the network request fails and `sw.js` returns the cached copy (ignoring the query, so
-   `?today=` still works), or `index.html`.
-6. `init()` reads the same language and the same shop from `localStorage`, so the owner carries on.
+## J10 Customer tools
 
-![J9 Language and offline](diagrams/j9-language-offline.svg)
+The owner wants a customer's totals, a quick call, a corrected number, or to remove a customer added by mistake.
 
-Source: [j9-language-offline.puml](diagrams/j9-language-offline.puml)
+![J10 Customer tools](diagrams/j10-customer-tools.svg)
 
-**Error and edge paths.**
-- The service worker registers after the first page load and precaches the shell when it installs, so
-  one online visit is enough: offline, the ledger opens with the same totals. The QR code draws offline
-  once the QR library has loaded online and been cached.
-- Tesseract.js (jsDelivr) is not cached by `sw.js`; offline, the screenshot reader says it could not read
-  an amount. If the QR library was never loaded online, the QR card shows the pay link as text.
-- An unknown saved language falls back to English.
+1. Tap a customer in the list.
+2. "More for this customer" shows "Total given on credit", "Total received" and "{n} days since the last
+   payment" or "No payment yet".
+3. Tap "Call" or "WhatsApp chat".
+4. The phone app opens with the number, or WhatsApp opens an empty chat.
+5. Press "Change phone number", type the "New phone number (10 digits)" and press "Save number".
+6. The customer and every entry of theirs move to the new number.
+7. The page says "Phone number changed."
+8. Press "Delete customer", then within five seconds "Press again to delete {name} and all their entries".
+9. The customer and their entries are removed from the browser.
+10. The home screen opens with a bar "Deleted {name}." and "Undo" for eight seconds.
+11. Tap "Undo".
+12. The customer and the same entries are put back.
+13. The bar says "Restored {name}."
+14. Under "Customer details" change the "Name", "Name in Hindi" or "Name in Telugu" and press "Save details".
+15. The details are saved.
+16. The page says "Customer details saved."
 
-## J10 Several shops (added in 1.1.0.0)
+**What to check**
 
-**Goal.** Keep more than one shop on the same phone and move between them.
+- A number that another customer has is refused with "Another customer already has this number."
+- After a delete, "Total outstanding" falls by that customer's balance; after "Undo" it is back.
+- After a change of number, the entries and the balance are the same under the new number.
 
-**Preconditions.** The app is open. With one shop nothing is stored beyond `hisaab.v1`.
+## J11 Languages, right to left and native digits
 
-**Steps.**
-1. The owner opens Shop settings, types a name in the "Shops" block (up to 60 letters; empty gives "New
-   shop") and presses "Add shop".
-2. The app parks the current ledger in `hisaab.shops` and opens an empty ledger under `hisaab.v1`.
-3. The owner records entries in the new shop (J2).
-4. The owner presses "Switch" on the first shop: the current ledger is parked, the chosen one is put back
-   under `hisaab.v1`, and the overview shows its total.
-5. "Remove" on a parked shop needs a second press within four seconds. The open shop has no Remove.
+The owner reads the ledger in one of twelve languages, with numbers in Hindi or Telugu digits if wanted.
 
-![J10 Several shops](diagrams/j10-several-shops.svg)
+![J11 Languages, right to left and native digits](diagrams/j11-languages.svg)
 
-Source: [j10-several-shops.puml](diagrams/j10-several-shops.puml)
+1. Choose हिंदी in the language box of the top bar. On a phone it is the round language button beside the
+   theme button; "Language" in the "+" menu goes to the same box.
+2. The choice is saved in the browser.
+3. Every label, message and reminder is in Hindi, and each customer's name is also written in Hindi in
+   brackets.
+4. Open "Shop settings", tick the box for Hindi or Telugu digits and press "Save settings". The box shows only
+   in Hindi and Telugu.
+5. The choice is saved with the shop.
+6. Amounts and counts are shown in Hindi digits.
+7. Now choose اردو in the language box.
+8. Urdu is one of nine languages that are not built in: its file is fetched from the site itself when chosen.
+9. The texts arrive; one that the file lacks stays in English.
+10. Each customer's name is also written in Urdu script in brackets.
+11. The page reads right to left. Amounts and balances keep their left to right order.
+12. If the file cannot be fetched, the app stays in English and says "That language could not be loaded.
+    Showing English."
 
-**Error and edge paths.**
-- "Import as a new shop" on the import card parks the current shop, opens a blank one and runs the normal
-  import (J7) into it. If the file is refused, the app returns to the previous shop and drops the blank one.
-- `hisaab.shops` = `{ active, list: [ { id, name, data } ] }`; the active shop's `data` is null because its
-  ledger lives under `hisaab.v1`. The key is not written until a second shop is added and is removed again
-  when one shop is left.
+**What to check**
 
-## J11 Customer tools (added in 1.2.0.0)
+- "Total outstanding" is the same figure in every language.
+- In Urdu the list and the menu are mirrored; back in English the page reads left to right again.
+- After a reload the app opens in the language chosen last.
 
-**Goal.** See a customer's totals at a glance, call or message them, correct a wrong phone number, or remove a
-customer who should not be in the ledger.
+## J12 Offline and install
 
-**Preconditions.** A customer page is open. The block "More for this customer" sits after the entries.
-Since 1.2.1.0 (`polish.css`), on a screen 1280 px or wider the page reads down one column (entries, the
-balance chart, this block, the customer details) with the record form beside it; entries stack in a
-narrow card, and the heading keeps its width while its buttons wrap. Since 1.2.2.0 and 1.2.3.0 the page
-head also has the WhatsApp check line and the fold-out "Other ways to send" (J12).
+The shop has no signal on some days. The owner opened Hisaab once with a connection and wants to keep working.
 
-**Steps.**
-1. The owner opens a customer and reads the total given on credit, the total received, and the days since the
-   last payment (or "No payment yet").
-2. "Call" opens the phone app with the customer's number; "WhatsApp chat" opens a chat with no message. The
-   reminder with the name and the balance is the separate button of J4.
-3. To change the number the owner types a new 10-digit number and saves. The customer and every entry of that
-   customer move to the new number, and the page address follows.
-4. To delete, the owner presses "Delete customer", then presses again within five seconds. The customer and
-   all their entries are removed, the overview opens, and a bar says who was deleted, with Undo for eight
-   seconds.
+![J12 Offline and install](diagrams/j12-offline-install.svg)
 
-![J11 Customer tools](diagrams/j11-customer-tools.svg)
+1. Open the live link with a connection.
+2. Once the page has loaded, the service worker is registered.
+3. It keeps a copy of the app's own files in the browser: pages, scripts, styles, fonts, the QR library, the pay
+   page and the sample shop.
+4. To install, choose "Install" or "Add to Home screen" in the browser's menu. Hisaab has no install button
+   of its own: the menu item and its wording are the browser's, and differ from one browser to another.
+5. "Hisaab" then opens in its own window with its own icon.
+6. Later, with no signal, open Hisaab.
+7. The browser asks for the page and the network does not answer.
+8. The service worker takes the last copy it kept.
+9. The app's files come from that copy.
+10. The same shop, language and theme are read from the browser.
+11. The same customers and totals are on the screen. Entries can be recorded and a QR code still draws.
 
-Source: [j11-customer-tools.puml](diagrams/j11-customer-tools.puml)
+Three things need a connection: reading the amount from a screenshot, voice entry, and a language that was
+never used while online.
 
-**Error and edge paths.**
-- A number that is not 10 digits, or that another customer already has, is refused with a message.
-- Two taps in quick succession on Delete count as one press.
-- Undo puts the customer and the same entries back, and the bar says "Restored {name}." for three
-  seconds. After the eight seconds, a reload or a switch to another
-  shop, the deletion stands.
-- The ledger's own Undo (for an entry or an import) is cleared by a phone change or a delete, so it cannot put an
-  entry back under the old number.
-- The total outstanding on the overview follows each change.
+**What to check**
 
-## J12 Reaching a customer WhatsApp refuses, and checking a number when it is added (added in 1.2.2.0 and 1.2.3.0)
-
-**Goal.** Know before the first reminder whether a customer's number is on WhatsApp, and still reach a
-customer whose number WhatsApp refuses.
-
-**Preconditions.** A customer is added by hand, or a customer page is open. No app can ask WhatsApp
-beforehand whether a number has an account. WhatsApp refuses such a number inside its own app, where
-Hisaab cannot help. So the owner opens a chat and says what happened.
-
-**Steps.**
-1. The owner adds a customer by hand (J2). The add-customer card then shows "{name} added. Check the
-   number on WhatsApp now, so reminders reach them." with the button Check on WhatsApp (`#wa-added-go`).
-2. The button is a `wa.me` link to the number with a hello message: the customer's name and the shop, no
-   balance. WhatsApp opens in its own tab or app, and Hisaab moves to that customer's page.
-3. There `#wa-check` asks "Did WhatsApp open a chat with this number?" with Yes (`#wa-check-yes`) and No
-   (`#wa-check-no`).
-4. The answer is kept per number, with the date, under the browser key `hisaab.wa`, outside the ledger.
-   The line then reads "Checked: this number is on WhatsApp." or "Not on WhatsApp. Send by SMS, or change
-   the number." No also opens "Other ways to send".
-5. Any customer page has Check on WhatsApp (`#wa-check-go`), which opens the same hello message and asks
-   the same question. Until it is answered the line reads "This number has not been checked on WhatsApp
-   yet."
-6. Under the reminder buttons on the customer page, the fold-out "Other ways to send" (`#send-ways`) holds
-   the same message as the WhatsApp reminder (J4), in three ways:
-   - Send as SMS (`#send-sms`): an `sms:` link to the customer's number with the message.
-   - Choose a contact in WhatsApp (`#send-pick`): a `wa.me` link with no number, so the owner picks any
-     contact, such as a family member.
-   - Copy the message (`#send-copy`): copies it and says "Message copied" for 2.5 seconds.
-7. The owner presses Send in the SMS app or in WhatsApp. The app never sends by itself.
-
-![J12 WhatsApp check and other ways to send](diagrams/j12-whatsapp-check-and-other-ways.svg)
-
-Source: [j12-whatsapp-check-and-other-ways.puml](diagrams/j12-whatsapp-check-and-other-ways.puml)
-
-**Error and edge paths.**
-- Loading a shop file offers no check: its customers count as known, not as just added.
-- The add-card offer shows only when one customer was added and the number has no answer yet.
-- For a sample number of the sample shop (one that starts 90000001, such as 9000000102), the fold-out
-  opens by itself with a note that the number is made up and should first be changed to the owner's own.
-- When the browser store is full, the answer is simply not remembered; the ledger is not touched.
-- None of these links carries `data-remind`, so the count of reminder links is unchanged.
-- The owner's answer is a record of what WhatsApp showed, not a check made by Hisaab.
-- A wrong answer is put right with one tap (since 1.2.3.1): once a number has an answer, a button beside Check on
-  WhatsApp (`#wa-check-flip`) offers the other answer and switches it without opening WhatsApp again.
-
-## Versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026): what changed in the journeys
-
-- **J1 on a phone (1.4.0.0, `compact.js`):** below phone width the top bar is 56 px, the total is compact, quick
-  entry is one pill at the bottom and a slim tab row sits above it. Every other action (add a customer, an entry,
-  import, export, settings) is in the + sheet, opened by tap, Enter or Space and closed by Escape or a tap outside.
-  With the sample shop, 4 customer rows are fully on the first screen at 375 x 667. The desktop was unchanged at 1.4.0.0 (see 1.5.0.0 below).
-- **J1 on first open (1.2.6.0, `guard.js`):** when the browser blocks storage, a lasting notice says nothing can
-  be kept in this mode and points to a normal window or a backup file. The sai4b mark is first in the top bar
-  (1.3.0.0, `brand.css`); no green anywhere.
-- **J2 and J3 (1.3.0.0):** an amount with paise is not saved; the form, or the edit, stays open with "Use Rs n",
-  the nearest whole amount. An edit with the date cleared stays open and asks for the date (1.2.6.0). A change
-  the store refused is said as not kept, and "Saved." is not left standing.
-- **J7 (1.3.0.0):** an import rounds paise to whole rupees, halves up, and says how many; a picture that is not
-  an image or is over 400,000 characters is left out and counted (1.2.6.0). Stored paise get one line that
-  offers to round them, with Undo.
-- **J8 (1.2.6.0):** the screenshot is kept at most 600 px on its longest side.
-
-## Version 1.4.1.0 (27 Nov 2026): what changed in the journeys
-
-- **J1 on a phone (`compact.js`, `langs.js`):** the + sheet's labels and button names are in the chosen language,
-  in all twelve.
-- **J1, J6 and J9:** the fonts (`fonts/fonts.css`) and the QR library (`vendor/qrcode.min.js`) come from the site
-  itself, so a plain visit, opening a QR code or a statement, and a language change ask no other host. The
-  service worker cache was `hisaab-v15` (`hisaab-v16` since 1.5.0.0) and precaches both. J8's screenshot reader still loads on demand from
-  jsDelivr.
-- **J11 and the overview:** the customer page totals and the overdue line use the ledger's one balance function; the
-  figures are the same.
-
-## Version 1.5.0.0 (27 Nov 2026): what changed in the journeys
-
-- **J1, first open on a desktop (`compact.css`, `compact.js`, 768 px and up):** with a shop that has customers, the
-  overview opens as a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and
-  "…" for the full overview), then the customer list with its search on the title line, and quick entry as the same
-  pill kept at the bottom of the main column. Its "+" (`#desk-plus`) opens the + sheet as a popover above the pill,
-  by click, Enter or Space; arrows move through it, and Escape closes it and returns the focus to "+". From 1200 px
-  a right panel (`aside#desk-aside`) holds the entry form, overdue and recent entries, moved there and not copied.
-  Between 768 and 1199 px there is no right panel: the form folds away, opens above the pill when quick entry fills
-  it or a screenshot is chosen, and folds again after Save. With the sample shop there is room for 8, 10 and 12
-  customer rows at 1024 x 768, 1280 x 800 and 1440 x 900.
-- **J1 on an empty shop, the section views and the customer page (J11):** as before.
-- **J9:** the service worker cache is `hisaab-v16`; the app shell lists the same files.
-
-## Version 1.5.1.0 (27 Nov 2026): what changed in the journeys
-
-- **J9, choosing Urdu:** `compact.js` sets `dir="rtl"` on the html element, so the page reads right to left;
-  amounts and phone numbers stay left to right, and the skip link no longer scrolls the page sideways. Back in
-  another language the attribute is removed. On a desktop in Urdu the right panel sits on the left of the list.
-- **J1 on a desktop with many customers:** the right panel fitted the screen and its cards scrolled on their own
-  (until 1.5.2.0, see below); a
-  row brought into view stays above the pill. Checked with a 40-customer shop.
-- **J9:** the service worker cache is `hisaab-v18`; the app shell lists the same files.
-
-## Version 1.5.2.0 and 1.5.2.1 (27 Nov 2026): what changed in the journeys
-
-- **J1 on a desktop from 1200 px:** the right panel has no scroll box. The entry form, every overdue customer and
-  every recent entry are shown and the page grows. A filter box above each of the two lists narrows the rows as
-  the owner types; clearing it brings every row back. The quick-entry pill is pinned to the bottom of the screen.
-- **J1, the top bar:** the sai4b mark opens sai4b.com in a new tab; the app name beside it still goes home.
-- **J1 and J2 on a phone:** the search box is 44 px high, the labels under the total are shown in full and the
-  "Record" label is not clipped.
-- **J4 and J12, a shop with no UPI ID of its own:** when a reminder link is on the page, a notice under the
-  customer list says that reminders ask customers to pay the demo UPI ID, not the shop. The customer page shows the
-  same notice under its reminder buttons. Its link opens Shop settings with the cursor in the UPI field. After
-  the owner saves a UPI ID the notice goes and every reminder carries the new ID. The reminder links and the
-  message are as before, and the notice follows the app language.
-- **J9:** the service worker cache is `hisaab-v22`; the app shell lists the same files.
+- Load the page once, switch the device to flight mode and reload: the ledger opens with the same total.
+- Record an entry offline, go back online and reload: the entry is there.
+- Offline, "UPI QR code" on a customer who owes still draws the code.

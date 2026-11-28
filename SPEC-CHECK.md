@@ -1,154 +1,61 @@
 # Hisaab: specification check
 
-| | |
-| --- | --- |
-| Source | https://dashboard.freedomwithai.com/redesign/v3/projects (Hisaab section) |
-| Captured | 20 Nov 2026, afternoon, word for word into `brief/spec-page.md` from the projects page |
-| Recaptured before submitting | To do on 21 Nov before 2:00 pm IST; the page changed once already (both projects may now be submitted) |
-| Literal test | `tests/brief.mjs`, live result `tests/last-brief-live.txt` |
+This page describes version 1.5.2, the version on the live link.
 
+Each line of the brief, in the brief's own words, with whether Hisaab meets it, how, and the test that shows
+it. The tests run in a fresh browser against the live link; their latest results are in
+[the report](REPORT.md#latest-results-on-the-live-link).
 
-Checked against the projects page word for word (`brief/spec-page.md`), not our earlier summary of it.
-Every "Done when" line is followed literally by `tests/brief.mjs` in a fresh browser; live result
-`tests/last-brief-live.txt`: ALL PASS.
+## What it must do
 
-| # | Must do | Done when (abridged) | Result | Evidence |
+| Id | The brief's line | Result | How it is met | Test |
 | --- | --- | --- | --- | --- |
-| 1 | Add a customer | Ravi Kumar 9000000101 on the home list; 9 digits or letters refused with a message | Met | brief.mjs: 9 digits, "90000abc01", "9000000101a", "abcdefghij" refused; Ravi added |
-| 2 | Credit or payment with amount, date, note | Rs 250 credit, balance reads Rs 250 | Met | brief.mjs: Ravi 250, total 250 |
-| 3 | Balances and total at the top | Sample: top 11820, Ravi 670; computed | Met | brief.mjs; check.mjs [1-sample total] and [2-hidden balances] on four seeds |
-| 4 | Customer page newest first | 25 Oct Rs 1,500 above 23 Oct Rs 180 | Met | brief.mjs rows 0 and 1 |
-| 5 | Payment screenshot as a small picture | Shows after a reload | Met | brief.mjs; check.mjs [5-shot img], [5-shot reload] |
-| 6 | WhatsApp reminder | Name and Rs 670 in the message | Met | brief.mjs ("Rs 670"); check.mjs [3-reminder] |
-| 7 | Survives a reload | Entry and balance still there | Met | brief.mjs; check.mjs [4-persistence], [2-hidden persistence] |
-| 8 | Import box | Sample shows 8 customers; a customer with no entries loads | Met | brief.mjs; check.mjs [2-hidden replace] |
-| 9 | Phone, 375 px | No sideways scroll; every button easy to tap | Met | brief.mjs: five views, scroll width 375, no target under 40 px |
+| 1 | Add a customer with a name and a 10 digit phone number | Met | "Add a customer" takes a name and a phone; nine digits or letters are refused with a message | `tests/brief.mjs` |
+| 2 | Add an entry for a customer: credit or payment, with amount, date and a short note | Met | The entry card has "You gave (credit)" and "You got (payment)", amount, date and note | `tests/brief.mjs` |
+| 3 | Show each customer's balance (all credit minus all payments) and the shop's total outstanding at the top | Met | Both are worked out from the entries each time the page draws; the sample shows 11820 | `tests/brief.mjs`, `tests/check.mjs`, `tests/sweep.mjs` |
+| 4 | A customer page lists that customer's entries, newest first | Met | "Entries, newest first" on the customer page | `tests/brief.mjs` |
+| 5 | A payment can have a screenshot attached. It shows as a small picture on the entry | Met | "Choose screenshot" on the entry card; the picture stays after a reload | `tests/brief.mjs`, `tests/check.mjs` |
+| 6 | A WhatsApp reminder button per customer, with the customer's name and the balance in rupees in the message | Met | A WhatsApp button on every customer row and "WhatsApp reminder" on the customer page | `tests/brief.mjs`, `tests/check.mjs` |
+| 7 | Data is still there after a reload | Met | Every change is written to the browser's own store at once | `tests/brief.mjs`, `tests/check.mjs` |
+| 8 | An import box that loads a JSON file in the format of the sample data | Met | "Load a shop" replaces the current shop; a customer with no entries loads too | `tests/brief.mjs`, `tests/phone-import.mjs` |
+| 9 | Works well on a phone, 375 px wide | Met | No view scrolls sideways at 375 px | `tests/brief.mjs`, `tests/phone-ledger.mjs` |
 
-| Selector or rule | Result |
-| --- | --- |
-| `#total-outstanding` contains the number | Met: "₹11,820" plus the plain 11820 |
-| `[data-customer]` with `[data-balance]` | Met |
-| `a[data-remind]` to `https://wa.me/91<phone>?text=` | Met |
-| `#import-box` and `#import-go` | Met (also accept CSV) |
-| `#shot-input` and `img[data-shot]` | Met |
-| `?today=` | Met: overdue days, default dates and the date limit follow it |
+## How they check
 
-| Bonus (5 each, 6 count) | Result |
-| --- | --- |
-| Overdue list by days since last payment | Built (full sorted list of everyone who owes; nav badge and Remind-all count only 30+ days without paying) |
-| Edit and delete with balances recalculated | Built, both with Undo |
-| CSV export that matches the data | Built (entries and balances; reloads to the same totals) |
-| Search by name or phone | Built (also Hindi or Telugu name, +91) |
-| UPI pay link `upi://pay?pa=...&am=...` | Built (plus QR) |
-| Hindi or Telugu labels | Built (both) |
-| Amount from the payment screenshot | Built (English, Hindi, Telugu) |
+| What the tester reads | The brief's selector or rule | Result | How it is met | Test |
+| --- | --- | --- | --- | --- |
+| Total outstanding | `#total-outstanding`; the text contains the number | Met | The element holds the figure with the rupee sign and the plain number | `tests/check.mjs` |
+| One row per customer | `[data-customer="<phone>"]`, with the balance inside `[data-balance]` | Met | Each row of the customer list carries both | `tests/check.mjs`, `tests/sweep.mjs` |
+| WhatsApp reminder link | `a[data-remind="<phone>"]`; the link is `https://wa.me/91<phone>?text=<message>` | Met | The WhatsApp button of each row is that link | `tests/check.mjs`, `tests/pay.mjs` |
+| Import | a text area `#import-box` and a button `#import-go` | Met | The box and the "Load shop" button under "Load a shop" | `tests/check.mjs` |
+| Payment screenshot | a file input `#shot-input`; after saving, the entry shows `img[data-shot]` | Met | "Choose screenshot" is that input; the saved entry shows the picture | `tests/check.mjs` |
+| Today's date | anything that depends on the date honours `?today=2026-11-15` | Met | Overdue days, the 30 day figures and the default entry date follow it | `tests/check.mjs` |
 
-**Estimate:** 100 of 100 on our own checker (hidden data 60, bonus 30 of 35 possible, phone 5, light and
-dark 5), on four random shops. That is our checker, not the graders'.
+## Bonus menu
 
-**Version 1.0.0.0 (21 Nov 2026, Sanjay Karwa):** entry type labels are **You gave (credit) / You got (payment)** (radio values
-unchanged); Overdue badge and Remind-all use a 30-day rule while the list stays fully sorted for the
-bonus; phone overview shows Customers and Overdue first, nothing hidden. Local checker still 27/27. See
-`evidence/release-1-0-0-0.md` and `VERSION`. Recapture of the projects page under auth is still **To do**.
+The brief gives 5 marks each and counts at most six. All seven are built.
 
-**What could still cost marks:**
-- The graders' tester is an AI reading the page; its exact steps are unknown. The likeliest differences
-  are covered: a fresh browser now starts empty, totals carry both the formatted and the plain number, and
-  no dialog ever blocks it.
-- Total outstanding when a customer is in advance: #total-outstanding holds only the sum of all balances
-  (the brief's balance is all credit minus all payments); the owed-only figure is in the note #total-note
-  just below it, so a tester that reads only #total-outstanding gets the net figure.
-- Reading the amount from a real UPI screenshot is tested only on generated images.
-- Found late by reading the page word for word: the first-visit sample would have failed must-do 1 and 2.
-  The lesson is in the kickoff kit (capture the page verbatim, test every "Done when" literally).
-
-## After the baseline: versions 1.1.0.0 to 1.2.4.0 (22 to 23 Nov 2026)
-
-Every line of the specification above still holds on the live site after the additions. The ids, attributes,
-totals and the import that the tester uses are the same as in 1.0.0.0. No earlier test was edited. The earlier
-suites were run again on the live site after the 1.2.0.0 deploy, and all pass.
-
-The same holds after the 1.2.1.0, 1.2.2.0, 1.2.3.0 and 1.2.4.0 deploys (baseline 1.2.3.0 approved by the owner on
-23 Nov 2026). The independent checker gives 100 out of 100 on the live site (`evidence/last-run-live.txt`), and
-every "Done when" line passes (`evidence/last-brief-live.txt`). The bonus line on the UPI pay link in the
-reminder still holds: the reminder now opens with a pay link the customer can tap, and the `upi://pay` link
-stays in the message after it.
-
-| What is checked | Latest result | Evidence |
-| --- | --- | --- |
-| The nine must-do items, word for word | ALL PASS | `evidence/last-brief-live.txt` |
-| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242) | 27 pass, 0 fail; 100 out of 100 (hidden data 60 of 60, bonus 30, phone 5, light and dark 5) | `evidence/last-run-live.txt` |
-| Hidden-data style checks on many shops | ALL PASS on 61 shops | `evidence/last-sweep-live.txt` |
-| Import on a phone | ALL PASS (12 checks) | `evidence/last-phone-import-live.txt` |
-| Phone width with the add-ons: 320 and 375 px, three languages, light and dark | ALL PASS (54 checks) | `evidence/last-addons-width-live.txt` |
-| Light and dark contrast | ALL PASS | `evidence/last-contrast-live.txt` |
-| Other earlier suites: final, gaps, critic, navigation, quick entry, voice, offline | ALL PASS | `evidence/last-final-live.txt`, `evidence/last-gaps-live.txt`, `evidence/last-critic-live.txt`, `evidence/last-nav-live.txt`, `evidence/last-quick-live.txt`, `evidence/last-voice-live.txt`, `evidence/last-offline-live.txt` |
-
-That is still our own checker, not the graders'.
-
-### Beyond the specification
-
-None of these is asked for by the brief. Each one lives in an add-on file beside the ledger.
-
-| Feature | Version | How it is kept apart from what the tester reads | Evidence |
+| The brief's line | Result | How it is met | Test |
 | --- | --- | --- | --- |
-| Shop profile: owner, address, logo | 1.1.0.0 | Shown only when set. A plain import into a shop with no profile writes nothing extra to storage | `evidence/last-profile-live.txt` |
-| Balance history line | 1.1.0.0 | Only on the customer page, for a customer with two or more entries. It uses none of the attributes the tester reads | `evidence/last-profile-live.txt` |
-| More than one shop on the same phone | 1.1.0.0 | The current shop stays under `hisaab.v1` as before. Other shops are parked under `hisaab.shops`, which is not written until a second shop is added. The plain import, the sample and the exports act on the current shop only | `evidence/last-shops-live.txt` |
-| Nine more languages, twelve in all | 1.2.0.0 | English, Hindi and Telugu stay built in. A further language is one file, fetched only when chosen. The figures, rows and reminder links are the same in every language | `evidence/last-langs-live.txt`, `evidence/last-i18n-check.txt` |
-| Customer page tools: totals, days since the last payment, Call and WhatsApp chat links, change phone number, delete customer with Undo | 1.2.0.0 | A block after the entries on the customer page only. The chat link is not a reminder link, so the count of reminder links is unchanged | `evidence/last-customer-live.txt` |
-| Note shortcuts under the note field | 1.2.0.0 | They only fill the note field. The entry is saved by the same button | `evidence/last-langs-live.txt` |
-| Total unpaid for 30 days or more, and the date the figures are for | 1.2.0.0 | Drawn beside the existing figures. Nothing is stored | `evidence/last-langs-live.txt` |
-| A layout that holds in every language and width | 1.2.1.0 | Layout rules only. No id, attribute or text changed | `evidence/last-layout-live.txt` |
-| Customer names in the script of all twelve languages | 1.2.1.0 | The script is shown in brackets after the stored name, as Hindi and Telugu were. The stored name, the total, the rows and the reminder links are the same in every language | `evidence/last-names-live.txt` |
-| A pay link the customer can tap in the reminder | 1.2.1.0 | The reminder is still `a[data-remind]` to `https://wa.me/91<phone>?text=`, with the name, the balance and the `upi://pay` link. The pay link is added before the UPI link; its details ride after "#" and are never sent to a server | `evidence/last-pay-live.txt` |
-| Other ways to send a reminder: SMS, any WhatsApp contact, copy | 1.2.2.0 | A block on the customer page only. None of its links is a reminder link, so the tester's count of `a[data-remind]` is unchanged | `evidence/last-sendways-live.txt` |
-| A WhatsApp check when a customer is added by hand | 1.2.3.0 | Offered only after a customer is added by hand, never after a load. The answer is kept in its own key per number, not in the ledger, and adds no reminder link | `evidence/last-wacheck-live.txt` |
-| Voice entry that never ends in silence | 1.2.4.0 | Only what is shown when the browser's speech service fails changed: the silent ending now has a message, and each failure adds a tip. A heard sentence fills the form as before; the earlier voice test passes unchanged | `evidence/last-voice-quiet-live.txt`, `evidence/last-voice-live.txt` |
-| Controls that say what they did (`assist.js`) | 1.2.5.0 | `app.js` is not changed. The theme, the views and the skip link behave as before; a status line outside every list and total names what happened. Quick entry keeps its question "Which customer?"; the line and the button under it appear only when a name was typed that no customer has. One reminder link per customer as before | `evidence/last-assist-live.txt` (38), `evidence/last-quick-live.txt`, `evidence/last-brief-live.txt`, `evidence/last-nav-live.txt` |
+| Overdue list, sorted by days since last payment | Met | "Overdue" lists everyone who owes, longest without paying first | `tests/check.mjs` |
+| Edit and delete an entry, with balances recalculated | Met | Edit and Delete on each entry, both with Undo | `tests/check.mjs`, `tests/gaps.mjs` |
+| CSV export that matches the data | Met | "Export entries (CSV)" and "Export balances (CSV)" | `tests/check.mjs`, `tests/final.mjs` |
+| Search by name or phone | Met | "Search by name or phone" above the customer list | `tests/check.mjs`, `tests/final.mjs` |
+| A UPI pay link in the reminder (`upi://pay?pa=...&am=...`) | Met | The reminder carries the UPI link and a tappable pay page link | `tests/check.mjs`, `tests/pay.mjs` |
+| Hindi or Telugu labels | Met | Both, chosen in the language box | `tests/check.mjs`, `tests/layout.mjs` |
+| Reading the amount from the payment screenshot | Met | The amount is read in the browser and filled in for the owner to check | `tests/check.mjs`, `tests/gaps.mjs` |
 
-Not covered by a run: storage-full during a shop switch, and a tab closed between the two writes of a switch
-(both traced in the code by the reviewer). The printed statement was checked by its markup, not on paper. No
-native speaker has read the nine new languages. Since 1.2.1.0, also not checked by a person: the spellings of
-names in the nine newer scripts, the new strings in those languages, and the SMS link, the pay page and the
-WhatsApp check on a real phone.
+## Scoring
 
-## After the baseline: versions 1.2.6.0 to 1.4.0.0 (27 Nov 2026)
+| Marks | The brief's test | Result | How it is met | Test |
+| --- | --- | --- | --- | --- |
+| 60 | Hidden-data test: a different set of data through the live link; the numbers it gets back are checked | Met | Thirty other shops are loaded through the import box and every figure compared | `tests/sweep.mjs`, `tests/check.mjs` |
+| 30 | Bonus menu: 5 each, at most 6 items count | Met | Seven of seven built | `tests/check.mjs` |
+| 10 | Phone and light/dark: no sideways scroll at 375 px (5); readable in both light and dark (5) | Met | Nothing scrolls sideways; text contrast holds in both themes | `tests/check.mjs`, `tests/contrast.mjs`, `tests/brand.mjs` |
 
-Each version was added on top, with nothing removed. The ids, attributes, totals and the import that the tester
-uses are the same. One rule changed at the owner's word, as the course guideline asks: money is kept in whole
-rupees. An import with paise is rounded to the nearest rupee, halves up, and says how many; four shops of the
-sweep that hold paise now expect whole rupees. Screenshots are kept at most 600 px (640 px before).
+Hisaab's own checker, written from the brief alone, gives a score estimate of 100 of 100 on the live link. That
+is an estimate by our checker, not the judges' mark.
 
-| What is checked | Latest result | Evidence |
-| --- | --- | --- |
-| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242, live at 1.4.0.0) | 27 pass, 0 fail; 100 out of 100 | `evidence/last-check-live.txt` |
-| Storage and input guards (`guard.mjs`) | ALL PASS (48 checks) | `evidence/last-guard-live.txt` |
-| Whole rupees (`rupees.mjs`) | ALL PASS (28 checks) | `evidence/last-rupees-live.txt` |
-| Brand look, no green (`brand.mjs`) | ALL PASS (184 checks) | `evidence/last-brand-live.txt` |
-| Phone layout (`phone-ledger.mjs`) | ALL PASS (147 checks) | `evidence/last-phone-ledger-live.txt` |
-| Layout, navigation, quick entry | ALL PASS | `evidence/last-layout-live.txt`, `evidence/last-nav-live.txt`, `evidence/last-quick-live.txt` |
-
-The other suites passed on the local copy at 1.4.0.0 and were not rerun on the live link for this version. No
-fresh reviewer has read 1.3.0.0 or 1.4.0.0 yet.
-
-## Version 1.4.1.0 (27 Nov 2026)
-
-Added on top, with nothing removed; the ids, attributes, totals and the import the tester uses are the same. The
-+ sheet follows the chosen language; the fonts and the QR library are served from the site itself; the ledger
-maths have unit tests; the customer page and the overdue line use the one balance function.
-
-| What is checked | Latest result | Evidence |
-| --- | --- | --- |
-| Hidden data, bonus items, phone and light/dark marks (the independent checker, seed 4242, live at 1.4.1.0) | 27 pass, 0 fail; 100 out of 100 | `evidence/last-check-live.txt` |
-| No other host on a plain visit, a QR code or a language change; the + sheet in Hindi, Telugu and Urdu (`local-assets.mjs`) | ALL PASS (13 checks) | `evidence/last-local-assets-live.txt` |
-| Phone layout (`phone-ledger.mjs`) | ALL PASS (147 checks) | `evidence/last-phone-ledger-live.txt` |
-| Ledger maths (`ledger.cjs`, in Node, no browser) | ALL PASS (27 checks) | run on the code |
-
-The other suites passed on the local copy at 1.4.1.0 and were not rerun on the live link for this version.
-
-Version 1.5.0.0 (27 Nov 2026), on top with nothing removed: the desktop overview of a shop with customers is laid out like the best chat apps (`compact.css`, `compact.js`); live, the checker 27 pass, 0 fail (100 out of 100, `evidence/last-check-live.txt`), and the desktop layout (93 checks) and the phone layout (147 checks) ALL PASS (`evidence/last-desk-ledger-live.txt`, `evidence/last-phone-ledger-live.txt`).
-
-Version 1.5.1.0 (27 Nov 2026), on top with nothing removed: Urdu reads right to left and the desktop holds a 40-customer shop; live, the checker 27 pass, 0 fail (100 out of 100), and desk-ledger (149 checks), phone-ledger (147) and langs (25) ALL PASS (`evidence/last-desk-ledger-live.txt`, `evidence/last-phone-ledger-live.txt`, `evidence/last-langs-live.txt`).
-
-Versions 1.5.2.0 and 1.5.2.1 (27 Nov 2026), on top with nothing removed: the desktop right panel shows every record with no scroll box and a filter on each list, the sai4b mark opens sai4b.com, and the four findings of a fresh review of the live link (40 pass, 4 fail, 9 not tested) are fixed: the search box, the strip labels, the "Record" label and a notice about the demo pay address. Live, the checker 100 out of 100, and review-fixes (98 checks), brief, phone-ledger (147), desk-ledger (151), layout (7), sendways (16), langs (25) and brand (184) ALL PASS (`evidence/`).
+Hisaab does more than the brief asks: more languages, quick entry, several shops, customer tools and a
+chat-style layout among them. Those are listed in the README under
+[What Hisaab supports](README.md#what-hisaab-supports).

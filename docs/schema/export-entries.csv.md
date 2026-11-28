@@ -1,8 +1,11 @@
-# Exports: entries CSV, balances CSV and JSON backup
+# Hisaab: exports and reading a CSV
 
-Hisaab has three export buttons. All three are built in the browser from the stored state (see
-[stored-state.schema.json](stored-state.schema.json)) and downloaded through a temporary Blob link. Nothing
-is sent anywhere. Source: `exportEntries()`, `exportBalances()`, `exportJson()` and `csvCell()` in `app.js`.
+This page describes version 1.5.2, the version on the live link.
+
+Hisaab has three export buttons: "Export entries (CSV)", "Export balances (CSV)" and "Backup file (JSON)". All
+three files are built in the browser from the stored state (see
+[stored-state.schema.json](stored-state.schema.json)) and saved by the browser as a download. No file is
+uploaded. The code is `exportEntries()`, `exportBalances()`, `exportJson()` and `csvCell()` in `app.js`.
 
 ## File names
 
@@ -37,8 +40,7 @@ Row order: by `date` ascending, then by `seq` ascending for entries on the same 
 reverse of the customer page).
 
 The entries export round-trips: loaded back through `#import-box` (see [Importing a CSV](#importing-a-csv))
-it gives the same totals (tested on the sample: total outstanding 11,820). The `has_screenshot` column is
-not read back, so screenshots do not return.
+it gives the same totals. The `has_screenshot` column is not read back, so screenshots do not return.
 
 ## Balances CSV
 
@@ -111,8 +113,8 @@ entry carries the row's date and note.
 
 **Checks.** The result is a shop object with the current shop name, which then goes through the same
 `fromShopFile()` checks as a JSON file ([shop-file.schema.json](shop-file.schema.json)): type aliases,
-amounts from 0 to 10,000,000 (others skipped and listed), a missing or unreadable date set to today and
-counted, repeated phones dropped, bad rows skipped and listed, and one Undo in the toast.
+amounts below zero or above 1e12 skipped and listed, paise rounded to whole rupees, a missing or unreadable
+date set to today and counted, repeated phones dropped, bad rows skipped and listed, and one Undo in the toast.
 
 ## JSON backup
 
@@ -134,5 +136,6 @@ counted, repeated phones dropped, bad rows skipped and listed, and one Undo in t
   (screenshot) are not exported**, so a backup restored through `#import-box` comes back without its
   screenshots, with new ids, and with `seq` reset to the position in the file.
 - `nativeDigits` is not exported.
+- `profile.js` adds `owner`, `address` and `logo` to the file, each only when it is set.
 - The file is a valid shop file ([shop-file.schema.json](shop-file.schema.json)), so it can be imported
   again as it is.

@@ -2,30 +2,35 @@
 !include <C4/C4_Deployment>
 title Hisaab: deployment
 
-Deployment_Node(dev, "Developer PC", "Windows, PowerShell, Vercel CLI") {
-  Container(src, "Working copy", "Git", "App files plus brief, brand, tests, docs and *.md")
+Deployment_Node(repo, "Source repository", "Git") {
+  Container(src, "App folder", "Files", "The site's files plus the brief, brand, tests and notes; .vercelignore keeps those last ones out of the deploy")
 }
-Deployment_Node(gh, "GitHub", "Private repository") {
-  Container(repo, "karwasanjay007/hisaab", "Git", "Source history and rollback")
-}
-Deployment_Node(vc, "Vercel", "Project hisaab") {
-  Deployment_Node(edge, "Static hosting", "HTTPS, *.vercel.app") {
-    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG", "index.html, styles.css, app.js, sample.js, sample-data.json, sw.js, manifest, icon.svg; v1.1: profile.css, profile.js, shops.css, shops.js; v1.2: langs.js, extras.css, extras.js, customer.css, customer.js and the folder i18n with one JSON file per language; v1.2.3: names.js, sendways.js, wacheck.js, polish.css, pay.html; no functions, no server code")
+Deployment_Node(vc, "Vercel", "Static hosting") {
+  Deployment_Node(edge, "hisaab-hazel.vercel.app", "HTTPS") {
+    Container(site, "Static site", "HTML, CSS, JavaScript, JSON, SVG, WOFF2", "index.html, pay.html, app.js and the add-on scripts, the style sheets, sample-data.json, sw.js, manifest.webmanifest, icon.svg, brand-mark.svg, vendor/, fonts/, i18n/. No build step, no rewrites, no functions, no server code")
   }
 }
-Deployment_Node(phone, "Owner's phone", "Mobile browser") {
-  Container(app, "Hisaab single-page app", "HTML, CSS, JavaScript", "Runs the ledger; v1.1: app.js exposes the window.Hisaab hook, and the add-ons profile.js and shops.js load after it; v1.2: langs.js, extras.js and customer.js load after it too, and the hook gained addLanguage, setLang, text, balances, overdue and quickWords; v1.2.3: names.js, sendways.js and wacheck.js load after customer.js, the hook gained nameIn and translit, and the reminder links to pay.html")
-  ContainerDb(store, "localStorage", "Web Storage", "The shop's data, never uploaded: hisaab.v1 for the current shop; v1.1: hisaab.shops for the other shops, once a second shop exists; v1.2: no new key, hisaab.lang holds one of twelve language codes; v1.2.3: hisaab.wa holds the owner's WhatsApp answer per number")
-  Container(swk, "Service worker", "sw.js", "v1.1: precaches the app shell with profile.css, profile.js, shops.css, shops.js; v1.2: cache hisaab-v4, the app shell also lists extras.css, extras.js, customer.css, customer.js, langs.js; the i18n files are not precached, each is cached the first time it is fetched; v1.2.3: cache hisaab-v8 (v1.2.4: hisaab-v9; v1.2.5: hisaab-v10, with assist.js; v1.4: hisaab-v14, with guard.js, guard.css, brand.css, brand-mark.svg, compact.css, compact.js), the app shell also lists names.js, sendways.js, wacheck.js, polish.css, pay.html")
+Deployment_Node(device, "Owner's phone or computer", "Browser") {
+  Container(app, "Hisaab page", "HTML, CSS, JavaScript", "Runs the whole ledger in the browser")
+  ContainerDb(store, "localStorage", "Web Storage", "Everything the shop records. It is never uploaded")
+  Container(swk, "Service worker", "sw.js", "Network first; falls back to the cache hisaab-v22")
+  ContainerDb(cache, "Cache hisaab-v22", "Cache API", "Copies of the site's files for use offline")
+}
+Deployment_Node(out, "Reached only when used", "Other parties") {
+  Container(cdn, "jsDelivr", "CDN", "The screenshot reader, fetched when a screenshot is chosen")
+  Container(speech, "Browser's speech service", "Browser maker", "Receives the audio while the microphone is on")
+  Container(apps, "WhatsApp, SMS, dialer, UPI app", "Apps on the device", "Opened by links the owner taps")
 }
 
-Rel(src, repo, "git push", "HTTPS")
-Rel(src, site, "vercel deploy --prod --yes; .vercelignore drops non-site files", "Vercel CLI")
-Rel(app, site, "Loads files from hisaab-hazel.vercel.app", "HTTPS")
-Rel(app, site, "v1.2: langs.js fetches i18n/*.json only for the chosen language", "HTTPS")
+Rel(src, site, "vercel deploy --prod", "Vercel CLI")
+Rel(app, site, "Loads the files; fetches i18n/<code>.json only for a chosen language", "HTTPS")
 Rel(app, store, "Reads and writes")
-Rel(app, swk, "Registers")
-Rel(swk, site, "Network first, cache as fallback", "HTTPS")
+Rel(app, swk, "Registers on HTTPS or localhost")
+Rel(swk, site, "Network first", "HTTPS")
+Rel(swk, cache, "Stores and reads copies")
+Rel(app, cdn, "Reader script", "HTTPS")
+Rel(app, speech, "Audio, by the browser")
+Rel(app, apps, "wa.me, sms:, tel:, upi://pay links")
 
 LAYOUT_WITH_LEGEND()
 @enduml

@@ -1,198 +1,141 @@
 # Hisaab: product requirements
 
-| | |
-| --- | --- |
-| Product | Hisaab, a digital credit ledger for a local shop |
-| Owner | Sanjay Karwa, Smart AI for Business |
-| Status | Approved for build (FWAI Batch 10 build project; brief in `brief/brief.md`) |
-| Last revised | 27 Nov 2026 (version 1.5.2.1) |
-| Additions | Versions 1.1.0.0 to 1.5.2.1 (22 to 27 Nov 2026): see the last section of this document |
+This page describes version 1.5.2, the version on the live link.
 
-This document says what is being built and for whom, never how.
+Hisaab is a shop credit ledger, the khata a small shop keeps for who owes what. This page says what it must do
+and for whom. How it is built is in [the architecture](ARCHITECTURE.md) and [the tech stack](TECH-STACK.md).
 
-## 1. The product and the focus
+## Who it is for
 
-The brief, quoted once:
+- **The shop owner.** Runs a small shop in India, sells to regular customers on credit and writes it in a
+  notebook. Works on a phone, often with a customer waiting, sometimes without signal. May prefer Hindi, Telugu
+  or another Indian language to English.
+- **The customer.** Receives a polite message with the exact amount owed and a way to pay it.
 
-> A simple digital ledger for a local shop, like the notebook a kirana keeps for who owes what, with a
-> WhatsApp reminder in one tap.
+There is one kind of user of the app itself: the owner. Nobody signs in.
 
-Focus:
-- The shop owner knows, at a glance on a phone, how much the shop is owed in total and by whom.
-- Recording a sale on credit or a payment takes seconds.
-- Asking a customer to pay takes one tap, with the right amount already in the message.
+## The problem
 
-| Stage | What the owner can do at the end of it |
-| --- | --- |
-| 1 | Add customers and entries, see every balance and the total, send a reminder, keep data after reload, load a shop from a file |
-| 2 | Attach payment screenshots, see who is most overdue, correct mistakes, search, export, pay-by-UPI in the reminder, use the app in Hindi or Telugu, read the amount from a screenshot |
+A paper khata does not add itself up. The owner cannot see at a glance how much the shop is owed, who has not
+paid for longest, or what one customer's balance is today. Asking for money means finding the page, adding the
+figures and writing a message by hand, so it is put off. A notebook can also be lost, and it cannot be searched.
 
-## 2. Decisions
+Hisaab keeps the same notebook on the owner's phone. It shows the total and every balance, records a sale on
+credit or a payment in a few seconds, and opens a WhatsApp reminder with the name, the amount and a pay link
+already written.
 
-### 2.1 Decisions taken
-| ID | Decision | What it settles | Source |
-| --- | --- | --- | --- |
-| D-1 | Data stays on the owner's phone; no account or server | Privacy and speed | Brief: "browser storage is fine" |
-| D-2 | Loading a shop from a file replaces the current shop, after it is checked | What import means | Brief: tester "loads a different shop" |
-| D-3 | Total outstanding is the sum of every customer's balance (all credit minus all payments), so a customer in advance reduces it; when some customers are in advance, the amount owed by those who owe is shown in a note just below the total, not in the same element [A-1]. Revised 20 Nov 2026: an external review noted that the earlier display began with the owed-only figure, so a tester reading the first number would miss a net expected value, and the brief defines balance as all credit minus all payments | Meaning of "total outstanding" | Brief: balance = credit minus payments; external review, 20 Nov 2026 |
-| D-4 | Deleting an entry can be undone straight away | Safety without pop-ups | Owner on a phone |
+## Requirements
 
-### 2.2 Out of scope
-| Item | Why | Where it goes instead |
+Each requirement is one line in the owner's words. The last column names the epic that holds its features and
+acceptance criteria in [the epics](docs/epics.md).
+
+### From the brief
+
+The product was built against a written brief. Its nine numbered requirements keep the brief's own numbers. The
+brief's bonus items and its one checking rule have no numbers there, so they are marked "Bonus" and "Check".
+
+| ID | Requirement | Epic |
 | --- | --- | --- |
-| Sending reminders automatically | Needs a messaging account and consent | Phase 3 |
-| Staff logins | One owner, one phone. Several shops on one phone is built since 1.1.0.0 (V-3) | Phase 3 |
-| Stock and billing | Not asked | Not planned |
+| 1 | I can add a customer with a name and a 10 digit phone number | Customers |
+| 2 | I can add an entry for a customer, credit (I gave goods) or payment (the customer paid), with an amount, a date and a short note | Entries |
+| 3 | I see each customer's balance, all credit minus all payments, and the shop's total outstanding at the top | Shop overview |
+| 4 | A customer's page lists that customer's entries, newest first | Customer page, statement and tools |
+| 5 | I can attach a screenshot to a payment, and it shows as a small picture on the entry | Payment screenshot |
+| 6 | Each customer has a WhatsApp reminder button, and the message holds the customer's name and the balance in rupees | Reminders and getting paid |
+| 7 | My data is still there after I reload the page | Shop data: load, export and the sample shop |
+| 8 | I can paste a shop file in the sample's format into an import box and load a different shop | Shop data: load, export and the sample shop |
+| 9 | It works well on a phone 375 px wide | Layout and themes |
+| Bonus | I see an overdue list, sorted by days since the last payment | Shop overview |
+| Bonus | I can edit and delete an entry, and the balances follow | Entries |
+| Bonus | I can export a CSV that matches the data | Shop data: load, export and the sample shop |
+| Bonus | I can search by name or phone | Customers |
+| Bonus | The reminder carries a UPI pay link | Reminders and getting paid |
+| Bonus | I can read the labels in Hindi or Telugu | Languages and names |
+| Bonus | The amount is read from the payment screenshot | Payment screenshot |
+| Check | Anything that depends on the date uses the date given in the page address when there is one | Links and robustness |
 
-## 3. Open questions
+### Beyond the brief: the ledger and getting paid
 
-| ID | Question | Options | Holds up | Needed before | Owner |
-| --- | --- | --- | --- | --- | --- |
-| Q-1 | The shop's own UPI ID for pay links | Set in Settings; a clearly marked demo ID until then | UPI link in reminders | Real use | Shop owner |
-
-## 4. Who it is for
-
-- The shop owner: serves customers on credit, keeps a notebook today, checks it on a phone, wants money
-  owed back without awkward conversations.
-- The customer: receives a polite reminder with the exact amount and a way to pay.
-
-## 5. Requirements
-
-### 5.1 Framework
-| ID | Rule |
+| Requirement | Epic |
 | --- | --- |
-| F-1 | Balance = all credit minus all payments, for each customer |
-| F-2 | A customer is identified by a 10 digit phone number; no two customers share one |
-| F-3 | Every figure shown is computed from stored entries; nothing is typed in as a total |
-| F-4 | Anything that depends on today's date uses the date given in the page address when present |
-| F-5 | Data survives closing and reopening the page |
+| I am warned when a phone number does not look like an Indian mobile number, and no two customers share a number | Customers |
+| I can correct a customer's name and its Hindi and Telugu spellings | Customers |
+| I can undo a delete, an edit or a load straight away, with no pop-up to answer | Entries |
+| After saving an entry I can send the customer a receipt on WhatsApp | Entries |
+| I see who owes the most, what was collected and given on credit in the last 30 days, and who has gone longest without paying | Shop overview |
+| I see how much has been unpaid for 30 days or more, and from how many customers | Shop overview |
+| I can remind every overdue customer one after another with one button | Reminders and getting paid |
+| The customer gets a pay link they can tap, and I can show a UPI QR code to scan | Reminders and getting paid |
+| If a number is not on WhatsApp I can send the same message by SMS, to a contact I choose, or copy it | Reminders and getting paid |
+| When I add a customer I can check that the number is on WhatsApp, so reminders reach them | Reminders and getting paid |
+| I am told plainly while reminders point at the demo UPI ID and not my shop's own | Reminders and getting paid |
+| I can print or save a customer's statement as a PDF, with a QR to pay | Customer page, statement and tools |
+| On a customer's page I see the totals, the days since the last payment and the balance over time, and I can call, open a chat, change the number or delete the customer with undo | Customer page, statement and tools |
+| I can type an entry as one sentence, such as "Sunita 500 udhaar", and the form is filled for me to check | Quick entry, typed and by voice |
+| I can speak the same sentence, and when voice does not work I am told why and what to do instead | Quick entry, typed and by voice |
+| A name the app does not know is offered as a new customer | Quick entry, typed and by voice |
 
-### 5.2 Features by stage
-- Stage 1: add customer; add credit or payment with amount, date, note; balances and total outstanding;
-  customer page with entries newest first; WhatsApp reminder with name and balance; import a shop file;
-  works at 375 px; light and dark.
-- Stage 2: payment screenshot shown on the entry; overdue list by days since last payment; edit and
-  delete entries; export to a spreadsheet file; search by name or phone; UPI pay link in the reminder;
-  Hindi and Telugu labels; amount read from a screenshot.
+### Beyond the brief: the shop, languages and the device
 
-### 5.3 Scenarios
-| ID | Given | When | Then |
-| --- | --- | --- | --- |
-| S-1 | The sample shop is loaded | The owner opens the app | Total outstanding shows 11,820 and each balance matches the sample's expected file |
-| S-2 | A customer owes 3,470 | The owner taps remind | WhatsApp opens to that number with the name and Rs 3,470 in the message |
-| S-3 | A payment of 500 is recorded | The page reloads | The payment is still there and the balance is 500 lower |
-| S-4 | A file with a missing phone number is loaded | The owner presses Load | Nothing is replaced and the owner is told what is wrong |
+| Requirement | Epic |
+| --- | --- |
+| I can load my ledger from a spreadsheet saved as CSV, and I am told what was skipped and why | Shop data: load, export and the sample shop |
+| I can export entries and balances as CSV and keep a backup file of the shop | Shop data: load, export and the sample shop |
+| On a first visit I can load a sample shop to look around | Shop data: load, export and the sample shop |
+| I can keep more than one shop on one device, each with its own ledger | Several shops and the shop profile |
+| I can set my shop's name, UPI ID, owner name, address and logo, and they show on statements | Several shops and the shop profile |
+| I can use the app in twelve languages: English, Hindi, Telugu, Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu | Languages and names |
+| A customer's name is also shown in the script of my language, and Urdu reads right to left | Languages and names |
+| I can show numbers in Hindi or Telugu digits | Languages and names |
+| On a phone the ledger looks like a chat app: the customers on the first screen, a quick entry pill at the bottom and a "+" menu of all actions | Layout and themes |
+| On a desktop the same pill and menu are there, with Overdue and Recent entries in a panel on the right on a wide screen | Layout and themes |
+| I can switch between light and dark, and every screen is readable in both | Layout and themes |
+| The app opens without signal after one visit, and I can install it on my phone | Offline and install |
+| Amounts are in whole rupees, and an amount with paise is not saved until I choose | Checks on what is typed |
+| I am told at once when an amount, a date, a phone number or a UPI ID is wrong, and nothing is saved until it is right | Checks on what is typed |
+| I am told when a change could not be kept because the storage of the device is full or blocked | Links and robustness |
+| A wrong or incomplete link, to a customer or to the pay page, does not leave me on a broken screen | Links and robustness |
 
-## 6. Success measures
+## Out of scope
+
+| Not in the product | Why |
+| --- | --- |
+| Sending reminders by itself | The owner presses Send in WhatsApp or SMS. Sending without the owner needs a messaging account and the customer's consent |
+| Accounts, sign-in and staff logins | One owner, one device. There is no server to sign in to |
+| The same ledger on two devices at once | Everything a shop records stays in the browser of one device ([where data is kept](docs/data-model.md#where-data-is-kept)). The backup file moves a shop to another device by hand |
+| Taking the payment | The app builds a pay link and a QR code. The money moves in the customer's own UPI app, and the owner records the payment |
+| Stock, billing and invoices | The brief asks for a credit ledger only |
+| Paise | Amounts are whole rupees |
+| Looking up whether a number is on WhatsApp | No such lookup exists without a business account and a server. The owner answers after a hello message |
+
+What the product does within its scope but only up to a point is listed under
+[known limits](REPORT.md#known-limits).
+
+## Success measures
 
 | Measure | Target |
 | --- | --- |
-| Sample shop numbers match the expected file | 100 per cent |
-| A different shop loaded through the import box | All totals correct |
-| Sideways scroll at 375 px | None |
-| Text contrast in light and dark | WCAG AA everywhere |
+| The sample shop, with the date set to 15 November 2026 in the page address | Total outstanding 11,820 and every balance as the brief's expected file gives it |
+| A different shop loaded through the import box | Every total and balance correct |
+| Every requirement of the brief and every bonus item | Met, each shown by a test |
+| Sideways scroll at 375 px | None, in every language |
+| Light and dark | Every screen readable in both |
+| A plain visit | No request to any host but the site itself |
+| A visit without signal, after one visit with it | The app opens with its data |
+
+The results on the live link are in [the report](REPORT.md#latest-results-on-the-live-link). Each line of the
+brief is checked in [the specification check](SPEC-CHECK.md).
 
 ## Assumptions
 
-- [A-1] "Total outstanding" is the sum of every customer's balance, so money paid in advance reduces it;
-  in the sample every balance is owed, so both readings give 11,820.
-
-## Sources and revisions
-
-| Date | Change |
-| --- | --- |
-| 20 Nov 2026 | First version, from the FWAI brief |
-| 20 Nov 2026 | D-3 and A-1 revised: total outstanding is the sum of all balances, with the owed figure in brackets when some customers are in advance |
-| 20 Nov 2026 | D-3: the owed figure moved out of the total into a note just below it, so the total shows one figure |
-| 23 Nov 2026 | Section added for the additions of versions 1.1.0.0 and 1.2.0.0 |
-| 23 Nov 2026 | Requirements traced back from the app: V-11 to V-19 added for what 1.0.0.0 does beyond sections 1 to 5; section 2.2 corrected (several shops is built) |
-| 23 Nov 2026 | Baseline 1.2.3.0 approved by the owner: V-20 to V-24 added for versions 1.2.1.0, 1.2.2.0 and 1.2.3.0; an out-of-scope row for an automatic check of a number; the note on who the additions are for corrected (the customer now gets a pay link, and a hello message when the owner checks a number) |
-| 23 Nov 2026 | Version 1.2.4.0: V-24 now says that a wrong answer is put right with one tap (built in 1.2.3.1); V-25 added, voice quick entry never ends in silence |
-| 25 Nov 2026 | Version 1.2.5.0: V-26 added after the project feedback, controls that say what they did and quick entry that offers to add a customer it does not know |
-| 27 Nov 2026 | Versions 1.2.6.0 to 1.4.0.0: V-27 to V-30 added after a check against the course build approach, each on top and with nothing removed |
-| 27 Nov 2026 | Version 1.4.1.0: V-31 added, on top and with nothing removed |
-| 27 Nov 2026 | Version 1.5.0.0: V-32 added, on top and with nothing removed; V-30 corrected, the desktop has its own layout since 1.5.0.0 |
-| 27 Nov 2026 | Version 1.5.1.0: V-33 added, on top and with nothing removed |
-| 27 Nov 2026 | Versions 1.5.2.0 and 1.5.2.1: V-34 and V-35 added, on top and with nothing removed; V-33 corrected, the right panel has no scroll boxes since 1.5.2.0 |
-
-## Versions 1.1.0.0 to 1.2.4.0: additions (22 to 23 Nov 2026)
-
-Why they were added. After the first release the app was compared with other builds of the same batch. Only
-the screens of those builds were read. What they showed that Hisaab did not have was added, in two steps:
-three additions in 1.1.0.0 and seven in 1.2.0.0. Versions 1.2.1.0 to 1.2.4.0 came from the owner's own
-use of the live site: three additions in 1.2.1.0, one in 1.2.2.0, one in 1.2.3.0 (put right in 1.2.3.1) and
-one in 1.2.4.0. The sections above still
-describe version 1.0.0.0.
-
-Who they are for. Every addition is for the shop owner. The customer still receives the reminder with the same
-amount. Since 1.2.1.0 it also carries a pay link the customer can tap (V-22), and since 1.2.3.0 a customer
-added by hand may get a short hello message when the owner checks the number (V-24).
-
-Requirements:
-
-| ID | Version | Feature | Requirement |
-| --- | --- | --- | --- |
-| V-1 | 1.1.0.0 | Shop profile | The owner can save an owner name, an address and a small logo. They show in the header and on the printed statement and travel in the backup file. Nothing shows until they are set |
-| V-2 | 1.1.0.0 | Balance history line | On a customer page with two or more entries, a line shows the balance after each entry, with a sentence for screen readers |
-| V-3 | 1.1.0.0 | More than one shop on the same phone | The owner can add a shop, switch between shops, remove one in two presses, and load a file as a new shop. Each shop keeps its own ledger |
-| V-4 | 1.2.0.0 | Nine more languages | Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu join English, Hindi and Telugu: twelve in all. Quick entry knows each language's words for "gave" and "got" |
-| V-5 | 1.2.0.0 | Customer page totals and days since the last payment | The customer page shows the total given on credit, the total received and the days since the last payment |
-| V-6 | 1.2.0.0 | Call and WhatsApp chat links | From a customer page the owner can call the customer or open a WhatsApp chat with no message. The reminder with the name and the balance stays a separate button |
-| V-7 | 1.2.0.0 | Change a customer's phone number | The owner can give a customer a new 10 digit number. The customer and every entry move to it. A number another customer has is refused (F-2) |
-| V-8 | 1.2.0.0 | Delete a customer with Undo | Deleting takes two presses and removes the customer and their entries. Undo is offered straight away and puts the same entries back (as D-4 does for an entry) |
-| V-9 | 1.2.0.0 | Note shortcuts | Six buttons under the note field fill in a common note: groceries, milk, rice, oil, paid on UPI, cash. The entry is saved by the same button as before |
-| V-10 | 1.2.0.0 | Total unpaid for 30 days or more, and the date of the figures | A line above the overdue list gives the amount unpaid for 30 days or more and the number of customers. The date the figures are for shows under the total (F-4) |
-
-Built in version 1.0.0.0 but not stated in sections 1 to 5 (found when the requirements were traced back from the app on 23 Nov 2026):
-
-| ID | Version | Feature | Requirement |
-| --- | --- | --- | --- |
-| V-11 | 1.0.0.0 | Quick entry, typed or spoken | The owner can type or say one line, such as a name, gave or got, and an amount, and the entry form fills in. An unclear line asks the owner to choose, and nothing is saved until the owner saves |
-| V-12 | 1.0.0.0 | Load a spreadsheet | Besides a shop file, the owner can load a spreadsheet with name, phone, type, amount and date columns. Rows that cannot be read are skipped and listed |
-| V-13 | 1.0.0.0 | Backup and balances files | Besides the entries spreadsheet, the owner can save a balances spreadsheet with a total row and a full backup file that loads back |
-| V-14 | 1.0.0.0 | Key figures and recent entries | The overview shows who owes the most, what was collected and given in the last 30 days, who has gone longest without paying, and the newest entries |
-| V-15 | 1.0.0.0 | Remind all overdue | One button opens the reminders for every overdue customer, one at a time. The owner still presses Send each time |
-| V-16 | 1.0.0.0 | Pay code and statement | A customer page shows a pay code for the balance and gives a statement that can be printed or saved |
-| V-17 | 1.0.0.0 | Receipt after an entry | After an entry is saved, the owner can send the customer a receipt message with the new balance |
-| V-18 | 1.0.0.0 | Names and digits in the local script | The owner can correct a customer's name and add its Hindi and Telugu spelling. Figures can be shown in Hindi or Telugu digits |
-| V-19 | 1.0.0.0 | Works offline and can be installed | After the first visit the ledger opens with no network and can be added to the home screen. Reading the amount from a screenshot still needs a network |
-
-Added in versions 1.2.1.0 to 1.2.4.0 (23 Nov 2026), from the owner's use of the live site:
-
-| ID | Version | Feature | Requirement |
-| --- | --- | --- | --- |
-| V-20 | 1.2.1.0 | A layout that holds in every language and width | For the owner, who reads the app on a phone in any of the twelve languages. The customer heading never breaks into a column of letters and never runs under the buttons. The customer page has no blank band between cards. Entries stack inside a narrow card, and long labels wrap instead of being cut off. Nothing scrolls sideways |
-| V-21 | 1.2.1.0 | Customer names in the script of every language | For the owner who reads one of the nine newer languages, so that names read the same way as the labels. Each name is followed by its spelling in the chosen language's script, as Hindi and Telugu already did. The spelling is made automatically. The total, the rows and the reminder links stay the same |
-| V-22 | 1.2.1.0 | A pay link the customer can tap | For the customer, because WhatsApp does not make a UPI link tappable. The WhatsApp reminder carries an ordinary web link first. It opens a small pay page with the shop, the amount and the UPI ID, and its button opens the UPI app. The UPI link stays in the message, as the brief asks. The details in the link are never sent to a server |
-| V-23 | 1.2.2.0 | Other ways to send a reminder | For the owner, when WhatsApp refuses a number. The same reminder can go as an SMS to the customer's number, to any contact chosen in WhatsApp, or be copied. A sample number says that it is made up |
-| V-24 | 1.2.3.0 | Check a number on WhatsApp | For the owner, so that a refusal is found once, when the customer is added, and not at every reminder. After a customer is added by hand, the owner can send a hello message to the number with the name and the shop and no balance. The owner then says whether the chat opened. The answer is kept for that number, apart from the ledger. A refused number reads "Not on WhatsApp" and offers the other ways to send (V-23). A wrong answer is put right with one tap, without opening WhatsApp again (1.2.3.1). No app can look a number up beforehand; this is a limit, not a choice |
-| V-25 | 1.2.4.0 | Voice entry never ends in silence | For the owner who speaks the entry, so that a try that hears nothing is never left showing "Listening" with no word on screen. When the speech service stops without hearing anything, or cannot be reached, the app says so, for example "Did not catch that". Every failure also names the way that always works: the microphone key of the keyboard on a phone or tablet, and the computer's own dictation on a laptop, including a laptop with a touch screen. The message is in the chosen language and fits a phone screen. When the sentence is heard, the form fills and no tip shows |
-| V-26 | 1.2.5.0 | Controls that say what they did | For the owner, and for anyone using a screen reader or a keyboard, so that no press looks as if nothing happened. The light and dark button says which theme is on. A press on a navigation item names the view that is showing, also when it was already open. The skip link puts the focus on the ledger. When quick entry holds a name that no customer has, the app says so under its question and offers to add that customer with the name filled in |
-| V-27 | 1.2.6.0 | Nothing is lost without a word | For the owner. A change the browser store refused is said plainly, and "Saved." is not left standing. When the browser mode keeps nothing, a lasting notice says so and points to a normal window or a backup file. A picture in an imported file that is not an image or is too large is left out, the entry kept, and the count told. An edit with the date cleared stays open and asks for the date. Screenshots are kept at most 600 px on the long side. The shop name is whole on a phone and small labels are at least 12 px |
-| V-28 | 1.3.0.0 | Money in whole rupees | For the owner, as the course guideline asks. A new entry or an edit with paise is not saved: the form stays open and offers the nearest whole amount in one tap. An import with paise is rounded to the nearest rupee, halves up, and says how many were rounded. Amounts already stored with paise are shown as stored, with one line that offers to round them and an Undo. Whole-rupee data shows nothing new |
-| V-29 | 1.3.0.0 | The brand look | For the owner and the judges. Navy, cream, slate blue and amber; Fraunces for headings and Inter for text, with the Indian-script fonts kept first for those languages; the sai4b mark first in the top bar beside the Hisaab icon (the mark alone on a phone). No green anywhere: paid, the payment choice, success lines and the WhatsApp buttons are slate and navy |
-| V-30 | 1.4.0.0 | The ledger gets the phone screen | For the owner on a phone, like the best chat apps. A 56 px top bar, a compact total, quick entry as one pill at the bottom (type or speak "Sunita 500 udhaar" and send), a slim tab row, and a + sheet with every other action. With the sample shop, the customer rows fully on the first screen go from 0 to 4 at 375 x 667 and from 1 to 8 at 390 x 844. At 1.4.0.0 the desktop layout was as before; it has its own layout since 1.5.0.0 (V-32) |
-| V-31 | 1.4.1.0 | Every word in the chosen language, and nothing from another host | For the owner. The + sheet's labels and button names follow the chosen language in all twelve. The fonts and the QR library are served from the site itself, so a plain visit, a QR code and a language change ask no other host; only the screenshot reader still loads on demand from its host. The ledger maths are tested on their own, and the customer page and the overdue line use the one balance function |
-| V-33 | 1.5.1.0 | Urdu right to left, and a big shop on a desktop | For the owner who reads Urdu, and the owner with many customers. In Urdu the page reads right to left (`dir="rtl"` on the html element, set by `compact.js`), amounts and phone numbers stay left to right, and the skip link does not scroll the page sideways. On a desktop a row brought into view stays above the pill. At 1.5.1.0 the right panel fitted the screen and its cards scrolled on their own; since 1.5.2.0 it shows every record with no scroll box (V-34). Checked with a 40-customer shop. | Must |
-| V-32 | 1.5.0.0 | The ledger gets the desktop screen | For the owner at a desk, like the best chat apps. From 768 px wide, on the overview of a shop with customers: a total strip at most 110 px (total outstanding, customers, overdue, collected in 30 days, and a "…" for the full overview); the customer list gets the height, with its search on the title line; quick entry as the same pill, kept at the bottom of the main column, with a "+" that opens every other action as a popover above it. From 1200 px a right panel holds the entry form, overdue and recent entries; between 768 and 1199 px there is no right panel and the form folds away and opens above the pill. An empty shop, the section views and the customer page are as before. Nothing removed |
-| V-34 | 1.5.2.0 | Every record in view on a desktop, and the sai4b mark | For the owner at a desk. From 1200 px the right panel has no scroll box: the entry form is shown in full, with every overdue customer and every recent entry, and the panel grows with the page. Each of the two lists has a filter box, 44 px high, that narrows the rows. The quick-entry pill is pinned to the bottom of the screen, as wide as the customer list, and the "+" menu never opens off screen. The sai4b mark in the top bar opens sai4b.com in a new tab; the app name beside it still goes home. Checked by `tests/desk-ledger.mjs` (151 checks). Nothing removed |
-| V-35 | 1.5.2.1 | The four findings of the fresh review | For the owner on a phone, and the owner who has not yet set a UPI ID. At 375 px the search box is 44 px high, the labels of the strip under the total are shown in full, and no letter of a bottom-bar label is cut. While the shop has no UPI ID of its own, a notice beside the reminder controls (under the customer list and on the customer page) says that reminders carry the demo pay address, with a link to Shop settings, in all twelve languages; it goes once a UPI ID is saved, and the reminder links are unchanged. Checked by `tests/review-fixes.mjs` (98 checks). Nothing removed |
-
-Constraints:
-
-| ID | Constraint |
-| --- | --- |
-| C-1 | Every addition is an add-on file beside the ledger. The nine "must do" items and the bonus items of the brief behave as before, and the import the tester uses is unchanged |
-| C-2 | An addition shows only where it is used or once it is set. A shop with no profile stores nothing extra |
-| C-3 | With one shop nothing is stored beyond the ledger's own key. The plain import, the sample and the exports act on the current shop only |
-| C-4 | English, Hindi and Telugu stay built in. A further language is fetched only when chosen. The total, the rows and the reminder links are the same in every language |
-
-Out of scope for these versions:
-
-| Item | Why | Where it goes instead |
-| --- | --- | --- |
-| A server or an account | D-1 still holds: everything stays in the browser, on the owner's phone | Not planned |
-| Staff logins | Several shops on one phone is now in (V-3, and the row in section 2.2 now says so); logins need an account | Phase 3 |
-| Translation review by a native speaker | The nine new languages were checked by a script for keys, placeholders and script, not read by a native speaker | Still to come |
-| Voice entry in the nine new languages | The browser's speech service is used in English | Not planned |
-| An automatic check that a number is on WhatsApp | WhatsApp gives no lookup to an ordinary app. The only route is a business account, a server and a cost for each message, and D-1 rules out the server: nothing leaves this phone | Not planned |
+- "Total outstanding" is the sum of every customer's balance, so money paid in advance lowers it. When some
+  customers are in advance, a note under the total says how much is owed and how much is in advance. In the
+  sample shop every balance is owed, so both readings give 11,820.
+- A customer is identified by the 10 digit phone number. Numbers are Indian mobile numbers, and reminders are
+  sent to +91.
+- The owner has WhatsApp on the device, or can send an SMS.
+- The owner sets the shop's own UPI ID before sending real reminders. Until then a demo UPI ID is used and the
+  app says so.
+- Voice entry and reading an amount from a screenshot need the internet. Everything else works without it.
+- The browser keeps what the app stores. An owner who clears the browser's data, or uses a private window, loses
+  the ledger unless a backup file was exported.

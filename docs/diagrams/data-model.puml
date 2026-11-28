@@ -35,17 +35,16 @@ hide circle
 hide methods
 set separator none
 
-package "localStorage key hisaab.v1 (one JSON document)" {
-  class Shop <<root, one per browser>> {
+package "localStorage key hisaab.v1 (the open shop, one JSON document)" {
+  class Shop <<root>> {
     shop : string
     {field} upi : string  (empty = demo ID)
     nativeDigits : boolean [optional]
-    customers : Customer[]
-    entries : Entry[]
-    .. v1.1 shop profile, each optional ..
     {field} owner : string  (at most 60) [optional]
     {field} address : string  (at most 160) [optional]
-    {field} logo : data:image/ URL  (96 px, under 40 KB) [optional]
+    {field} logo : data:image/ URL  (under 40 KB) [optional]
+    customers : Customer[]
+    entries : Entry[]
   }
 
   class Customer {
@@ -56,10 +55,10 @@ package "localStorage key hisaab.v1 (one JSON document)" {
   }
 
   class Entry {
-    {field} <b>id</b> : string  (uid, key)
+    {field} <b>id</b> : string  (key)
     {field} phone : string  (refers to Customer)
     type : credit | payment
-    {field} amount : number  (whole rupees since v1.3; older data may hold paise)
+    {field} amount : number  (whole rupees)
     date : YYYY-MM-DD
     note : string
     shot : JPEG data URL | null
@@ -67,59 +66,58 @@ package "localStorage key hisaab.v1 (one JSON document)" {
   }
 }
 
-package "Separate localStorage keys" {
+package "localStorage keys hisaab.lang, hisaab.theme, hisaab.guard" {
   class Preferences <<per browser>> {
-    {field} hisaab.lang : en | hi | te  (v1.2: also bn, mr, ta, gu, kn, ml, pa, or, ur)
+    {field} hisaab.lang : en, hi, te, bn, mr, ta, gu, kn, ml, pa, or, ur
     hisaab.theme : light | dark
+    {field} hisaab.guard : test write  (removed at once)
   }
 }
 
-package "localStorage key hisaab.shops (v1.1, only with two or more shops)" {
-  class Shops <<v1.1, one per browser>> {
-    {field} active : string  (id of the shop in use)
+package "localStorage key hisaab.shops (only with two or more shops)" {
+  class Shops <<one per browser>> {
+    {field} active : string  (id of the open shop)
     list : ShopSlot[]
   }
 
-  class ShopSlot <<v1.1>> {
+  class ShopSlot {
     {field} <b>id</b> : string  (key)
     name : string
-    {field} data : Shop | null  (null = the active shop)
+    {field} data : Shop | null  (null = the open shop)
   }
 }
 
-package "localStorage key hisaab.wa (v1.2.3, per browser)" {
-  class WaChecks <<v1.2.3, one per browser>> {
+package "localStorage key hisaab.wa" {
+  class WaChecks <<one per browser>> {
     {field} <b>number</b> : string  (10 digits, key)
     {field} s : ok | no  (the owner's answer)
     {field} d : string  (date, YYYY-MM-DD)
   }
 }
 
+package "Cache API" {
+  class "Cache hisaab-v22" as Cache <<service worker>> {
+    copies of the site's own files
+    no ledger data
+  }
+}
+
 note bottom of WaChecks
-  <b>v1.2.3 WhatsApp check</b>
   Keyed by number, not by shop.
   Outside hisaab.v1: not in a
-  shop file or a backup.
+  shop file or a backup file.
 end note
 
 Shops "1" *-- "1..*" ShopSlot : list
 ShopSlot "1" o-- "0..1" Shop : data (parked ledger)
 
 note bottom of ShopSlot
-  <b>v1.1 several shops</b>
-  The active shop's data is null: its ledger
-  lives under hisaab.v1. A switch parks the
-  current ledger here and puts the chosen one
-  back under hisaab.v1.
-  hisaab.shops is not written until a second
-  shop is added and is removed again when
-  one shop is left.
-end note
-
-note top of Shop
-  <b>v1.1 backup file</b> (JSON export)
-  carries owner, address and logo
-  when they are set.
+  The open shop's data is null: its ledger
+  is under hisaab.v1. A switch parks the
+  open ledger here and puts the chosen one
+  under hisaab.v1. The key is not written
+  until a second shop is added and is removed
+  when one shop is left.
 end note
 
 Shop "1" *-- "0..*" Customer : customers
@@ -127,29 +125,27 @@ Shop "1" *-- "0..*" Entry : entries
 Customer "1" -- "0..*" Entry : phone
 
 note right of Customer
-  <b>Derived, never stored</b>
-  balance = sum(credit amounts) - sum(payment amounts)
+  <b>Worked out, never stored</b>
+  balance = credit amounts - payment amounts
   balance > 0 : owes the shop
   balance < 0 : in advance
-  days overdue (balance > 0 only) =
-    max(0, today - last payment date,
-    or first credit date when never paid)
-  today = ?today=YYYY-MM-DD when valid, else the device date
+  days without paying (balance > 0 only) =
+    today - last payment date,
+    or first credit date when never paid
+  overdue = 30 days or more
 end note
 
 note bottom of Entry
-  <b>Running balance</b> (customer page):
-  entries of one customer sorted by date, then seq,
-  oldest first; balance after each entry.
+  <b>Balance after</b> (customer page):
+  entries of one customer by date, then seq,
+  oldest first; the balance after each entry.
   Shown newest first.
 end note
 
 note left of Shop
   <b>Total outstanding</b> =
   sum of all balances, so a customer
-  in advance reduces it. The owed figure
-  (balances above 0) is in a note
-  below the total when it differs.
+  in advance lowers it.
 end note
 
 @enduml

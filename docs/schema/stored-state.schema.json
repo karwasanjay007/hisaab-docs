@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hisaab.local/docs/schema/stored-state.schema.json",
   "title": "Hisaab stored state (localStorage key hisaab.v1)",
-  "description": "The whole shop, saved by save() as JSON.stringify(state) under the localStorage key \"hisaab.v1\" after every change. load() accepts any saved value that parses as JSON and has customers and entries arrays; anything else is treated as no data, and on start the app then starts an empty shop (blank(): shop My shop, no customers, no entries) and saves it over the key. The app writes no timestamps, no version field and no customer ids: a customer is identified by its phone. Language and theme are stored under separate keys (hisaab.lang, hisaab.theme), not here.",
+  "description": "The open shop, saved by save() in app.js as one JSON document under the localStorage key \"hisaab.v1\" after every change. A saved value without customers and entries lists is ignored and the app starts an empty shop (\"My shop\"). No timestamps and no customer ids are stored: a customer is identified by the phone. Language, theme, other shops and WhatsApp check answers are under their own keys; see ../data-model.md.",
   "type": "object",
   "required": [
     "shop",
@@ -19,11 +19,11 @@
     },
     "upi": {
       "type": "string",
-      "description": "The shop's UPI ID (VPA), trimmed, or \"\" when not set (settings form #upi-id, maxlength 60). The settings form and import check it with validUpi() (see links.md); a bad ID is not saved. When \"\", every UPI link uses the built-in demo ID hisaab.demo@upi."
+      "description": "The shop's UPI ID, trimmed, or \"\" when not set. A value must pass validUpi() (see links.md). When \"\", every UPI link uses the demo ID hisaab.demo@upi."
     },
     "nativeDigits": {
       "type": "boolean",
-      "description": "Optional. Written only when the \"Show numbers in Hindi or Telugu digits\" box (#native-digits) is changed. Absent means false. An import replaces the state and so drops it."
+      "description": "Optional. Written only when the tick box for Hindi or Telugu digits is used. Absent means false."
     },
     "customers": {
       "type": "array",
@@ -44,7 +44,7 @@
           "phone": {
             "type": "string",
             "pattern": "^[0-9]{10}$",
-            "description": "Ten-digit phone, the customer's key. Never changed after creation."
+            "description": "Ten-digit phone, the customer's key. \"Change phone number\" on the customer page replaces it and moves the customer's entries to the new number."
           },
           "name_hi": {
             "type": "string",
@@ -94,13 +94,12 @@
           "amount": {
             "type": "number",
             "minimum": 0,
-            "description": "Rupees; whole rupees since 1.3.0.0 (a new entry or an edit with paise is not saved, an import rounds paise halves up, stored paise are shown as stored with an offer to round them). The entry form requires more than 0 and at most 10,000,000; import allows 0 and skips an entry above 10,000,000.",
-            "maximum": 10000000
+            "description": "Whole rupees. A typed entry must be above 0 and at most 10,000,000, and one with paise is not saved. A loaded file may hold up to 1e12; paise in it are rounded, halves up. Amounts stored earlier with paise are shown as stored, with an offer to round them."
           },
           "date": {
             "type": "string",
             "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-            "description": "YYYY-MM-DD. The entry form refuses a date after today (today honours ?today=); import does not."
+            "description": "YYYY-MM-DD. The date box of the entry form does not offer a day after today; a loaded file may hold one."
           },
           "note": {
             "type": "string",
@@ -112,7 +111,7 @@
               "null"
             ],
             "pattern": "^data:image/",
-            "description": "Payment screenshot or null. From the form it is a JPEG data URL (data:image/jpeg;base64,...) at quality 0.72, scaled so its longer side is at most 600 px, drawn on white. From import it is the data:image/ URL the file held; since 1.2.6.0 one that is not an image or is over 400,000 characters is dropped to null and counted. Choosing a screenshot switches the entry type to payment, but a credit entry can keep one if the type is changed back."
+            "description": "Payment screenshot or null. From the form: a JPEG data URL at quality 0.72, longest side at most 600 px, drawn on white. From a file: the data:image/ URL it held, unless it was longer than 400,000 characters. Choosing a screenshot switches the entry to payment."
           },
           "seq": {
             "type": "integer",
@@ -121,6 +120,21 @@
           }
         }
       }
+    },
+    "owner": {
+      "type": "string",
+      "maxLength": 60,
+      "description": "Optional. Owner name, from Shop profile (profile.js)."
+    },
+    "address": {
+      "type": "string",
+      "maxLength": 160,
+      "description": "Optional. Shop address, from Shop profile."
+    },
+    "logo": {
+      "type": "string",
+      "pattern": "^data:image/",
+      "description": "Optional. Shop logo as a data URL, shrunk until it is under 40 KB; one from a backup file is accepted up to 60 KB."
     }
   }
 }

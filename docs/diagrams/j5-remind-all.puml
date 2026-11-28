@@ -1,5 +1,5 @@
 @startuml j5-remind-all
-title J5 Remind all overdue: one WhatsApp chat at a time, longest overdue first
+title J5 Remind all overdue
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -37,41 +37,20 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
-participant "WhatsApp / UPI app" as WA
+actor "Owner" as O
+participant "Home screen\n(app.js)" as H
+participant "Overdue total\n(extras.js)" as E
+participant "WhatsApp" as WA
 autonumber
-App -> App : render(): od = overdueRows(balances())
-note right of App
-  only customers with a balance above zero
-  days = todayIso() minus the last payment date,
-  or minus the first credit date when never paid
-  sorted by days, most first; ties by larger balance
-end note
-App -> App : renderRemindAll(od)
-alt fewer than 2 overdue customers
-  App -> UI : #remind-all stays hidden
-else 2 or more
-  App -> App : queue = phones in od order; if the queue changed, index = 0
-  App -> UI : #remind-all visible, text "Remind all overdue ({n})"
-  App -> UI : href = waLink(queue[0])
+H --> O : "Overdue": everyone who owes, longest without paying first;\n"30+ days" on those 30 days or more
+E --> O : "{amount} unpaid for 30 days or more, from {n} customers"
+O -> H : tap "Remind all overdue (N)"
+H -> WA : open the first customer's chat with the reminder typed in
+O -> WA : press Send in WhatsApp, come back to Hisaab
+H --> O : the button reads "Next reminder: {name} ({i} of {n})"
+loop for each customer left
+  O -> H : tap the button again
+  H -> WA : open the next customer's chat
 end
-loop for each customer in the queue
-  Owner -> UI : tap the Remind all anchor
-  UI -> App : click: remindNextOne(): index + 1, schedule a re-render
-  UI -> WA : the link opens the chat for the current href (new tab, target _blank)
-  App -> App : setTimeout 0: renderRemindAll(overdueRows(balances()))
-  App -> UI : href moves to the next customer;\ntext "Next reminder: {name} ({i} of {n})"
-  WA --> Owner : chat with the reminder and UPI link, not sent
-  Owner -> WA : press Send in WhatsApp, come back to Hisaab
-  note right of WA : the app never sends by itself
-end
-App -> UI : after the last: "All {n} reminders opened"; href back to the first
-opt owner taps again after the last
-  App -> App : index restarts, the queue goes round again
-end
-opt an entry changes who is overdue
-  App -> App : the queue differs, index resets to 0 at the next render
-end
+H --> O : the button reads "All {n} reminders opened"
 @enduml

@@ -1,5 +1,5 @@
 @startuml j6-qr-and-statement
-title J6 Customer page: UPI QR code and a printable statement
+title J6 UPI QR code and statement
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -37,47 +37,24 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
-participant "QR library on the site\n(vendor/qrcode.min.js, qrcode-generator 1.4.4)" as CDN
+actor "Owner" as O
+participant "Customer page\n(app.js)" as C
+participant "QR library\n(vendor/qrcode.min.js)" as Q
+participant "Shop profile\n(profile.js)" as F
+participant "Browser's\nprint window" as B
+actor "Customer" as K
+participant "UPI app" as U
 autonumber
-Owner -> UI : tap a customer name (link #/c/{phone})
-UI -> App : hashchange: route(), spy()
-App -> App : currentPhone = phone; show #view-customer;\nmove the entry form into the page
-App -> App : render(), renderCustomer(b)
-App -> UI : name with local script, phone, balance, last paid, entries newest first\nwith the running balance after each
-App -> UI : #cust-remind, #cust-upi and #cust-qr (the last two only when bal above zero)
-note right of UI : v1.2 add-on profile.js, on each render:\na "Balance over time" line drawn as inline SVG,\none point per entry, with the highest and lowest balance
-== UPI QR code ==
-Owner -> UI : tap UPI QR code (#cust-qr)
-UI -> App : showQr(): open #qr-card, show amount and UPI ID (demo note if not set)
-App -> App : loadQr()
-alt window.qrcode already loaded
-  App -> App : use it
-else first time
-  App -> CDN : add script vendor/qrcode.min.js (from the site itself since v1.4.1; cdnjs before)
-  CDN --> App : onload: window.qrcode
-end
-alt library ready
-  App -> UI : #qr-box = qrSvg(upiLink(c, bal)) (SVG drawn in the page)
-else script fails (offline or blocked)
-  App -> UI : #qr-box shows the upi:~//pay link as text
-  note right of App : qrLib reset, so the next tap tries again
-end
-note over Owner, UI : the customer scans the code on the owner's screen with any UPI app
-Owner -> UI : tap UPI QR code again: showQr() closes the card
+O -> C : tap a customer in the list
+C --> O : name, "Balance", "Entries, newest first" with\n"Balance after" on each, and "Balance over time"
+== Scan to pay ==
+O -> C : tap "UPI QR code"
+C -> Q : load the QR library from the site itself, the first time
+C --> O : the QR code with the amount, the UPI ID and\n"Scan with any UPI app to pay {shop}."
+K -> U : scan the code; the UPI app opens with the amount filled in
 == Statement ==
-Owner -> UI : tap Statement (PDF) (#cust-statement)
-UI -> App : Promise.race(loadQr(), 1.5 s timer)
-note right of App : waits at most 1.5 s for the QR library;\nthe statement prints either way
-App -> App : printStatement()
-App -> UI : #print-area: shop, customer, date (todayIso()), table oldest first\nwith gave, got and running balance, totals\n(v1.1: the shop logo, owner and address in the heading when a profile is set)
-opt balance above zero and window.qrcode loaded
-  App -> UI : add scan-to-pay QR with amount and UPI ID
-end
-App -> UI : document.title = "Statement - {name} - {shop}"; body.print-mode
-App -> UI : after 50 ms: window.print()
-UI --> Owner : browser print dialog: print or save as PDF
-App -> UI : afterprint (or 1.5 s later): remove print-mode, restore the title
+O -> C : tap "Statement (PDF)"
+F -> C : add the shop logo, owner name and address, when the profile has them
+C -> B : "Account statement": Date, Note, You gave, You got, Balance,\n"Totals" and a "Scan to pay" code when money is owed
+O -> B : choose "Save as PDF" or a printer
 @enduml

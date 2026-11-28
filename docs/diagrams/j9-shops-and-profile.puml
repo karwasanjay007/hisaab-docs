@@ -1,0 +1,65 @@
+@startuml j9-shops-and-profile
+title J9 Several shops and the shop profile
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Owner" as O
+participant "The + menu\n(compact.js)" as M
+participant "Shops\n(shops.js)" as X
+participant "Shop settings\n(app.js)" as H
+participant "Shop profile\n(profile.js)" as F
+database "Browser storage" as S
+autonumber
+== Several shops ==
+O -> M : tap "+", then "Shops"
+O -> X : type a name under "Add a new shop", press "Add shop"
+X -> S : set the open shop aside and start an empty one
+X --> O : "Added "{name}". It is now the current shop."
+O -> X : press "Switch" beside the first shop
+X -> S : set this shop aside and open the other
+X --> O : "Switched to "{name}"."
+O -> X : press "Remove" beside a shop that is not open,\nthen "Press again to remove"
+X --> O : "Removed "{name}"."
+== Shop settings and profile ==
+O -> M : tap "+", then "Shop settings"
+O -> H : type "Shop name" and "Shop UPI ID (for pay links)",\npress "Save settings"
+H -> S : save; every reminder and pay link uses the new UPI ID
+O -> M : tap "+", then "Shop profile"
+O -> F : type "Owner name" and "Shop address", choose a "Shop logo",\npress "Save profile"
+F -> S : save the profile with the shop
+F --> O : "Profile saved."; the logo shows in the top bar and on statements
+@enduml

@@ -1,0 +1,62 @@
+@startuml j12-offline-install
+title J12 Offline and install
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Owner" as O
+participant "Browser" as B
+participant "Home screen\n(app.js)" as H
+participant "Service worker\n(sw.js)" as W
+database "Offline copy\n(browser cache)" as C
+database "Browser storage" as S
+autonumber
+== One visit with a connection ==
+O -> B : open the live link
+H -> W : register the service worker once the page has loaded
+W -> C : keep a copy of the app's own files: pages, scripts, styles,\nfonts, the QR library, the pay page and the sample shop
+== Install ==
+O -> B : choose "Install" or "Add to Home screen" in the browser's menu
+B --> O : "Hisaab" opens in its own window, from manifest.webmanifest
+== Later, with no signal ==
+O -> B : open Hisaab
+B -> W : ask for the page; the network does not answer
+W -> C : take the last copy kept
+C --> B : the app's files
+H -> S : read the same shop, language and theme
+H --> O : the same customers and totals; entries can be recorded\nand a QR code still draws
+note over H, C : not available without a connection: reading a screenshot's amount,\nvoice entry, and a language never used while online
+@enduml

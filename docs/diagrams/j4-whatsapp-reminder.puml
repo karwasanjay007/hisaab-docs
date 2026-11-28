@@ -1,5 +1,5 @@
 @startuml j4-whatsapp-reminder
-title J4 WhatsApp reminder from a customer row, with the pay page (since v1.2.1)
+title J4 WhatsApp reminder with the pay link, and other ways to send
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -37,65 +37,32 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
-database "localStorage" as LS
-participant "WhatsApp / UPI app" as WA
-participant "pay.html\n(customer's browser)" as Pay
+actor "Owner" as O
+participant "Home screen\n(app.js)" as H
+participant "Customer page\n(sendways.js, wacheck.js)" as C
+database "Browser storage" as S
+participant "WhatsApp" as WA
+actor "Customer" as K
+participant "Pay page\n(pay.html)" as P
+participant "UPI app" as U
 autonumber
-== Built at every render, before any tap ==
-App -> App : render(): bal = balances()[phone] for each customer
-App -> App : reminderText(c, bal)
-alt bal above zero
-  App -> App : payPage(c, bal): https link to pay.html on the app's own address,\n#pn={shop}&tn=Hisaab {name}&pa={UPI ID}&am={bal, two decimals}
-  App -> App : upiLink(c, bal): upi:~//pay?pa={UPI ID}&am={bal, two decimals}&pn={shop}&cu=INR&tn=Hisaab {name}
-  App -> App : the message, line by line:\n"Namaste {name}, this is a reminder from {shop}. Your balance is Rs {amt}."\n(blank line)\n"UPI pay link: {pay.html link}"\n(blank line)\n"Pay by UPI: {upi link}"\n(blank line)\n"Thank you."
-  note right of App : the details ride after "#",\nwhich a browser never sends to a server
-  note right of App : UPI ID from Settings (state.upi);\nuntil set, the demo ID hisaab.demo@upi
-else bal below zero (advance)
-  App -> App : "...You have Rs {amt} in advance with us. Thank you."
-else bal is zero
-  App -> App : "...Your account is settled, Rs 0 due. Thank you."
-end
-App -> UI : a[data-remind] href = wa.me/91{phone}?text={encoded message},\ntarget _blank (same link on the customer page as #cust-remind)
-note right of UI : since v1.5.2.1 (sendways.js): while no UPI ID is set,\na notice beside the reminder controls says the reminder\ncarries the demo ID, with a link to Shop settings
-opt Settings: owner saves shop name and UPI ID
-  Owner -> UI : Shop settings form, Save
-  alt UPI ID typed and validUpi() fails
-    App -> UI : #settings-msg "Enter a UPI ID like shopname@okbank, or leave it empty."
-    note right of App : nothing is saved; empty is allowed\n(the demo ID is then used)
-  else valid or empty
-    UI -> App : submit: state.shop, state.upi
-    App -> LS : save()
-    App -> App : render(): every reminder link is rebuilt
-  end
-end
 == The reminder ==
-Owner -> UI : tap the WhatsApp button on a customer row
-note right of UI : a plain link; no click handler in app.js
-UI -> WA : open wa.me in a new tab or the WhatsApp app
-WA --> Owner : chat with +91{phone}, message typed in, not sent
-Owner -> WA : read it, press Send in WhatsApp
-note right of WA : the app never sends by itself
+O -> H : tap the WhatsApp button on a customer's row
+H -> WA : open a chat with +91 and the customer's number; the message is typed in:\nname, shop, balance, "UPI pay link" and "Pay by UPI"
+note right of WA : this leaves the device only when\nthe owner presses Send
+O -> WA : press Send in WhatsApp
 == The customer pays ==
-opt customer taps the https "UPI pay link" (WhatsApp makes it tappable)
-  WA -> Pay : open pay.html#pn=...&tn=...&pa=...&am=...
-  Pay -> Pay : read the part after "#" in the page itself;\nnothing is stored or sent anywhere
-  alt UPI ID and amount are good
-    Pay -> Pay : show the shop, the amount and the UPI ID,\nthe button "Open your UPI app" and a Copy button
-    Pay -> WA : on a phone, after 0.4 s, open upi:~//pay?... by itself;\nthe button stays for a second try
-    WA -> WA : the customer's UPI app opens with payee, amount and note filled
-  else link broken or cut short
-    Pay -> Pay : "This payment link is not complete.\nAsk the shop to send it again."
-  end
-end
-opt customer taps the upi:~// link, where the phone makes it tappable
-  WA -> WA : the UPI app opens the same way
-end
-Owner -> UI : later records the payment (journey J2)
-opt on the customer page: UPI pay link (#cust-upi), shown when bal above zero
-  Owner -> UI : tap UPI pay link
-  UI -> WA : open upi:~//pay?... in a UPI app on this phone
-end
+K -> P : tap the "UPI pay link" in the message
+P --> K : "Pay to", the shop, the amount,\n"Open your UPI app" and "Copy"
+P -> U : on a phone, open the UPI app with the amount filled in
+== When WhatsApp cannot reach the number ==
+O -> C : open the customer, open "Other ways to send"
+C --> O : "Send as SMS", "Choose a contact in WhatsApp",\n"Copy the message": the same message
+O -> C : tap "Check on WhatsApp"
+C -> WA : open a chat with a short hello message
+O -> C : answer "Yes, the chat opened" or\n"No, it said the number is not on WhatsApp"
+C -> S : keep the answer for this number
+C --> O : "Checked: this number is on WhatsApp." or\n"Not on WhatsApp. Send by SMS, or change the number."
+== A shop with no UPI ID of its own ==
+C --> O : "Reminders now ask customers to pay the demo UPI ID\nhisaab.demo@upi, not your shop." with "Set your shop's UPI ID"
 @enduml

@@ -1,5 +1,5 @@
 @startuml j1-first-open
-title J1 First open: load the shop, or start empty, and render the overview
+title J1 First open and the sample shop
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -37,83 +37,23 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
-database "localStorage" as LS
-participant "Service worker\n(sw.js)" as SW
+actor "Owner" as O
+participant "Home screen\n(index.html, app.js)" as H
+participant "Layout\n(compact.js)" as L
+database "Browser storage" as S
+participant "Service worker\n(sw.js)" as W
 autonumber
-Owner -> UI : Open the app address, optionally with ?today=YYYY-MM-DD
-UI -> LS : head script: getItem('hisaab.theme')
-opt a theme is saved
-  UI -> UI : set data-theme on the html element
-end
-UI -> App : load sample.js (sets window.HISAAB_SAMPLE, the fallback for Load sample shop), then app.js, then the add-ons\nprofile.js, shops.js, langs.js, extras.js, customer.js
-App -> LS : getItem('hisaab.lang')
-LS --> App : 'en', 'hi' or 'te' built in (missing or other means 'en' at first)
-UI -> App : DOMContentLoaded: init()
-App -> LS : load(): getItem('hisaab.v1')
-alt saved shop with customers[] and entries[]
-  LS --> App : state
-else first visit or unreadable data
-  App -> App : state = blank()
-  note right of App : an empty "My shop": no customers, no entries;\nthe sample is not loaded
-  App -> LS : save(): setItem('hisaab.v1', state)
-end
-App -> UI : applyLabels(): html lang, data-i18n labels, placeholders
-App -> UI : resetEntryForm(): date and max date = todayIso()
-App -> App : add listeners, setupVoice()
-App -> App : route(): read location.hash (#/, #/s/{section} or #/c/{phone})
-App -> App : render(): b = balances(), total = totalOutstanding(b)
-note right of App
-  balance = all credit minus all payments
-  total outstanding = sum of all balances
-  todayIso() uses ?today= when it is a valid date
-end note
-App -> UI : #total-outstanding: text, data-value, plain-number copy
-App -> UI : li[data-customer] rows with span[data-balance] and a[data-remind]
-App -> UI : #top-defaulter, overdue list, Remind all, KPI tiles,\nrecent entries, customer select, settings
-App -> App : spy(): mark the active nav item
-note right of App
-  add-ons on each render:
-  #as-of, the date of the figures (extras.js)
-  #overdue-total, unpaid 30 days or more (extras.js)
-  #sec-shops in Shop settings (shops.js)
-  logo beside the shop name (profile.js)
-  #lang menu with twelve languages (langs.js);
-  a saved extra language is fetched from i18n/
-  names.js, sendways.js and wacheck.js
-  draw on a customer page only (J9, J11, J12);
-  assist.js (v1.2.5) says what a press did;
-  guard.js (v1.2.6) and compact.js (v1.4)
-  load last; on a phone compact.js puts
-  quick entry in a pill and the other
-  actions in a + sheet; from 768 px (v1.5)
-  the overview of a shop with customers is
-  a total strip, the customer list and the
-  pill with a + popover, and from 1200 px
-  a right panel with the entry form,
-  overdue and recent entries
-end note
-alt the shop has customers
-  UI --> Owner : Overview: total outstanding and every balance
-else no customers (first visit)
-  App -> UI : show #customer-empty and #start-actions
-  UI --> Owner : "No customers yet. Add your first customer, or load the sample shop to look around."\nwith Add your first customer and Load sample shop
-  opt Owner taps Add your first customer (#add-first)
-    UI -> App : location.hash = '#/s/add'; focus #customer-name
-  end
-  opt Owner taps Load sample shop (#load-sample-home)
-    UI -> App : same as #load-sample: fetch sample-data.json, then doImport() with Undo
-  end
-end
-opt page served over https or from localhost
-  UI -> App : window load event
-  App -> SW : navigator.serviceWorker.register('sw.js')
-  SW -> SW : install: skipWaiting(); activate: clients.claim()
-end
-opt another tab changes 'hisaab.v1'
-  LS -> App : storage event
-  App -> App : state = load() or blank(); render()
-end
+O -> H : open the live link
+H -> S : read the saved theme, language and shop
+S --> H : nothing saved yet: an empty shop, "My shop"
+H --> O : "No customers yet." with the buttons\n"Add your first customer" and "Load sample shop"
+H -> W : register the service worker once the page has loaded
+O -> H : tap "Load sample shop"
+H -> H : fetch sample-data.json from the site itself\n(sample.js is the copy used if that fails)
+H -> S : save "Lakshmi Provision Store (fictional)"
+H --> O : "Loaded Lakshmi Provision Store (fictional):\n8 customers, 38 entries." and "Shop loaded." with "Undo"
+L --> O : "Total outstanding" with the strip "Customers", "Overdue",\n"Collected, last 30 days"; the customer list;\nthe quick entry pill with "+" at the bottom
+L --> O : on a screen 1200 px wide or more: a right panel with\n"Record an entry", "Overdue" and "Recent entries"
+O -> L : tap "…" in the strip
+L --> O : the full overview: "Owes the most", "Collected, last 30 days",\n"Given on credit, last 30 days", "Longest without paying"
 @enduml

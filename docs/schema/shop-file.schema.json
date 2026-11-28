@@ -2,11 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://hisaab.local/docs/schema/shop-file.schema.json",
   "title": "Hisaab shop file",
-  "description": "The JSON pasted into #import-box (or chosen with #import-file, or loaded by \"Load sample\") and read by fromShopFile() in app.js. A spreadsheet saved as CSV or tab-separated text is accepted in the same box as an alternative: any text that does not start with { or [ is read by fromCsv(), which turns it into an object of this shape (keeping the current shop name) before the same checks run; see export-entries.csv.md, \"Importing a CSV\". This schema describes a clean file: one where every record is loaded and every value is kept as written. The validator is more lenient in these ways, which a schema cannot express exactly: (1) a customer or entry that fails a rule is skipped and listed under \"Skipped {n}: \" in #import-msg (the label is translated in English, Hindi and Telugu); the whole import fails only when the text is neither JSON nor a readable CSV, is not an object, lacks the customers or entries array, or when some record failed and no customer at all was loaded; (2) a phone that repeats an earlier customer is silently dropped (first one wins); (3) an entry whose phone is not in customers creates that customer, named from the entry's \"name\" or else the phone; (4) a missing or unreadable date becomes today (honouring ?today=), and the message counts such entries: \"{n} entries had no date and are dated today.\"; (5) a note longer than 200 characters is cut to 200; (6) a \"shot\" that is not a data:image/ URL is dropped; (7) a upi or upi_id that is not a valid UPI ID is listed under Skipped and the UPI ID already saved in the app is kept. Unknown properties are ignored everywhere. Import replaces the whole stored shop (one undo is offered in the toast).",
+  "description": "The JSON that \"Load shop\" reads (pasted, chosen as a file, or the sample shop), checked by fromShopFile() in app.js. Text that does not start with { or [ is read as CSV instead and turned into this shape; see export-entries.csv.md. This schema describes a clean file. The reader is more lenient: a customer or entry that fails a rule is skipped and listed under \"Skipped {n}: \"; a repeated phone is kept once; an entry for an unknown phone adds that customer; a missing or unreadable date becomes today and is counted; a note is cut at 200 characters; an invalid upi is skipped and the saved UPI ID is kept. The load fails only when the text is not valid JSON, has no customers list, has an entries value that is not a list, or leaves nothing usable. Unknown properties are ignored. Loading replaces the open shop, with one Undo.",
   "type": "object",
   "required": [
-    "customers",
-    "entries"
+    "customers"
   ],
   "properties": {
     "shop": {
@@ -45,7 +44,7 @@
             "description": "Display name, trimmed. Optional: an empty or missing name is replaced by the phone number. Other JSON types are converted to text."
           },
           "phone": {
-            "description": "Indian mobile number. The validator removes every character that is not 0-9, then drops a leading 91 when 12 digits are left, or a leading 0 when 11 are left; the result must be exactly 10 digits. So \"9000000101\", \"+91 90000 00101\", \"09000000101\" and the JSON number 9000000101 are all accepted and stored as \"9000000101\". There is no check on the first digit (6-9) on import, so a file is never refused because of its numbers; the Add customer form does check it. A record whose phone fails is skipped, not fatal.",
+            "description": "Indian mobile number. Every character that is not a digit is removed, then a leading 91 is dropped from 12 digits, or a leading 0 from 11; the result must be exactly 10 digits. A record whose phone fails is skipped. The first digit is not checked on a load.",
             "anyOf": [
               {
                 "type": "string",
@@ -76,7 +75,7 @@
     },
     "entries": {
       "type": "array",
-      "description": "Ledger entries, in any order. The position in this array becomes the entry's seq, used to order entries that share a date.",
+      "description": "Ledger entries, in any order. Optional: a file with customers and no entries key loads. The position in this list becomes the entry's seq, used to order entries that share a date.",
       "items": {
         "type": "object",
         "required": [
@@ -86,7 +85,7 @@
         ],
         "properties": {
           "phone": {
-            "description": "Indian mobile number. The validator removes every character that is not 0-9, then drops a leading 91 when 12 digits are left, or a leading 0 when 11 are left; the result must be exactly 10 digits. So \"9000000101\", \"+91 90000 00101\", \"09000000101\" and the JSON number 9000000101 are all accepted and stored as \"9000000101\". There is no check on the first digit (6-9) on import, so a file is never refused because of its numbers; the Add customer form does check it. A record whose phone fails is skipped, not fatal.",
+            "description": "Indian mobile number. Every character that is not a digit is removed, then a leading 91 is dropped from 12 digits, or a leading 0 from 11; the result must be exactly 10 digits. A record whose phone fails is skipped. The first digit is not checked on a load.",
             "anyOf": [
               {
                 "type": "string",
@@ -106,26 +105,24 @@
           },
           "type": {
             "type": "string",
-            "pattern": "^\\s*(?:[cC][rR][eE][dD][iI][tT]|[pP][aA][yY][mM][eE][nN][tT]|[dD][eE][bB][iI][tT]|[uU][dD][hH][aA][rR]|[sS][aA][lL][eE]|[pP][aA][iI][dD]|[jJ][aA][mM][aA]|[rR][eE][cC][eE][iI][pP][tT])\\s*$",
-            "description": "credit (the shop gave goods on credit) or payment (the customer paid). Case and surrounding spaces are ignored. Aliases: debit, udhar and sale are read as credit; paid, jama and receipt are read as payment. Anything else skips the entry."
+            "description": "credit (the shop gave goods on credit) or payment (the customer paid). Case and surrounding spaces are ignored. Also read as credit when the value starts with: debit, udhar, udhaar, sale, sales, sold, gave, given, purchase, baki, baaki, due. Also read as payment: paid, pay, jama, receipt, received, receive, recd, collected, got, repayment, repaid, deposit, settlement, settled. Anything else skips the entry."
           },
           "amount": {
-            "description": "Rupees, from 0 to 10,000,000. A JSON number is used as it is. A string has every comma and space removed, then one leading \"Rs\", \"Rs.\", \"INR\" or the rupee sign (any case) removed, then is read with JavaScript Number(); it must give a finite number from 0 to 10,000,000. An amount that is missing, blank, not a number, negative or above 10,000,000 skips the entry, which is listed under Skipped. The pattern below covers the plain decimal forms only: Number() also accepts forms such as \"1.\" and \".5\", exponent and hexadecimal forms, and the pattern cannot express the upper limit for a string. Zero is accepted on import (the entry form refuses it). The value is rounded to 2 decimal places.",
+            "description": "Rupees. A number is used as it is. In a string, commas and spaces are removed, then a leading Rs, INR, rupees or the rupee sign, and a trailing /-, Rs, INR, rupees or \"only\". The entry is skipped when the amount is missing, blank, not a number, below zero or above 1e12. An amount with paise is rounded to whole rupees, halves up, and the load message counts them.",
             "anyOf": [
               {
                 "type": "number",
                 "minimum": 0,
-                "maximum": 10000000
+                "maximum": 1000000000000
               },
               {
-                "type": "string",
-                "pattern": "^[\\s,]*(?:(?:[rR][sS]\\.?|[iI][nN][rR]|₹)[\\s,]*)?(?:[0-9][\\s,]*)+(?:\\.[\\s,]*(?:[0-9][\\s,]*)+)?$"
+                "type": "string"
               }
             ]
           },
           "date": {
             "type": "string",
-            "description": "Date of the entry. Kept when, after trimming, its first 10 characters are YYYY-MM-DD and JavaScript Date.parse accepts them (any text after the 10 characters is ignored), or when the whole value is day-first D/M/YYYY with \"/\", \".\" or \"-\" between the parts (stored as YYYY-MM-DD). In Chrome and Node a day up to 31 is accepted in any month, so 2026-02-30 is kept as written. A missing or unreadable date is not an error: the entry gets today's date (or the ?today= date), and the import message counts such entries. Future dates are accepted on import (the entry form refuses them).",
+            "description": "Date of the entry. Kept when its first 10 characters are a valid YYYY-MM-DD (text after them is ignored), or when the whole value is day first, D/M/YYYY, with \"/\", \".\" or \"-\" between the parts (stored as YYYY-MM-DD). A missing or unreadable date is not an error: the entry gets today's date and the load message counts such entries. A date after today is accepted.",
             "anyOf": [
               {
                 "pattern": "^\\s*[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])"
@@ -143,7 +140,7 @@
           "shot": {
             "type": "string",
             "pattern": "^data:image/",
-            "description": "Optional payment screenshot as a data URL. Kept only when it is a string starting \"data:image/\"; anything else is dropped. No size limit is applied on import."
+            "description": "Optional payment screenshot as a data URL. Left out when it does not start \"data:image/\" or is longer than 400,000 characters; the entry is kept and the load message counts the pictures left out."
           },
           "name": {
             "type": "string",
@@ -151,6 +148,19 @@
           }
         }
       }
+    },
+    "owner": {
+      "type": "string",
+      "description": "Optional shop profile: owner name. Written by the backup file when set."
+    },
+    "address": {
+      "type": "string",
+      "description": "Optional shop profile: shop address."
+    },
+    "logo": {
+      "type": "string",
+      "pattern": "^data:image/",
+      "description": "Optional shop profile: logo as a data URL, accepted up to 60 KB."
     }
   }
 }

@@ -1,0 +1,67 @@
+@startuml j3-quick-entry
+title J3 Quick entry, typed or by voice
+skinparam backgroundColor white
+skinparam defaultFontName "Noto Sans"
+skinparam defaultFontSize 13
+skinparam roundCorner 12
+skinparam shadowing false
+skinparam maxMessageSize 260
+skinparam titleFontSize 17
+skinparam titleFontColor #0E5C45
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ArrowColor #0E5C45
+  LifeLineBorderColor #7FA89A
+  LifeLineBackgroundColor #E8F2EE
+  ParticipantBorderColor #0E5C45
+  ParticipantBackgroundColor #E8F2EE
+  ParticipantFontColor #0B3D2E
+  ActorBorderColor #0E5C45
+  ActorBackgroundColor #E8F2EE
+  ActorFontColor #0B3D2E
+  GroupBorderColor #0E5C45
+  GroupHeaderFontColor #0E5C45
+  GroupBackgroundColor #F3F8F6
+  DividerBorderColor #0E5C45
+  DividerBackgroundColor #E8F2EE
+  DividerFontColor #0B3D2E
+  BoxBorderColor #0E5C45
+}
+skinparam database {
+  BorderColor #0E5C45
+  BackgroundColor #E8F2EE
+}
+skinparam note {
+  BorderColor #B08A2E
+  BackgroundColor #FFF8E6
+  FontSize 12
+}
+actor "Owner" as O
+participant "Quick entry pill\n(compact.js)" as P
+participant "Home screen\n(app.js)" as H
+participant "Quick entry helper\n(assist.js)" as A
+participant "Browser's\nspeech service" as V
+database "Browser storage" as S
+autonumber
+O -> P : type "Sunita 500 udhaar" in\n"Quick entry: type or speak it"
+opt by voice, where the browser can listen
+  O -> P : tap the microphone, "Speak the entry"
+  H -> V : the spoken words go to the browser's speech service
+  note right of V : this leaves the device\nand needs the internet
+  V --> H : the words heard, written into the box
+end
+O -> P : tap the arrow, "Send and save the entry"
+P -> H : hand over the sentence
+H -> H : read the amount, the kind (gave or got)\nand the customer; fill the entry form
+alt one customer matches
+  H --> O : "Filled: {name}, {type} {amt}.\nCheck it, then press Save entry."
+  P -> H : press "Save entry"
+  H -> S : save the entry
+  H --> O : "Saved."
+else several customers match
+  H --> O : "More than one customer matches. Pick one:"\nwith a button for each
+else no customer has that name
+  A --> O : "No customer matches "{name}"." and the button\n"Add a customer: {name}"
+end
+@enduml

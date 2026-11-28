@@ -1,1227 +1,923 @@
 # Hisaab: epics, features and acceptance criteria
 
-| | |
-| --- | --- |
-| Product | Hisaab, a shop credit ledger (vanilla HTML, CSS and JavaScript; data in the browser) |
-| Live | https://hisaab-hazel.vercel.app |
-| Source of truth | `app.js`, `index.html`, `sw.js`, `styles.css` and the add-on files as built on 27 Nov 2026, version 1.5.2.1 |
-| Traces to | `PRD.md` (F-1 to F-5, D-1 to D-4, S-1 to S-4, stage 1 and 2), `brief/spec-page.md` (the projects page word for word, with its "Done when" lines), `brief/brief.md` (an earlier, shorter capture) |
-| Last revised | 27 Nov 2026 (version 1.5.2.1) |
+This page describes version 1.5.2, the version on the live link.
 
-This document lists what the app does, grouped as epics, then features, then acceptance criteria. Every
-criterion describes behaviour found in the code. Where the PRD asked for something that was built
-differently, or not built, the text says so.
+Everything Hisaab does, as a reader can check it. An epic is one subject. Under it each feature has one
+story (who wants it and why) and a table of acceptance criteria: the starting point (Given), what the person
+does (When) and what must happen (Then). The last column names the test that proves the row. Tests are plain
+scripts in the `tests/` folder of the code; "checked by hand" means the row was tried on the live link and no
+script covers it. `tests/seed.mjs` is a helper the tests share, not a test.
 
-## How to read the "Verified by" column
-
-| Short name | What it is |
-| --- | --- |
-| `check.mjs [id]` | `tests/check.mjs`, the independent checker; `[id]` is the check name it prints (last run: `tests/last-run.txt`, 27 PASS) |
-| `nav.mjs` | `tests/nav.mjs`, every nav item at 1440 px and 375 px |
-| `quick.mjs "..."` | `tests/quick.mjs`, the quick-entry test; the quoted text is the PASS line it prints |
-| `final.mjs "..."` | `tests/final.mjs`, the final-review test (QR, remind all, undo import, validation, search, CSV export, widths) |
-| `gaps.mjs "..."` | `tests/gaps.mjs`, the test of the mobile check, UPI check, import checks, CSV import, screenshot reading in Hindi and Undo after an edit |
-| `offline.mjs "..."` | `tests/offline.mjs`, one online visit, then the same page offline |
-| `brief.mjs "..."` | `tests/brief.mjs`, every "Done when" line of `brief/spec-page.md` followed literally in a fresh browser (last live run: `tests/last-brief-live.txt`, ALL PASS) |
-| manual | No script covers it; checked by hand or by reading the code |
-| `profile.mjs "..."` | `tests/profile.mjs`, the shop profile and the balance history line, added in 1.1.0.0 (last live run: `evidence/last-profile-live.txt`, 36 checks) |
-| `shops.mjs "..."` | `tests/shops.mjs`, several shops on one phone, added in 1.1.0.0 (last live run: `evidence/last-shops-live.txt`, 25 checks) |
-| `addons-width.mjs "..."` | `tests/addons-width.mjs`, the add-ons at 320 px and 375 px in three languages, light and dark (last live run: `evidence/last-addons-width-live.txt`, 54 checks) |
-| `langs.mjs "..."` | `tests/langs.mjs`, twelve languages, note shortcuts and the overdue total, added in 1.2.0.0 (last live run: `evidence/last-langs-live.txt`, 25 checks) |
-| `i18n-check.cjs` | `tests/i18n-check.cjs`, a script that reads the language files without a browser (last run: `evidence/last-i18n-check.txt`, 11 languages, 235 keys each) |
-| `customer.mjs "..."` | `tests/customer.mjs`, the customer tools, added in 1.2.0.0 (last live run: `evidence/last-customer-live.txt`, 36 checks) |
-| `layout.mjs "..."` | `tests/layout.mjs`, the layout in 12 languages and 5 widths, overview and customer page (120 screens), added in 1.2.1.0 (last live run: `evidence/last-layout-live.txt`, 7 checks) |
-| `names.mjs "..."` | `tests/names.mjs`, customer names in the script of each language, added in 1.2.1.0 (last live run: `evidence/last-names-live.txt`, 33 checks) |
-| `pay.mjs "..."` | `tests/pay.mjs`, the pay link in the reminder and the pay page, added in 1.2.1.0 (last live run: `evidence/last-pay-live.txt`, 15 checks) |
-| `sendways.mjs "..."` | `tests/sendways.mjs`, the other ways to send a reminder, added in 1.2.2.0 (last live run: `evidence/last-sendways-live.txt`, 16 checks) |
-| `wacheck.mjs "..."` | `tests/wacheck.mjs`, the WhatsApp check of a number, added in 1.2.3.0 (last live run: `evidence/last-wacheck-live.txt`, 19 checks) |
-| `critic.mjs "..."` | `tests/critic.mjs`, the checks of the critic round of 22 Nov 2026: Save pressed straight after choosing a screenshot, a row balance that is one clean figure, the UPI link in the reminder, Edit from the Recent view on a phone, an entry dated after `?today=`, and amounts read from screenshots (last live run: `evidence/last-critic-live.txt`, 14 checks) |
-| `phone-import.mjs "..."` | `tests/phone-import.mjs`, two hardening checks of 22 Nov 2026: nothing scrolls sideways at 375 px, not even the summary cards, and a shop file with customers and no "entries" key loads (last live run: `evidence/last-phone-import-live.txt`, 12 checks) |
-| `sweep.mjs "..."` | `tests/sweep.mjs`, the sweep of hidden shops in `tests/fixtures/sweep.json`, written by two reviewers who read only the brief: each shop is pasted into `#import-box` in a fresh browser and every figure the tester reads is compared with the expected one (last live run: `evidence/last-sweep-live.txt`, ALL PASS) |
-| `voice.mjs "..."` | `tests/voice.mjs`, voice quick entry with a stand-in for the browser's speech service: a heard sentence fills the form and each kind of failure gets its own message (last live run: `evidence/last-voice-live.txt`, 15 checks) |
-| `voice-quiet.mjs "..."` | `tests/voice-quiet.mjs`, added in 1.2.4.0: voice quick entry never ends in silence, on a laptop and on a phone, with the way that always works (last live run: `evidence/last-voice-quiet-live.txt`, 11 checks) |
-| `assist.mjs "..."` | `tests/assist.mjs`, added in 1.2.5.0: the theme button, the navigation, the skip link and quick entry on an empty ledger, at phone and desktop width (last live run: `evidence/last-assist-live.txt`, 38 checks) |
-| `guard.mjs "..."` | `tests/guard.mjs`, added in 1.2.6.0: a refused or blocked store, an imported picture that is too large, an edit with no date, the phone header and small labels (last live run: `evidence/last-guard-live.txt`, 48 checks) |
-| `rupees.mjs "..."` | `tests/rupees.mjs`, added in 1.3.0.0: whole rupees for typed entries, edits, JSON and CSV imports and stored paise, in three languages (last live run: `evidence/last-rupees-live.txt`, 28 checks) |
-| `brand.mjs "..."` | `tests/brand.mjs`, added in 1.3.0.0: the brand palette, fonts, mark and sizes on four screens at phone and desktop width, light and dark (last live run: `evidence/last-brand-live.txt`, 184 checks) |
-| `phone-ledger.mjs "..."` | `tests/phone-ledger.mjs`, added in 1.4.0.0: the phone layout, the quick-entry pill and the + sheet at several phone sizes, and at 1280 x 800 no phone dock or phone "+" and the left menu shown (last live run: `evidence/last-phone-ledger-live.txt`, 147 checks) |
-| `local-assets.mjs "..."` | `tests/local-assets.mjs`, added in 1.4.1.0: a plain visit, a QR code and a language change ask no other host; the fonts and the QR library come from the site; the + sheet in Hindi, Telugu and Urdu (last live run: `evidence/last-local-assets-live.txt`, 13 checks) |
-| `ledger.cjs "..."` | `tests/ledger.cjs`, added in 1.4.1.0: unit tests of the ledger maths in Node, through `window.Hisaab.ledger`, without a browser (27 checks; run on the code, not on the live link) |
-| `desk-ledger.mjs "..."` | `tests/desk-ledger.mjs`, added in 1.5.0.0: the desktop layout at 1024 x 768, 1280 x 800 and 1440 x 900, light and dark, with the sample shop: the total strip, the customer rows, the pill, the "+" popover and the right panel since 1.5.1.0 also Urdu right to left and a 40-customer shop (last live run: `evidence/last-desk-ledger-live.txt`, 149 checks) |
-| `review-fixes.mjs "..."` | `tests/review-fixes.mjs`, added in 1.5.2.1: the four findings of the fresh review at 375 px, light and dark: the search box, the label under the total, the bottom-bar labels and the demo pay notice, in the app's languages; 98 checks. A "..." at the start of a quoted line stands for the width, theme and language the line begins with |
-
-`quick.mjs`, `final.mjs`, `gaps.mjs`, `offline.mjs` and `brief.mjs` each take the base URL as their first
-argument and print ALL PASS when every check passes. Since the app now starts empty, `nav.mjs`,
-`quick.mjs`, `final.mjs`, `gaps.mjs` and `offline.mjs` get the sample shop through localStorage from
-`tests/seed.mjs`; `brief.mjs` starts from the empty app and loads the sample itself. A "..." at the end of a quoted line stands for the figures the line
-prints after it.
+How to run the tests is in [the implementation plan](../IMPLEMENTATION-PLAN.md#test-it); the latest results on
+the live link are in [the report](../REPORT.md#latest-results-on-the-live-link).
 
 ## Epics at a glance
 
-| Epic | Title | Features | Acceptance criteria | PRD trace |
-| --- | --- | --- | --- | --- |
-| E1 | Customers and entries | 7 | 43 | F-1, F-2, F-3, F-5, D-4, S-3, stage 1, stage 2 (screenshot, edit and delete) |
-| E2 | Shop overview | 5 | 23 | F-3, F-4, D-3, S-1, stage 1 (balances, total), stage 2 (overdue, search), V-14 |
-| E3 | Reminders and getting paid | 5 | 18 | S-2, Q-1, stage 1 (reminder), stage 2 (UPI link), V-15, V-16 |
-| E4 | Customer page and statement | 5 | 16 | F-1, stage 1 (customer page newest first), V-16, V-17, V-18 |
-| E5 | Quick entry, typed and by voice | 6 | 31 | V-11, V-25, V-26 (PRD, last section) |
-| E6 | Shop data | 6 | 34 | D-1, D-2, F-5, S-4, stage 1 (import), stage 2 (export, amount from screenshot is in E1); CSV import is V-12, backup and balances files V-13 |
-| E7 | Languages, themes and layout | 5 | 20 | stage 1 (375 px, light and dark), stage 2 (Hindi and Telugu), V-18, success measures |
-| E8 | Navigation, offline and the grader contract | 5 | 25 | F-4, F-5, D-1, brief "How they check", V-19 |
-| E9 | Shop profile and balance history (1.1.0.0) | 2 | 13 | V-1, V-2, C-1, C-2 (PRD, last section) |
-| E10 | Several shops (1.1.0.0) | 3 | 11 | V-3, C-1, C-2, C-3 (PRD, last section) |
-| E11 | More languages (1.2.0.0) | 2 | 8 | V-4, C-1, C-4 (PRD, last section) |
-| E12 | Customer tools (1.2.0.0) | 4 | 19 | V-5, V-6, V-7, V-8, C-1 (PRD, last section) |
-| E13 | Note shortcuts and overdue total (1.2.0.0) | 2 | 5 | V-9, V-10, C-1 (PRD, last section) |
-| E14 | Reaching the customer and a layout that holds (1.2.1.0 to 1.2.5.0) | 6 | 46 | V-20 to V-24, V-26, C-1, C-4 (PRD, last section) |
-| E15 | Guards, whole rupees, brand look, the phone and desktop layouts, Urdu right to left, the review fixes (1.2.6.0 to 1.5.2.1) | 11 | 55 | V-27 to V-35, C-1 (PRD, last section) |
-| **Total** | | **74** | **367** | |
+| Epic | Features | Criteria |
+| --- | --- | --- |
+| [E1 Customers](#e1-customers) | 5 | 24 |
+| [E2 Entries](#e2-entries) | 6 | 26 |
+| [E3 Payment screenshot](#e3-payment-screenshot) | 3 | 13 |
+| [E4 Shop overview](#e4-shop-overview) | 6 | 25 |
+| [E5 Reminders and getting paid](#e5-reminders-and-getting-paid) | 7 | 31 |
+| [E6 Customer page, statement and tools](#e6-customer-page-statement-and-tools) | 6 | 21 |
+| [E7 Quick entry, typed and by voice](#e7-quick-entry-typed-and-by-voice) | 7 | 31 |
+| [E8 Shop data: load, export and the sample shop](#e8-shop-data-load-export-and-the-sample-shop) | 7 | 28 |
+| [E9 Several shops and the shop profile](#e9-several-shops-and-the-shop-profile) | 4 | 16 |
+| [E10 Languages and names](#e10-languages-and-names) | 6 | 21 |
+| [E11 Layout and themes](#e11-layout-and-themes) | 6 | 26 |
+| [E12 Offline and install](#e12-offline-and-install) | 4 | 11 |
+| [E13 Checks on what is typed](#e13-checks-on-what-is-typed) | 3 | 10 |
+| [E14 Links and robustness](#e14-links-and-robustness) | 7 | 23 |
+| **Total** | **77** | **306** |
 
----
+70 of the 306 criteria are checked by hand; the rest name the script that checks them.
 
-## E1 Customers and entries
-
-Goal: the owner keeps the notebook in the app. A customer is a name and a 10 digit phone number. Each
-entry is a credit (goods given) or a payment (money received), with an amount, a date and a note, and a
-payment can carry a screenshot. A balance is always all credit minus all payments, computed from the stored
-entries. Mistakes can be edited or deleted, and an edit or a delete can be undone straight away without a
-pop-up.
+## E1 Customers
 
 ### E1.F1 Add a customer
 
-As the shop owner, I want to add a customer with a name and a phone number so that I can start their account.
+As a shop owner I add a customer with a name and a phone number, so that I can keep their account.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F1.1 | The Add a customer form | The owner enters a name and a 10 digit phone number (for example Ravi Kumar, 9000000101) and presses Add customer | The customer is stored, the form clears, "Customer added." shows, the list updates and the entry form selects the new customer | `brief.mjs "Ravi Kumar 9000000101 on the home list: ..."` |
-| AC-E1.F1.2 | The name field is empty | The owner presses Add customer | "Enter a name." shows, focus goes to the name field, nothing is saved | manual |
-| AC-E1.F1.3 | The phone is not 10 digits after clean-up (for example 9 digits) | The owner presses Add customer | "Enter a 10 digit phone number, digits only." shows, focus goes to the phone field, nothing is saved | `brief.mjs "9 digit phone refused with a message: ..."` |
-| AC-E1.F1.4 | The phone is typed as "+91 98765 43210", "919876543210" or "09876543210" | The owner presses Add customer | Spaces and symbols are dropped, a leading 91 (12 digits) or 0 (11 digits) is removed, and 9876543210 is stored | `gaps.mjs "+91 mobile accepted"` |
-| AC-E1.F1.5 | A customer with that phone already exists | The owner presses Add customer | "A customer with this phone already exists." shows and nothing is saved (F-2) | manual |
-| AC-E1.F1.6 | The phone has 10 digits after clean-up but does not start with 6, 7, 8 or 9 (for example 1234567890) | The owner presses Add customer | The customer is added, and "Customer added." is followed by "Check the number: Indian mobile numbers start with 6, 7, 8 or 9, so WhatsApp may not reach this one." | `gaps.mjs "non-mobile added with a warning: ..."` |
-| AC-E1.F1.7 | The phone contains anything other than digits, spaces and + ( ) - . (for example "90000abc01", "9000000101a" or "abcdefghij") | The owner presses Add customer | "Enter a 10 digit phone number, digits only." shows, focus goes to the phone field, nothing is saved | `brief.mjs 'phone "90000abc01" refused with a message: ...'`, `brief.mjs 'phone "9000000101a" refused with a message: ...'`, `brief.mjs 'phone "abcdefghij" refused with a message: ...'` |
-
-Note: any 10 digit number is accepted, as the brief says (`validPhone`); a number that is not an Indian
-mobile (`validMobile`) only brings the warning. Import accepts any 10 digits too (E6.F2), with no warning.
-Since 1.2.0.0 a customer can be deleted (E12.F4) and given a new phone number (E12.F3).
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E1.F1.1 | "Add a customer" is open | I type a name and a 10 digit phone and press "Add customer" | The customer is on the customer list with a balance of ₹0 and the message reads "Customer added." | `tests/brief.mjs` |
+| AC-E1.F1.2 | "Add a customer" is open | I leave the name empty | Nothing is added and the message reads "Enter a name." | checked by hand |
+| AC-E1.F1.3 | "Add a customer" is open | I type a phone with 9 digits, or one that holds letters | Nothing is added and the message reads "Enter a 10 digit phone number, digits only." | `tests/brief.mjs` |
+| AC-E1.F1.4 | A customer has the phone 9000000101 | I add another customer with the same phone | Nothing is added and the message reads "A customer with this phone already exists." | checked by hand |
+| AC-E1.F1.5 | "Add a customer" is open | I type the phone as "+91 90000 00101" | The number is kept as the 10 digits 9000000101 | `tests/gaps.mjs` |
+| AC-E1.F1.6 | "Add a customer" is open | I add a 10 digit phone that does not start with 6, 7, 8 or 9 | The customer is added and a warning reads "Check the number: Indian mobile numbers start with 6, 7, 8 or 9, so WhatsApp may not reach this one." | `tests/gaps.mjs` |
 
-### E1.F2 Record a credit or a payment
+### E1.F2 Check a number on WhatsApp
 
-As the shop owner, I want to record a credit or a payment in a few seconds so that the notebook stays current.
+As a shop owner I find out whether a customer's number is on WhatsApp, so that reminders reach them.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F2.1 | The Record credit or payment form on the home view | The owner picks a customer, a type, an amount, a date and a note and presses Save entry | The entry is stored, the form resets (type back to Credit, date back to today), the same customer stays selected and a "Saved." toast shows | `check.mjs [5-shot balance]` |
-| AC-E1.F2.2 | The form opens | Nothing is typed yet | The type is Credit, the date is today (or the `?today=` date) and the date field cannot go past today | manual |
-| AC-E1.F2.3 | No customer is chosen | The owner presses Save entry | "Choose a customer." shows and focus goes to the customer list | manual |
-| AC-E1.F2.4 | The amount is empty, zero, negative or not a number | The owner presses Save entry | "Enter an amount above zero." shows and nothing is saved | manual |
-| AC-E1.F2.5 | The amount is above 1,00,00,000 | The owner presses Save entry | "That amount looks too large. One entry can be up to ₹1,00,00,000." shows and nothing is saved | `final.mjs "large amount refused"` |
-| AC-E1.F2.6 | The date is after today | The owner presses Save entry | "The date is in the future. Use today or an earlier date." shows and nothing is saved | `final.mjs "future date refused"` |
-| AC-E1.F2.7 | The amount is 1, or 0.5 | The owner presses Save entry | 1 is saved and commas in the amount are ignored. Since 1.3.0.0 an amount with paise, such as 0.5, is not saved: the form stays open and offers the nearest whole amount (E15.F2) | `final.mjs "small amount 1 saved"`, `final.mjs "small amount 0.5 is held, with the nearest whole amount offered"` |
-| AC-E1.F2.8 | The note is longer than 80 characters | The owner types it | The field stops at 80 characters; the saved note is trimmed of spaces | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E1.F2.1 | I have just added a customer by hand | The add form shows again | A line reads "{name} added. Check the number on WhatsApp now, so reminders reach them." with the button "Check on WhatsApp" | `tests/wacheck.mjs` |
+| AC-E1.F2.2 | A customer page shows "This number has not been checked on WhatsApp yet." | I press "Check on WhatsApp" | WhatsApp opens for that number with a hello message that names the customer and the shop and carries no balance | `tests/wacheck.mjs` |
+| AC-E1.F2.3 | The page asks "Did WhatsApp open a chat with this number?" | I press "Yes, the chat opened" | The page reads "Checked: this number is on WhatsApp." and the answer is still there after a reload | `tests/wacheck.mjs` |
+| AC-E1.F2.4 | The page asks the same question | I press "No, it said the number is not on WhatsApp" | The page reads "Not on WhatsApp. Send by SMS, or change the number." and "Other ways to send" opens | `tests/wacheck.mjs` |
+| AC-E1.F2.5 | I gave the wrong answer | I press the one button that offers the other answer | The answer is switched with that one tap | `tests/wacheck.mjs` |
+| AC-E1.F2.6 | I load a shop file with eight customers | The shop is loaded | No check is asked for | `tests/wacheck.mjs` |
 
-### E1.F3 Attach a payment screenshot
+### E1.F3 Names in other scripts
 
-As the shop owner, I want to attach the customer's UPI screenshot to a payment so that I have proof on the entry.
-
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F3.1 | The entry form | The owner chooses a picture in `#shot-input` | The type switches to Payment, the picture is shrunk to at most 600 px on its long side as a JPEG, and a preview with a Remove button shows | `check.mjs [5-shot img]` |
-| AC-E1.F3.2 | A payment with a screenshot is saved | The list is drawn | The entry shows a 72 px thumbnail `img[data-shot]` | `check.mjs [5-shot img]`, `brief.mjs "payment shows img[data-shot]"` |
-| AC-E1.F3.3 | The page reloads | The entry is drawn again | The screenshot is still shown (it is stored inside the entry) | `check.mjs [5-shot reload]`, `brief.mjs "picture still there after reload"` |
-| AC-E1.F3.4 | The chosen file is not a picture | The file is chosen | "That file is not a picture." shows and the file is cleared | manual |
-| AC-E1.F3.5 | A preview is shown | The owner presses Remove | The picture is dropped from the form; on an edit, saving then removes it from the entry | manual |
-| AC-E1.F3.6 | A picture has just been chosen | The owner presses Save at once, without waiting | The entry still shows its screenshot, also after a reload | `critic.mjs "screenshot kept when Save is pressed at once"`, `critic.mjs "screenshot still there after reload"` |
+As a shop owner I see each customer's name in the script of the language I chose, so that I can read the list quickly.
 
-### E1.F4 Read the amount from the screenshot
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E1.F3.1 | The language is English | I look at the customer list | Each name shows as typed, with no bracket after it | `tests/names.mjs` |
+| AC-E1.F3.2 | The language is one of the nine newer languages | I look at the customer list | Each name is followed in brackets by the name in that language's script, with no Latin letter in the bracket | `tests/names.mjs` |
+| AC-E1.F3.3 | The language is Hindi and a customer is called Ravi Kumar | I type the name in Hindi letters in the search box | That customer is found | `tests/final.mjs` |
+| AC-E1.F3.4 | A customer page is open | I change "Name", "Name in Hindi" or "Name in Telugu" under "Customer details" and press "Save details" | The message reads "Customer details saved." and my own spelling is the one shown | checked by hand |
 
-As the shop owner, I want the amount read from the screenshot so that I do not have to type it.
+### E1.F4 Change a customer's phone number
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F4.1 | A screenshot is chosen and the amount field is empty | The text reader (Tesseract, loaded from jsDelivr on first use) finishes | The amount field is filled and "Read Rs {amount} from the screenshot. Check it before saving." shows; nothing is saved | `check.mjs [9-bonus OCR]` |
-| AC-E1.F4.2 | The picture text has several numbers | The amount is picked | A number next to ₹, Rs, INR, "amount" or "paid", or next to रु, रुपये, राशि, రూ, మొత్తం or భుగతాన, wins (the largest such); otherwise the largest plain number below 10,00,000 that is not a year | manual |
-| AC-E1.F4.3 | The owner has already typed an amount | The reader finishes | The typed amount is kept | manual |
-| AC-E1.F4.4 | No amount is found, or the reader cannot load (offline) | The reader finishes | "Could not read an amount from this picture. Type it in." shows | manual |
-| AC-E1.F4.5 | The app language is Hindi or Telugu | A screenshot is read | The reader reads English plus that script (`eng+hin` or `eng+tel`; `eng` alone in English, and as the fallback if the combined language fails to load), and Devanagari and Telugu digits are turned into Latin digits before the amount is picked; a Hindi screenshot reading "भुगतान रु ४५०" fills 450 | `gaps.mjs "Hindi screenshot amount read"` |
+As a shop owner I correct a customer's number, so that the account and its reminders follow the right phone.
 
-Note: Tesseract.js downloads the language data on first use; it is not cached for offline.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E1.F4.1 | "More for this customer" is on the customer page | I press "Change phone number" | A box "New phone number (10 digits)" opens with "Save number" and "Cancel" | `tests/customer.mjs` |
+| AC-E1.F4.2 | The box is open | I save a number that is too short | Nothing changes and the message reads "Enter a 10-digit mobile number." | `tests/customer.mjs` |
+| AC-E1.F4.3 | The box is open | I save a number another customer has | Nothing changes and the message reads "Another customer already has this number." | `tests/customer.mjs` |
+| AC-E1.F4.4 | The box is open | I save a new, free number | The message reads "Phone number changed.", the page address follows the new number, every entry of the customer moves with it and the total is the same | `tests/customer.mjs` |
 
-### E1.F5 Edit an entry
+### E1.F5 Delete a customer with Undo
 
-As the shop owner, I want to correct a wrong entry so that the balance is right.
+As a shop owner I remove a customer and can take it back, so that a slip does not lose an account.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F5.1 | An entry in any list | The owner presses Edit | The form fills with the entry, the button reads "Update entry", Cancel edit shows and the form scrolls into view | `check.mjs [9-bonus edit/delete]` |
-| AC-E1.F5.2 | The form is in edit mode | The owner changes the amount and presses Update entry | The same entry is changed in place and every balance and total is recomputed | `check.mjs [9-bonus edit/delete]` |
-| AC-E1.F5.3 | The entry has a screenshot and no new one is chosen | The owner saves the edit | The existing screenshot is kept | manual |
-| AC-E1.F5.4 | The form is in edit mode | The owner presses Cancel edit | The form resets and the selected customer stays | manual |
-| AC-E1.F5.5 | The form is in edit mode | The owner saves the edit | The old entry is copied first, and an "Entry updated." toast with Undo and the Send receipt link shows for 7 seconds; a new entry still shows "Saved." with Send receipt and no Undo | `gaps.mjs "edit offers Undo"`, `gaps.mjs "edit applied"` |
-| AC-E1.F5.6 | The "Entry updated." toast is showing | The owner presses Undo | The old entry is put back in its place and every balance is recomputed | `gaps.mjs "undo restored the entry"`, `gaps.mjs "balance back to 3,470"` |
-| AC-E1.F5.7 | An edit can still be undone | The owner deletes an entry or loads a shop | The edit can no longer be undone; only the newer action's Undo is offered (one level of undo) | manual |
-| AC-E1.F5.8 | The Recent view on a phone | The owner presses Edit | The record form comes into view, filled, and nothing scrolls sideways | `critic.mjs "Edit from the Recent view on a phone shows the filled record form ..."`, `critic.mjs "no sideways scroll at 375 px after that"` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E1.F5.1 | "More for this customer" is on the customer page | I press "Delete customer" once | Nothing is deleted; the button reads "Press again to delete {name} and all their entries" for 5 seconds | `tests/customer.mjs` |
+| AC-E1.F5.2 | The button asks me to press again | I press it again | The customer and all their entries are gone, the customer list shows, and the total drops by that customer's balance | `tests/customer.mjs` |
+| AC-E1.F5.3 | A bar reads "Deleted {name}." with "Undo", for 8 seconds | I press "Undo" | The customer and the same entries are back, the total is the same again, and the bar reads "Restored {name}." | `tests/customer.mjs` |
+| AC-E1.F5.4 | I delete a customer | Each step runs | No browser confirm box is used | `tests/customer.mjs` |
 
-### E1.F6 Delete an entry with Undo
+## E2 Entries
 
-As the shop owner, I want to delete a wrong entry and undo it at once if I tapped by mistake so that nothing is lost (D-4).
+### E2.F1 Record a credit or a payment
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F6.1 | An entry in any list | The owner presses Delete | The entry is removed at once, with no confirm dialog, balances are recomputed and an "Entry deleted." toast with Undo shows for 7 seconds | `check.mjs [9-bonus edit/delete]`, `check.mjs [dialogs]` |
-| AC-E1.F6.2 | The toast is showing | The owner presses Undo | The entry returns at its old place and balances are recomputed | manual |
-| AC-E1.F6.3 | The deleted entry was open in the edit form | It is deleted | The form resets | manual |
-| AC-E1.F6.4 | Two entries are deleted one after the other | The owner presses Undo | Only the last one returns (one level of undo) | manual |
+As a shop owner I record what I gave on credit and what I got back, so that each account is up to date.
 
-### E1.F7 Balances and saving
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F1.1 | A customer exists | I choose the customer, "You gave (credit)", an amount of 250 and press "Save entry" | The customer's balance rises by ₹250, the total rises by ₹250, and the message reads "Saved." | `tests/brief.mjs` |
+| AC-E2.F1.2 | A customer owes ₹670 | I save "You got (payment)" of 100 | The balance reads ₹570 | `tests/brief.mjs` |
+| AC-E2.F1.3 | The entry form is open | I press "Save entry" with no customer chosen | Nothing is saved and the message reads "Choose a customer." | checked by hand |
+| AC-E2.F1.4 | I have saved entries | I reload the page | Every balance and the total are the same | `tests/check.mjs` |
+| AC-E2.F1.5 | The entry form is open | I tap a note shortcut under "Note" (groceries, milk, rice, oil, paid on UPI, cash) | An empty note is filled with it; a second shortcut is added after a comma | `tests/langs.mjs` |
 
-As the shop owner, I want every balance worked out from the entries and kept after a reload so that I can trust the figures.
+### E2.F2 Amount, date and note rules
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E1.F7.1 | A customer has entries | Any view is drawn | Balance = sum of credits minus sum of payments, rounded to two decimals (F-1, F-3) | `check.mjs [1-sample balances]`, `check.mjs [2-hidden balances]`, `brief.mjs "Ravi balance reads Rs 250: ..."`, `brief.mjs "Ravi shows 670: ..."` |
-| AC-E1.F7.2 | A customer has paid more than they owe | The balance is shown | It shows as a negative amount: the text keeps the minus next to the digits, for example ₹-450, and it is drawn as -₹450 (the minus is a separate span ordered first with CSS); it is not counted as owed | `check.mjs [2-hidden balances]` |
-| AC-E1.F7.3 | A payment of 500 is recorded | The page reloads | The payment is still there and the balance is 500 lower (S-3, F-5) | `check.mjs [4-persistence]`, `check.mjs [5-shot balance]`, `brief.mjs "after reload Ravi still 250"`, `brief.mjs "Ravi 670 - 100 = 570"` |
-| AC-E1.F7.4 | Browser storage is full (large screenshots) | A change is saved | A toast says "Storage is full. Export a backup, then remove some screenshots." (in English only) | manual |
-| AC-E1.F7.5 | The app is open in two tabs | One tab saves | The other tab reloads the data and redraws | manual |
+As a shop owner I am told at once when an entry cannot be right, so that the ledger stays clean.
 
----
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F2.1 | The entry form is open | I save with the amount empty or zero | Nothing is saved and the message reads "Enter an amount above zero." | checked by hand |
+| AC-E2.F2.2 | The entry form is open | I save an amount above 1,00,00,000 | Nothing is saved and the message reads "That amount looks too large. One entry can be up to ₹1,00,00,000." | `tests/final.mjs` |
+| AC-E2.F2.3 | The entry form is open | I clear the date and save | Nothing is saved and the message reads "Enter a date." | checked by hand |
+| AC-E2.F2.4 | The entry form is open | I open the date picker | Today is filled in and the picker offers no day after today | checked by hand |
+| AC-E2.F2.5 | The entry form is open | I type a note | The box takes at most 80 characters | checked by hand |
 
-## E2 Shop overview
+### E2.F3 Whole rupees
 
-Goal: on opening the app the owner sees how much the shop is owed in total and by whom, who has gone longest
-without paying, and the latest entries, and can find any customer by name or phone.
+As a shop owner I keep money in whole rupees, so that balances never carry stray paise.
 
-### E2.F1 Total outstanding
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F3.1 | The entry form is open | I save an amount of 20.75 | Nothing is saved, the form keeps what I typed, and the message reads "Amounts are in whole rupees, without paise. This was not saved yet." with the button "Use Rs 21" | `tests/rupees.mjs` |
+| AC-E2.F3.2 | The button "Use Rs 21" shows | I press it and save | The entry is saved as ₹21 | `tests/rupees.mjs` |
+| AC-E2.F3.3 | I type an amount of 0.5 | I save | The entry is held and the nearest whole amount, at least Rs 1, is offered | `tests/final.mjs` |
+| AC-E2.F3.4 | I edit an entry to 30.4, or send "Asha 20.5" from quick entry | I save | Nothing is saved and the form offers "Use Rs 30" or "Use Rs 21" | `tests/rupees.mjs` |
+| AC-E2.F3.5 | The browser already holds amounts with paise | I open the app | They are shown as stored, with the line "{n} stored amounts have paise. They are shown as stored." and the button "Round them to whole rupees", which rounds halves up and can be undone once | `tests/rupees.mjs` |
 
-As the shop owner, I want the total owed to the shop at the top so that I know where I stand at a glance.
+### E2.F4 Edit an entry
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E2.F1.1 | The sample shop is loaded | The app opens | `#total-outstanding` shows ₹11,820 and also holds the plain number 11820 (S-1) | `check.mjs [1-sample total]`, `final.mjs "total text"`, `brief.mjs "top shows 11820"`, `brief.mjs "total shows 250: ..."` (Ravi alone) |
-| AC-E2.F1.2 | Some customers are in advance | The total is drawn | `#total-outstanding` holds one figure, the sum of all balances (D-3, A-1), with its plain-number copy, for example "₹1,895 1895"; the note "₹{owed} owed, less ₹{advance} paid in advance" is in `#total-note` just below it, outside `#total-outstanding` | `check.mjs [2-hidden total]`, `brief.mjs "total with an advance holds one figure, 1895"`, `brief.mjs "owed note sits outside #total-outstanding"` |
-| AC-E2.F1.3 | Any shop | The total is drawn | `#total-outstanding` carries `data-value` (sum of all balances) | manual |
-| AC-E2.F1.4 | Each hidden shop of the sweep, written by reviewers who read only the brief (one customer, 150 customers, advances, paise, crores, leap days, dates across year ends, Devanagari and Telugu names) | It is pasted into `#import-box` in a fresh browser | The total, every row balance, the customer who owes the most, the count of customers who owe, the overdue order and the reminder link of the top customer match the expected figures | `sweep.mjs "s00 official sample"`, `sweep.mjs "a04 150 customers with exactly 600 entries ..."`, `sweep.mjs "a18 Paise that break naive floating point sums ..."` |
+As a shop owner I correct an entry, so that a mistake does not stay in the account.
 
-### E2.F2 Key figures
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F4.1 | An entry is listed | I press "Edit" on it | The form is filled with that entry, the button reads "Update entry" and "Cancel edit" shows | `tests/critic.mjs` |
+| AC-E2.F4.2 | An edit is open | I change the amount and press "Update entry" | The message reads "Entry updated." with "Undo", and the balance follows the new amount | `tests/gaps.mjs` |
+| AC-E2.F4.3 | The message "Entry updated." shows | I press "Undo" | The entry is as it was and the balance is back | `tests/gaps.mjs` |
+| AC-E2.F4.4 | An edit is open | I clear the date and save | The edit stays open and the message reads "A date is needed. Choose the date, then save." | `tests/guard.mjs` |
 
-As the shop owner, I want a few key figures beside the total so that I see the state of the shop without counting.
+### E2.F5 Delete an entry with Undo
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E2.F2.1 | Any shop | The overview is drawn | "customers owe money" shows the count of customers with a balance above zero; with one it reads "1 customer owes money" (`customerOwes`, English, Hindi and Telugu) | `check.mjs [1-sample customers_with_balance]` (INFO) |
-| AC-E2.F2.2 | At least one customer owes | The overview is drawn | "Owes the most" shows the name and balance of the largest debtor as a link to their page, and their row carries an "Owes the most" badge | `check.mjs [1-sample top defaulter]` (INFO) |
-| AC-E2.F2.3 | Nobody owes | The overview is drawn | The "Owes the most" figure is hidden | manual |
-| AC-E2.F2.4 | Entries dated in the 30 days up to today | The overview is drawn | "Collected, last 30 days" sums payments and "Given on credit, last 30 days" sums credits in that window | manual |
-| AC-E2.F2.5 | Someone is overdue | The overview is drawn | "Longest without paying" shows the first overdue customer and their days; with nobody overdue it shows "-" | manual |
+As a shop owner I delete a wrong entry and can take it back, so that a slip costs nothing.
 
-### E2.F3 Customer list
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F5.1 | An entry is listed | I press "Delete" on it | The entry is gone at one press, the balance changes, and the message reads "Entry deleted." with "Undo" | `tests/check.mjs` |
+| AC-E2.F5.2 | The message "Entry deleted." shows | I press "Undo" | The entry is back at the same place and the balance is the same again | checked by hand |
+| AC-E2.F5.3 | A message with "Undo" shows | I wait 7 seconds | The message closes and that change can no longer be undone | checked by hand |
 
-As the shop owner, I want every customer with their balance in one list, largest debts first, so that I see who to chase.
+### E2.F6 Balances
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E2.F3.1 | Any shop | The list is drawn | There is one `[data-customer="<phone>"]` row per customer, with an initial, the name, the phone, the entry count, the balance in `[data-balance]` and a WhatsApp button | `check.mjs [1-sample balances]` |
-| AC-E2.F3.2 | Any shop | The list is drawn | Customers who owe come first, largest balance first; the rest follow by balance, then by name | `check.mjs [1-sample top defaulter]` (INFO) |
-| AC-E2.F3.3 | No customers, as on a first visit (E6.F5) | The overview is drawn | "No customers yet. Add your first customer, or load the sample shop to look around." shows with two buttons: Add your first customer (`#add-first`) opens `#/s/add` with focus on the name field, and Load sample shop (`#load-sample-home`) does the same as Load sample shop on the Shop file card | `brief.mjs "fresh app holds only Ravi (no other shop preloaded)"` (empty start); the buttons manual |
-| AC-E2.F3.4 | A customer is in advance | The list is drawn | Their `[data-balance]` text reads "₹-200" (sign next to the digits, so a number reader keeps it) with `data-balance="-200"`, drawn as "-₹200"; the row shows an "Advance" label; the customer page balance (`#cust-balance`) is drawn the same way | `brief.mjs "advance customer: text ₹-200 for readers, drawn as -₹200, Advance label, data-balance=-200"` |
-| AC-E2.F3.5 | Balances in lakhs | The list is drawn | Each row balance is one clean figure: with the commas taken out it is the plain number, and `data-balance` holds it too | `critic.mjs "row balance is one figure: ..."`, `critic.mjs "total holds the plain figure 119700"` |
+As a shop owner I see what each customer owes worked out from their entries, so that the figure is always right.
 
-### E2.F4 Overdue list
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E2.F6.1 | A customer has credit and payment entries | I look at their row | The balance is all credit less all payments | `tests/ledger.cjs` |
+| AC-E2.F6.2 | A customer has paid ₹200 more than they took | I look at their row | The balance reads -₹200 with the word "Advance" | `tests/brief.mjs` |
+| AC-E2.F6.3 | A balance is ₹1,18,200 | I look at the row | It is one figure with Indian grouping | `tests/critic.mjs` |
+| AC-E2.F6.4 | Any hidden shop file is loaded | I read each balance | Every balance matches the figure worked out from the file | `tests/sweep.mjs` |
 
-As the shop owner, I want customers who owe sorted by days since they last paid so that I chase the oldest first.
+## E3 Payment screenshot
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E2.F4.1 | Customers with a balance above zero | The overdue list is drawn | Each shows days since their last payment, sorted most days first, ties by larger balance | `check.mjs [9-bonus overdue]` |
-| AC-E2.F4.2 | A customer owes but has never paid | The row is drawn | Days count from their first credit, and the row says "No payment yet, first credit"; otherwise it says "Last paid {date}" | `check.mjs [6-today]` |
-| AC-E2.F4.3 | The page address has `?today=2026-12-15` | The list is drawn | Days are counted to that date, not to the device date (F-4); days never go below 0 | `check.mjs [6-today]` |
-| AC-E2.F4.4 | Nobody owes | The list is drawn | "Nobody owes anything. Well done." shows | manual |
+### E3.F1 Attach a payment screenshot
 
-### E2.F5 Search and recent entries
+As a shop owner I keep the customer's payment screenshot with the entry, so that I have proof of what was paid.
 
-As the shop owner, I want to find a customer by name or phone and see the latest entries so that I can act quickly.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E3.F1.1 | The entry form is open | I press "Choose screenshot" and pick a picture | The type switches to "You got (payment)" | checked by hand |
+| AC-E3.F1.2 | A picture is chosen | I save the entry | The entry shows a small picture, and it is still there after a reload | `tests/brief.mjs` |
+| AC-E3.F1.3 | A picture is chosen | I press "Save entry" at once, without waiting | The entry is still saved with its picture | `tests/critic.mjs` |
+| AC-E3.F1.4 | The entry form is open | I pick a file that is not an image | The message reads "That file is not a picture." | checked by hand |
+| AC-E3.F1.5 | I pick a picture of 900 by 2700 pixels | I save the entry | The stored picture is no more than 600 pixels on its longer side | `tests/guard.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E2.F5.1 | The customer list | The owner types part of a name or of a phone | Only matching rows stay visible and the count reads "{shown} / {total}" | `check.mjs [9-bonus search]` |
-| AC-E2.F5.2 | Names have a Hindi or Telugu form | The owner types "रवि" | The customer Ravi is found (own or transliterated local names are searched) | `final.mjs "Hindi search finds Ravi"` |
-| AC-E2.F5.3 | The owner pastes "+91 90000 00102" or types "Ravi 9000" | The list filters | A leading 91 is dropped; name words and digits must both match | `final.mjs "+91 phone search"`, `final.mjs "name + digits narrows to one"` |
-| AC-E2.F5.4 | Nothing matches | The list filters | 'No customer matches "{query}".' shows | `final.mjs "no-match message"` |
-| AC-E2.F5.5 | Any shop | The overview is drawn | Recent entries shows the newest 8 entries across all customers, each with the customer's name as a link | manual |
+### E3.F2 Read the amount from the screenshot
 
----
+As a shop owner I have the amount read from the screenshot, so that I type less.
 
-## E3 Reminders and getting paid
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E3.F2.1 | I choose a screenshot that shows "Rs 120", "₹ 500" or "Rs. 2,340.00" | The reading finishes | "Amount (₹)" is filled and the message reads "Read Rs {amount} from the screenshot. Check it before saving." | `tests/critic.mjs` |
+| AC-E3.F2.2 | I typed an amount before choosing the screenshot | The reading finishes | My typed amount is left alone | checked by hand |
+| AC-E3.F2.3 | The picture has no amount the reader can find | The reading finishes | The message reads "Could not read an amount from this picture. Type it in." and the picture stays attached | checked by hand |
+| AC-E3.F2.4 | The language is Hindi | I choose a screenshot written in Hindi | The amount is read | `tests/gaps.mjs` |
 
-Goal: asking a customer to pay takes one tap, with the right amount already in the message and a way to pay
-by UPI. The owner can work through everyone overdue in one go. Nothing is sent automatically: WhatsApp
-opens and the owner presses Send.
+### E3.F3 Where the reader comes from, and its limits
 
-### E3.F1 WhatsApp reminder link
+As a shop owner I know what the screenshot reader needs, so that I am not surprised when it cannot read.
 
-As the shop owner, I want a one-tap WhatsApp reminder with the name and amount so that I do not have to type it.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E3.F3.1 | I open the app and never choose a screenshot | The page loads | No file is asked from any other site | `tests/local-assets.mjs` |
+| AC-E3.F3.2 | I choose a screenshot for the first time | The message "Reading the amount from the screenshot..." shows | The reader is fetched from `cdn.jsdelivr.net`; the picture itself is read in the browser | checked by hand |
+| AC-E3.F3.3 | The phone is offline | I choose a screenshot | The picture is attached and I type the amount myself | checked by hand |
+| AC-E3.F3.4 | The language is not English, Hindi or Telugu | I choose a screenshot | The reader looks for English text only | checked by hand |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E3.F1.1 | A customer owes ₹3,470 | The list is drawn | Their row has `a[data-remind="<phone>"]` pointing to `https://wa.me/91<phone>?text=...`, opening in a new tab | `check.mjs [3-reminder]` |
-| AC-E3.F1.2 | A customer owes | The message is built | It reads "Namaste {name}, this is a reminder from {shop}. Your balance is Rs 3,470. UPI pay link: {pay page link} Pay by UPI: {link} Thank you." (S-2). The pay page link is there since 1.2.1.0 (E14.F3) | `check.mjs [3-reminder]`, `check.mjs [2-hidden reminders]`, `brief.mjs "reminder: ..."`, `pay.mjs "a pay link on the app's own address comes before it ..."` |
-| AC-E3.F1.3 | A customer is in advance | The message is built | It says "You have Rs {amount} in advance with us." and has no pay link | `check.mjs [2-hidden reminders]` |
-| AC-E3.F1.4 | A customer's balance is 0 | The message is built | It says "Your account is settled, Rs 0 due." | manual |
-| AC-E3.F1.5 | The language is Hindi or Telugu | The message is built | The message text is in that language; the name stays as stored | manual |
+## E4 Shop overview
 
-### E3.F2 UPI pay link
+### E4.F1 Total outstanding
 
-As the shop owner, I want a UPI pay link with the exact amount so that the customer can pay in one tap.
+As a shop owner I see one figure for what the whole shop is owed, so that I know where I stand.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E3.F2.1 | A customer owes | The link is built | It is `upi://pay?pa={UPI ID}&pn={shop}&am={balance to 2 decimals}&cu=INR&tn=Hisaab {name}` and is inside every reminder | `check.mjs [9-bonus UPI]` |
-| AC-E3.F2.2 | A customer owes | Their page is open | A "UPI pay link" button with the same link shows; it is hidden when the balance is 0 or in advance | `final.mjs "UPI link kept"` |
-| AC-E3.F2.3 | A customer owes | The WhatsApp reminder is built | The UPI link in it starts `upi://pay?pa=...&am=...` | `critic.mjs "UPI link starts upi://pay?pa=...&am=... ..."` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F1.1 | The sample shop is loaded | I look at "Total outstanding" | It reads ₹11,820, the sum of every customer's balance | `tests/check.mjs` |
+| AC-E4.F1.2 | One customer is ₹200 in advance and the others owe ₹2,095 | I look at the total | It reads ₹1,895 and a note beside it reads "₹2,095 owed, less ₹200 paid in advance" | `tests/brief.mjs` |
+| AC-E4.F1.3 | Any hidden shop file is loaded | I look at the total | It matches the figure worked out from the file | `tests/sweep.mjs` |
+| AC-E4.F1.4 | The address ends in `?today=2026-11-15` | I look under the total | The date the figures are for is shown, and every count of days is made to that date | `tests/check.mjs` |
 
-### E3.F3 Shop UPI ID setting
+### E4.F2 Key figures
 
-As the shop owner, I want to set my own UPI ID so that payments come to me (PRD Q-1).
+As a shop owner I see the few figures that matter beside the total, so that I do not have to add anything up.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E3.F3.1 | No UPI ID is set | Links are built | The demo ID `hisaab.demo@upi` is used and Settings warns "Demo UPI ID in use. Put your shop's own UPI ID here before sending real reminders." | manual |
-| AC-E3.F3.2 | Shop settings | The owner enters a valid UPI ID and presses Save settings | It is stored, "Settings saved." shows and every link uses it | `gaps.mjs "good UPI saved"`, `gaps.mjs "reminder uses the saved UPI ID"` |
-| AC-E3.F3.3 | Shop settings | The owner enters a UPI ID that is not in the form name@bank (for example "not a upi") and presses Save settings | "Enter a UPI ID like shopname@okbank, or leave it empty." shows, focus goes to the UPI field and nothing is saved; an empty field is allowed and the demo ID is then used | `gaps.mjs "bad UPI refused"` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F2.1 | The app is open on a phone | I look at the strip under the total | It shows three figures in one row: "Customers" (those who owe), "Overdue" and "Collected, last 30 days", each label readable in full | `tests/review-fixes.mjs` |
+| AC-E4.F2.2 | The strip is showing | I press its "…" button | The full overview opens with "Owes the most", "Collected, last 30 days", "Given on credit, last 30 days" and "Longest without paying" | checked by hand |
+| AC-E4.F2.3 | Nobody owes anything yet | I look at "Longest without paying" | It reads "Nobody yet" | `tests/guard.mjs` |
+| AC-E4.F2.4 | Entries are dated over several months | I look at "Collected, last 30 days" | Only payments dated today or in the 29 days before are counted | checked by hand |
 
-Note: the check (`validUpi`) is 2 to 256 letters, digits, dots, hyphens or underscores, then @, then a
-handle of 2 to 64 letters and digits that starts with a letter. A bad UPI ID in an imported file is handled
-in E6.F2.
+### E4.F3 The customer list and its order
 
-### E3.F4 Remind all overdue
+As a shop owner I see who owes the most first, so that I know whom to speak to.
 
-As the shop owner, I want to go through every overdue customer one chat after another so that a round of reminders takes minutes.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F3.1 | Several customers owe | I look at the customer list | Those who owe come first, the largest balance at the top, with the badge "Owes the most" on the first | `tests/sweep.mjs` |
+| AC-E4.F3.2 | The list is showing | I look at a row | It shows the name, the phone, the number of entries, the balance and a WhatsApp reminder button | `tests/check.mjs` |
+| AC-E4.F3.3 | The shop is empty | I open the app | The list reads "No customers yet. Add your first customer, or load the sample shop to look around." with "Add your first customer" and "Load sample shop" | `tests/guard.mjs` |
+| AC-E4.F3.4 | The app is open on a phone or a desktop | The first screen shows | The customer list is on the first screen, above the quick-entry pill | `tests/phone-ledger.mjs`, `tests/desk-ledger.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E3.F4.1 | Two or more customers are overdue | The overdue card is drawn | A "Remind all overdue ({n})" button shows, linked to the reminder for the longest overdue; with fewer than two it is hidden | `final.mjs "remind-all label"`, `final.mjs "first link is longest overdue"` |
-| AC-E3.F4.2 | The button is showing | The owner taps it | That chat opens in a new tab and the button moves to the next customer, reading "Next reminder: {name} ({i} of {n})" | `final.mjs "remind-all opened a chat tab"`, `final.mjs "next label"` |
-| AC-E3.F4.3 | The last chat has been opened | The button is drawn | It reads "All {n} reminders opened"; a further tap starts again from the first | manual |
-| AC-E3.F4.4 | The overdue list changes (an entry is saved) | The card is redrawn | The queue starts again from the first customer | manual |
+### E4.F4 The overdue rule
 
-### E3.F5 UPI QR code
+As a shop owner I see who has gone longest without paying, so that I remind the right people.
 
-As the shop owner, I want to show a QR code for the exact amount so that a customer at the counter can scan and pay.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F4.1 | Several customers owe | I open "Overdue" | Everyone who owes is listed, the longest without paying first; a customer who never paid is counted from their first credit | `tests/check.mjs` |
+| AC-E4.F4.2 | A customer has gone 30 days or more without paying | I look at their overdue row | It carries the badge "30+ days"; a customer at 29 days does not | `tests/final.mjs` |
+| AC-E4.F4.3 | Some customers are 30 days or more overdue | I look above the overdue list | A line reads "{amount} unpaid for 30 days or more, from {n} customers" | `tests/langs.mjs` |
+| AC-E4.F4.4 | Nobody owes anything | I open "Overdue" | It reads "Nobody owes anything. Well done." | `tests/guard.mjs` |
+| AC-E4.F4.5 | The overdue list is showing | I read the hint | It reads "Remind after 30 days without paying" | checked by hand |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E3.F5.1 | A customer owes and their page is open | The owner taps the QR button | A card opens with a QR code of the UPI link (library loaded from cdnjs on first use), the amount, the UPI ID and "Scan with any UPI app to pay {shop}." | `final.mjs "QR drawn"`, `final.mjs "QR amount"` |
-| AC-E3.F5.2 | The QR library cannot load | The card opens | The UPI link is shown as text instead | manual |
-| AC-E3.F5.3 | The QR card is open | The owner opens another customer, or the balance reaches 0 | The card closes; the QR button is hidden when nothing is owed | `final.mjs "QR card closed for another customer"` |
+### E4.F5 Search
 
----
+As a shop owner I find a customer by name or number, so that a long list is no trouble.
 
-## E4 Customer page and statement
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F5.1 | The sample shop is loaded | I type "Sunita" in "Search by name or phone" | Only Sunita Devi's row shows and the count reads the rows shown out of all | `tests/check.mjs` |
+| AC-E4.F5.2 | The sample shop is loaded | I type a phone with +91 in front | That customer's row shows | `tests/final.mjs` |
+| AC-E4.F5.3 | The sample shop is loaded | I type a name nobody has | A line reads 'No customer matches "{what I typed}".' | `tests/final.mjs` |
+| AC-E4.F5.4 | The app is open on a phone | I look at the search box | It is at least 44 pixels high | `tests/review-fixes.mjs` |
 
-Goal: one page per customer shows the balance, the whole history newest first with the balance after each
-entry, and lets the owner record, remind, correct the name in local script and give the customer a
-statement.
+### E4.F6 Recent entries and the list filters
 
-### E4.F1 Customer page
+As a shop owner I see the latest entries of the whole shop, so that I can check what was just recorded.
 
-As the shop owner, I want a page per customer so that I see their account in one place.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E4.F6.1 | The shop has more than 8 entries | I open "Recent entries" | The newest 8 entries of all customers show, each with "Edit" and "Delete" | checked by hand |
+| AC-E4.F6.2 | "Recent entries" is open on a phone | I press "Edit" on an entry | The entry form comes into view, filled | `tests/critic.mjs` |
+| AC-E4.F6.3 | The window is 1200 pixels wide or more | I look at the right panel | It holds "Record an entry", "Overdue" and "Recent entries", with no scroll box of its own | `tests/desk-ledger.mjs` |
+| AC-E4.F6.4 | The right panel is showing | I type in the filter box of "Overdue" or "Recent entries" | Only the rows that hold the typed text stay in that list | `tests/desk-ledger.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E4.F1.1 | A customer row | The owner taps the name | The page `#/c/<phone>` opens at the top with name, phone as "+91 XXXXX XXXXX", balance and "owes", "Advance" or "Settled" with "Last paid: {date}" or "never" | `check.mjs [7-phone]` (opens the page) |
-| AC-E4.F1.2 | The customer page | The entry form shows | It is the same form without the customer list, already set to this customer | `quick.mjs "customer page fills without name"` |
-| AC-E4.F1.3 | The address holds a phone that is not a customer | The page loads | The home view shows instead | manual |
+## E5 Reminders and getting paid
 
-### E4.F2 History, newest first, with running balance
+### E5.F1 The WhatsApp reminder
 
-As the shop owner, I want the history newest first with the balance after each entry so that I can explain any figure.
+As a shop owner I send a customer a reminder in one tap, so that asking for money takes no typing.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E4.F2.1 | A customer has entries | The page is drawn | Entries are listed newest date first; on the same date the later-recorded one comes first | `check.mjs [4-customer page order]` (INFO), `brief.mjs "25 Oct payment 1,500 (row 0) above 23 Oct credit 180 (row 1)"` |
-| AC-E4.F2.2 | A customer has entries | The page is drawn | Each entry shows type, note, date, signed amount and "Balance after ₹{amount}", worked from oldest to newest | manual |
-| AC-E4.F2.3 | A customer has no entries | The page is drawn | "No entries yet." shows | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F1.1 | A customer owes | I look at their WhatsApp reminder button | Its link is `https://wa.me/91<10 digit phone>?text=<message>` | `tests/check.mjs` |
+| AC-E5.F1.2 | A customer owes | I read the message | It begins "Namaste {name}, this is a reminder from {shop}. Your balance is Rs {amount}." and ends "Thank you." | `tests/brief.mjs` |
+| AC-E5.F1.3 | Any hidden shop file is loaded | I read the reminder of the customer who owes the most | It carries that customer's name and balance | `tests/sweep.mjs` |
+| AC-E5.F1.4 | A customer is in advance, or settled | I read the message | It reads "Namaste {name}, this is {shop}. You have Rs {amount} in advance with us. Thank you." or "Namaste {name}, this is {shop}. Your account is settled, Rs 0 due. Thank you." | checked by hand |
+| AC-E5.F1.5 | I tap the reminder button | WhatsApp opens | The message is ready and I press Send myself; the app sends nothing | checked by hand |
 
-### E4.F3 Statement as PDF or print
+### E5.F2 The pay links and the pay page
 
-As the shop owner, I want to print or save a statement so that I can give the customer a clean account.
+As a customer I tap a link in the reminder and my UPI app opens with the amount filled in, so that paying takes a moment.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E4.F3.1 | The customer page | The owner presses Statement (PDF) | The browser print dialog opens with only the statement: shop name, "Account statement", customer and phone, "Generated on {today}" | manual |
-| AC-E4.F3.2 | The statement | It is drawn | A table lists entries oldest first with Date, Note, You gave, You got and Balance, and a Totals row | manual |
-| AC-E4.F3.3 | The customer owes and the QR library loads within 1.5 seconds | The statement is drawn | A scan-to-pay QR with "Scan to pay ₹{amount}" and the UPI ID is added | `final.mjs "statement has scan-to-pay QR"` |
-| AC-E4.F3.4 | Printing ends | The dialog closes | The page and its title return to normal; the print file is named "Statement - {name} - {shop}" | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F2.1 | A customer owes | I read the reminder | It holds a line "UPI pay link:" with an https link to the pay page, and after it "Pay by UPI:" with a link that starts `upi://pay?pa=<UPI ID>&am=<balance with two decimals>` | `tests/pay.mjs` |
+| AC-E5.F2.2 | The reminder is built | I look at the pay page link | The shop, the customer name, the UPI ID and the amount come after "#", so they are not sent to any server | `tests/pay.mjs` |
+| AC-E5.F2.3 | I open the pay page from the link | The page shows | It shows "Pay to", the shop, the amount, the UPI ID with "Copy", and the button "Open your UPI app", which opens the same UPI link as the message | `tests/pay.mjs` |
+| AC-E5.F2.4 | The pay page link is cut short or changed | I open it | The page reads "This payment link is not complete. Ask the shop to send it again." | `tests/pay.mjs` |
+| AC-E5.F2.5 | A customer page is open and the balance is above zero | I look at the buttons | "UPI pay link" and "UPI QR code" show; with nothing owed they do not | `tests/final.mjs` |
 
-### E4.F4 WhatsApp receipt after an entry
+### E5.F3 The shop's UPI ID
 
-As the shop owner, I want to send a receipt after each entry so that the customer has a record too.
+As a shop owner I set my own UPI ID once, so that every pay link pays my shop.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E4.F4.1 | An entry is saved | The "Saved." toast shows | It carries a "Send receipt" WhatsApp link for 7 seconds | manual |
-| AC-E4.F4.2 | A credit was saved | The receipt is built | "Namaste {name}, {shop}: Rs {amount} added to your account on {date}. Balance now Rs {balance}." | manual |
-| AC-E4.F4.3 | A payment was saved | The receipt is built | "Namaste {name}, {shop}: payment of Rs {amount} received on {date}, thank you. Balance now Rs {balance}." | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F3.1 | "Shop settings" is open | I type a UPI ID such as shopname@okbank and press "Save settings" | Every reminder and pay link uses that UPI ID | `tests/gaps.mjs` |
+| AC-E5.F3.2 | "Shop settings" is open | I save a UPI ID that is not of the form name@bank | It is not saved and the message reads "Enter a UPI ID like shopname@okbank, or leave it empty." | `tests/gaps.mjs` |
+| AC-E5.F3.3 | No shop UPI ID is set | I read a reminder | The pay links use the demo ID `hisaab.demo@upi` | `tests/critic.mjs` |
+| AC-E5.F3.4 | No shop UPI ID is set | I look under the customer list or on a customer page | A notice reads "Reminders now ask customers to pay the demo UPI ID hisaab.demo@upi, not your shop." with the link "Set your shop's UPI ID" | `tests/review-fixes.mjs` |
+| AC-E5.F3.5 | The notice is showing | I save my own UPI ID | The notice is gone and the reminder links are otherwise the same | `tests/review-fixes.mjs` |
 
-### E4.F5 Customer details in local script
+### E5.F4 The UPI QR code
 
-As the shop owner, I want to correct the customer's name and its Hindi and Telugu spelling so that it reads right.
+As a shop owner I show a customer a QR code for exactly what they owe, so that they can pay at the counter.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E4.F5.1 | The customer page | Customer details opens | Name, Name in Hindi and Name in Telugu are filled, the local names by automatic transliteration when none is stored, with "Filled in automatically. Correct it if the spelling is wrong." | manual |
-| AC-E4.F5.2 | The details form | The owner edits and presses Save details | The names are stored and "Customer details saved." shows | manual |
-| AC-E4.F5.3 | The name is cleared | The owner presses Save details | "Enter a name." shows and nothing is saved | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F4.1 | A customer owes | I press "UPI QR code" on their page | A QR code is drawn with the amount, the UPI ID and the line "Scan with any UPI app to pay {shop}." | `tests/final.mjs` |
+| AC-E5.F4.2 | The QR card is open | I open another customer's page | The card is closed | `tests/final.mjs` |
+| AC-E5.F4.3 | I open a customer's QR code | The code is drawn | The QR library comes from the site itself; no other site is asked | `tests/local-assets.mjs` |
+| AC-E5.F4.4 | I visited the app once online | I open a QR code while offline | The code is still drawn | `tests/offline.mjs` |
 
----
+### E5.F5 Remind all overdue
 
-## E5 Quick entry, typed and by voice
+As a shop owner I work through everyone who is overdue with one button, so that the weekly round is quick.
 
-Goal: the owner types or says one short line, for example "Sunita 500 udhaar", and the entry form fills
-itself. The app never saves on its own: focus moves to Save entry and the owner checks and saves. It was added at the final review
-and is stated in the PRD as V-11 since 23 Nov 2026.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F5.1 | Four customers are 30 days or more overdue | I open "Overdue" | A button reads "Remind all overdue (4)" | `tests/final.mjs` |
+| AC-E5.F5.2 | The button is showing | I press it | WhatsApp opens for the customer who is longest overdue, and the button reads "Next reminder: {name} (2 of 4)" | `tests/final.mjs` |
+| AC-E5.F5.3 | I have pressed it for every customer | I look at the button | It reads "All 4 reminders opened" | checked by hand |
+| AC-E5.F5.4 | Fewer than two customers are 30 days or more overdue | I open "Overdue" | The button is not shown | checked by hand |
+| AC-E5.F5.5 | The "+" menu is open | I press "Remind all overdue" | The same round starts, or "Overdue" opens when the button is not showing | checked by hand |
 
-### E5.F1 Quick-entry parser
+### E5.F6 Other ways to send
 
-As the shop owner, I want to type the entry as I would say it so that recording takes seconds.
+As a shop owner I can still reach a customer whose number is not on WhatsApp, so that no reminder is lost.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F1.1 | The sample shop | The owner enters "Sunita 500 udhaar" and presses Fill | Customer Sunita, Credit and 500 are filled and the message reads "Filled: {name}, credit ₹500. Check it, then press Save entry." | `quick.mjs "Sunita 500 udhaar -> ..."` |
-| AC-E5.F1.2 | The line has "1,500", "₹", "Rs99" or "2.5 hazar" | It is parsed | Commas and currency signs are dropped; hazar, thousand and k multiply by 1,000, sau and hundred by 100, lakh by 1,00,000 | `quick.mjs "fatima ₹2.5 hazar jama -> ..."`, `quick.mjs "Rs 99 kavita -> ..."` |
-| AC-E5.F1.3 | The line has a payment word (paid, received, jama, mila, wapas and others) | It is parsed | The type is Payment; a payment word wins over a credit word | `quick.mjs "Ravi paid 200 -> ..."` |
-| AC-E5.F1.4 | The line has upi, gpay, phonepe or paytm | It is parsed | The type is Payment and the word goes into the note (upi as "UPI"); "cash" goes into the note without setting the type | `quick.mjs "Ravi 200 upi -> ..."` |
-| AC-E5.F1.5 | The line has no type word | It is parsed | Credit is used and the message adds "(no word for paid, so taken as credit)" | `quick.mjs "Anjli 120 -> ..."` |
-| AC-E5.F1.6 | The line has words that are not a name, amount or type word | It is parsed | They become the note, for example "biscuits" | `quick.mjs "note filled"` |
-| AC-E5.F1.7 | The line has a full 10 digit phone or its last four digits | It is parsed | That customer scores highest | `quick.mjs "9000000105 750 paid -> ..."` |
-| AC-E5.F1.8 | The name is misspelt by one letter ("Anjli") or shortened to 3 or more letters | It is parsed | The nearest customer is still found | `quick.mjs "Anjli 120 -> ..."` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F6.1 | A customer page is open | I open "Other ways to send" | It offers "Send as SMS", "Choose a contact in WhatsApp" and "Copy the message" | `tests/sendways.mjs` |
+| AC-E5.F6.2 | "Other ways to send" is open | I look at "Send as SMS" | It opens an SMS to the customer's number with the same message as the WhatsApp reminder | `tests/sendways.mjs` |
+| AC-E5.F6.3 | "Other ways to send" is open | I press "Copy the message" | The message is on the clipboard and the button says "Message copied" | `tests/sendways.mjs` |
+| AC-E5.F6.4 | The customer is one of the sample shop | I open their page | The block opens by itself and reads "This is a sample number, not the customer's own. To try a reminder, first change it to your own number." | `tests/sendways.mjs` |
 
-### E5.F2 Hindi and Telugu words
+### E5.F7 The receipt after an entry
 
-As the shop owner, I want to type or say the entry in Hindi or Telugu so that I can use my own words.
+As a shop owner I send the customer a receipt straight after an entry, so that both of us have the same record.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F2.1 | The line is "सुनीता 500 उधार" | It is parsed | Sunita, Credit, 500 | `quick.mjs "सुनीता 500 उधार -> ..."` |
-| AC-E5.F2.2 | The line is "रवि ने ५०० जमा किए" | It is parsed | Devanagari digits are read, filler words (ने, किए) are ignored: Ravi, Payment, 500 | `quick.mjs "रवि ने ५०० जमा किए -> ..."` |
-| AC-E5.F2.3 | The line is "సునీత 300 అప్పు" | It is parsed | Sunita, Credit, 300 (Telugu digits are read too) | `quick.mjs "సునీత 300 అప్పు -> ..."` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E5.F7.1 | I save an entry | The message "Saved." shows | It carries the link "Send receipt" for 7 seconds | checked by hand |
+| AC-E5.F7.2 | I saved a credit | I tap "Send receipt" | WhatsApp opens for the customer with "Namaste {name}, {shop}: Rs {amount} added to your account on {date}. Balance now Rs {balance}." | checked by hand |
+| AC-E5.F7.3 | I saved a payment | I tap "Send receipt" | The message reads "Namaste {name}, {shop}: payment of Rs {amount} received on {date}, thank you. Balance now Rs {balance}." | checked by hand |
 
-### E5.F3 Unclear lines and the save rule
+## E6 Customer page, statement and tools
 
-As the shop owner, I want the app to ask rather than guess so that no wrong entry is saved.
+### E6.F1 The customer page
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F3.1 | No customer matches ("Zebra 100") on the home view | Fill is pressed | "Which customer? Say the name, for example: Sunita 500 udhaar." shows | `quick.mjs "unknown name asks which customer"` |
-| AC-E5.F3.2 | Several customers match equally | Fill is pressed | "More than one customer matches. Pick one:" shows with up to 6 buttons (name and last four digits); a tap fills the form for that customer | manual |
-| AC-E5.F3.3 | No amount is given ("Sunita udhaar") | Fill is pressed | The customer is chosen, "Say or type an amount, for example: Sunita 500 udhaar." shows and focus goes to the amount | `quick.mjs "missing amount message"` |
-| AC-E5.F3.4 | A line was filled | The form is filled | Nothing is saved; focus moves to Save entry | `quick.mjs "focus on Save"`, `quick.mjs "balance changed"` (only after Save is pressed) |
-| AC-E5.F3.5 | The customer page is open | The owner enters "300 paid" | Amount and Payment fill for this customer with no name needed | `quick.mjs "customer page fills without name"` |
+As a shop owner I open one customer and see their whole account, so that I can answer them at the counter.
 
-### E5.F4 Voice input
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F1.1 | The customer list is showing | I tap a customer | Their page opens with the name, the phone as "+91 XXXXX XXXXX", "Balance" and "Last paid" with a date or "never" | `tests/brief.mjs` |
+| AC-E6.F1.2 | A customer page is open | I look at the buttons | "WhatsApp reminder" and "Statement (PDF)" show, and "All customers" leads back to the list | checked by hand |
+| AC-E6.F1.3 | A customer page is open | I record an entry there | The form needs no customer chosen and the entry goes to this customer | `tests/quick.mjs` |
+| AC-E6.F1.4 | The address names a phone no customer has | The page loads | The home view shows | checked by hand |
 
-As the shop owner, I want to say the entry so that I can record it with my hands full.
+### E6.F2 History with running balance
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F4.1 | The browser has speech recognition (Chrome, Edge) | The page loads | The microphone button shows; where speech recognition is missing it stays hidden | `quick.mjs "mic button shown in Chromium"` |
-| AC-E5.F4.2 | The owner taps the microphone | They speak | It listens in en-IN, hi-IN or te-IN by the chosen language, shows the words as heard, and on stop runs the same parser (E5.F1) | `voice.mjs "a heard "Ravi 500 udhaar" fills the form ..."` |
-| AC-E5.F4.3 | Nothing is heard, the microphone is blocked or missing, or the speech service does not answer | Listening ends | Each failure has its own message: "Did not catch that. Try again or type it.", "The microphone is blocked for this site. Allow it from the lock icon in the address bar", "No microphone was found on this device. Type the entry instead." or "This browser's speech service did not answer. Voice needs the internet and works best in Chrome. Type the entry instead."; the microphone button is released each time | `voice.mjs "failure "no-speech" says why ..."`, `voice.mjs "failure "not-allowed" says why ..."`, `voice.mjs "failure "audio-capture" says why ..."`, `voice.mjs "failure "network" says why ..."`, `voice.mjs "the microphone button is released after "network""` |
-| AC-E5.F4.4 | The chosen language is refused by the speech service | The owner speaks | It is tried again in Indian English and the entry is heard | `voice.mjs "a refused language is tried again in Indian English and the entry is heard ..."` |
-| AC-E5.F4.5 | The speech service stays silent | Nine seconds pass | Listening is stopped with a message in the chosen language | `voice.mjs "a speech service that stays silent is stopped after 9 seconds with a message ..."`, `voice.mjs "no page errors"` |
+As a shop owner I see every entry of a customer with the balance after it, so that I can show how the figure came about.
 
-### E5.F5 Voice never ends in silence (1.2.4.0)
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F2.1 | A customer has several entries | I look at "Entries, newest first" | The newest entry is at the top; a payment of 25 October stands above a credit of 23 October | `tests/brief.mjs` |
+| AC-E6.F2.2 | The list is showing | I look at an entry | It shows the date, the note, the amount, "Balance after", and "Edit" and "Delete" | checked by hand |
+| AC-E6.F2.3 | Two entries have the same date | I look at the list | The one recorded later is shown first, as the list runs newest first | `tests/ledger.cjs` |
 
-As the shop owner, I want every voice try to end with a message so that I am never left looking at "Listening" with nothing on screen, and I always know a way that works.
+### E6.F3 Statement as PDF or print
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F5.1 | A laptop | The speech service stops without a result and without an error | "Did not catch that" shows, not "Listening" | `voice-quiet.mjs "laptop: a service that stops without hearing anything says "Did not catch that", not "Listening" ..."` |
-| AC-E5.F5.2 | A laptop, including one with a touch screen | Any voice failure is shown | It adds the computer's own dictation (Windows key and H) as the way that always works; a speech service that cannot be reached says so, with the same tip | `voice-quiet.mjs "laptop: it adds the computer's own dictation as the way that always works"`, `voice-quiet.mjs "laptop: a speech service that cannot be reached says so, with the same tip"` |
-| AC-E5.F5.3 | A laptop | The sentence is heard | The form is filled and no tip is shown | `voice-quiet.mjs "laptop: when the sentence is heard the form is filled and no tip is shown ..."` |
-| AC-E5.F5.4 | A phone or tablet | The same ending, or a blocked microphone | The message offers the microphone key of the keyboard | `voice-quiet.mjs "phone: the same ending offers the microphone key of the keyboard ..."`, `voice-quiet.mjs "phone: a blocked microphone says so, with the tip"` |
-| AC-E5.F5.5 | Hindi on a laptop, Tamil on a phone | The message shows | The message and the tip are in that language | `voice-quiet.mjs "laptop, Hindi: the message and the tip are in Hindi ..."`, `voice-quiet.mjs "phone, Tamil: the message and the tip are in Tamil ..."` |
-| AC-E5.F5.6 | A 375 px wide screen | The longer message shows | Nothing scrolls sideways and the page has no errors | `voice-quiet.mjs "phone: the longer message does not scroll sideways at 375 px ..."`, `voice-quiet.mjs "phone: no page errors"` |
+As a shop owner I give a customer a statement, so that they have the account on paper or as a file.
 
-### E5.F6 Quick entry offers to add a customer it does not know (1.2.5.0)
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F3.1 | A customer page is open | I press "Statement (PDF)" | The browser's print box opens with a page headed by the shop and "Account statement", the customer, the phone and the date | `tests/profile.mjs` |
+| AC-E6.F3.2 | The statement is built | I read its table | It has the columns Date, Note, You gave, You got and Balance, and a totals row | checked by hand |
+| AC-E6.F3.3 | The customer owes | I read the statement | It carries a QR code with "Scan to pay" | `tests/final.mjs` |
+| AC-E6.F3.4 | A shop profile is saved | I read the statement | The owner, the address and the logo show under the shop name | `tests/profile.mjs` |
+| AC-E6.F3.5 | The print box is open | I choose to save as PDF | The browser saves the statement as a PDF file | checked by hand |
 
-As the shop owner on a new ledger, I want a quick entry with an unknown name to tell me that name is not a customer yet, so that I know what to do next.
+### E6.F4 Totals and days since the last payment
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E5.F6.1 | An empty ledger | The owner types "Sunita 500 udhaar" and presses Fill | The question "Which customer?" stays, and a line under it says 'No customer matches "Sunita".' | `assist.mjs "the question stays, and a line under it names the name no customer has"` |
-| AC-E5.F6.2 | That line shows | The page is read | A button offers "Add a customer: Sunita" | `assist.mjs "and a button offers to add that customer"` |
-| AC-E5.F6.3 | The button shows | The owner presses it | Add a customer opens with the name filled and the cursor on the phone number | `assist.mjs "the button opens Add a customer with the name filled and the cursor on the phone number"` |
-| AC-E5.F6.4 | She has been added | The same text is sent again | The entry form is filled; with no name typed, the question stands alone | `assist.mjs "after adding her, the same text fills the form"`, `assist.mjs "with no name typed the question "Which customer?" stands"` |
+As a shop owner I see a customer's totals at a glance, so that I know how they pay.
 
-Note: a stand-in plays the browser's speech service in both voice tests. Real speech needs a person and a microphone and was not tried.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F4.1 | A customer page is open | I look at "More for this customer" | "Total given on credit" and "Total received" are the sums of that customer's entries | `tests/customer.mjs` |
+| AC-E6.F4.2 | The customer last paid on 25 October and today is 15 November | I read the block | It reads "21 days since the last payment" | `tests/customer.mjs` |
+| AC-E6.F4.3 | The customer has never paid | I read the block | It reads "No payment yet" | checked by hand |
 
----
+### E6.F5 Call and WhatsApp chat links
 
-## E6 Shop data
+As a shop owner I ring or message a customer from their page, so that I do not look the number up.
 
-Goal: the data stays on the owner's phone (D-1). A shop can be loaded from a shop file (JSON) or a spreadsheet
-saved as CSV, which replaces the current shop after it is checked (D-2) and can be undone. The ledger can be exported to spreadsheet files
-and a backup file. The app starts with an empty shop; the sample shop is one tap away.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F5.1 | "More for this customer" is showing | I look at "Call" | Its link is `tel:+91<phone>` | `tests/customer.mjs` |
+| AC-E6.F5.2 | "More for this customer" is showing | I look at "WhatsApp chat" | Its link is `https://wa.me/91<phone>` with no message, and it opens apart from the app | `tests/customer.mjs` |
+| AC-E6.F5.3 | The block is showing | I count the reminder buttons on the page | There are as many as without the block; the chat link is not a reminder | `tests/customer.mjs` |
 
-### E6.F1 Load a shop file
+### E6.F6 The balance history line
 
-As the shop owner, I want to load a shop from a file so that I can move my ledger or start from a backup.
+As a shop owner I see how a customer's balance has moved, so that I can tell a slow payer from a steady one.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F1.1 | A valid shop file is pasted into `#import-box` | The owner presses `#import-go` | The current shop is replaced, "Loaded {shop}: {c} customers, {e} entries." shows, the view returns to the overview, search clears and every figure is recomputed | `check.mjs [2-hidden total]`, `check.mjs [2-hidden replace]`, `brief.mjs "8 customers after the sample"` |
-| AC-E6.F1.2 | A different shop of 15 customers with advances and a customer with no entries | It is loaded | Every balance and the total are correct | `check.mjs [2-hidden balances]`, `check.mjs [2-hidden total]`, `brief.mjs "customer with no entries loads with 0; total 300"` |
-| AC-E6.F1.3 | A shop was loaded | The page reloads | The loaded shop is still there | `check.mjs [2-hidden persistence]` |
-| AC-E6.F1.4 | The owner uses Choose file with a .json, .csv or .txt file | The file is read | It is put into the box and loaded at once | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E6.F6.1 | A customer has two or more entries | I open their page | "Balance over time" shows a line of the balance after each entry | `tests/profile.mjs` |
+| AC-E6.F6.2 | The line is showing | A screen reader reads it | It says "Balance went from {first} to {last} over {n} entries" and "Highest {figure}, lowest {figure}" | `tests/profile.mjs` |
+| AC-E6.F6.3 | A customer has one entry | I open their page | No line is shown | `tests/profile.mjs` |
 
-### E6.F2 Shop file checks
+## E7 Quick entry, typed and by voice
 
-As the shop owner, I want a bad file refused with a clear reason so that I never lose my ledger to a broken file (S-4).
+### E7.F1 The quick-entry pill
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F2.1 | The box is empty | Load is pressed | 'The file needs "customers" and "entries" lists.' shows and nothing changes | manual |
-| AC-E6.F2.2 | The text starts with { or [ but is not valid JSON | Load is pressed | "This is not valid JSON: {parser message}" shows and nothing changes; text that does not start with { or [ is read as CSV (E6.F6) | manual |
-| AC-E6.F2.3 | The JSON has no `customers` list, or its `entries` is there but is not a list | Load is pressed | 'The file needs "customers" and "entries" lists.' shows and nothing changes | `phone-import.mjs "entries that is not a list is still refused with a message"` |
-| AC-E6.F2.4 | No row in the file is usable (no valid customer at all) | Load is pressed | The first three problems show, for example 'customer 1: phone "123"', and nothing changes | manual |
-| AC-E6.F2.5 | Some rows are bad (a missing phone, an unknown type, a negative amount) but others are good | Load is pressed | The good rows replace the shop and the message adds "Skipped {n}: " (in English, Hindi or Telugu) and up to three problems | `gaps.mjs "import message: ..."` |
-| AC-E6.F2.6 | Rows use other spellings | Load is pressed | Phones are cleaned as in AC-E1.F1.4 and any 10 digits are accepted, not only mobile numbers; debit, udhar and sale mean credit; paid, jama and receipt mean payment; Rs, INR, ₹, commas and spaces in amounts are dropped; DD/MM/YYYY dates are read; shop_name, name, upi_id, name_hi and name_te are accepted | manual |
-| AC-E6.F2.7 | An entry's phone is not in the customer list | Load is pressed | A customer is created for it, named from the entry or by the phone | manual |
-| AC-E6.F2.8 | The same phone appears twice in customers | Load is pressed | The first is kept and the second is dropped without a message | manual |
-| AC-E6.F2.9 | Imported text contains HTML | It is shown | It is escaped and shown as text | manual |
-| AC-E6.F2.10 | An entry's amount is missing, blank, not a number, negative or above 1,00,00,000 | Load is pressed | That entry is skipped and listed under "Skipped {n}: "; the good rows load | `gaps.mjs "import message: ..."`, `gaps.mjs "balance from good rows only (500 - 100): ..."` |
-| AC-E6.F2.11 | An entry's date is missing or cannot be read | Load is pressed | The entry is kept, dated today (or the `?today=` date), and the message adds "{n} entries had no date and are dated today." | `gaps.mjs "import message: ..."` |
-| AC-E6.F2.12 | The file's `upi` or `upi_id` is not a valid UPI ID (E3.F3) | Load is pressed | It is listed under "Skipped {n}: " and the current UPI ID is kept | manual |
-| AC-E6.F2.13 | A shop file has customers and no "entries" key | Load is pressed | It loads: every customer is listed with balance 0 and the total is 0 | `phone-import.mjs "shop file without "entries": both customers are listed ..."`, `phone-import.mjs "shop file without "entries": total outstanding is 0 ..."` |
+As a shop owner I type one short line and the entry is recorded, so that I keep up with a busy counter.
 
-Built differently from the PRD: S-4 says a file with a missing phone number changes nothing. The code only
-refuses the file when it is not JSON or CSV, lacks the lists, or no customer at all can be read. When some
-rows are good, the shop is replaced by the good rows and the bad ones are listed as skipped; Undo (E6.F3)
-puts the old shop back. Also, on import an amount of 0 and a future date are accepted, which the entry form
-refuses.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F1.1 | The app is open on a phone | I type "Sunita 500 udhaar" in the pill and press the send arrow | The entry is filled and saved and Sunita Devi's balance rises by ₹500 | `tests/phone-ledger.mjs` |
+| AC-E7.F1.2 | The app is open on a desktop | I type the same line in the pill at the bottom of the customer list and press Enter | The entry form is filled, with the cursor on "Save entry", and the message reads "Filled: {name}, gave ₹500. Check it, then press Save entry." | `tests/quick.mjs` |
+| AC-E7.F1.3 | The pill is empty | I press the send arrow | Nothing is saved and the cursor goes into the box | checked by hand |
+| AC-E7.F1.4 | The pill is showing | I press "+" | The menu of all actions opens with its fifteen items, listed under [E11.F3](#e11f3-the--menu) | checked by hand |
+| AC-E7.F1.5 | A customer page is open | I type "200 paid" with no name | The entry is filled for this customer | `tests/quick.mjs` |
 
-### E6.F3 Undo a load
+### E7.F2 The parser and its rules
 
-As the shop owner, I want to undo loading a file so that a wrong file does not wipe my ledger.
+As a shop owner I write the line the way I speak, so that I do not learn a format.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F3.1 | A shop file has just been loaded | The toast shows | "Shop loaded." with Undo shows for 7 seconds, with no confirm dialog | `final.mjs "undo offered after import"`, `check.mjs [dialogs]` |
-| AC-E6.F3.2 | The toast is showing | The owner presses Undo | The shop as it was before the load comes back, saved and redrawn | `final.mjs "undo restored the shop"` |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F2.1 | The sample shop is loaded | I type "sunita devi 1,500 credit groceries" | The amount is 1,500, the type is "You gave (credit)" and the note is "groceries" | `tests/quick.mjs` |
+| AC-E7.F2.2 | The sample shop is loaded | I type "Ravi paid 200" or "Ravi 200 upi" | The type is "You got (payment)"; with "upi" the note reads "UPI" | `tests/quick.mjs` |
+| AC-E7.F2.3 | The sample shop is loaded | I type "fatima ₹2.5 hazar jama" | The amount is 2,500 and the type is payment | `tests/quick.mjs` |
+| AC-E7.F2.4 | The sample shop is loaded | I type "9000000105 750 paid" | The customer with that phone is chosen | `tests/quick.mjs` |
+| AC-E7.F2.5 | The sample shop is loaded | I type "Anjli 120", one letter off and with no word for the type | Anjali is chosen, the entry is taken as credit, and the message adds "(no word for paid, so taken as gave)" | `tests/quick.mjs` |
 
-### E6.F4 Export
+### E7.F3 Words in other languages
 
-As the shop owner, I want to export my ledger to a spreadsheet and a backup file so that I have a copy.
+As a shop owner I write or say the line in my own language, so that quick entry works for me.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F4.1 | Any shop | The owner presses Export entries (CSV) | `hisaab-{shop}-entries.csv` downloads with `date,name,phone,type,amount,note,has_screenshot`, oldest first, sums matching the data | `check.mjs [9-bonus CSV]`, `final.mjs "entries CSV downloads"` |
-| AC-E6.F4.2 | Any shop | The owner presses Export balances (CSV) | `hisaab-{shop}-balances.csv` downloads with `name,phone,total_credit,total_payment,balance,last_payment` per customer and a TOTAL OUTSTANDING row | manual |
-| AC-E6.F4.3 | Any shop | The owner presses Backup file (JSON) | `hisaab-{shop}.json` downloads with shop, UPI ID, customers and entries in the shop file format, so it can be loaded back | manual |
-| AC-E6.F4.4 | A note or name starts with =, +, -, @, a tab or a return | It is exported to CSV | The cell is prefixed with an apostrophe so a spreadsheet does not run it as a formula; numbers are not changed; cells with commas, quotes or line breaks are quoted | manual |
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F3.1 | The sample shop is loaded | I type "सुनीता 500 उधार" | Sunita Devi is chosen, 500, credit | `tests/quick.mjs` |
+| AC-E7.F3.2 | The sample shop is loaded | I type "रवि ने ५०० जमा किए", with Hindi digits | Ravi Kumar is chosen, 500, payment | `tests/quick.mjs` |
+| AC-E7.F3.3 | The sample shop is loaded | I type "సునీత 300 అప్పు" | Sunita Devi is chosen, 300, credit | `tests/quick.mjs` |
+| AC-E7.F3.4 | I choose one of the nine newer languages | The language is loaded | Its word for credit, the one in its own example line, is understood by quick entry | checked by hand |
 
-Note: the JSON backup leaves out screenshots, so a backup loaded back has no pictures.
+### E7.F4 Unclear lines and the save rule
 
-### E6.F5 Sample shop and shop settings
+As a shop owner I am asked when a line is not clear, so that nothing wrong is recorded.
 
-As the shop owner, I want to start my own ledger, with a sample one tap away, and to name my shop so that I can try it and then make it mine.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F4.1 | The sample shop is loaded | I send a line with no amount | Nothing is filled and the message reads "Say or type an amount, for example: Sunita 500 udhaar." | `tests/quick.mjs` |
+| AC-E7.F4.2 | The sample shop is loaded | I send a line with no customer name | The message reads "Which customer? Say the name, for example: Sunita 500 udhaar." | `tests/quick.mjs` |
+| AC-E7.F4.3 | Two customers match the name equally | I send the line | The message reads "More than one customer matches. Pick one:" with a button for each, up to six | checked by hand |
+| AC-E7.F4.4 | A line has filled the form on a desktop | I look at the ledger | Nothing is saved until I press "Save entry" | `tests/quick.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F5.1 | First visit, nothing stored, or stored data that cannot be read | The app opens | An empty shop ("My shop", no customers, no entries) is created and saved, and the overview shows the empty state with its two buttons (AC-E2.F3.3) | `brief.mjs "fresh app holds only Ravi (no other shop preloaded)"` |
-| AC-E6.F5.2 | The Shop file card, or the overview's empty state | The owner presses Load sample shop | `sample-data.json` (Lakshmi Provision Store, 8 customers) is fetched and loaded like any file (with Undo); if the fetch fails the built-in copy is used | `brief.mjs "top shows 11820"` (sample pasted into `#import-box`); the button manual |
-| AC-E6.F5.3 | Shop settings | The owner changes the shop name and saves | The header, page title, reminders and statement use the new name; a blank name keeps the old one | manual |
-| AC-E6.F5.4 | Any time | The owner reads the footer | "Your ledger stays on this phone. Nothing is sent anywhere." | manual |
+### E7.F5 A customer it does not know
 
-### E6.F6 Load a spreadsheet saved as CSV
+As a shop owner I am offered to add a customer the line names, so that a new customer does not stop me.
 
-As the shop owner, I want to load my ledger from a spreadsheet so that I can bring in a hand-made sheet or
-another app's export.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F5.1 | No customer is called Sunita | I send "Sunita 500 udhaar" | Under the question a line reads 'No customer matches "Sunita".' with the button "Add a customer: Sunita" | `tests/assist.mjs` |
+| AC-E7.F5.2 | The button is showing | I press it | "Add a customer" opens with the name filled and the cursor in the phone box | `tests/assist.mjs` |
+| AC-E7.F5.3 | I have added her | I send the same line again | The form is filled: "Filled: Sunita, gave ₹500. Check it, then press Save entry." | `tests/assist.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E6.F6.1 | A spreadsheet saved as CSV or tab-separated text is pasted into `#import-box`, or chosen as a .csv or .txt file | Load is pressed | Text that does not start with { or [ is read as CSV (`csvRows`, `fromCsv`), turned into a shop file and passed through the same checks as E6.F2; the current shop name is kept and Undo is offered as in E6.F3 | `gaps.mjs "hand-made CSV (900 + 450): ..."` |
-| AC-E6.F6.2 | The header row | It is read | Headers are matched case-insensitively on letters only: name (name, customer, customername, naam), phone (phone, mobile, phonenumber, mobilenumber, number, contact), type (type, entrytype, kind; credit when missing), amount (amount, amt, rs, inr, rupees), date (date, day, entrydate; YYYY-MM-DD or DD/MM/YYYY) and note (note, notes, item, items, details, remark) | `gaps.mjs "hand-made CSV (900 + 450): ..."` |
-| AC-E6.F6.3 | The sheet has a credit column (credit, udhaar, udhar, gave, given, debit) and a payment column (payment, paid, jama, received, got) | A row is read | It gives a credit entry and a payment entry from those columns, zero or blank cells ignored, as well as one typed entry from an amount column if there is one | `gaps.mjs "hand-made CSV (900 + 450): ..."` |
-| AC-E6.F6.4 | A row has only a name and a phone | It is read | The customer is added with no entries | manual |
-| AC-E6.F6.5 | The app's own entries export (E6.F4), with quoted cells, doubled quotes and the leading-apostrophe formula guard | It is pasted back and loaded | The cells are read correctly and the shop loads back to the same totals (₹11,820 for the sample) | `gaps.mjs "CSV round trip keeps 11,820: ..."`, `gaps.mjs "CSV customers loaded: ..."` |
-| AC-E6.F6.6 | The text has no phone column, or none of amount, credit, payment or name, or fewer than two rows | Load is pressed | "Paste a shop file (JSON) or a spreadsheet saved as CSV with name, phone, type, amount and date columns." shows and nothing changes | `gaps.mjs "unreadable text explained"` |
-| AC-E6.F6.7 | The Shop file card in English, Hindi or Telugu | The owner reads the hint | It says a shop file (JSON) or a spreadsheet saved as CSV can be pasted | manual |
+### E7.F6 Voice input
 
----
+As a shop owner I say the entry, so that my hands stay free.
 
-## E7 Languages, themes and layout
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F6.1 | The browser has speech recognition | I look at the pill | The microphone button "Speak the entry" shows; in a browser without it the button is hidden | `tests/voice.mjs` |
+| AC-E7.F6.2 | I press the microphone | The app listens | The message reads "Listening. Say, for example: Sunita 500 udhaar." | checked by hand |
+| AC-E7.F6.3 | The app is listening | "Ravi 500 udhaar" is heard | The form is filled for Ravi Kumar with 500 | `tests/voice.mjs` |
+| AC-E7.F6.4 | The language is Telugu and the speech service refuses it | I press the microphone | The app tries once more in Indian English and the entry is heard | `tests/voice.mjs` |
+| AC-E7.F6.5 | The microphone is blocked, or the device has none | I press the microphone | The message reads "The microphone is blocked for this site. ..." or "No microphone was found on this device. Type the entry instead.", and the button is released | `tests/voice.mjs` |
 
-Goal: the app reads in English, Hindi or Telugu, works in light and dark with readable contrast, and fits
-every screen from a 375 px phone to a 2560 px monitor with no sideways scroll.
+### E7.F7 Voice never ends in silence
 
-### E7.F1 English, Hindi and Telugu
+As a shop owner I am always told what happened after I press the microphone, so that I am not left waiting.
 
-As the shop owner, I want the app in my language so that I and my staff can read it.
+| ID | Given | When | Then | Test |
+|---|---|---|---|---|
+| AC-E7.F7.1 | The app is listening | The speech service stops without hearing anything | The message reads "Did not catch that. Try again or type it.", not "Listening" | `tests/voice-quiet.mjs` |
+| AC-E7.F7.2 | The app is listening | The speech service cannot be reached, or nothing comes back for 9 seconds | The message reads "This browser's speech service did not answer. Voice needs the internet and works best in Chrome. Type the entry instead." | `tests/voice-quiet.mjs` |
+| AC-E7.F7.3 | Voice failed on a phone | I read the message | It adds "Tip: tap the box and use the microphone on your keyboard. It works in every browser." | `tests/voice-quiet.mjs` |
+| AC-E7.F7.4 | Voice failed on a computer | I read the message | It adds the tip to press the Windows key and H together, or the microphone key on a Mac | `tests/voice-quiet.mjs` |
+| AC-E7.F7.5 | The sentence is heard | The form is filled | No tip is shown | `tests/voice-quiet.mjs` |
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E7.F1.1 | The language list in the top bar | The owner picks हिंदी or తెలుగు | Labels, placeholders, messages and reminder text change to that language and the page `lang` is set | `check.mjs [9-bonus language]` |
-| AC-E7.F1.2 | A language was chosen | The page reloads | The choice is kept | manual |
-| AC-E7.F1.3 | Hindi or Telugu is chosen | Names are shown | Each name is followed by its local script in brackets, for example "Ravi Kumar (रवि कुमार)", from the stored local name or a dictionary of common name words plus a phonetic fallback | manual |
-| AC-E7.F1.4 | Hindi or Telugu is chosen | Dates are shown | Dates use that locale | manual |
+## E8 Shop data: load, export and the sample shop
 
-Known gaps: a few strings stay in English in every language: the storage-full toast, the shop-file problem
-descriptions listed after "Skipped {n}: " in the import message, the screenshot alt text and the statement
-footer.
+Goal: a shop can be brought in from a shop file or a spreadsheet, checked on the way in, taken back with Undo, and taken out again as spreadsheet files and a backup file.
 
-### E7.F2 Native digits
+### E8.F1 Load a shop file
 
-As the shop owner, I want numbers in Hindi or Telugu digits if I prefer them so that the screen reads naturally.
+As the shop owner, I want to load a shop from a file so that I can move my ledger or start again from a backup.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E7.F2.1 | The language is English | Shop settings opens | The native digits option is hidden; money uses ₹ with Indian grouping and Latin digits | manual |
-| AC-E7.F2.2 | Hindi or Telugu, option ticked | Figures are drawn | Money, days, dates and the KPI counts use Devanagari or Telugu digits; the choice is stored with the shop | manual |
-| AC-E7.F2.3 | Native digits are on | The grader reads the page | `data-balance`, `data-value` and the plain total copy keep Latin digits | manual |
+| AC-E8.F1.1 | A shop file (JSON) is pasted into the box under "Load a shop" | The owner presses "Load shop" | The file replaces the current shop, the message reads "Loaded {shop}: {c} customers, {e} entries." and every balance and the total are worked out again from the new entries | `tests/check.mjs` |
+| AC-E8.F1.2 | A shop file that has customers and no entries list at all | It is loaded | It loads: every customer is listed with a balance of 0 and the total is 0 | `tests/phone-import.mjs` |
+| AC-E8.F1.3 | A shop was loaded | The page is opened again | The loaded shop is still there | `tests/check.mjs` |
+| AC-E8.F1.4 | The owner presses "Choose file" | A .json, .csv or .txt file is picked | Its text is loaded in the same way as pasted text | checked by hand |
+| AC-E8.F1.5 | Thirty different generated shops, one after another | Each is loaded | Every customer's balance and the total match the figures worked out from the file | `tests/sweep.mjs` |
 
-Known gap: the customer count, the search count and the nav badges stay in Latin digits.
+### E8.F2 A file that cannot be loaded
 
-### E7.F3 Light and dark themes
+As the shop owner, I want a broken file refused with a reason so that my ledger is not replaced by nothing.
 
-As the shop owner, I want light and dark themes so that the app is readable in a bright shop and at night.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E7.F3.1 | No theme chosen | The app opens | It follows the device setting | `check.mjs [8-theme]` (INFO) |
-| AC-E7.F3.2 | The theme button | The owner taps it | The theme switches and the choice is kept, applied before the page draws | manual |
-| AC-E7.F3.3 | Either theme | Text is drawn on the home view and the customer page | Every text pair meets WCAG AA (4.5:1, or 3:1 for large text), including acted-on states (toasts, messages, edit mode, QR, the primary button hover with `--primary-hover`, the amber link on the brand tile with `--accent-on-brand`) | `check.mjs [8-contrast light home]`, `check.mjs [8-contrast dark home]`, `check.mjs [8-contrast light customer]`, `check.mjs [8-contrast dark customer]`, `tests/contrast.mjs` |
+| AC-E8.F2.1 | The box is empty, or the file has no customers list, or its entries are not a list | "Load shop" is pressed | 'The file needs "customers" and "entries" lists.' shows and the shop is unchanged | `tests/phone-import.mjs` |
+| AC-E8.F2.2 | Text that starts with { or [ and is not valid JSON | "Load shop" is pressed | "This is not valid JSON: " shows with the browser's reason and the shop is unchanged | checked by hand |
+| AC-E8.F2.3 | A file in which no customer or entry can be used | "Load shop" is pressed | The first three problems are shown as the error and the shop is unchanged | checked by hand |
 
-### E7.F4 Phone layout
+### E8.F3 Rows that are cleaned or skipped
 
-As the shop owner, I want the app to fit my phone so that I can use it with one hand.
+As the shop owner, I want the good rows loaded and the bad ones named so that one wrong row does not stop the whole file.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E7.F4.1 | A 375 px wide screen | The home view and a customer page are shown | There is no sideways scroll | `check.mjs [7-phone]`, `quick.mjs "no sideways scroll at 375"`, `brief.mjs "375 {hash}: scrollWidth 375; small targets: none"` |
-| AC-E7.F4.2 | A 375 px wide screen | The app is shown | A bottom bar carries the main sections and a More button opens a sheet with the rest | `nav.mjs` |
-| AC-E7.F4.3 | A long shop name at 375 px | The header is drawn | The name is cut short with an ellipsis and does not overlap the language list | manual |
-| AC-E7.F4.4 | Buttons and fields | The owner taps them | Edit, Delete, the language list, the icon buttons and the logo link are at least 44 px tall, and customer-name links in entry lists have a 44 px tall tap area | `brief.mjs "375 {hash}: scrollWidth 375; small targets: none"` (on `#/`, `#/s/record`, `#/s/customers`, `#/s/data` and a customer page; the test flags any visible button, link, field, list or label button under 40 px, except inline text links) |
-| AC-E7.F4.5 | Any shop | The app is shown | The Customers item in the menu shows the number of customers and the Overdue item the number of overdue customers, marked as a warning; a count of 0 shows nothing | manual |
-| AC-E7.F4.6 | A 375 px wide screen, light or dark | The summary cards under the total are shown | They do not scroll sideways and every card ends inside the screen | `phone-import.mjs "light 375: summary cards do not scroll sideways ..."`, `phone-import.mjs "dark 375: every summary card ends inside the screen ..."` |
+| AC-E8.F3.1 | Some entries have an unknown type, an amount that is empty, not a number or below zero, or a phone that is not 10 digits | The file is loaded | Those rows are left out, the good rows load, and the message adds "Skipped {n}: " with the first three problems | `tests/gaps.mjs` |
+| AC-E8.F3.2 | An entry has no date, or a date that cannot be read | The file is loaded | The entry is kept with today's date and the message adds "{n} entries had no date and are dated today." | `tests/gaps.mjs` |
+| AC-E8.F3.3 | Amounts written with commas, spaces, Rs, INR, ₹, "/-" or "only"; dates written day first with /, . or - | The file is loaded | The amounts and dates are read correctly | `tests/gaps.mjs` |
+| AC-E8.F3.4 | The same phone twice in the customers list; an entry for a phone that is not in the list; a customer with no name | The file is loaded | The phone is kept once; the unlisted phone becomes a customer; the customer with no name is shown by the phone number | checked by hand |
+| AC-E8.F3.5 | An entry's amount has paise | The file is loaded | The amount is rounded to whole rupees, halves up, and the message adds "{n} amounts had paise and were rounded to whole rupees." | `tests/rupees.mjs`, `tests/ledger.cjs` |
+| AC-E8.F3.6 | An entry carries a picture that is not an image, or one over 400,000 characters long | The file is loaded | The picture is left out, the entry is kept, and the message adds "{n} pictures were left out (not an image, or too large). Their entries were kept." | `tests/guard.mjs` |
 
-### E7.F5 Wide layouts
+### E8.F4 Undo a load
 
-As the shop owner, I want the app to use a large screen in full so that I see more at once at the counter PC.
+As the shop owner, I want to take a load back so that a wrong file does not cost me my ledger.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E7.F5.1 | 375, 768, 1366, 1920 and 2560 px wide | The overview, the Record view and a customer page are shown | No sideways scroll and the content reaches the right edge | `final.mjs "{width} {hash}: scrollWidth ..."` |
-| AC-E7.F5.2 | 1024 px and wider | The app is shown | A left menu replaces the bottom bar; the overview of an empty shop has two columns (with customers it has the desktop layout of E15.F8 since 1.5.0.0) | `nav.mjs` (1440 px) |
-| AC-E7.F5.3 | 1280 px and wider | A section view is open | One related card shows beside it (for example Customers beside Overdue) | manual |
-| AC-E7.F5.4 | 1600 px and wider, an empty shop | The overview is open | It shows three columns (with customers, the desktop layout of E15.F8 since 1.5.0.0) | manual |
-
----
-
-## E8 Navigation, offline and the grader contract
+| AC-E8.F4.1 | A shop has just been loaded | The message at the bottom shows | It reads "Shop loaded." with an "Undo" button, and no pop-up dialog asks anything | `tests/final.mjs` |
+| AC-E8.F4.2 | "Shop loaded." is still showing | The owner presses "Undo" | The shop as it was before the load is back, with its total | `tests/final.mjs` |
 
-Goal: each part of the app has its own address, the Back button works, the app opens without a signal, and
-the page carries every hook the brief's automated tester reads, with no pop-up dialogs to stall it.
+### E8.F5 Load a spreadsheet saved as CSV
 
-### E8.F1 Hash routes
+As the shop owner, I want to load a hand-made sheet so that I do not have to type an old ledger in again.
 
-As the shop owner, I want each part of the app to open as its own view so that I find things fast and Back works.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E8.F1.1 | Any view | The owner taps Overview, or the address is `#/` or empty | The overview shows every card | `nav.mjs` |
-| AC-E8.F1.2 | Any view | The owner taps a nav item | The address becomes `#/s/record`, `customers`, `overdue`, `recent`, `add`, `data` or `settings`, only that card shows, at the top of the page, within 400 ms, and the item is marked current | `nav.mjs` |
-| AC-E8.F1.3 | Any view | The address is `#/c/<10 digit phone>` | That customer's page opens and Customers is marked current | `check.mjs [7-phone]` |
-| AC-E8.F1.4 | A view was opened | The owner presses Back | The previous view returns | `nav.mjs` (INFO line) |
-| AC-E8.F1.5 | Record is tapped | The view opens | Focus goes to the customer list, or to the amount on a customer page | manual |
-| AC-E8.F1.6 | The More sheet is open on a phone | The owner presses Escape or taps outside | The sheet closes | manual |
+| AC-E8.F5.1 | Pasted text that does not start with { or [, with a header row and commas or tabs between cells | "Load shop" is pressed | It is read as a spreadsheet and goes through the same checks as a shop file | `tests/gaps.mjs` |
+| AC-E8.F5.2 | A sheet with one column for credit and one for payment (for example "udhaar" and "jama") | It is loaded | Each filled cell becomes an entry of that kind and the balances add up | `tests/gaps.mjs` |
+| AC-E8.F5.3 | The file made by "Export entries (CSV)" | It is pasted back and loaded | The shop comes back with the same total | `tests/gaps.mjs` |
+| AC-E8.F5.4 | Text with no phone column, or with too little to read | "Load shop" is pressed | "Paste a shop file (JSON) or a spreadsheet saved as CSV with name, phone, type, amount and date columns." shows and the shop is unchanged | `tests/gaps.mjs` |
 
-### E8.F2 Date override
+### E8.F6 Export
 
-As the tester, I want to fix today's date in the address so that date-based figures can be checked.
+As the shop owner, I want my ledger as files so that I have a copy outside the browser.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E8.F2.1 | The address has `?today=YYYY-MM-DD` with a valid date | The app runs | Overdue days, 30-day KPIs, the default entry date, the latest allowed entry date, the statement date and the import fallback date all use it (F-4) | `check.mjs [6-today]` |
-| AC-E8.F2.2 | `?today=` is missing or not a valid date | The app runs | The device date is used | manual |
+| AC-E8.F6.1 | Any shop | The owner presses "Export entries (CSV)" | A file `hisaab-<shop>-entries.csv` is saved with the columns date, name, phone, type, amount, note, has_screenshot, oldest entry first | `tests/final.mjs`, `tests/check.mjs` |
+| AC-E8.F6.2 | Any shop | The owner presses "Export balances (CSV)" | A file `hisaab-<shop>-balances.csv` is saved with name, phone, total_credit, total_payment, balance, last_payment for each customer and a last row TOTAL OUTSTANDING | checked by hand |
+| AC-E8.F6.3 | Any shop | The owner presses "Backup file (JSON)" | A file `hisaab-<shop>.json` is saved with the shop name, the UPI ID if one is set, the customers and the entries; it loads back as a shop file. Screenshots are not in it | `tests/profile.mjs` |
+| AC-E8.F6.4 | A name or note that starts with =, +, -, @, a tab or a return | It is exported to CSV | The cell gets a leading apostrophe, so a spreadsheet shows it as text and does not run it | checked by hand |
 
-### E8.F3 Grader selectors
+### E8.F7 The sample shop and shop settings
 
-As the tester, I want the selectors named in the brief so that the hidden-data test can read the numbers.
+As the shop owner, I want to look around with a sample and then name my own shop so that I can try the app before I trust it.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E8.F3.1 | Any shop | The page is read | `#total-outstanding` contains the total as ₹ text and as a plain number | `check.mjs [1-sample total]`, `check.mjs [2-hidden total]` |
-| AC-E8.F3.2 | Any shop | The page is read | Each customer has `[data-customer="<phone>"]` with `[data-balance]` holding the plain balance as its attribute | `check.mjs [1-sample balances]`, `check.mjs [2-hidden balances]` |
-| AC-E8.F3.3 | Any shop | The page is read | Each row has `a[data-remind="<phone>"]` to `https://wa.me/91<phone>?text=` | `check.mjs [3-reminder]` |
-| AC-E8.F3.4 | The home view | The tester pastes JSON | `#import-box` and `#import-go` load it (E6.F1) | `check.mjs [2-hidden replace]` |
-| AC-E8.F3.5 | The entry form on the home view | The tester attaches a file | `#shot-input` takes it and the saved entry shows `img[data-shot]` | `check.mjs [5-shot img]` |
-| AC-E8.F3.6 | A test script | It calls `window.hisaabParseQuick(text)` | It returns amount, type, matching phones and note without touching the form | `quick.mjs` (all parser lines) |
-
-### E8.F4 Offline and install
+| AC-E8.F7.1 | A first visit | The app opens | The shop is "My shop" with no customers; the Customers card offers "Add your first customer" and "Load sample shop" | checked by hand |
+| AC-E8.F7.2 | An empty shop, or the Shop file view | The owner presses "Load sample shop" | "Lakshmi Provision Store (fictional)" loads with 8 customers and 38 entries, with "Undo" offered as for any load | `tests/guard.mjs` |
+| AC-E8.F7.3 | Shop settings | The owner types a "Shop name" and presses "Save settings" | "Settings saved." shows and the top bar carries the new name | checked by hand |
+| AC-E8.F7.4 | Shop settings, "Shop UPI ID (for pay links)" | A value that is not of the form name@bank is saved | "Enter a UPI ID like shopname@okbank, or leave it empty." shows and the old value stays | `tests/gaps.mjs` |
 
-As the shop owner, I want the app to open without a signal so that I can record a sale anywhere.
+## E9 Several shops and the shop profile
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E8.F4.1 | The app is served over HTTPS or from localhost | It loads | A service worker (`sw.js`) is registered | manual |
-| AC-E8.F4.2 | The network is up | One of the app's own files, qrcode-generator from cdnjs or a Google Fonts file is requested | The network copy is used and a copy is kept in cache `hisaab-v4`, so a new release shows at once | manual |
-| AC-E8.F4.3 | The network is down | A page file is requested | The kept copy is used, or `index.html` as a last resort | `offline.mjs "offline reload shows the ledger"` |
-| AC-E8.F4.4 | The browser offers install | The manifest is read | `manifest.webmanifest` lets the app be added to the home screen | manual |
-| AC-E8.F4.5 | The first visit | The service worker installs and activates | The app shell (`./`, `index.html`, `styles.css`, `app.js`, `sample.js`, `sample-data.json`, `icon.svg`, `manifest.webmanifest`) is cached at once, and older caches are deleted | manual |
-| AC-E8.F4.6 | One online visit on which a QR code was shown | The network goes down and the page reloads | The ledger opens with ₹11,820 and the QR code still draws | `offline.mjs "offline reload shows the ledger"`, `offline.mjs "QR draws offline"` |
+Goal: one device can hold more than one shop, each with its own ledger, and each shop can carry its owner's name, address and logo.
 
-Note: the QR library is cached the first time it loads, so it needs a signal once. Tesseract.js (jsDelivr)
-and its language data are not cached, so the screenshot reader needs a signal.
+### E9.F1 Add a shop and switch
 
-### E8.F5 No dialogs, no errors, accessible
+As an owner of two shops, I want both ledgers on one phone so that I do not mix them.
 
-As the shop owner, I want an app that never stalls on a pop-up and works with a screen reader so that anyone can use it.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E8.F5.1 | A full test run | Every action is taken | No `alert`, `confirm` or `prompt` dialog opens | `check.mjs [dialogs]`, `brief.mjs "no dialogs"` |
-| AC-E8.F5.2 | A full test run | Every action is taken | No console or page error is logged | `check.mjs [console]`, `quick.mjs "no console errors"`, `final.mjs "no console errors"`, `gaps.mjs "no console errors"`, `brief.mjs "no page errors"` |
-| AC-E8.F5.3 | A keyboard user | They press Tab first | A "Skip to the ledger" link jumps to the main content | manual |
-| AC-E8.F5.4 | A screen reader user | The total, quick-entry messages, screenshot messages or a toast change | They are announced (polite live regions); hidden labels name the language list, search, import box and entry type | manual |
-| AC-E8.F5.5 | A screen reader user | They use the microphone, QR and More buttons | `aria-pressed` and `aria-expanded` report their state | manual |
+| AC-E9.F1.1 | One shop only | Shop settings is opened | The "Shops" block lists that shop as "Current" with no "Switch" or "Remove" button; the ledger reads exactly as it does without the block | `tests/shops.mjs` |
+| AC-E9.F1.2 | A name typed under "Add a new shop" | The owner presses "Add shop" | An empty shop of that name opens and 'Added "{n}". It is now the current shop.' shows | `tests/shops.mjs` |
+| AC-E9.F1.3 | Two shops | The owner presses "Switch" on the other one | That shop opens with its own customers and total, 'Switched to "{n}".' shows, and the first shop is unchanged when switched back | `tests/shops.mjs` |
+| AC-E9.F1.4 | Two or more shops | The page is opened again | The same shop is current and the others are still listed and open | `tests/shops.mjs` |
+| AC-E9.F1.5 | Two shops at 320 px wide, in Telugu | The Shops block is shown | Nothing scrolls sideways and every control is at least 44 px tall | `tests/shops.mjs`, `tests/addons-width.mjs` |
 
----
+### E9.F2 Remove a shop
 
-## E9 Shop profile and balance history
+As the owner, I want to remove a shop I no longer keep, without doing it by a slip of the finger.
 
-Goal: added in version 1.1.0.0. The owner can put a name, an address and a small logo on the shop, and can see
-how one customer's balance moved over time. Both live in an add-on file beside the ledger. Nothing shows until
-it is set, and the total, the rows and the import read the same as before.
+| ID | Given | When | Then | Test |
+| --- | --- | --- | --- | --- |
+| AC-E9.F2.1 | A shop that is not the current one | The owner presses "Remove" once | The button reads "Press again to remove" and nothing is removed | `tests/shops.mjs` |
+| AC-E9.F2.2 | The button reads "Press again to remove" | The owner presses it again | The shop is removed from the list and 'Removed "{n}".' shows | `tests/shops.mjs` |
 
-### E9.F1 Shop profile
+### E9.F3 Import as a new shop
 
-As the shop owner, I want my name, address and logo on the app and on the statement so that a customer knows who the statement is from.
+As the owner, I want to load a file as another shop so that it does not replace the one I have open.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E9.F1.1 | No profile has been set | The owner opens Shop settings | The profile form is there with a status message, and the header shows no logo | `profile.mjs "the profile form sits in Shop settings with a status message"`, `profile.mjs "no logo in the header until one is set"` |
-| AC-E9.F1.2 | The profile form | The owner types an owner name and an address and saves | "Profile saved." shows, both are still there after a reload, and the shop name in the header is untouched | `profile.mjs "saving says so ..."`, `profile.mjs "owner and address survive a reload"`, `profile.mjs "the shop name in the header is untouched ..."` |
-| AC-E9.F1.3 | The profile form | The owner chooses a picture as the logo | The logo shows in the header; a large picture is brought down to 96 px on its longer side and stored under 40 KB | `profile.mjs "a chosen PNG shows as the logo in the header"`, `profile.mjs "a 600 by 400 picture is brought down to 96 px on its longer side ..."`, `profile.mjs "the stored logo is a data URL under 40 KB ..."` |
-| AC-E9.F1.4 | A profile and a logo are set | The owner opens a customer's statement | The statement carries the owner and the address under the shop name, and shows the logo | `profile.mjs "the statement carries owner and address under the shop name"`, `profile.mjs "the statement shows the logo, keeps the shop name, and the print call was made once (stubbed)"` |
-| AC-E9.F1.5 | A profile and a logo are set | The owner exports the backup file and loads it again | The file carries owner, address and logo, and the load brings them back; a backup made without a profile has no profile fields | `profile.mjs "the backup file carries owner, address and logo"`, `profile.mjs "importing the backup brings the profile back, fields and header included"`, `profile.mjs "a backup without a profile has no profile fields"` |
-| AC-E9.F1.6 | A profile and a logo are set | The owner clears the profile | The header logo goes away | `profile.mjs "the profile can be cleared; the header logo goes away"` |
-| AC-E9.F1.7 | The sample shop | The page is read with the add-on and without it | The total and the customer rows are the same, and the add-on adds none of the attributes the tester reads | `profile.mjs "total outstanding is the same with and without profile.js ..."`, `profile.mjs "the customer rows are the same with and without profile.js ..."`, `profile.mjs "the add-on adds none of the reserved data attributes"` |
-| AC-E9.F1.8 | A phone 320 px or 375 px wide | A logo is set | There is no sideways scroll, and the header is no taller than before | `profile.mjs "the header is no taller with a logo at 320 px ..."`, `addons-width.mjs "320 px en light #/s/settings: no sideways scroll ..."` |
-| AC-E9.F1.9 | A logo is set | The owner presses Remove logo | The logo is dropped from the header and the shop, and the owner name and address stay | manual |
+| AC-E9.F3.1 | A shop file in the load box | The owner presses "Import as a new shop" | A new shop holding the file is added and becomes current; the shop that was open is untouched | `tests/shops.mjs` |
+| AC-E9.F3.2 | A broken file in the load box | The owner presses "Import as a new shop" | No shop is added, the owner is back in the shop that was open, and the reason for the refusal stays on screen | `tests/shops.mjs` |
+| AC-E9.F3.3 | Two shops | A file is loaded with the plain "Load shop" button | It replaces only the current shop; the other shop keeps its ledger | `tests/shops.mjs` |
 
-Note: the printed statement was checked by its markup, not on paper.
+### E9.F4 The shop profile
 
-### E9.F2 Balance history line
+As the owner, I want my name, address and logo on what I hand to customers so that a statement looks like it comes from my shop.
 
-As the shop owner, I want a line of the balance after each entry so that I see at a glance whether a customer is paying down or building up.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E9.F2.1 | A customer with two or more entries (six in the test) | The customer page opens | The balance history shows in a card just before the entries | `profile.mjs "the balance chart shows for a customer with 6 entries"`, `profile.mjs "the chart card sits in the customer grid just before the entries"` |
-| AC-E9.F2.2 | A customer with one entry | The customer page opens | No balance history shows | `profile.mjs "no chart for a customer with one entry"` |
-| AC-E9.F2.3 | The balance history is drawn | The page is read | It is one inline SVG, with no canvas or image, and it carries a sentence for screen readers that follows the chosen language | `profile.mjs "the chart is one inline SVG: a line, the last point, labels, a viewBox; no canvas or image"`, `profile.mjs 'the chart is role="img" with a sentence label ...'`, `profile.mjs "the chart label follows the language ..."` |
-| AC-E9.F2.4 | A phone 320 px or 375 px wide | A customer page with the balance history opens | The line stays inside the screen and there is no sideways scroll | `profile.mjs "no sideways scroll on a customer page at 320 px, chart inside the screen ..."`, `addons-width.mjs "375 px customer page with the balance chart: no sideways scroll ..."` |
-
----
+| AC-E9.F4.1 | "Shop profile" in Shop settings | The owner fills "Owner name" and "Shop address" and presses "Save profile" | "Profile saved." shows and the values are still there after the page is opened again | `tests/profile.mjs` |
+| AC-E9.F4.2 | "Shop logo" | The owner chooses a picture | The picture is made small, "Logo saved." shows, and the logo appears in the top bar | `tests/profile.mjs` |
+| AC-E9.F4.3 | A profile is saved | A customer's "Statement (PDF)" is made | The statement carries the logo, the owner's name and the address | `tests/profile.mjs` |
+| AC-E9.F4.4 | A profile is saved | "Backup file (JSON)" is pressed, and the file is loaded back | The backup holds the owner, address and logo, and loading it brings them back | `tests/profile.mjs` |
+| AC-E9.F4.5 | A logo is set | The owner presses "Remove logo" | "Logo removed." shows and the top bar has no logo | `tests/profile.mjs` |
+| AC-E9.F4.6 | A file that is not a picture is chosen as the logo | The app reads it | "This file is not a picture the browser can read." shows and nothing is saved | checked by hand |
 
-## E10 Several shops
+## E10 Languages and names
 
-Goal: added in version 1.1.0.0. An owner with more than one shop keeps each ledger on the same phone and
-moves between them. The current shop stays under the ledger's own key, `hisaab.v1`, exactly as before. The
-other shops are parked under `hisaab.shops`, which is not written until a second shop is added. There is still
-no login and no server.
+Goal: the whole app reads in any of twelve languages, with the same figures in each, and a customer's name is shown in the script of the language chosen.
 
-### E10.F1 Add a shop and switch
+### E10.F1 Twelve languages
 
-As the shop owner, I want to add a second shop and switch between shops so that each ledger stays separate.
+As a shop owner, I want the app in my own language so that I and my staff can read it.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E10.F1.1 | One shop | The app is used | Nothing is stored beyond the ledger's own key: `hisaab.shops` is not written, and the only shop has no Switch or Remove button | `shops.mjs "one shop: nothing is written under hisaab.shops"`, `shops.mjs "the only shop has no Switch or Remove button"` |
-| AC-E10.F1.2 | The Shops block in Shop settings | The owner types a name and presses Add shop | The new shop starts empty, is current and carries the name; the earlier shop is parked under `hisaab.shops` | `shops.mjs "a new shop starts empty ..."`, `shops.mjs "the new shop is current and named ..."`, `shops.mjs "hisaab.shops holds the parked shop, and the active one has data: null"` |
-| AC-E10.F1.3 | Two shops | The owner presses Switch on the first shop | The first shop comes back exactly, with its total | `shops.mjs "switching back restores the first shop exactly ..."` |
-| AC-E10.F1.4 | The second shop is current | A file is loaded through the plain import | It loads into the current shop only; the first shop is untouched | `shops.mjs "a plain import in the second shop loads into that shop ..."`, `shops.mjs "the first shop is untouched by that import ..."` |
-| AC-E10.F1.5 | Several shops | The page reloads | Every shop is still there and a parked shop still opens | `shops.mjs "everything survives a reload ..."`, `shops.mjs "the parked shop opens after a reload ..."` |
-| AC-E10.F1.6 | The sample shop | The page is read with the add-on and without it | The total and the customer rows are the same, the add-on uses none of the attributes the tester reads, and nothing reaches past the screen at 320 px | `shops.mjs "total and customer rows are the same with and without shops.js ..."`, `shops.mjs "none of the grader's attributes are used by the add-on"`, `shops.mjs "at 320 px nothing of the Shops card or the new import button reaches past the screen ..."` |
+| AC-E10.F1.1 | The language box in the top bar | It is opened | It lists twelve languages: English, Hindi, Telugu, Bengali, Marathi, Tamil, Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu | `tests/langs.mjs` |
+| AC-E10.F1.2 | Any of the twelve | The owner picks it | Headings, buttons, messages and the note shortcuts change to that language; the total, every balance and every reminder link stay the same | `tests/langs.mjs`, `tests/check.mjs` |
+| AC-E10.F1.3 | A language was chosen | The page is opened again | The app opens in that language | `tests/langs.mjs` |
+| AC-E10.F1.4 | The twelve language files | They are compared with the English one | Each has the same texts, the same placeholders, nothing empty, and is written in its own script | `tests/i18n-check.cjs` |
+| AC-E10.F1.5 | Any language, at five widths | The overview and a customer page are shown | Nothing scrolls sideways, no label is cut off and no text breaks into a column of letters | `tests/layout.mjs` |
 
-### E10.F2 Remove a shop
+### E10.F2 A language loading for the first time
 
-As the shop owner, I want removing a shop to take two presses so that one slip does not lose a ledger.
+As a shop owner on a slow connection, I want only my language fetched so that the app stays quick.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E10.F2.1 | A parked shop | The owner presses Remove once | The app asks again and the shop is still listed | `shops.mjs "the first press on Remove only asks again ..."` |
-| AC-E10.F2.2 | The app has asked again | The owner presses Remove a second time | The shop is removed from the list | `shops.mjs "the second press removes the shop ..."` |
+| AC-E10.F2.1 | A visit in English, Hindi or Telugu | The app opens | No language file is fetched; these three are part of the app | `tests/langs.mjs` |
+| AC-E10.F2.2 | One of the nine other languages | It is chosen for the first time | Its file is fetched once from the site and the page changes to it | `tests/langs.mjs` |
+| AC-E10.F2.3 | A language whose file cannot be fetched | It is chosen | The app stays in English and says "That language could not be loaded. Showing English." | `tests/langs.mjs` |
 
-### E10.F3 Import as a new shop
+### E10.F3 Names in the script of the language
 
-As the shop owner, I want to load a file as a new shop so that the shop I have open is not replaced.
+As a shop owner, I want each customer's name in my script so that I recognise it at a glance.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E10.F3.1 | A valid shop file in the import box | The owner presses "Import as a new shop" | The current shop is parked and a new shop holds the file | `shops.mjs '"Import as a new shop" makes a third shop holding the file ...'` |
-| AC-E10.F3.2 | A file that cannot be read in the import box | The owner presses "Import as a new shop" | The app returns to the previous shop and no extra shop is left | `shops.mjs 'a broken file with "Import as a new shop" returns to the previous shop, no extra shop ...'` |
-| AC-E10.F3.3 | The file was refused | The owner reads the import card | The import's own error message stays on screen | `shops.mjs "the import's own error stays on screen ..."` |
-
-Note: a full storage during a switch, and a tab closed between the two writes of a switch, were traced in the
-code by the reviewer and not run.
-
----
-
-## E11 More languages
+| AC-E10.F3.1 | Hindi or Telugu is chosen | A customer is listed | The name is followed by its spelling in that script in brackets; a spelling the owner saved under "Customer details" is used first | `tests/names.mjs` |
+| AC-E10.F3.2 | One of the nine other languages is chosen | A customer is listed | The name is followed by its spelling in that language's script; Marathi uses the Hindi spelling | `tests/names.mjs` |
+| AC-E10.F3.3 | English is chosen | A customer is listed | The name stands alone, with no bracket | `tests/names.mjs` |
 
-Goal: added in version 1.2.0.0. Nine more languages join English, Hindi and Telugu: Bengali, Marathi, Tamil,
-Gujarati, Kannada, Malayalam, Punjabi, Odia and Urdu, twelve in all. The first three stay built into the app.
-Each further language is one file, fetched only when it is chosen. The figures do not depend on the language.
+### E10.F4 Native digits
 
-### E11.F1 Twelve languages
+As a shop owner, I want figures in Hindi or Telugu digits if I read those more easily.
 
-As the shop owner, I want the app in my own language so that I can read every label.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E11.F1.1 | Any view | The owner opens the language menu | Twelve languages are listed, the first three as before | `langs.mjs "the language menu has twelve languages, the first three as before ..."` |
-| AC-E11.F1.2 | The app is in English | The page loads | A visit in English fetches no language file | `langs.mjs "a visit in English fetches no language file"` |
-| AC-E11.F1.3 | The sample shop | The owner chooses one of the nine new languages | Its file is fetched once; the labels show in its own script; the total, the rows and the reminder links are the same in every language; there is no sideways scroll at 375 px | `langs.mjs "bn: labels in its own script, the same total, rows and reminder links, no sideways scroll at 375 px ..."` (one line for each of the nine), `langs.mjs "each language file was fetched once, when chosen ..."` |
-| AC-E11.F1.4 | A new language was chosen | The page reloads | The chosen language is still there | `langs.mjs "the chosen language is still there after a reload ..."` |
-| AC-E11.F1.5 | A language whose file cannot be fetched | The owner chooses it | The app falls back to English | `langs.mjs "a language whose file cannot be fetched falls back to English"` |
-| AC-E11.F1.6 | Several languages were used in turn | The owner goes back to Hindi, then to English | Hindi, built in, still works, and English reads exactly as at the start | `langs.mjs "Hindi, built in, still works after the others"`, `langs.mjs "back in English everything reads exactly as at the start"` |
-| AC-E11.F1.7 | The language files | The checking script runs | Each language has the same 216 keys, every text is in its own script, and none is left identical to English | `i18n-check.cjs` |
-
-Note: the nine new languages were written by the build's own translation pass and checked by the script. No
-native speaker has read them yet. Dates stay in the English short form in the nine new languages. Since 1.5.1.0 Urdu reads
-right to left (E15.F9).
+| AC-E10.F4.1 | Hindi or Telugu is chosen | Shop settings is opened | The tick box "Show numbers in Hindi or Telugu digits (१२३, ౧౨౩)" is shown; in English and in the nine other languages it is hidden | checked by hand |
+| AC-E10.F4.2 | The box is ticked and saved, in Hindi or Telugu | Amounts, counts and dates are drawn | They use Devanagari or Telugu digits, and the choice is kept with the shop | checked by hand |
+| AC-E10.F4.3 | Native digits are on | A tester reads the balance attribute of a customer row | It still holds the plain figure in Latin digits | checked by hand |
 
-### E11.F2 Quick-entry words in each language
+### E10.F5 Urdu reads right to left
 
-As the shop owner, I want quick entry to know my language's words for "gave" and "got" so that the example on the screen works as written.
+As an Urdu reader, I want the page laid out from the right so that it reads naturally.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E11.F2.1 | The app is in Bengali, Tamil, Urdu or Kannada (the four the test covers) | The owner types that language's own example, a name, 500 and its word for credit | The form fills with the customer, 500 and credit | `langs.mjs 'bn: its own example "Sunita 500 ..." fills the form: Sunita Devi, 500, credit ...'` (one line each for bn, ta, ur and kn) |
-
-Note: voice entry in the nine new languages uses the browser's English speech service. A name spoken in another
-script is not matched to a customer saved in Latin letters.
-
----
-
-## E12 Customer tools
+| AC-E10.F5.1 | Urdu is chosen | The page is drawn | The whole page runs right to left; in every other language it runs left to right | `tests/desk-ledger.mjs` |
+| AC-E10.F5.2 | Urdu on a wide screen | The overview is shown | The right panel sits on the left of the customer list and the "+" menu lines up with the right edge of the quick-entry pill | `tests/desk-ledger.mjs` |
+| AC-E10.F5.3 | Urdu | The total and the balances are shown | The figures keep their left-to-right order | checked by hand |
+| AC-E10.F5.4 | Urdu on a phone | The overview is shown | Nothing scrolls sideways | `tests/phone-ledger.mjs` |
 
-Goal: added in version 1.2.0.0. A block after the entries on the customer page, "More for this customer",
-gives the owner the customer's totals, a way to call or message them, a way to correct a wrong phone number and
-a way to delete a customer. It replaces the earlier notes in this document that a customer could not be deleted
-and a phone number could not be changed. The block is on the customer page only.
+### E10.F6 Quick-entry words and the "+" menu in each language
 
-### E12.F1 Totals and days since the last payment
+As a shop owner, I want to type an entry and open the menu in my language.
 
-As the shop owner, I want a customer's totals and the days since they last paid so that I know where the account stands.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E12.F1.1 | Any shop | The owner opens the home view, then a customer page | The block is not on the home view; on the customer page it is a labelled card right after the entries | `customer.mjs "nothing of the add-on shows on the home view"`, `customer.mjs "it is a labelled card in the customer grid right after the entries"` |
-| AC-E12.F1.2 | The sample shop | A customer page opens | Total given on credit and total received are the sums of that customer's entries | `customer.mjs "total given on credit is the sum from the sample file ..."`, `customer.mjs "total received is the sum from the sample file ..."` |
-| AC-E12.F1.3 | A customer who has paid before, and a date in the page address | A customer page opens | The days since the last payment are counted to that date | `customer.mjs "days since the last payment, counted to 2026-11-15 ..."` |
-
-Note: a customer with no payment shows "No payment yet" (not covered by a script).
+| AC-E10.F6.1 | One of the nine other languages is chosen | The owner types the example shown in the quick-entry box, in that language | The form fills with the customer, 500 and "You gave (credit)" | `tests/langs.mjs` |
+| AC-E10.F6.2 | Any of the twelve languages | The "+" menu is opened | All fifteen items, and the names of the "+" and send buttons, are in that language | `tests/local-assets.mjs` |
+| AC-E10.F6.3 | The language is changed back to English | The "+" menu is opened | The labels read as they did at the start | `tests/local-assets.mjs` |
 
-### E12.F2 Call and WhatsApp chat links
+## E11 Layout and themes
 
-As the shop owner, I want to call or message a customer from their page so that I do not have to look up the number.
+Goal: on a phone the customer list has the screen and an entry is one line at the bottom; on a desktop the same list is flanked by what needs attention; both read well in light and dark.
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E12.F2.1 | A customer page | The owner taps Call | The phone app opens with the customer's number | `customer.mjs "the Call link carries the number ..."` |
-| AC-E12.F2.2 | A customer page | The owner taps WhatsApp chat | A chat opens with that number and no message | `customer.mjs "the chat link is wa.me with the number, no message, opens apart ..."` |
-| AC-E12.F2.3 | Any shop | The page is read with the add-on | The chat link is not a reminder link: the count of reminder links and the total are the same as before | `customer.mjs "home view: same number of a[data-remind] and the same total as before the script ..."`, `customer.mjs "customer page: as many a[data-remind] as before the script ..."`, `customer.mjs "the block has none of the reserved data attributes"` |
+### E11.F1 The phone layout
 
-### E12.F3 Change a customer's phone number
+As a shop owner at the counter, I want my customers on the first screen of my phone so that I can find one with a thumb.
 
-As the shop owner, I want to correct a wrong phone number so that reminders reach the right person.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E12.F3.1 | A customer page | The owner presses the change number button | The form was closed until then; it opens with a phone field and a status message | `customer.mjs "the phone form is closed until asked for"`, `customer.mjs "the button opens a tel field with a status message"` |
-| AC-E12.F3.2 | The change number form | The owner saves a number that is not 10 digits | "Enter a 10-digit mobile number." shows and nothing changes | `customer.mjs "a short number is refused ..."` |
-| AC-E12.F3.3 | The change number form | The owner saves a phone number another customer has | It is refused with "Another customer already has this number." and nothing is moved | `customer.mjs "the number of another customer is refused, nothing moved ..."` |
-| AC-E12.F3.4 | The change number form | The owner saves a new 10 digit number | The customer and every entry move to the new number, in the stored shop too; the page address follows; "Phone number changed." shows | `customer.mjs "a good number changes the address ..."`, `customer.mjs "the customer and all 6 entries moved to the new number, in the stored shop too ..."`, `customer.mjs "it says so, and the block follows the new number ..."` |
-| AC-E12.F3.5 | A phone number was changed | The owner opens the home view | The total outstanding is the same as before | `customer.mjs "the total on the home view is the same after the phone change ..."` |
-| AC-E12.F3.6 | An entry was just deleted or edited, so the ledger's own Undo is on offer | The owner changes the customer's number | The ledger's own Undo is cleared, so an entry cannot come back under the old number | manual |
+| AC-E11.F1.1 | A screen up to 767 px wide, a shop with customers | The overview opens | "Total outstanding" sits in a compact card at the top with one strip under it, and the customer list follows on the first screen | `tests/phone-ledger.mjs` |
+| AC-E11.F1.2 | The strip under the total | It is read | It shows three figures, "Customers", "Overdue" and "Collected, last 30 days", and a "…" button named "Show the full overview" that unfolds the four summary tiles | `tests/review-fixes.mjs` |
+| AC-E11.F1.3 | Phones of 360, 375, 390 and 412 px, light and dark | Each view is shown | Nothing scrolls sideways | `tests/phone-ledger.mjs`, `tests/phone-import.mjs` |
+| AC-E11.F1.4 | A phone | The top bar is shown | It keeps the brand, the language button and the light or dark button; the language box is drawn as an icon button | checked by hand |
 
-### E12.F4 Delete a customer with Undo
+### E11.F2 The quick-entry pill
 
-As the shop owner, I want to delete a customer who should not be in the ledger, and to take it back if I slipped.
+As a shop owner, I want to record a sale in one line so that the queue does not wait.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E12.F4.1 | A customer page | The owner presses Delete customer once | The app asks for a second press and names the customer; nothing is removed | `customer.mjs "the first press only asks again ..."`, `customer.mjs "the page heading is untouched ..."` |
-| AC-E12.F4.2 | The app has asked again | The owner presses a second time | The customer, the entries and the row are removed, the overview opens, and the total drops by that customer's balance | `customer.mjs "the second press removes the customer, the entries and the row, and goes home"`, `customer.mjs "the total drops by that customer's balance ..."` |
-| AC-E12.F4.3 | A customer was just deleted | The overview shows | A bar says who was deleted and offers Undo, for eight seconds | `customer.mjs "a status bar says who was deleted and offers Undo ..."` (the eight seconds: manual) |
-| AC-E12.F4.4 | The Undo bar is showing | The owner presses Undo | Undo puts the customer and the same entries back, in the stored shop too, and the row and the total return | `customer.mjs "Undo puts the customer and the same 6 entries back, in the stored shop too"`, `customer.mjs "the row and the total are back ..."` |
-| AC-E12.F4.5 | A customer page | The owner taps Delete twice in quick succession | The two taps count as one press, so the customer is not deleted | manual |
-| AC-E12.F4.6 | A full test run of the block | Every action is taken | No confirm, alert or prompt dialog opens and no page error is logged | `customer.mjs "no confirm, alert or prompt was used"`, `customer.mjs "no page errors"` |
-| AC-E12.F4.7 | A phone 320 px wide, light or dark | The block shows with the form open | There is no sideways scroll and every control is at least 44 px tall | `customer.mjs "no sideways scroll on the customer page at 320 px, form open and the long delete label showing ..."`, `customer.mjs "every control in the block is at least 44 px tall ..."`, `customer.mjs "the block also shows in the dark theme at 320 px"` |
-
-Note: after the eight seconds, a reload or a switch to another shop, the deletion stands. After Undo the
-entries can come back in a slightly different order; none is lost.
+| AC-E11.F2.1 | A phone | The overview is shown | A pill is fixed at the bottom with a "+" button, the box "Quick entry: type or speak it" and a send arrow; the last customer rows are not hidden under it | `tests/phone-ledger.mjs` |
+| AC-E11.F2.2 | "Sunita 500 udhaar" is typed in the pill | The send arrow is pressed | The entry is filled and saved in one step and the customer's balance goes up by 500 | `tests/phone-ledger.mjs` |
+| AC-E11.F2.3 | The box is empty | The send arrow is pressed | Nothing is saved; the cursor goes to the box | checked by hand |
+| AC-E11.F2.4 | A screen 768 px or wider | The overview is shown | The same pill sits at the bottom of the screen, as wide as the customer list and lined up with it | `tests/desk-ledger.mjs` |
 
----
+### E11.F3 The "+" menu
 
-## E13 Note shortcuts and overdue total
+As a shop owner, I want everything else one tap away so that the first screen can stay simple.
 
-Goal: added in version 1.2.0.0. Small helps on screens the owner already uses: one tap for the common notes,
-one line for the money that has waited longest, and the date the figures are for. Each is drawn beside what
-was there; nothing new is stored.
-
-### E13.F1 Note shortcuts
-
-As the shop owner, I want the common notes one tap away so that I type less when recording an entry.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E13.F1.1 | The entry form | The page is read | Six shortcuts sit under the note field: groceries, milk, rice, oil, paid on UPI and cash, in the chosen language | `langs.mjs "six note shortcuts under the note field ..."` |
-| AC-E13.F1.2 | The entry form | The owner taps one shortcut, then another | The first fills the note; the second is added after a comma | `langs.mjs "a shortcut fills the note, a second one is added after a comma ..."` |
-| AC-E13.F1.3 | The note is close to its longest length | The owner taps a shortcut | The note stays within the field's length, and the entry is saved only by the same button as before | manual |
+| AC-E11.F3.1 | The "+" button of the pill | It is pressed | A menu "All actions" opens with fifteen items in this order: Record an entry, Add a customer, Remind all overdue, Import a shop, Export CSV, Statement, Shops, Shop profile, Language, Light or dark, Customers, Overdue, Recent entries, Shop file, Shop settings | `tests/local-assets.mjs` |
+| AC-E11.F3.2 | A phone | The menu is open | It is a sheet across the bottom of the screen, and a tap outside it closes it | `tests/phone-ledger.mjs` |
+| AC-E11.F3.3 | A desktop | The menu is open | It is a small panel just above the pill, inside the screen and lined up with the start of the pill | `tests/desk-ledger.mjs` |
+| AC-E11.F3.4 | The menu is open | Escape is pressed | It closes and the focus returns to the "+" button; arrow keys, Home and End move between the items | `tests/desk-ledger.mjs` |
+| AC-E11.F3.5 | The menu is open | An item is chosen | The menu closes and the matching view or action opens: for example "Add a customer" opens the "Add a customer" view | `tests/phone-ledger.mjs` |
 
-### E13.F2 Overdue total and the date of the figures
+### E11.F4 The desktop layout and the right panel
 
-As the shop owner, I want the total unpaid for 30 days or more, and the date the figures are for, so that I know how much to chase and how fresh the numbers are.
+As a shop owner at the counter computer, I want the list, the overdue customers and the latest entries side by side.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E13.F2.1 | A shop with overdue customers | The overdue list shows | A line above it gives the amount unpaid for 30 days or more and the number of customers | `langs.mjs "the overdue line gives the unpaid total and the number of customers ..."` |
-| AC-E13.F2.2 | Any shop | The overview shows | The date the figures are for shows under the total | manual |
-
----
-
-## E14 Reaching the customer and a layout that holds
+| AC-E11.F4.1 | A screen 768 px or wider | The app is shown | The left navigation lists Overview, Record, Customers, Overdue, Recent entries, Add a customer, Shop file and Shop settings, and the strip sits beside the total | `tests/desk-ledger.mjs`, `tests/nav.mjs` |
+| AC-E11.F4.2 | A screen 1200 px or wider, a shop with customers | The overview is shown | A right panel about 340 px wide holds "Record an entry" with the full form, then Overdue and Recent entries; below 1200 px there is no panel and the two cards are back in the page | `tests/desk-ledger.mjs` |
+| AC-E11.F4.3 | The right panel | The owner types in the filter box of Overdue or of Recent entries | Only the rows holding the typed text stay in that list | `tests/desk-ledger.mjs` |
+| AC-E11.F4.4 | The right panel with a long list | The page is scrolled | The panel has no scroll box of its own; it grows with the page | `tests/desk-ledger.mjs` |
+| AC-E11.F4.5 | Widths from 375 to 2560 px | The overview, Record and a customer page are shown | Nothing scrolls sideways | `tests/final.mjs`, `tests/layout.mjs` |
 
-Goal: added in versions 1.2.1.0 to 1.2.3.0, from the owner's own use of the live site. The layout holds in
-every language and width, names show in the script of every language, the reminder carries a pay link the
-customer can tap, a reminder can go another way when WhatsApp refuses a number, and a number added by hand
-can be checked on WhatsApp once. Each is an add-on beside the ledger. The ids, attributes, totals, reminder
-links and the import that the tester reads are unchanged.
+### E11.F5 Light and dark
 
-### E14.F1 A layout that holds (1.2.1.0)
+As a shop owner, I want a light screen in a bright shop and a dark one at night.
 
-As the shop owner, I want every screen to read cleanly in my language on my phone so that nothing is broken, hidden or cut off.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F1.1 | The sample shop, each of the 12 languages, at 5 widths | The overview and a customer page are drawn | Nothing scrolls sideways in any of the 120 screens | `layout.mjs "no sideways scroll in 120 screens ..."` |
-| AC-E14.F1.2 | The same screens | The text is laid out | No text is broken into a column of letters, and the customer name stays within three lines | `layout.mjs "no text is broken into a column of letters, and the customer name stays within three lines"` |
-| AC-E14.F1.3 | A customer page | The heading is laid out | The customer heading never runs under the action buttons | `layout.mjs "the customer heading never runs under the action buttons"` |
-| AC-E14.F1.4 | Any button or menu, in any language | It is drawn | Its label wraps instead of being cut off | `layout.mjs "no button or menu cuts its label off"` |
-| AC-E14.F1.5 | A customer page at 1366 and 1920 px | The cards are laid out in columns | There is no blank band between cards in a column | `layout.mjs "the customer page has no blank band between cards in a column ..."` |
-| AC-E14.F1.6 | The entry and add forms | They are drawn | No form button touches the text above it | `layout.mjs "no form button touches the text above it"` |
-| AC-E14.F1.7 | A narrow card | The customer's entries are drawn | Each entry stacks its date, note and amount inside the card | manual |
+| AC-E11.F5.1 | No theme was ever chosen | The app opens | It follows the device's light or dark setting | checked by hand |
+| AC-E11.F5.2 | The light or dark button in the top bar | It is pressed | The theme switches, the button says which theme is on ("Dark theme on" or "Light theme on"), and the choice is kept for the next visit | `tests/assist.mjs` |
+| AC-E11.F5.3 | Either theme | Text on the overview and on a customer page is measured | Each text and its background meet a contrast of 4.5 to 1, or 3 to 1 for large text | `tests/check.mjs` |
+| AC-E11.F5.4 | Either theme | States reached by acting are measured: messages, the edit mode, the QR card, a pressed button | They meet the same contrast | `tests/contrast.mjs` |
 
-### E14.F2 Names in the script of every language (1.2.1.0)
+### E11.F6 The brand look and tap sizes
 
-As the shop owner, I want customer names in the script of my language so that the list reads the same way as the labels.
+As a first-time visitor, I want a finished, readable product on any screen.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F2.1 | The sample shop in English | The list is drawn | No name has a bracket | `names.mjs "English shows no bracket ..."` |
-| AC-E14.F2.2 | Hindi or Telugu is chosen | The list is drawn | Names read as before, for example "Sunita Devi (सुनीता देवी)" | `names.mjs "Hindi: Sunita Devi reads as before ..."`, `names.mjs "Telugu: a Telugu-script bracket as before ..."` |
-| AC-E14.F2.3 | One of the nine newer languages is chosen | The list is drawn | Every name shows a bracket in that language's script, with no Latin letter and no unassigned character | `names.mjs "bn: every name shows a bracket in its own script, no Latin, no unassigned character ..."` and the same line for mr, ta, gu, kn, ml, pa, or, ur |
-| AC-E14.F2.4 | One of the nine newer languages is chosen | A customer page opens | Its heading shows the name in that script | `names.mjs "bn: the customer page heading shows the name in its script ..."` and the same line for the other eight |
-| AC-E14.F2.5 | Any of the twelve languages | The figures are read | The total, the rows and the reminder links are the same as in English (₹11,820 for the sample) | `names.mjs "bn: the same total, rows and reminder links ..."` and the same line for each language |
+| AC-E11.F6.1 | 375 px and 1280 px, light and dark | The app is shown | Headings are set in Fraunces and body text in Inter; the top bar and the total block are Deep Navy and the main buttons are Signal Amber | `tests/brand.mjs` |
+| AC-E11.F6.2 | The same four cases | Text sizes are measured | No text is smaller than 12 px | `tests/brand.mjs` |
+| AC-E11.F6.3 | The same four cases | Buttons, links and fields are measured | Each is at least 44 px tall | `tests/brand.mjs` |
+| AC-E11.F6.4 | A phone, with the profile and several shops in use, in English, Hindi and Telugu, light and dark | Each view is shown | Nothing scrolls sideways | `tests/addons-width.mjs` |
 
-Note: the spelling is made automatically from the stored name. The owner can correct the Hindi and Telugu
-spelling (E4.F5); there is no field for the nine newer scripts.
+## E12 Offline and install
 
-### E14.F3 A pay link the customer can tap (1.2.1.0)
+Goal: after one visit the app opens and works with no signal, and it can be put on the home screen.
 
-As the customer, I want a link I can tap in the WhatsApp reminder so that I can pay without copying anything.
+### E12.F1 The first visit caches the app
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E14.F3.1 | A customer owes | The reminder is built | It is still a wa.me link to the customer and still names the customer and the balance in rupees | `pay.mjs "the reminder is still a wa.me link to the customer"`, `pay.mjs "it still names the customer and the balance in rupees"` |
-| AC-E14.F3.2 | A customer owes | The reminder is built | The `upi://pay` link with the UPI ID and the balance is still in the message | `pay.mjs "the upi://pay link with the UPI ID and the balance is still in the message ..."` |
-| AC-E14.F3.3 | A customer owes | The reminder is built | A pay link on the app's own address stands first, before the UPI link | `pay.mjs "a pay link on the app's own address comes before it ..."`, `pay.mjs "the tappable link stands first"` |
-| AC-E14.F3.4 | A shop name with brackets | The pay link is built | It has no bracket or other character that would end the link early, and ends in a digit | `pay.mjs "the pay link has no bracket or other character that would end the link early, and ends in a digit"` |
-| AC-E14.F3.5 | The pay link | It is opened | The details ride after "#", and no request carries the shop, the UPI ID or the amount | `pay.mjs "the details ride after "#", so they are never sent to a server"`, `pay.mjs "no request carries the shop, the UPI ID or the amount"` |
-| AC-E14.F3.6 | The sample shop | Every reminder is built | All 8 reminders carry both links | `pay.mjs "all 8 reminders carry both links ..."` |
-| AC-E14.F3.7 | The pay page | It opens | It shows the shop, the amount and the UPI ID, and its button opens the same `upi://` link as the message | `pay.mjs "the pay page shows the shop, the amount and the UPI ID ..."`, `pay.mjs "its button opens the same upi:// link as the message"` |
-| AC-E14.F3.8 | The pay page on a phone | It is drawn at 375 px | It fits with no sideways scroll | `pay.mjs "the pay page fits a 375 px phone ..."` |
-| AC-E14.F3.9 | A broken link, or a shop name with markup | The pay page opens | It shows "not complete" and runs nothing from the link; markup is shown as text | `pay.mjs "a broken link shows "not complete" and nothing from the link is run"`, `pay.mjs "a shop name with markup is shown as text"` |
+As a shop owner with a weak signal, I want one visit to be enough.
 
-Note: the pay page is in English only. A customer in advance or settled gets no pay link, as before.
+| ID | Given | When | Then | Test |
+| --- | --- | --- | --- | --- |
+| AC-E12.F1.1 | A first visit on the live link | The page has loaded | The app's own files are kept in the browser cache named `hisaab-v22`; the list is under [Offline](../ARCHITECTURE.md#offline) | `tests/offline.mjs` |
+| AC-E12.F1.2 | A new version is released | The owner opens the app with a signal | The new files are used at once, because the network is tried first; caches under an older name are deleted | checked by hand |
 
-### E14.F4 Other ways to send a reminder (1.2.2.0)
+### E12.F2 What works offline
 
-As the shop owner, I want another way to send the reminder when WhatsApp refuses a number so that the customer still gets it.
+As a shop owner, I want to record a sale where there is no signal.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F4.1 | A customer page | It is drawn | "Other ways to send" shows under the reminder buttons | `sendways.mjs "the customer page offers "Other ways to send" under the reminder buttons"` |
-| AC-E14.F4.2 | A customer with a sample number | The page opens | The block opens by itself and says the number is made up | `sendways.mjs "for a sample number it opens by itself and says the number is made up"` |
-| AC-E14.F4.3 | The block is open | The owner picks SMS | The SMS goes to the customer's number with the same message as the WhatsApp reminder | `sendways.mjs "the SMS link goes to the customer's number with the same message as the WhatsApp reminder"` |
-| AC-E14.F4.4 | The block is open | The owner picks WhatsApp without a number | The same message opens, to send to any contact chosen in WhatsApp | `sendways.mjs "the WhatsApp link without a number carries the same message, to send to any contact"` |
-| AC-E14.F4.5 | The block is open | The owner presses Copy | "Message copied" shows and the clipboard holds the message | `sendways.mjs "the copy button holds the same message"`, `sendways.mjs "Copy says "Message copied" and the clipboard holds the message ..."` |
-| AC-E14.F4.6 | A customer with a real number | The page opens | There is no sample note and the SMS goes to that number | `sendways.mjs "for a real number there is no sample note and the SMS goes to that number"` |
-| AC-E14.F4.7 | The block is open | The links are counted | None of the new links counts as a reminder link; the overview has one reminder link per customer as before | `sendways.mjs "none of the new links counts as a reminder link"`, `sendways.mjs "the overview has one reminder link per customer as before ..."` |
-| AC-E14.F4.8 | Hindi, Telugu, Tamil, Bengali or Urdu, at 375 px | The block is open | It is in that language's script and nothing scrolls sideways | `sendways.mjs "no sideways scroll at 375 px with the block open ..."`, `sendways.mjs "hi: the block is in its own script and fits 375 px ..."` and the same line for te, ta, bn, ur |
+| AC-E12.F2.1 | One visit with a signal | The signal is lost and the page is opened again | The ledger opens with its total and its customers | `tests/offline.mjs` |
+| AC-E12.F2.2 | No signal | The owner opens "UPI QR code" on a customer who owes | The QR code is drawn | `tests/offline.mjs` |
+| AC-E12.F2.3 | No signal | The owner chooses a payment screenshot | The picture is attached to the entry; the amount is not read from it, because the reader comes from another site | checked by hand |
+| AC-E12.F2.4 | No signal | The owner picks one of the nine other languages that was never used on this device | The app stays in English; a language used once before with a signal still works | checked by hand |
 
-### E14.F5 Check a number on WhatsApp (1.2.3.0)
+### E12.F3 Install
 
-As the shop owner, I want to find out once, when I add a customer, whether the number is on WhatsApp so that a refusal does not surprise me at every reminder.
+As a shop owner, I want Hisaab on my home screen like any other app.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F5.1 | A shop file is loaded | Eight customers arrive at once | No check is offered; they are not "just added" | `wacheck.mjs "loading a shop file asks for no check: eight customers at once are not "just added""` |
-| AC-E14.F5.2 | The owner adds a customer by hand | The customer is saved | The add form offers "Check on WhatsApp" | `wacheck.mjs "after adding a customer by hand, the add form offers "Check on WhatsApp" ..."` |
-| AC-E14.F5.3 | The offer shows | The owner presses it | A hello message to that number opens, with the name and the shop and no balance | `wacheck.mjs "it opens a hello message to that number, with the name and the shop and no balance ..."` |
-| AC-E14.F5.4 | The hello message was opened | The app moves to that customer | It asks whether the chat opened; until answered the number reads as not checked | `wacheck.mjs "the app moves to that customer and asks whether the chat opened"`, `wacheck.mjs "until answered, the number reads as not checked"` |
-| AC-E14.F5.5 | The question shows | The owner answers "Yes, the chat opened" | The number is marked as on WhatsApp | `wacheck.mjs ""Yes, the chat opened" marks the number as on WhatsApp"` |
-| AC-E14.F5.6 | The question shows | The owner answers "No" | The number reads "Not on WhatsApp" and the other ways to send open (E14.F4) | `wacheck.mjs ""No" marks it as not on WhatsApp and opens the other ways to send"` |
-| AC-E14.F5.7 | An answer was given | The storage and the page are read after a reload | The answer is kept in its own key for that number; the customer's ledger entry has no new field; the answer is still there | `wacheck.mjs "the answer is kept in its own key; the ledger entry of the customer has no new field ..."`, `wacheck.mjs "the answer is still there after a reload"` |
-| AC-E14.F5.8 | Any customer page | The owner wants to check the number | The check can be started from there | `wacheck.mjs "the check can be started from any customer page"` |
-| AC-E14.F5.9 | The check is shown or answered | The links are counted at 375 px | No new reminder link; one reminder link per customer as before; the offer is gone once answered; nothing scrolls sideways | `wacheck.mjs "no sideways scroll at 375 px with the offer shown ..."`, `wacheck.mjs "no new reminder link, and no sideways scroll at 375 px"`, `wacheck.mjs "the overview has one reminder link per customer as before, and the offer is gone once answered"` |
-| AC-E14.F5.10 | Hindi or Tamil | The check is shown | The status, the button and the hello message are in that language's script | `wacheck.mjs "hi: status, button and hello message in its own script ..."`, `wacheck.mjs "ta: status, button and hello message in its own script ..."` |
-| AC-E14.F5.11 | A number has an answer (added in 1.2.3.1) | The owner presses the button that offers the other answer | The answer switches with one tap, without opening WhatsApp again, and can be switched back | `wacheck.mjs "one tap switches it to "on WhatsApp", and the button now offers "No""`, `wacheck.mjs "and back again; still no sideways scroll at 375 px"` |
+| AC-E12.F3.1 | A browser that offers install | The owner adds the app to the home screen | It is installed as "Hisaab", with the app icon, and opens in its own window without the browser's bars | checked by hand |
 
-### E14.F6 Controls that say what they did (1.2.5.0)
+### E12.F4 Fonts and the QR library come from the site
 
-As the shop owner, or anyone using a screen reader or a keyboard, I want every press to say what it did so that no control looks dead.
+As a shop owner, I want nothing fetched from other sites when I simply open my ledger.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F6.1 | The light theme | The light and dark button is pressed | The colours change, dark text is at least 4.5 to 1, the button is pressed and the page says "Dark theme on" | `assist.mjs "one press switches to dark and the colours change"`, `assist.mjs "dark text on its background is at least 4.5 to 1"`, `assist.mjs "the page says the dark theme is on and the button is pressed"` |
-| AC-E14.F6.2 | The dark theme | The button is pressed again | The light theme is back, the page says so, and the total is untouched | `assist.mjs "a second press is back to light"`, `assist.mjs "the total is untouched"` |
-| AC-E14.F6.3 | Overview is showing | Overview is pressed | The page says "Overview" and Overview is marked as the current view | `assist.mjs "pressing Overview on the Overview says "Overview""`, `assist.mjs "Overview is marked as the current view"` |
-| AC-E14.F6.4 | Any view | Another navigation item is pressed, then Overview | Each view opens and is named; Overview comes back at the top | `assist.mjs "pressing Customers opens it and says "Customers""`, `assist.mjs "Overview comes back, at the top"` |
-| AC-E14.F6.5 | The skip link has the keyboard focus | Enter, or a click | It is on screen while focused, the focus lands on the ledger and the address is left alone | `assist.mjs "the skip link is on screen when it has the focus"`, `assist.mjs "Enter on the skip link puts the focus on the ledger"`, `assist.mjs "a click does the same and leaves the address alone"` |
-| AC-E14.F6.6 | Phone and desktop width | All of the above is done | The page has no errors | `assist.mjs "no page error"` |
+| AC-E12.F4.1 | A plain visit | The page loads | Every request goes to the site itself; no other host is asked for anything | `tests/local-assets.mjs` |
+| AC-E12.F4.2 | A plain visit | The fonts are loaded | The font files come from the site, under the family names Inter and Fraunces | `tests/local-assets.mjs` |
+| AC-E12.F4.3 | A customer who owes | "UPI QR code" is opened | The QR code is drawn by the library served from the site, and no other host is asked | `tests/local-assets.mjs` |
+| AC-E12.F4.4 | Any language | The language is changed | No other host is asked for anything | `tests/local-assets.mjs` |
 
-Note: no app can look a number up on WhatsApp beforehand. The check depends on the owner's answer.
+## E13 Checks on what is typed
 
----
+Goal: the app never looks as if it kept something it did not keep, and it holds back an entry that cannot be right.
 
-## E15 Guards, whole rupees, brand look and the phone layout
+### E13.F1 Storage that is full or blocked
 
-### E15.F1 Nothing is lost without a word (1.2.6.0)
+As a shop owner, I want to be told when a change was not kept so that I do not walk away believing it was.
 
-As the shop owner, I want to be told when a change was not kept so that I never trust a figure that is not stored.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F1.1 | The browser store refuses a write | An entry is saved | The page says it was not kept, with what to do, and "Saved." is not left | `guard.mjs "desktop: an entry the store refused is said as NOT kept, with what to do, and "Saved." is not left"` |
-| AC-E15.F1.2 | The browser blocks storage | The app opens | A lasting notice says nothing can be kept in this browser mode; the sample still loads and the notice stays | `guard.mjs "blocked store: a lasting notice says nothing can be kept on this device in this browser mode"`, `guard.mjs "blocked store: the sample still loads, "Shop loaded." is not left, the notice stays"` |
-| AC-E15.F1.3 | A shop file holds a picture that is not an image or is over 400,000 characters | It is imported | The picture is dropped, the entry kept, and the count told | `guard.mjs "desktop: a picture that is not an image or is over 400,000 characters is dropped, the entry kept, and the count told"` |
-| AC-E15.F1.4 | An entry is being edited | The date is cleared and Save is pressed | The page says the date is needed and the edit stays open | `guard.mjs "desktop: an edit with the date cleared says the date is needed and stays open"` |
+| AC-E13.F1.1 | The browser's storage is full | The owner saves an entry or loads a shop | A notice stays at the top: "This change was NOT kept: the storage on this phone is full. Export a backup file, then remove some screenshots, and make the change again.", with a "Backup file (JSON)" button; no "Saved." or "Shop loaded." is left on screen | `tests/guard.mjs` |
+| AC-E13.F1.2 | The browser blocks storage, as some private windows do | The app opens | A notice stays at the top: "Nothing can be kept on this device in this browser mode: the browser is blocking storage. Open Hisaab in a normal window (not private), or export a backup file before you close this page." The sample shop can still be loaded and looked at | `tests/guard.mjs` |
+| AC-E13.F1.3 | Either case | The page is used | No error is logged | `tests/guard.mjs` |
 
-### E15.F2 Money in whole rupees (1.3.0.0)
+### E13.F2 Whole rupees
 
-As the shop owner, I want amounts in whole rupees, as the course guideline asks, so that every figure is plain.
+As a shop owner, I want amounts in whole rupees so that balances are clean figures.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F2.1 | The entry form | 20.75 is typed and Save is pressed | It is not saved and the form keeps what was typed, with the nearest whole amount offered | `rupees.mjs "a new entry of 20.75 is not saved and the form keeps what was typed"` |
-| AC-E15.F2.2 | An entry is being edited | 30.4 is typed and Save is pressed | It is not saved; the edit stays open and offers "Use Rs 30" | `rupees.mjs "an edit to 30.4 is not saved: the edit stays open and offers "Use Rs 30""` |
-| AC-E15.F2.3 | A JSON shop file with 10.5, 20.25, 0.4 and 100 | It is imported | They are kept as 11, 20, 0 and 100 (halves up) | `rupees.mjs "JSON import: 10.5, 20.25, 0.4 and 100 are kept as 11, 20, 0 and 100 (halves up; a zero stays as the import keeps a zero)"` |
-| AC-E15.F2.4 | A CSV with 10.5 and 2.5 | It is imported | They are kept as 11 and 3, and one line says 2 amounts were rounded | `rupees.mjs "CSV import: 10.5 and 2.5 are kept as 11 and 3"`, `rupees.mjs "CSV import: one line says 2 amounts were rounded"` |
-| AC-E15.F2.5 | A whole-rupee import | It is loaded | Nothing about rounding is said | `rupees.mjs "a whole-rupee import says nothing about rounding and shows no line"` |
+| AC-E13.F2.1 | An amount with paise is typed in the entry form | "Save entry" is pressed | The entry is not saved; "Amounts are in whole rupees, without paise. This was not saved yet." shows with a button "Use Rs {n}" holding the nearest rupee | `tests/rupees.mjs` |
+| AC-E13.F2.2 | A shop that already holds amounts with paise | The overview is shown | "{n} stored amounts have paise. They are shown as stored." shows with "Round them to whole rupees"; after a press, "{n} amounts were rounded to whole rupees." shows with "Undo" | `tests/rupees.mjs` |
 
-### E15.F3 The brand look (1.3.0.0)
+### E13.F3 Amount, date and note limits
 
-As the shop owner, I want Hisaab to look like its brand so that it is recognised, with no green anywhere.
+As a shop owner, I want a slip of the finger caught before it lands in the ledger.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F3.1 | Any screen, light or dark | It is drawn | The top bar and the total block are the brand navy and every primary button the brand amber | `brand.mjs "1280 dark: customer: the top bar is the brand navy"`, `brand.mjs "1280 dark: customer: the total block is the brand navy"`, `brand.mjs "1280 dark: customer: every primary button is the brand amber"` |
-| AC-E15.F3.2 | Any screen | It is drawn | Body text begins with Inter and headings with Fraunces | `brand.mjs "1280 dark: customer: body begins with Inter and headings with Fraunces"` |
-| AC-E15.F3.3 | The top bar | It is drawn | The brand mark is at least 32 px wide with half its width clear on each side | `brand.mjs "1280 dark: customer: the brand mark is at least 32 px wide with half its width clear on each side"` |
-| AC-E15.F3.4 | Any screen | It is drawn | No text under 12 px in overdue rows, badges, the tag line and the bottom bar; entry buttons at least 44 px | `brand.mjs "1280 dark: customer: no text under 12 px in overdue rows, badges, tag line and bottom bar"`, `brand.mjs "1280 dark: customer: entry row buttons are at least 44 px"` |
+| AC-E13.F3.1 | An amount above 1,00,00,000 | "Save entry" is pressed | "That amount looks too large. One entry can be up to ₹1,00,00,000." shows and nothing is saved | `tests/final.mjs` |
+| AC-E13.F3.2 | The "Date" field of the entry form | The owner opens the date picker | The latest day it offers is today | checked by hand |
+| AC-E13.F3.3 | An entry is being edited and its date is cleared | "Update entry" is pressed | The edit stays open with "A date is needed. Choose the date, then save." and the entry keeps its old date | `tests/guard.mjs` |
+| AC-E13.F3.4 | The "Note" field | The owner types | It takes at most 80 characters; a note in a loaded file is cut at 200 | checked by hand |
+| AC-E13.F3.5 | A payment screenshot of any size is attached | The entry is saved | The picture is stored no larger than 600 px on its longest side | `tests/guard.mjs` |
 
-### E15.F4 The ledger gets the phone screen (1.4.0.0)
+Known limit: the storage, date and whole-rupee messages of this epic exist in English, Hindi and Telugu; in the nine other languages they show in English.
 
-As the shop owner on a phone, I want the customer rows on the first screen so that I see who owes without scrolling.
+## E14 Links and robustness
 
-| ID | Given | When | Then | Verified by |
-| --- | --- | --- | --- | --- |
-| AC-E15.F4.1 | A phone at 360 x 640 with the sample shop | The overview is drawn | At least 4 customer rows are fully on the first screen and the compact total is at most 150 px | `phone-ledger.mjs "360x640 dark: at least 4 customer rows fully on the first screen"`, `phone-ledger.mjs "360x640 dark: the compact total is at most 150 px"` |
-| AC-E15.F4.2 | A phone | The overview is drawn | The pill and the tabs together are at most 112 px and nothing scrolls sideways | `phone-ledger.mjs "360x640 dark: the pill and the tabs together are at most 112 px"`, `phone-ledger.mjs "360x640 dark: no horizontal scroll"` |
-| AC-E15.F4.3 | A phone | "+" is tapped, or Enter or Space pressed on it | The sheet opens with aria-expanded and aria-controls; items are 44 px; Escape or a tap outside closes it and the focus returns to "+" | `phone-ledger.mjs "360x640 dark: the "+" sheet opens by tap with aria-expanded and aria-controls"`, `phone-ledger.mjs "360x640 dark: Enter opens, arrows move, Escape closes and returns focus to "+""`, `phone-ledger.mjs "360x640 dark: a tap outside closes the sheet"` |
-| AC-E15.F4.4 | A phone | The layout is drawn | Every grader hook exists and the quick-entry ids are not copied | `phone-ledger.mjs "360x640 dark: every grader hook exists and the quick-entry ids are not copied"` |
-| AC-E15.F4.5 | A desktop at 1280 x 800 | The page is drawn | The phone dock and the phone "+" are hidden and the left menu shows (the desktop layout itself is E15.F8) | `phone-ledger.mjs "1280x800: the desktop layout is as before"` |
+Goal: every view has its own address, a tester can fix the date and read the figures from the page, and the app stays quiet and usable under a big shop, a keyboard and a screen reader.
 
-### E15.F5 The + sheet in the chosen language (1.4.1.0)
+### E14.F1 An address for every view
 
-As a shop owner who reads Hindi, Telugu or Urdu, I want the + sheet in my language so that every action is clear.
+As a shop owner, I want Back to work and a link to open the right view.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F5.1 | A phone, the app in Hindi, Telugu or Urdu | The + sheet is opened | Every sheet label and its button names are in that language | `local-assets.mjs "in hi every sheet label and its button names are in that language"`, `local-assets.mjs "in te every sheet label and its button names are in that language"`, `local-assets.mjs "in ur every sheet label and its button names are in that language"` |
-| AC-E15.F5.2 | A phone in English | The sheet is opened, and again after a switch back from another language | It has its fifteen English labels, as before | `local-assets.mjs "the sheet has its fifteen English labels"`, `local-assets.mjs "back in English the labels are as before"` |
+| AC-E14.F1.1 | The address ends in nothing or `#/` | The app opens | The overview shows | `tests/nav.mjs` |
+| AC-E14.F1.2 | Any item of the navigation, on a desktop or in the phone's bottom bar and "More" sheet | It is pressed | The address becomes `#/s/record`, `#/s/customers`, `#/s/overdue`, `#/s/recent`, `#/s/add`, `#/s/data` or `#/s/settings`, and that view opens at the top of the page, quickly | `tests/nav.mjs` |
+| AC-E14.F1.3 | An address `#/c/` followed by a customer's 10-digit phone | It is opened | That customer's page shows; a number no customer has opens the overview | checked by hand |
+| AC-E14.F1.4 | A navigation item is pressed | A screen reader is listening | The name of the view that opened is announced, and "Overview" is marked as the current item on the overview | `tests/assist.mjs` |
 
-### E15.F6 Fonts and the QR library from the site itself (1.4.1.0)
+### E14.F2 The `?today=` option
 
-As a shop owner, I want a visit to ask no other host so that nothing about my shop reaches anyone else.
+As a tester, I want to fix today's date so that figures that depend on the date can be checked.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F6.1 | A fresh browser | The app is opened | No other host is asked for anything and no request fails | `local-assets.mjs "a plain visit asks no other host for anything"`, `local-assets.mjs "no request failed"` |
-| AC-E15.F6.2 | Any screen | It is drawn | The fonts come from the site under the same family names (Fraunces, Inter) | `local-assets.mjs "the fonts come from the site itself"`, `local-assets.mjs "the brand fonts are loaded under the same family names"` |
-| AC-E15.F6.3 | A customer who owes | The UPI QR code is opened, or the language is changed | The QR code is drawn from the library on the site; no other host is asked; no page errors | `local-assets.mjs "the QR code is drawn from the library on the site"`, `local-assets.mjs "opening the QR code asks no other host for anything"`, `local-assets.mjs "changing the language asks no other host for anything"`, `local-assets.mjs "no page errors"` |
+| AC-E14.F2.1 | The address carries `?today=` with a date written YYYY-MM-DD | The app runs | That date is today for the overdue days, the two 30-day figures and the default date of a new entry, and it is shown under the total as the date the figures are for | `tests/check.mjs` |
+| AC-E14.F2.2 | `?today=` is missing, or is not a date written that way | The app runs | The device's date is used, with no message | checked by hand |
+| AC-E14.F2.3 | Any other option after `?` in the app's address | The app runs | It is ignored; the pay page reads its own details (shop, customer, UPI ID, amount, and `stay=1`) from its own address | checked by hand |
 
-### E15.F7 The ledger maths tested on their own (1.4.1.0)
+### E14.F3 What a tester reads from the page
 
-As the builder, I want the ledger maths tested without a browser so that every figure the owner sees rests on checked functions.
+As a tester, I want fixed hooks in the page so that a script can read the ledger.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F7.1 | Customers with credit, payments, an advance and no entries | The balances are computed | Each is credit less payments; an advance is below zero; no entries is 0 | `ledger.cjs "balance of A = 500 - 200 + 120 = 420"`, `ledger.cjs "balance of C = 100 - 250 = -150 (an advance)"`, `ledger.cjs "a customer with no entries has balance 0"` |
-| AC-E15.F7.2 | Those balances | The totals are computed | The total outstanding is the sum of all balances, the owed total only the positive ones, and long sums stay whole | `ledger.cjs "total outstanding = sum of all balances 420 + 300 - 150 = 570"`, `ledger.cjs "owed total = positive balances only 420 + 300 = 720"`, `ledger.cjs "sums of 10, 20, 30 repeated 300 times stay whole integers (3000)"` |
-| AC-E15.F7.3 | Entries on one date | They are listed | Newest first, the later entry first on the same date | `ledger.cjs "newest first, the later entry first on the same date"`, `ledger.cjs "newestFirst puts the higher seq first on one date"` |
-| AC-E15.F7.4 | A shop file with paise | It is imported | Amounts are whole rupees, halves up, and the import replaces all data | `ledger.cjs "an import with paise is rounded to whole rupees, halves up: 10.5 -> 11, 10.4 -> 10, 2.5 -> 3"`, `ledger.cjs "an import replaces all data: only the imported shop, customer and entries remain"` |
-| AC-E15.F7.5 | Payments on several dates | The last payment and overdue days are computed | The last payment is the latest by date; overdue counts from the last payment, or from the first credit when none | `ledger.cjs "last payment date is the latest payment, not the latest entered"`, `ledger.cjs "days since last payment 2026-10-28 to 2026-11-27 = 30"`, `ledger.cjs "overdue days: A from last payment (30), B from first credit (10)"` |
-| AC-E15.F7.6 | Four shops | The customer page sums and the overdue line are computed | They equal the ledger's balances and owed total for every customer; the open shop is unchanged | `ledger.cjs "shop 1: credit total minus paid total (export and customer page) = the balance for every customer"`, `ledger.cjs "shop 1: the overdue line sum (extras.js) of all owing customers = the owed total from balances"`, `ledger.cjs "the open shop is unchanged after the read-only calls on other shops"` |
+| AC-E14.F3.1 | Any shop | The page is read | `#total-outstanding` holds the total; each customer row is `[data-customer="<phone>"]` and holds `[data-balance]` with the plain balance | `tests/check.mjs`, `tests/brief.mjs` |
+| AC-E14.F3.2 | Any shop | The page is read | Each customer row has a reminder link `a[data-remind]` to WhatsApp | `tests/check.mjs` |
+| AC-E14.F3.3 | A shop file | It is put in `#import-box` and `#import-go` is pressed | The shop loads; a file given to `#shot-input` shows on the saved entry as `img[data-shot]` | `tests/check.mjs` |
+| AC-E14.F3.4 | The phone layout, the desktop layout, the profile and several shops | Each is in use | The same hooks are still in place and hold the same figures | `tests/phone-ledger.mjs`, `tests/desk-ledger.mjs`, `tests/brand.mjs` |
+| AC-E14.F3.5 | A script calls `window.hisaabParseQuick(text)` | It returns | It gives the amount, the kind, the matching phones and the note, without touching the form | `tests/quick.mjs` |
 
-### E15.F8 The ledger gets the desktop screen (1.5.0.0)
+### E14.F4 A hidden shop and a big shop
 
-As a shop owner at a desk, I want the customer list to get the screen and quick entry always at hand, so that I can find a customer and record an entry without scrolling.
+As a judge, I want the figures right for a shop the makers never saw.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F8.1 | A desktop at 1024 x 768, 1280 x 800 or 1440 x 900, light or dark, with the sample shop | The overview is drawn | The top bar is at most 64 px and the total strip at most 110 px | `desk-ledger.mjs "1024x768 light: the top bar is at most 64 px"`, `desk-ledger.mjs "1440x900 dark: the total strip is at most 110 px"` |
-| AC-E15.F8.2 | The same screens | The overview is drawn | There is room for at least 8, 10 and 12 customer rows on the first screen, and every sample row shows | `desk-ledger.mjs "1024x768 light: room for at least 8 customer rows on the first screen, and every sample row shown"`, `desk-ledger.mjs "1280x800 light: room for at least 10 customer rows on the first screen, and every sample row shown"`, `desk-ledger.mjs "1440x900 light: room for at least 12 customer rows on the first screen, and every sample row shown"` |
-| AC-E15.F8.3 | A desktop | The overview is drawn | The quick-entry pill is in view at the bottom, its field 16 px or more, and the "+" is 44 px | `desk-ledger.mjs "1280x800 light: the pill is in view at the bottom, its field 16 px or more"`, `desk-ledger.mjs "1280x800 light: the "+" button is 44 px"` |
-| AC-E15.F8.4 | 1024 px wide, then 1280 px wide | The overview is drawn | Below 1200 px there is no right panel; from 1200 px a right panel 320 to 380 px wide holds the entry form, overdue and recent entries | `desk-ledger.mjs "1024x768 light: right panel only from 1200 px, 320 to 380 px wide"`, `desk-ledger.mjs "1280x800 light: right panel only from 1200 px, 320 to 380 px wide"` |
-| AC-E15.F8.5 | A desktop | Enter or Space is pressed on "+" | A popover opens above the pill with every action, each 44 px; arrows move with a visible focus ring; Escape closes it and the focus returns to "+" | `desk-ledger.mjs "1024x768 light: Enter opens the popover above the pill"`, `desk-ledger.mjs "1024x768 light: Space opens the popover"`, `desk-ledger.mjs "1024x768 light: the popover holds every action, each 44 px"`, `desk-ledger.mjs "1024x768 light: arrows move with a visible focus ring, Escape closes and returns focus"` |
-| AC-E15.F8.6 | A desktop with the sample shop | "Sunita 500 udhaar" is typed in the pill and sent | Sunita Devi's balance rises by 500 | `desk-ledger.mjs "1280x800 light: typing "Sunita 500 udhaar" and sending raises Sunita Devi by 500"` |
-| AC-E15.F8.7 | A desktop | "Add a customer", "Import a shop", "Language" or "Light or dark" is chosen in the popover | It reaches the add-customer form, the import box or the language list, or changes the theme | `desk-ledger.mjs "1440x900 light: "Add a customer" reaches the add-customer form"`, `desk-ledger.mjs "1440x900 light: "Import a shop" reaches the import box"`, `desk-ledger.mjs "1440x900 light: "Language" reaches the language list"`, `desk-ledger.mjs "1440x900 light: "Light or dark" changes the theme"` |
-| AC-E15.F8.8 | A desktop, light or dark | The layout is drawn | Every grader hook exists, the quick-entry ids are not copied, nothing scrolls sideways and the page has no errors | `desk-ledger.mjs "1440x900 dark: every grader hook exists and the quick-entry ids are not copied"`, `desk-ledger.mjs "1440x900 dark: no horizontal scroll"`, `desk-ledger.mjs "1440x900 dark: no page error"` |
+| AC-E14.F4.1 | A shop generated from a seed, with advances and a customer with no entries | It is loaded | Every balance and the total match the figures worked out apart from the app, and the checker gives its score estimate | `tests/check.mjs` |
+| AC-E14.F4.2 | A big shop on a desktop | The overview is shown | Nothing scrolls sideways, the pill stays at the bottom and the customer list stays usable | `tests/desk-ledger.mjs` |
 
-Not checked by a test: between 768 and 1199 px the entry form folding away and opening above the pill, and an empty shop keeping the earlier desktop layout; both are read from `compact.css` and `compact.js`.
+### E14.F5 No pop-up dialogs, no errors
 
-### E15.F9 Urdu right to left, and a big shop on a desktop (1.5.1.0)
+As a shop owner, I want an app that never stalls on a pop-up.
 
-As a shop owner who reads Urdu, I want the page to read right to left, and as an owner with many customers, I want the list and the right panel to hold, so that the ledger reads naturally and nothing is out of reach.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F9.1 | A phone at 375 x 667 or a desktop at 1280 x 800 | Urdu is chosen | The html element has `dir="rtl"` | `desk-ledger.mjs "375x667 ur rtl: the html element has dir="rtl""`, `desk-ledger.mjs "1280x800 ur rtl: the html element has dir="rtl""` |
-| AC-E15.F9.2 | The app in Urdu | The overview is drawn | Amounts and phone numbers read left to right | `desk-ledger.mjs "375x667 ur rtl: amounts and phone numbers read left to right"`, `desk-ledger.mjs "1280x800 ur rtl: amounts and phone numbers read left to right"` |
-| AC-E15.F9.3 | The app in Urdu, phone or desktop | The overview is drawn | Nothing scrolls sideways, the pill and the "+" are in view, and the page has no errors | `desk-ledger.mjs "375x667 ur rtl: nothing scrolls sideways"`, `desk-ledger.mjs "1280x800 ur rtl: the pill and the "+" are in view"`, `desk-ledger.mjs "1280x800 ur rtl: no page error"` |
-| AC-E15.F9.4 | The app in Urdu | English is chosen again | The dir attribute is removed | `desk-ledger.mjs "375x667 ur rtl: back in English the dir attribute is removed"`, `desk-ledger.mjs "1280x800 ur rtl: back in English the dir attribute is removed"` |
-| AC-E15.F9.5 | A desktop in Urdu at 1024 x 768 or 1280 x 800 | The overview is drawn and "+" is pressed | The right panel sits on the left of the customer list, and the popover opens above the pill, inside the screen, lined up with the pill's right edge | `desk-ledger.mjs "1280x800 ur: the right panel sits on the left (right to left) of the customer list"`, `desk-ledger.mjs "1280x800 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"`, `desk-ledger.mjs "1024x768 ur: the "+" popover opens above the pill, inside the screen, lined up with the pill's right edge"` |
-| AC-E15.F9.6 | A desktop at 1280 x 800 with a 40-customer shop | The overview is drawn | All 40 customers are listed, at least 10 rows are fully on the first screen, nothing scrolls sideways and the pill is in view | `desk-ledger.mjs "1280x800 big shop: all 40 customers are listed"`, `desk-ledger.mjs "1280x800 big shop: at least 10 customer rows fully on the first screen"`, `desk-ledger.mjs "1280x800 big shop: no horizontal scroll and the pill in view"` |
-| AC-E15.F9.7 | The same shop | The list is scrolled to the end, and the right panel is read | The last customer stays above the pill; overdue and recent are no wider than the panel and, since 1.5.2.0, have no scroll box of their own (they scrolled on their own at 1.5.1.0), and the page is not pushed wider | `desk-ledger.mjs "1280x800 big shop: the list scrolls (with the page) to the last customer, above the pill, the pill in view"`, `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: the right panel does not push the page wider"` |
-| AC-E15.F9.8 | The same shop | Quick entry records 300 for a customer far down the list | That balance rises by 300 and the page has no errors | `desk-ledger.mjs "1280x800 big shop: quick entry records 300 for Ruksana Patel, far down the list"`, `desk-ledger.mjs "1280x800 big shop: no page error"` |
-
-Not checked by a test of its own: the skip link not scrolling the page sideways in Urdu; read from `compact.js` and covered by "nothing scrolls sideways" above.
+| AC-E14.F5.1 | A full run of adding, recording, editing, deleting, loading and exporting | Every action is taken | No alert, confirm or prompt dialog opens; a delete or a load is taken back with "Undo" | `tests/check.mjs`, `tests/brief.mjs` |
+| AC-E14.F5.2 | The same run | Every action is taken | No page error and no console error is logged | `tests/check.mjs`, `tests/final.mjs`, `tests/gaps.mjs` |
+| AC-E14.F5.3 | A name, note or shop name in a loaded file holds HTML | It is shown | It is shown as plain text | checked by hand |
 
-### E15.F10 Every record in view on a desktop, and the sai4b mark (1.5.2.0)
+### E14.F6 Keyboard and screen reader basics
 
-As a shop owner at a desk, I want to see every overdue customer and every recent entry without a scroll box, and to narrow them with a filter, so that no record is hidden.
+As someone who does not use a mouse or cannot see the screen, I want to reach and understand every control.
 
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F10.1 | A desktop at 1280 x 800 with a 40-customer shop | The right panel is drawn | Overdue and recent have no scroll box of their own and are no wider than the panel | `desk-ledger.mjs "1280x800 big shop: sec-overdue in the right panel has no scroll box of its own and is no wider than the panel"`, `desk-ledger.mjs "1280x800 big shop: sec-recent in the right panel has no scroll box of its own and is no wider than the panel"` |
-| AC-E15.F10.2 | The same shop | The filter box of a list is read, then text from one row is typed in it | Every row is shown before typing, the box is 44 px high or more, and typing leaves at least one row and fewer than all | `desk-ledger.mjs "1280x800 big shop: sec-overdue: every row shown, and its filter narrows the list"`, `desk-ledger.mjs "1280x800 big shop: sec-recent: every row shown, and its filter narrows the list"` |
+| AC-E14.F6.1 | The page has just opened | Tab is pressed, then Enter on "Skip to the ledger" | The focus moves to the main content | `tests/assist.mjs` |
+| AC-E14.F6.2 | The "+" button, the send arrow and the "…" button | A screen reader reads them | They are named "More actions", "Send and save the entry" and "Show the full overview" | `tests/local-assets.mjs` |
+| AC-E14.F6.3 | A quick entry is sent from the pill | The result message fades from view | Its text stays available to a screen reader | checked by hand |
 
-Not checked by a test of its own: the sai4b mark opening sai4b.com in a new tab, the pill pinned to the bottom of the screen and the "+" menu staying on screen when the page is scrolled; all three are read from `compact.js`.
+### E14.F7 The maker's mark
 
-### E15.F11 The four findings of the fresh review (1.5.2.1)
+As a visitor, I want to know who built the app.
 
-As a shop owner on a phone, I want every control easy to tap and every label readable, and as an owner who has not set a UPI ID, I want to be told where my reminders ask customers to pay, so that money does not go to a demo address.
-
-| ID | Given | When | Then | Verified by |
+| ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E15.F11.1 | A phone at 375 px, light or dark | The overview is drawn, with an empty shop and with the sample shop | The search box is 44 px high or more | `review-fixes.mjs "... F1 the search box is 44 px or more, empty shop"`, `review-fixes.mjs "... F1 the search box is 44 px or more, sample shop"` |
-| AC-E15.F11.2 | The same phone, in each language the test runs | The strip under the total is drawn | The label for money collected in the last 30 days is shown in full, 12 px or more, with no ellipsis | `review-fixes.mjs "... F2 "<the label>" is shown in full, 12 px or more"` |
-| AC-E15.F11.3 | The same phone, in each language the test runs | The bottom bar is drawn | No glyph of any of its five labels is cut | `review-fixes.mjs "... F3 no glyph of a bottom-bar label is cut"` |
-| AC-E15.F11.4 | A shop with no UPI ID of its own and a customer who owes | The overview is drawn | The reminder links are there as before, and one notice beside the customer list names the demo address; its link goes to Shop settings and is 44 px high or more; nothing scrolls sideways | `review-fixes.mjs "... F4 the reminder links are there and carry the pay link as before"`, `review-fixes.mjs "... F4 a notice beside the customer list names the demo address"`, `review-fixes.mjs "... F4 no horizontal scroll with the notice"` |
-| AC-E15.F11.5 | The same shop | The customer page is opened | The same notice is shown there, and the count of reminder links is unchanged | `review-fixes.mjs "... F4 the count of reminder links is unchanged on the customer page"` |
-| AC-E15.F11.6 | The notice | Its link is pressed | Shop settings opens with the UPI field | `review-fixes.mjs "... F4 the link opens Shop settings with the UPI field"` |
-| AC-E15.F11.7 | The same shop | The owner saves a UPI ID of the shop | The notice goes from the overview and from the customer page, the reminders carry the new ID, and the count of reminder links is the same | `review-fixes.mjs "... F4 no notice once the shop has its own UPI ID"`, `review-fixes.mjs "... F4 the count of reminder links is the same with and without the notice"`, `review-fixes.mjs "... F4 no notice on the customer page either"` |
-| AC-E15.F11.8 | A shop with no UPI ID of its own, in each language the test runs | The overview is drawn | The notice is there in that language and names the demo address | `review-fixes.mjs "... F4 the notice is there in this language"` |
-
-Not checked by a test: the wording of the notice in the eleven languages other than English has not been read by a native speaker.
-
----
-
-## Traceability: PRD requirement to features
-
-| PRD requirement | What it says, in short | Features |
-| --- | --- | --- |
-| F-1 | Balance = all credit minus all payments | E1.F7, E4.F2 |
-| F-2 | Customer is a 10 digit phone; no two share one | E1.F1, E6.F2 |
-| F-3 | Every figure computed from stored entries | E1.F7, E2.F1, E2.F2 |
-| F-4 | Dates follow the date in the page address | E2.F4, E8.F2 |
-| F-5 | Data survives closing and reopening | E1.F7, E6.F1, E8.F4 |
-| D-1 | Data stays on the phone; no account or server | E6.F5, E8.F4 |
-| D-2 | Loading a file replaces the shop, after checks | E6.F1, E6.F2, E6.F3, E6.F6 |
-| D-3 | Total = sum of all balances, advances netted; owed figure in a note below the total | E2.F1, E2.F3, E1.F7 |
-| D-4 | Delete can be undone straight away | E1.F6, E1.F5 (edit), E6.F3 |
-| S-1 | Sample shows 11,820 and matching balances | E2.F1, E2.F3, E6.F5 |
-| S-2 | Remind opens WhatsApp with name and Rs 3,470 | E3.F1 |
-| S-3 | A payment of 500 survives reload | E1.F7 |
-| S-4 | A bad file replaces nothing and says why | E6.F2 (built differently, see the note there), E6.F3 |
-| Q-1 | Shop's own UPI ID, demo ID until set | E3.F3, E6.F2 |
-| Stage 1: add customer, credit or payment | | E1.F1, E1.F2 |
-| Stage 1: balances and total | | E1.F7, E2.F1, E2.F3 |
-| Stage 1: customer page newest first | | E4.F1, E4.F2 |
-| Stage 1: WhatsApp reminder | | E3.F1 |
-| Stage 1: import a shop file | | E6.F1, E6.F2 |
-| Stage 1: 375 px, light and dark | | E7.F3, E7.F4 |
-| Stage 2: payment screenshot | | E1.F3 |
-| Stage 2: overdue list | | E2.F4, E3.F4 |
-| Stage 2: edit and delete | | E1.F5, E1.F6 |
-| Stage 2: export to a spreadsheet file | | E6.F4 |
-| Stage 2: search by name or phone | | E2.F5 |
-| Stage 2: UPI link in the reminder | | E3.F2, E3.F5 |
-| Stage 2: Hindi and Telugu labels | | E7.F1, E7.F2 |
-| Stage 2: amount read from a screenshot | | E1.F4 |
-| Success: no sideways scroll at 375 px; WCAG AA | | E7.F3, E7.F4, E7.F5 |
-| Brief "How they check" selectors | | E8.F3 |
-| Projects page "Done when" lines (`brief/spec-page.md`) | Followed literally by `tests/brief.mjs` in a fresh browser | E1.F1, E1.F3, E1.F7, E2.F1, E2.F3, E3.F1, E4.F2, E6.F1, E6.F5, E7.F4, E8.F5 |
-| V-11, V-15, V-16, V-17, V-19 (added at final review; in the PRD since 23 Nov 2026) | Quick entry, receipt, statement, QR, remind all, offline | E5, E4.F3, E4.F4, E3.F4, E3.F5, E8.F4 |
-| V-12, V-13, V-14, V-18 (in the PRD since 23 Nov 2026) | Spreadsheet import, backup and balances files, key figures and recent entries, local-script names and digits | E6.F6, E6.F4, E2.F2, E2.F5, E4.F5, E7.F2 |
-| V-1 to V-10, C-1 to C-4 (PRD, last section) | The additions of 1.1.0.0 and 1.2.0.0, each an add-on beside the ledger | E9, E10, E11, E12, E13 |
-| V-20 to V-24 (PRD, last section) | Layout that holds, names in every script, tappable pay link, other ways to send, WhatsApp check (the answer switched with one tap since 1.2.3.1) | E14.F1, E14.F2, E14.F3, E14.F4, E14.F5 |
-| V-25 (PRD, last section) | Voice entry never ends in silence (1.2.4.0) | E5.F5, E5.F4 |
-| V-26 (PRD, last section) | Controls that say what they did (1.2.5.0) | E14.F6, E5.F6 |
-| V-27 to V-30 (PRD, last section) | Storage and input guards, whole rupees, the brand look and the phone layout (1.2.6.0 to 1.4.0.0) | E15.F1, E15.F2, E15.F3, E15.F4 |
-| V-31 (PRD, last section) | The + sheet in every language, the fonts and the QR library from the site, the ledger unit tests (1.4.1.0) | E15.F5, E15.F6, E15.F7 |
-| V-32 (PRD, last section) | The desktop layout like the best chat apps (1.5.0.0) | E15.F8 |
-| V-33 (PRD, last section) | Urdu right to left, and a big shop on a desktop (1.5.1.0) | E15.F9 |
-| V-34 (PRD, last section) | Every record in view on a desktop, and the sai4b mark (1.5.2.0) | E15.F10 |
-| V-35 (PRD, last section) | The four findings of the fresh review (1.5.2.1) | E15.F11 |
-| Not in the PRD (added after the final review; CSV import is V-12) | CSV import, screenshot reading in Hindi and Telugu, Undo after an edit, an empty shop on the first visit with the empty-state buttons, the warning for a number that is not a mobile | E6.F6, E1.F4, E1.F5, E6.F5, E2.F3, E1.F1 |
-
-## Not built, or deliberately left out
-
-From the PRD (section 2.2, out of scope):
-- Sending reminders automatically. Every reminder, including Remind all overdue, opens a WhatsApp chat and
-  the owner presses Send.
-- Staff logins. There is no login. Several shops on one phone is built since 1.1.0.0 (E10).
-- Stock and billing.
-
-Found in the code against the PRD or the reviews:
-- S-4 is built differently: a file with some bad rows loads its good rows and lists the skipped ones;
-  only a file with no usable customer changes nothing (see E6.F2).
-- Import applies only part of the entry form's checks: missing, blank, negative, unreadable and over
-  ₹1 crore amounts are skipped, but an amount of 0 and a future date are accepted, and a missing or
-  unreadable date becomes today (counted in the message).
-- Any 10 digit phone is accepted, not only mobile numbers, as the brief says: a typed number that does not
-  start with 6, 7, 8 or 9 is added with a warning (E1.F1), and import accepts it with no warning (E6.F2).
-- The JSON backup leaves out payment screenshots.
-- Undo is one level deep. For an entry or a load it lasts as long as the toast (7 seconds); for a deleted
-  customer it lasts eight seconds (E12.F4).
-- A few strings stay in English in every language (the storage-full toast, the shop-file problem
-  descriptions, the screenshot alt text and the statement footer), and some counts stay in Latin digits
-  (E7.F1, E7.F2).
-- The screenshot reader needs a network: Tesseract.js and its language data are not cached for offline.
-- Ideas from `review/industry.md` not built: opening balance when adding a customer, a credit limit per
-  customer, a backup reminder and a "today's collection round". The customer pay page opened from the
-  reminder is built since 1.2.1.0 (E14.F3).
-- An automatic check that a number is on WhatsApp. WhatsApp gives no lookup to an ordinary app; it would need
-  a business account, a server and a cost. The check in E14.F5 rests on the owner's answer.
-- A field to correct a name in the nine newer scripts. Those spellings are made automatically; only the Hindi
-  and Telugu spellings can be corrected (E4.F5).
-- The pay page in languages other than English (E14.F3).
+| AC-E14.F7.1 | The brand mark in the top bar | It is pressed | `https://sai4b.com` opens in a new tab; the link is named "Smart AI for Business (opens in a new tab)" | checked by hand |
+| AC-E14.F7.2 | The name "Hisaab" beside the mark | It is pressed | The overview opens | checked by hand |
+| AC-E14.F7.3 | The foot of the left navigation on a desktop | It is read | It shows "Built by Smart AI for Business" as a link to the same site | checked by hand |

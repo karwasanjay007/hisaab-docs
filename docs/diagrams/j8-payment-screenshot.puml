@@ -1,5 +1,5 @@
 @startuml j8-payment-screenshot
-title J8 Payment screenshot: attach, shrink, read the amount, the owner saves
+title J8 Payment screenshot and reading its amount
 skinparam backgroundColor white
 skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
@@ -37,56 +37,23 @@ skinparam note {
   BackgroundColor #FFF8E6
   FontSize 12
 }
-actor "Shop owner" as Owner
-participant "Browser UI\n(index.html)" as UI
-participant "app.js" as App
-database "localStorage" as LS
-participant "CDN library\n(Tesseract.js 5.1.1, jsDelivr)" as CDN
+actor "Owner" as O
+participant "Entry form\n(app.js)" as H
+participant "Screenshot reader\n(from cdn.jsdelivr.net)" as R
+database "Browser storage" as S
 autonumber
-Owner -> UI : in the entry form, Choose screenshot (#shot-input, accept image/*)
-UI -> App : change: onShotChange()
-alt file is not an image
-  App -> UI : #entry-msg "That file is not a picture."; clear the input
-else image
-  App -> UI : set type to Payment
-  App -> App : FileReader.readAsDataURL(file)
-  App -> App : draw on a canvas: longest side at most 600 px (640 until v1.2.6), white background
-  App -> App : shotData = canvas.toDataURL('image/jpeg', 0.72)
-  App -> UI : preview the picture
-  App -> App : readAmount(original data URL)
-  App -> UI : #ocr-msg "Reading the amount from the screenshot..."
-  App -> App : loadTesseract()
-  alt window.Tesseract not loaded yet
-    App -> CDN : add script cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js
-    CDN --> App : window.Tesseract
-  end
-  App -> CDN : createWorker(language by app language:\nhi 'eng+hin', te 'eng+tel', all others 'eng');\nread as scattered text, if no amount once more as one block
-  opt the combined language fails to load
-    App -> CDN : createWorker('eng'), the same two reads
-  end
-  CDN --> App : text
-  note right of CDN : language data is downloaded on first use\nand is not cached for offline
-  App -> App : qNorm(text): Devanagari and Telugu digits to 0 to 9
-  App -> App : pickAmount(text): the largest number after ₹, Rs, INR, amount, paid,\nरु, रुपये, राशि, రూ, మొత్తం or భుగతాన;\nelse the largest plain number that is not a year
-  alt amount found
-    opt Amount field empty, or last filled by the reader
-      App -> UI : put the amount into Amount
-    end
-    App -> UI : "Read Rs {amt} from the screenshot. Check it before saving."
-  else no amount, or the script or the reading failed
-    App -> UI : "Could not read an amount from this picture. Type it in."
-  end
+O -> H : under "Payment screenshot (optional)" press\n"Choose screenshot" and pick the picture
+H -> H : switch to "You got (payment)"; shrink the picture\nto at most 600 px on its longest side
+H --> O : "Reading the amount from the screenshot..."
+H -> R : fetch the reader from cdn.jsdelivr.net, the first time
+note right of R : the request for the reader leaves the device;\nthe picture does not: it is read in the browser
+R --> H : the text found in the picture
+alt an amount was found
+  H --> O : "Read Rs {amt} from the screenshot. Check it before saving."
+else nothing readable, or no internet
+  H --> O : "Could not read an amount from this picture. Type it in."
 end
-note right of UI : typing in Amount stops the reader\nfrom overwriting it
-Owner -> UI : check the amount, press Save entry
-UI -> App : onEntrySubmit() (checks as in J2)
-App -> App : entry.shot = shotData (the small JPEG)
-App -> LS : save(): the picture is stored inside 'hisaab.v1'
-opt storage is full
-  App -> UI : toast "Storage is full. Export a backup, then remove some screenshots."
-end
-App -> UI : render(): the entry shows img[data-shot]
-opt remove the picture (#shot-clear)
-  App -> App : shotData = ''; on Update the picture is removed from the entry
-end
+O -> H : check "Amount (₹)", press "Save entry"
+H -> S : save the entry with the small picture
+H --> O : the picture shows on the entry
 @enduml
