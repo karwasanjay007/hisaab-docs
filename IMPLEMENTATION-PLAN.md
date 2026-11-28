@@ -60,7 +60,7 @@ node tests/brief.mjs https://hisaab-hazel.vercel.app/ > tests/last-brief-live.tx
 ```
 
 Each result is kept as `tests/last-<name>-live.txt`. A run is good when its last line reads "ALL PASS"; the
-checker `check.mjs` ends with a score line in its place. The latest results are in
+test `check.mjs` ends with a line of totals in its place. The latest results are in
 [the report](REPORT.md#latest-results-on-the-live-link).
 
 After a change, run the tests of what the change touches and `brief.mjs`. Run every test before a release and
@@ -79,7 +79,7 @@ change pass.
 5. **Check nothing private is in the files** that will be served.
 6. **Deploy.** Publish the code folder to the hosting. The code names no deploy command; for example
    `vercel deploy --prod` from the code folder. There is no build step. The file `.vercelignore`
-   keeps the brief, the tests and the notes off the site.
+   keeps the specification, the tests and the notes off the site.
 7. **Check the live link.** Open `VERSION` on the live address and read the new number. Run every test against
    the live link and keep each result as `tests/last-<name>-live.txt`.
 8. **Look at it.** On a phone width and a desktop width, in light and in dark, and once offline after one visit.
@@ -96,7 +96,7 @@ A release that fails on the live link is rolled back by promoting the earlier de
 3. Loading a shop file, with checks on what is loaded.
 4. The WhatsApp reminder.
 5. The payment screenshot.
-6. The brief's bonus items: the overdue list, edit and delete, CSV export, search, the UPI pay link, Hindi and
+6. The optional features of the specification: the overdue list, edit and delete, CSV export, search, the UPI pay link, Hindi and
    Telugu, the amount read from a screenshot. Also the date taken from the page address.
 7. Quick entry, typed and by voice; the UPI QR code; remind all; offline; an empty first visit with a sample
    shop to load.

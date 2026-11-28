@@ -2,6 +2,9 @@
 !include <C4/C4_Deployment>
 title Hisaab: deployment
 
+skinparam wrapWidth 190
+skinparam maxMessageSize 160
+
 Deployment_Node(repo, "Source repository", "Git") {
   Container(src, "App folder", "Files", "The site's files plus the brief, brand, tests and notes; .vercelignore keeps those last ones out of the deploy")
 }
@@ -32,5 +35,6 @@ Rel(app, cdn, "Reader script", "HTTPS")
 Rel(app, speech, "Audio, by the browser")
 Rel(app, apps, "wa.me, sms:, tel:, upi://pay links")
 
-LAYOUT_WITH_LEGEND()
+LAYOUT_LEFT_RIGHT()
+SHOW_LEGEND()
 @enduml

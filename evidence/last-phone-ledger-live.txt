@@ -5,7 +5,7 @@ PASS 360x640 light: the compact total is at most 150 px | 128
 PASS 360x640 light: the pill and the tabs together are at most 112 px | 112
 PASS 360x640 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 360x640 light: the "+" button is 44 px | 44
-PASS 360x640 light: every grader hook exists and the quick-entry ids are not copied
+PASS 360x640 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 360x640 light: no horizontal scroll | 0
 PASS 360x640 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 360x640 light: the sheet holds every action | missing 
@@ -24,7 +24,7 @@ PASS 360x640 dark: the compact total is at most 150 px | 128
 PASS 360x640 dark: the pill and the tabs together are at most 112 px | 112
 PASS 360x640 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 360x640 dark: the "+" button is 44 px | 44
-PASS 360x640 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 360x640 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 360x640 dark: no horizontal scroll | 0
 PASS 360x640 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 360x640 dark: the sheet holds every action | missing 
@@ -41,7 +41,7 @@ PASS 375x667 light: the compact total is at most 150 px | 128
 PASS 375x667 light: the pill and the tabs together are at most 112 px | 112
 PASS 375x667 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 375x667 light: the "+" button is 44 px | 44
-PASS 375x667 light: every grader hook exists and the quick-entry ids are not copied
+PASS 375x667 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 375x667 light: no horizontal scroll | 0
 PASS 375x667 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 375x667 light: the sheet holds every action | missing 
@@ -60,7 +60,7 @@ PASS 375x667 dark: the compact total is at most 150 px | 128
 PASS 375x667 dark: the pill and the tabs together are at most 112 px | 112
 PASS 375x667 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 375x667 dark: the "+" button is 44 px | 44
-PASS 375x667 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 375x667 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 375x667 dark: no horizontal scroll | 0
 PASS 375x667 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 375x667 dark: the sheet holds every action | missing 
@@ -77,7 +77,7 @@ PASS 390x844 light: the compact total is at most 150 px | 128
 PASS 390x844 light: the pill and the tabs together are at most 112 px | 112
 PASS 390x844 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 390x844 light: the "+" button is 44 px | 44
-PASS 390x844 light: every grader hook exists and the quick-entry ids are not copied
+PASS 390x844 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 390x844 light: no horizontal scroll | 0
 PASS 390x844 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 390x844 light: the sheet holds every action | missing 
@@ -96,7 +96,7 @@ PASS 390x844 dark: the compact total is at most 150 px | 128
 PASS 390x844 dark: the pill and the tabs together are at most 112 px | 112
 PASS 390x844 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 390x844 dark: the "+" button is 44 px | 44
-PASS 390x844 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 390x844 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 390x844 dark: no horizontal scroll | 0
 PASS 390x844 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 390x844 dark: the sheet holds every action | missing 
@@ -113,7 +113,7 @@ PASS 412x915 light: the compact total is at most 150 px | 128
 PASS 412x915 light: the pill and the tabs together are at most 112 px | 112
 PASS 412x915 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 412x915 light: the "+" button is 44 px | 44
-PASS 412x915 light: every grader hook exists and the quick-entry ids are not copied
+PASS 412x915 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 412x915 light: no horizontal scroll | 0
 PASS 412x915 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 412x915 light: the sheet holds every action | missing 
@@ -132,7 +132,7 @@ PASS 412x915 dark: the compact total is at most 150 px | 128
 PASS 412x915 dark: the pill and the tabs together are at most 112 px | 112
 PASS 412x915 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 412x915 dark: the "+" button is 44 px | 44
-PASS 412x915 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 412x915 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 412x915 dark: no horizontal scroll | 0
 PASS 412x915 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 412x915 dark: the sheet holds every action | missing 

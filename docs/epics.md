@@ -162,7 +162,7 @@ As a shop owner I see what each customer owes worked out from their entries, so 
 | AC-E2.F6.1 | A customer has credit and payment entries | I look at their row | The balance is all credit less all payments | `tests/ledger.cjs` |
 | AC-E2.F6.2 | A customer has paid ₹200 more than they took | I look at their row | The balance reads -₹200 with the word "Advance" | `tests/brief.mjs` |
 | AC-E2.F6.3 | A balance is ₹1,18,200 | I look at the row | It is one figure with Indian grouping | `tests/critic.mjs` |
-| AC-E2.F6.4 | Any hidden shop file is loaded | I read each balance | Every balance matches the figure worked out from the file | `tests/sweep.mjs` |
+| AC-E2.F6.4 | Any other shop file is loaded | I read each balance | Every balance matches the figure worked out from the file | `tests/sweep.mjs` |
 
 ## E3 Payment screenshot
 
@@ -210,7 +210,7 @@ As a shop owner I see one figure for what the whole shop is owed, so that I know
 |---|---|---|---|---|
 | AC-E4.F1.1 | The sample shop is loaded | I look at "Total outstanding" | It reads ₹11,820, the sum of every customer's balance | `tests/check.mjs` |
 | AC-E4.F1.2 | One customer is ₹200 in advance and the others owe ₹2,095 | I look at the total | It reads ₹1,895 and a note beside it reads "₹2,095 owed, less ₹200 paid in advance" | `tests/brief.mjs` |
-| AC-E4.F1.3 | Any hidden shop file is loaded | I look at the total | It matches the figure worked out from the file | `tests/sweep.mjs` |
+| AC-E4.F1.3 | Any other shop file is loaded | I look at the total | It matches the figure worked out from the file | `tests/sweep.mjs` |
 | AC-E4.F1.4 | The address ends in `?today=2026-11-15` | I look under the total | The date the figures are for is shown, and every count of days is made to that date | `tests/check.mjs` |
 
 ### E4.F2 Key figures
@@ -279,7 +279,7 @@ As a shop owner I send a customer a reminder in one tap, so that asking for mone
 |---|---|---|---|---|
 | AC-E5.F1.1 | A customer owes | I look at their WhatsApp reminder button | Its link is `https://wa.me/91<10 digit phone>?text=<message>` | `tests/check.mjs` |
 | AC-E5.F1.2 | A customer owes | I read the message | It begins "Namaste {name}, this is a reminder from {shop}. Your balance is Rs {amount}." and ends "Thank you." | `tests/brief.mjs` |
-| AC-E5.F1.3 | Any hidden shop file is loaded | I read the reminder of the customer who owes the most | It carries that customer's name and balance | `tests/sweep.mjs` |
+| AC-E5.F1.3 | Any other shop file is loaded | I read the reminder of the customer who owes the most | It carries that customer's name and balance | `tests/sweep.mjs` |
 | AC-E5.F1.4 | A customer is in advance, or settled | I read the message | It reads "Namaste {name}, this is {shop}. You have Rs {amount} in advance with us. Thank you." or "Namaste {name}, this is {shop}. Your account is settled, Rs 0 due. Thank you." | checked by hand |
 | AC-E5.F1.5 | I tap the reminder button | WhatsApp opens | The message is ready and I press Send myself; the app sends nothing | checked by hand |
 
@@ -671,7 +671,7 @@ As a shop owner, I want figures in Hindi or Telugu digits if I read those more e
 | --- | --- | --- | --- | --- |
 | AC-E10.F4.1 | Hindi or Telugu is chosen | Shop settings is opened | The tick box "Show numbers in Hindi or Telugu digits (१२३, ౧౨౩)" is shown; in English and in the nine other languages it is hidden | checked by hand |
 | AC-E10.F4.2 | The box is ticked and saved, in Hindi or Telugu | Amounts, counts and dates are drawn | They use Devanagari or Telugu digits, and the choice is kept with the shop | checked by hand |
-| AC-E10.F4.3 | Native digits are on | A tester reads the balance attribute of a customer row | It still holds the plain figure in Latin digits | checked by hand |
+| AC-E10.F4.3 | Native digits are on | An automated test reads the balance attribute of a customer row | It still holds the plain figure in Latin digits | checked by hand |
 
 ### E10.F5 Urdu reads right to left
 
@@ -848,7 +848,7 @@ Known limit: the storage, date and whole-rupee messages of this epic exist in En
 
 ## E14 Links and robustness
 
-Goal: every view has its own address, a tester can fix the date and read the figures from the page, and the app stays quiet and usable under a big shop, a keyboard and a screen reader.
+Goal: every view has its own address, an automated test can fix the date and read the figures from the page, and the app stays quiet and usable under a big shop, a keyboard and a screen reader.
 
 ### E14.F1 An address for every view
 
@@ -863,7 +863,7 @@ As a shop owner, I want Back to work and a link to open the right view.
 
 ### E14.F2 The `?today=` option
 
-As a tester, I want to fix today's date so that figures that depend on the date can be checked.
+As someone testing the app, I want to fix today's date so that figures that depend on the date can be checked.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
@@ -871,25 +871,25 @@ As a tester, I want to fix today's date so that figures that depend on the date 
 | AC-E14.F2.2 | `?today=` is missing, or is not a date written that way | The app runs | The device's date is used, with no message | checked by hand |
 | AC-E14.F2.3 | Any other option after `?` in the app's address | The app runs | It is ignored; the pay page reads its own details (shop, customer, UPI ID, amount, and `stay=1`) from its own address | checked by hand |
 
-### E14.F3 What a tester reads from the page
+### E14.F3 Ids kept stable for automated tests
 
-As a tester, I want fixed hooks in the page so that a script can read the ledger.
+As someone testing the app, I want ids that stay the same in the page so that a script can read the ledger.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
 | AC-E14.F3.1 | Any shop | The page is read | `#total-outstanding` holds the total; each customer row is `[data-customer="<phone>"]` and holds `[data-balance]` with the plain balance | `tests/check.mjs`, `tests/brief.mjs` |
 | AC-E14.F3.2 | Any shop | The page is read | Each customer row has a reminder link `a[data-remind]` to WhatsApp | `tests/check.mjs` |
 | AC-E14.F3.3 | A shop file | It is put in `#import-box` and `#import-go` is pressed | The shop loads; a file given to `#shot-input` shows on the saved entry as `img[data-shot]` | `tests/check.mjs` |
-| AC-E14.F3.4 | The phone layout, the desktop layout, the profile and several shops | Each is in use | The same hooks are still in place and hold the same figures | `tests/phone-ledger.mjs`, `tests/desk-ledger.mjs`, `tests/brand.mjs` |
+| AC-E14.F3.4 | The phone layout, the desktop layout, the profile and several shops | Each is in use | The same ids are still in place and hold the same figures | `tests/phone-ledger.mjs`, `tests/desk-ledger.mjs`, `tests/brand.mjs` |
 | AC-E14.F3.5 | A script calls `window.hisaabParseQuick(text)` | It returns | It gives the amount, the kind, the matching phones and the note, without touching the form | `tests/quick.mjs` |
 
-### E14.F4 A hidden shop and a big shop
+### E14.F4 An unseen shop and a big shop
 
-As a judge, I want the figures right for a shop the makers never saw.
+As a shop owner, I want the figures right for my own shop, not only for the sample.
 
 | ID | Given | When | Then | Test |
 | --- | --- | --- | --- | --- |
-| AC-E14.F4.1 | A shop generated from a seed, with advances and a customer with no entries | It is loaded | Every balance and the total match the figures worked out apart from the app, and the checker gives its score estimate | `tests/check.mjs` |
+| AC-E14.F4.1 | A shop generated from a seed, with advances and a customer with no entries | It is loaded | Every balance and the total match the figures worked out apart from the app | `tests/check.mjs` |
 | AC-E14.F4.2 | A big shop on a desktop | The overview is shown | Nothing scrolls sideways, the pill stays at the bottom and the customer list stays usable | `tests/desk-ledger.mjs` |
 
 ### E14.F5 No pop-up dialogs, no errors

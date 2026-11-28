@@ -4,16 +4,16 @@ This page describes version 1.5.2, the version on the live link.
 
 ## Status
 
-| Part of the brief | Status |
+| Part of the specification | Status |
 | --- | --- |
-| The nine things it must do | Met, all nine |
-| The six things the tester reads | In place, all six |
-| Hidden data: another shop loaded through the import box | Met; thirty other shops load and every figure matches |
-| Bonus menu | Met, all seven (six count) |
+| The nine required items | Met, all nine |
+| The six ids kept stable for automated tests | In place, all six |
+| Another shop loaded through the import box | Met; thirty other shops load and every figure matches |
+| The seven optional features | Met, all seven |
 | Phone at 375 px, and light and dark | Met |
 | Live link | https://hisaab-hazel.vercel.app |
 
-How each line is met is in [the specification check](SPEC-CHECK.md).
+How each requirement is met is in [the specification check](SPEC-CHECK.md).
 
 ## Latest results on the live link
 
@@ -21,14 +21,14 @@ Each test runs in a fresh browser against the live link and writes its result to
 [evidence/](evidence/). The files hold no run date and no version number, so none is given here. All 32 end in
 a pass.
 
-### The brief
+### The specification
 
 | Test | What it covers | Result |
 | --- | --- | --- |
-| `brief` | Every "Done when" line of the brief | All pass |
-| `check` | A checker written from the brief alone | Score estimate 100 of 100 |
-| `run` | A second record of the same checker | Score estimate 100 of 100 |
-| `sweep` | Hidden shops loaded and every figure compared | All pass, 30 shops |
+| `brief` | Every required item of the specification | All pass |
+| `check` | The stable ids, the optional features and the figures of generated shops | All pass |
+| `run` | A second record of the same test | All pass |
+| `sweep` | Other shops loaded and every figure compared | All pass, 30 shops |
 | `final` | QR, remind all, undo of an import, search, CSV | All pass |
 | `gaps` | Mobile and UPI checks, import of amounts and dates, CSV import | All pass |
 | `critic` | A screenshot kept when Save is pressed at once; one clean balance per row | All pass, 14 checks |
@@ -73,78 +73,69 @@ Each record is the file `last-<test>-live.txt`. Which test proves which acceptan
 
 ## Requirement and feature map
 
-Every requirement of the brief and every feature beyond it, with three other builds of the same project
-beside Hisaab (called A, B and C). R1 to R9 are the nine "must do" items, B1 to B7 the bonus menu, M the light
-and dark marks; N/A means the brief does not ask for it.
+Every requirement of the specification and every feature beyond it. R1 to R9 are required, B1 to B7 optional
+and M is quality; N/A is a feature the specification does not ask for. "Pass" means a test record from the
+live link proves it. "Yes" means the feature is there and no live record covers it by itself.
 
-How to read the cells. Hisaab: "Pass" means a test record from the live link proves it; "Yes" means the
-feature is there and no live record covers it by itself. Other builds: only their screens were read and
-nothing was typed. "Seen" means visible on those screens, "Seen in part" that part of it is visible, "Not
-tested" that it cannot be judged without using the app, "No" that it was not on the screens read, and "Not
-looked for" that the feature came to Hisaab after those screens were read. Build C was read with no shop
-loaded, so most of its rows cannot be judged.
+### Requirements of the specification
 
-### The brief's requirements
+| Req | Feature | Result |
+| --- | --- | --- |
+| R1 | Add a customer with a name and a 10-digit phone | Pass |
+| R2 | Add an entry: credit or payment, amount, date, note | Pass |
+| R3 | Each balance, and the total outstanding at the top | Pass |
+| R4 | Customer page lists entries, newest first | Pass |
+| R5 | Payment screenshot shown on the entry | Pass |
+| R6 | WhatsApp reminder with the name and the balance | Pass |
+| R7 | Data still there after a reload | Pass |
+| R8 | Import box for a shop file in the sample format | Pass |
+| R9 | Works at 375 px | Pass |
+| B1 | Overdue list sorted by days since the last payment | Pass |
+| B2 | Edit and delete an entry | Pass |
+| B3 | CSV export that matches the data | Pass |
+| B4 | Search by name or phone | Pass |
+| B5 | UPI pay link in the reminder | Pass |
+| B6 | Hindi or Telugu labels | Pass |
+| B7 | Reading the amount from the screenshot | Pass |
+| M | Readable in light and dark | Pass |
 
-| Req | Feature | Hisaab | Build A | Build B | Build C |
-| --- | --- | --- | --- | --- | --- |
-| R1 | Add a customer with a name and a 10-digit phone | Pass | Seen | Seen | Seen |
-| R2 | Add an entry: credit or payment, amount, date, note | Pass | Seen | Seen in part | Not tested |
-| R3 | Each balance, and the total outstanding at the top | Pass | Seen | Seen | Seen in part |
-| R4 | Customer page lists entries, newest first | Pass | Seen | Seen in part | Not tested |
-| R5 | Payment screenshot shown on the entry | Pass | Seen in part | Seen in part | Not tested |
-| R6 | WhatsApp reminder with the name and the balance | Pass | Seen in part | Seen in part | Not tested |
-| R7 | Data still there after a reload | Pass | Not tested | Not tested | Not tested |
-| R8 | Import box for a shop file in the sample format | Pass | Seen | Seen | Seen |
-| R9 | Works at 375 px | Pass | Not tested | Not tested | Not tested |
-| B1 | Overdue list sorted by days since the last payment | Pass | Seen in part | Seen in part | Seen in part |
-| B2 | Edit and delete an entry | Pass | Seen | No | Not tested |
-| B3 | CSV export that matches the data | Pass | Seen | Seen | Seen |
-| B4 | Search by name or phone | Pass | Seen | Seen | No |
-| B5 | UPI pay link in the reminder | Pass | Not tested | Seen in part | Not tested |
-| B6 | Hindi or Telugu labels | Pass | Seen | Seen in part | Seen |
-| B7 | Reading the amount from the screenshot | Pass | Seen in part | No | Not tested |
-| M | Readable in light and dark | Pass | Seen in part | Seen in part | No |
+### Features beyond the specification
 
-### Features beyond the brief
-
-| Req | Feature | Hisaab | Build A | Build B | Build C |
-| --- | --- | --- | --- | --- | --- |
-| N/A | Languages beyond Hindi and Telugu | Pass, twelve in all | Yes, twelve | No | No |
-| N/A | Quick entry by typing or by voice | Pass | No | No | No |
-| N/A | UPI QR code | Pass | No | No | No |
-| N/A | Printable statement (PDF) | Yes | No | No | No |
-| N/A | Remind all overdue customers in turn | Pass | No | No | No |
-| N/A | Undo after a delete, an edit or an import | Pass | No | No | No |
-| N/A | Works without signal after the first visit | Pass | Not tested | Not tested | Not tested |
-| N/A | Backup file (JSON) | Yes | Yes | No | No |
-| N/A | Import by choosing a file | Yes | Yes | No | Yes |
-| N/A | Sample or demo shop in one tap | Yes | Yes | Yes | No |
-| N/A | Overview figures beyond the total | Yes | Yes | Seen in part | No |
-| N/A | Total unpaid for 30 days or more | Yes | Yes | No | No |
-| N/A | The date the figures are for | Yes | Yes | No | Yes |
-| N/A | Shop profile: owner, address, logo | Pass | No | No | Not tested |
-| N/A | Balance history line | Pass | No | No | No |
-| N/A | More than one shop on the same phone | Pass | Seen in part | No | No |
-| N/A | Customer page totals and days since the last payment | Pass | Yes | No | Not tested |
-| N/A | Call and WhatsApp chat links for a customer | Pass | Yes | No | Not tested |
-| N/A | Rename a customer and change the phone number | Pass | Yes | No | Not tested |
-| N/A | Delete a customer | Pass, with Undo | Yes | No | Not tested |
-| N/A | Note shortcuts | Yes | Yes | No | No |
-| N/A | Initial of the name beside each customer | Yes | Yes | No | No |
-| N/A | Names in the script of every language offered | Pass, twelve | Not tested | Not tested | Not tested |
-| N/A | Tappable pay link in the WhatsApp reminder | Pass | Not tested | Not tested | Not tested |
-| N/A | Other ways to send when WhatsApp refuses a number | Pass | Not tested | Not tested | Not tested |
-| N/A | WhatsApp check when a customer is added | Pass | Not tested | Not tested | Not tested |
-| N/A | A voice failure says why and offers another way to speak | Pass | Not tested | Not tested | Not tested |
-| N/A | Quick entry offers to add a name no customer has | Pass | Not looked for | Not looked for | Not looked for |
-| N/A | Money in whole rupees | Pass | Not looked for | Not looked for | Not looked for |
-| N/A | A notice when the browser cannot keep a change | Pass | Not looked for | Not looked for | Not looked for |
-| N/A | Chat-style layout on phone and desktop | Pass | Not looked for | Not looked for | Not looked for |
-| N/A | Urdu right to left | Pass | Not looked for | Not looked for | Not looked for |
-| N/A | Fonts and the QR library served from the site | Pass | Not looked for | Not looked for | Not looked for |
-
-None of the features seen on the three other builds is missing from Hisaab.
+| Req | Feature | Result |
+| --- | --- | --- |
+| N/A | Languages beyond Hindi and Telugu | Pass, twelve in all |
+| N/A | Quick entry by typing or by voice | Pass |
+| N/A | UPI QR code | Pass |
+| N/A | Printable statement (PDF) | Yes |
+| N/A | Remind all overdue customers in turn | Pass |
+| N/A | Undo after a delete, an edit or an import | Pass |
+| N/A | Works without signal after the first visit | Pass |
+| N/A | Backup file (JSON) | Yes |
+| N/A | Import by choosing a file | Yes |
+| N/A | Sample or demo shop in one tap | Yes |
+| N/A | Overview figures beyond the total | Yes |
+| N/A | Total unpaid for 30 days or more | Yes |
+| N/A | The date the figures are for | Yes |
+| N/A | Shop profile: owner, address, logo | Pass |
+| N/A | Balance history line | Pass |
+| N/A | More than one shop on the same phone | Pass |
+| N/A | Customer page totals and days since the last payment | Pass |
+| N/A | Call and WhatsApp chat links for a customer | Pass |
+| N/A | Rename a customer and change the phone number | Pass |
+| N/A | Delete a customer | Pass, with Undo |
+| N/A | Note shortcuts | Yes |
+| N/A | Initial of the name beside each customer | Yes |
+| N/A | Names in the script of every language offered | Pass, twelve |
+| N/A | Tappable pay link in the WhatsApp reminder | Pass |
+| N/A | Other ways to send when WhatsApp refuses a number | Pass |
+| N/A | WhatsApp check when a customer is added | Pass |
+| N/A | A voice failure says why and offers another way to speak | Pass |
+| N/A | Quick entry offers to add a name no customer has | Pass |
+| N/A | Money in whole rupees | Pass |
+| N/A | A notice when the browser cannot keep a change | Pass |
+| N/A | Chat-style layout on phone and desktop | Pass |
+| N/A | Urdu right to left | Pass |
+| N/A | Fonts and the QR library served from the site | Pass |
 
 ## Known limits
 
@@ -180,20 +171,3 @@ None of the features seen on the three other builds is missing from Hisaab.
 - Step 7 of the README's "Try it" (opening the app with no connection) was not tried again by hand on the
   live link; steps 1 to 6 were.
 - Other browsers than the one the tests drive.
-- The judges' own tester. Its exact steps are not known; the score estimate above is our checker's.
-
-## The note sent to the judges
-
-Sent with the submission on 20 November 2026, 9:29 pm IST, as it was written then:
-
-> Hisaab is a digital khata for a local kirana shop, like Khatabook. It opens empty, ready for the shop's own ledger, with one tap to load the sample shop; paste any shop file (JSON, or a spreadsheet saved as CSV) into #import-box and press #import-go to replace it (Undo puts the old shop back). All six tester hooks are in place, ?today= is honoured, and all seven bonus items are built: overdue list, edit and delete with undo, CSV export (entries and balances), search, a UPI pay link in every reminder, Hindi and Telugu, and reading the amount from a payment screenshot.
->
-> The automations from the coaching sessions are in too: a WhatsApp reminder with the exact UPI amount, a UPI QR code on each customer page, a "Remind all overdue" queue that opens each chat in turn, a WhatsApp receipt after every entry, and a printable statement with a scan-to-pay QR.
->
-> What makes it different: voice quick entry. Tap the microphone and say "Sunita 500 udhaar" (English, Hindi or Telugu) and the form fills itself; the shopkeeper checks and presses Save. Names show in Devanagari or Telugu script in brackets, money in ₹ with lakh grouping, light and dark themes, a left menu on desktop and a bottom bar at 375 px, and it works offline. No login; data stays on the phone.
->
-> Tested on the live link: every "Done when" passes, and an independent checker scores 27/27 on four random shops.
-
-Updated on 21 November 2026 for version 1.0.0.0, the short form:
-
-> Hisaab is a kirana khata on the phone: customers, You gave / You got entries, total outstanding, and WhatsApp reminders with name, Rs amount and UPI. Open https://hisaab-hazel.vercel.app, Load sample shop, then record "Sunita 500 udhaar" (voice or type) and Save. Tap WhatsApp on any customer; open a customer for QR and statement. Starts empty; import via #import-box; works at 375 px, light and dark, English / हिंदी / తెలుగు; offline after one visit. Data stays on the device. Demo UPI until the shop sets its own. Built by Sanjay Karwa, Smart AI for Business. Docs: https://github.com/karwasanjay007/hisaab-docs

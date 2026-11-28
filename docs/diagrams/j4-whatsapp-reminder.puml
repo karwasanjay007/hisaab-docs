@@ -5,7 +5,7 @@ skinparam defaultFontName "Noto Sans"
 skinparam defaultFontSize 13
 skinparam roundCorner 12
 skinparam shadowing false
-skinparam maxMessageSize 260
+skinparam maxMessageSize 190
 skinparam titleFontSize 17
 skinparam titleFontColor #0E5C45
 skinparam sequenceMessageAlign left
@@ -39,7 +39,7 @@ skinparam note {
 }
 actor "Owner" as O
 participant "Home screen\n(app.js)" as H
-participant "Customer page\n(sendways.js, wacheck.js)" as C
+participant "Customer page\n(sendways.js,\nwacheck.js)" as C
 database "Browser storage" as S
 participant "WhatsApp" as WA
 actor "Customer" as K
@@ -49,7 +49,7 @@ autonumber
 == The reminder ==
 O -> H : tap the WhatsApp button on a customer's row
 H -> WA : open a chat with +91 and the customer's number; the message is typed in:\nname, shop, balance, "UPI pay link" and "Pay by UPI"
-note right of WA : this leaves the device only when\nthe owner presses Send
+note over WA : this leaves the device\nonly when the owner\npresses Send
 O -> WA : press Send in WhatsApp
 == The customer pays ==
 K -> P : tap the "UPI pay link" in the message

@@ -21,7 +21,7 @@ PASS 375 light: home: entry row buttons are at least 44 px | 44
 PASS 375 light: home: the shop logo file field is at least 44 px tall | 56
 PASS 375 light: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 375 light: home: the h1 is the largest heading | h1 15 against 15
-PASS 375 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 light: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 375 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 375 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 375 light: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -67,7 +67,7 @@ PASS 375 dark: home: entry row buttons are at least 44 px | 44
 PASS 375 dark: home: the shop logo file field is at least 44 px tall | 56
 PASS 375 dark: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 375 dark: home: the h1 is the largest heading | h1 15 against 15
-PASS 375 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 dark: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 375 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 375 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 375 dark: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -113,7 +113,7 @@ PASS 1280 light: home: entry row buttons are at least 44 px | 44
 PASS 1280 light: home: the shop logo file field is at least 44 px tall | 56
 PASS 1280 light: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 1280 light: home: the h1 is the largest heading | h1 24 against 20.8
-PASS 1280 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 light: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 1280 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 1280 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 1280 light: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -160,7 +160,7 @@ PASS 1280 dark: home: entry row buttons are at least 44 px | 44
 PASS 1280 dark: home: the shop logo file field is at least 44 px tall | 56
 PASS 1280 dark: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 1280 dark: home: the h1 is the largest heading | h1 24 against 20.8
-PASS 1280 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 dark: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 1280 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 1280 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 1280 dark: customer: the total block is the brand navy | rgb(18, 38, 58)

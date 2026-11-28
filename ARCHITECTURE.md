@@ -56,6 +56,13 @@ The routes are hash routes: `#/` for the overview, `#/s/<section>` for one secti
 `overdue`, `recent`, `add`, `data`, `settings`) and `#/c/<10 digits>` for one customer. What a person does on
 each screen is in [the journeys](docs/journeys.md).
 
+## Add-ons
+
+![Hisaab add-ons](docs/diagrams/c4-addons.svg)
+
+Eleven add-on files are loaded after `app.js`. The picture shows what each one adds, which events it listens
+to, and which of them touch `localStorage` or the language files.
+
 ## The files
 
 `index.html` loads the style sheets in this order: `fonts/fonts.css`, `styles.css`, `profile.css`,
@@ -99,7 +106,7 @@ Why each technology was chosen is in [the tech stack](TECH-STACK.md#choices).
 
 The site is served as static files from `https://hisaab-hazel.vercel.app`. There is no build step, no rewrite
 rule, no function and no server code, and the code reads no environment variable. A `.vercelignore` file keeps
-the brief, the brand folder, the tests and the notes out of the deploy. How to run and release it is in
+the specification, the brand folder, the tests and the notes out of the deploy. How to run and release it is in
 [the implementation plan](IMPLEMENTATION-PLAN.md).
 
 ## Offline

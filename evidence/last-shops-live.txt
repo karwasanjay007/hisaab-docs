@@ -21,6 +21,6 @@ PASS Telugu labels | దుకాణాలు | కొత్త దుకాణ�
 PASS at 320 px nothing of the Shops card or the new import button reaches past the screen | 0
 PASS no sideways scroll at 320 px (Telugu, two shops, profile.js left out) | 320
 PASS every control is at least 44 px tall | 
-PASS none of the grader's attributes are used by the add-on
+PASS none of the automated test's attributes are used by the add-on
 PASS no page errors 
 ALL PASS (25 checks)

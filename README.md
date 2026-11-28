@@ -12,7 +12,8 @@ reminder with a pay link in one tap.
 | Code | Private |
 | Built by | Sanjay Karwa, Smart AI for Business |
 | Made with | Plain HTML, CSS and JavaScript. No server of its own: the ledger is kept in the browser of the device, and the app works offline after one visit |
-| Status | Live. Every line of the brief is met ([the specification check](SPEC-CHECK.md)) and all 32 test records from the live link end in a pass ([latest results](REPORT.md#latest-results-on-the-live-link)) |
+| Versions | 1.5.2.1 is live; the first release is kept for comparison. See [what changed in each version](CHANGELOG.md) |
+| Status | Live. Every requirement of the specification is met ([the specification check](SPEC-CHECK.md)) and all 32 test records from the live link end in a pass ([latest results](REPORT.md#latest-results-on-the-live-link)) |
 
 ## Try it in two minutes
 
@@ -45,8 +46,8 @@ Open https://hisaab-hazel.vercel.app on a phone or a computer. No sign-in is ask
 
 ## What Hisaab supports
 
-Requirement ids: R1 to R9 are the nine things the brief says the app must do, B1 to B7 its bonus menu, M its
-marks for the phone and for light and dark. N/A is a feature the brief does not ask for.
+Hisaab was built against a written specification. R1 to R9 are its required items, B1 to B7 its optional
+features and M its quality requirement. N/A is a feature beyond the specification.
 
 | Requirement | Feature | Supported |
 | --- | --- | --- |
@@ -89,36 +90,12 @@ marks for the phone and for light and dark. N/A is a feature the brief does not 
 
 Each feature with its acceptance criteria and the test that proves it is in [the epics](docs/epics.md).
 
-## Two versions
-
-| Version | What it is | Where |
-| --- | --- | --- |
-| 1.5.2.1 | Today's version, on the live link | This branch, `main` |
-| 1.0.0.0 | The submitted version of 21 November 2026, with its documents as they were | Branch [`submitted-1.0.0.0`](../../tree/submitted-1.0.0.0) |
-
-What today's version has that the submitted one did not:
-
-| Area | Today |
-| --- | --- |
-| Shops | Several shops on one device, and a shop profile with owner, address and logo |
-| Languages | Twelve instead of three, with Urdu right to left and names in each script |
-| Customer page | Totals, call, WhatsApp chat, change phone number, delete with Undo, balance over time |
-| Reminders | A tappable pay link, a WhatsApp check of the number, and other ways to send |
-| Money | Whole rupees, with a one-tap nearest amount when paise are typed |
-| Checks on what is typed | A date cannot be lost on an edit; a full or blocked browser store is said plainly |
-| Layout | A chat-style layout on phone and desktop: quick entry bar, "+" menu, right panel |
-| Look | The brand colours and fonts |
-| Offline | Fonts and the QR library served from the site, so both work without a connection |
-| Voice and quick entry | Voice always says why it failed; quick entry offers to add an unknown name |
-
-The full list, version by version, is in [CHANGELOG.md](CHANGELOG.md).
-
 ## Documents
 
 | Document | Read it for |
 | --- | --- |
 | [PRD.md](PRD.md) | Who it is for, the problem, the requirements, what is out of scope |
-| [SPEC-CHECK.md](SPEC-CHECK.md) | Each line of the brief, whether it is met and the test that shows it |
+| [SPEC-CHECK.md](SPEC-CHECK.md) | Each requirement of the specification, whether it is met and the test that shows it |
 | [REPORT.md](REPORT.md) | The latest results on the live link, known limits, what was not tested |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | The parts, the files, hosting, offline |
 | [TECH-STACK.md](TECH-STACK.md) | Each technology chosen, why, and what it costs |
@@ -128,7 +105,7 @@ The full list, version by version, is in [CHANGELOG.md](CHANGELOG.md).
 | [docs/data-model.md](docs/data-model.md) | Where every piece of data is kept and its fields |
 | [docs/schema/](docs/schema/) | The shop file, the CSV exports and the links the app builds |
 | [evidence/](evidence/) | The test records from the live link, one file per test |
-| [CHANGELOG.md](CHANGELOG.md) | What changed in each version |
+| [CHANGELOG.md](CHANGELOG.md) | The two versions kept, what differs, and what changed in each version |
 
 ## Privacy
 

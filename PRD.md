@@ -29,10 +29,10 @@ already written.
 Each requirement is one line in the owner's words. The last column names the epic that holds its features and
 acceptance criteria in [the epics](docs/epics.md).
 
-### From the brief
+### From the specification
 
-The product was built against a written brief. Its nine numbered requirements keep the brief's own numbers. The
-brief's bonus items and its one checking rule have no numbers there, so they are marked "Bonus" and "Check".
+The product was built against a written specification. Its nine required items keep their numbers. Its
+optional features are marked "Optional", and its one rule about the date is marked "Quality".
 
 | ID | Requirement | Epic |
 | --- | --- | --- |
@@ -45,16 +45,16 @@ brief's bonus items and its one checking rule have no numbers there, so they are
 | 7 | My data is still there after I reload the page | Shop data: load, export and the sample shop |
 | 8 | I can paste a shop file in the sample's format into an import box and load a different shop | Shop data: load, export and the sample shop |
 | 9 | It works well on a phone 375 px wide | Layout and themes |
-| Bonus | I see an overdue list, sorted by days since the last payment | Shop overview |
-| Bonus | I can edit and delete an entry, and the balances follow | Entries |
-| Bonus | I can export a CSV that matches the data | Shop data: load, export and the sample shop |
-| Bonus | I can search by name or phone | Customers |
-| Bonus | The reminder carries a UPI pay link | Reminders and getting paid |
-| Bonus | I can read the labels in Hindi or Telugu | Languages and names |
-| Bonus | The amount is read from the payment screenshot | Payment screenshot |
-| Check | Anything that depends on the date uses the date given in the page address when there is one | Links and robustness |
+| Optional | I see an overdue list, sorted by days since the last payment | Shop overview |
+| Optional | I can edit and delete an entry, and the balances follow | Entries |
+| Optional | I can export a CSV that matches the data | Shop data: load, export and the sample shop |
+| Optional | I can search by name or phone | Customers |
+| Optional | The reminder carries a UPI pay link | Reminders and getting paid |
+| Optional | I can read the labels in Hindi or Telugu | Languages and names |
+| Optional | The amount is read from the payment screenshot | Payment screenshot |
+| Quality | Anything that depends on the date uses the date given in the page address when there is one | Links and robustness |
 
-### Beyond the brief: the ledger and getting paid
+### Beyond the specification: the ledger and getting paid
 
 | Requirement | Epic |
 | --- | --- |
@@ -75,7 +75,7 @@ brief's bonus items and its one checking rule have no numbers there, so they are
 | I can speak the same sentence, and when voice does not work I am told why and what to do instead | Quick entry, typed and by voice |
 | A name the app does not know is offered as a new customer | Quick entry, typed and by voice |
 
-### Beyond the brief: the shop, languages and the device
+### Beyond the specification: the shop, languages and the device
 
 | Requirement | Epic |
 | --- | --- |
@@ -104,7 +104,7 @@ brief's bonus items and its one checking rule have no numbers there, so they are
 | Accounts, sign-in and staff logins | One owner, one device. There is no server to sign in to |
 | The same ledger on two devices at once | Everything a shop records stays in the browser of one device ([where data is kept](docs/data-model.md#where-data-is-kept)). The backup file moves a shop to another device by hand |
 | Taking the payment | The app builds a pay link and a QR code. The money moves in the customer's own UPI app, and the owner records the payment |
-| Stock, billing and invoices | The brief asks for a credit ledger only |
+| Stock, billing and invoices | The specification asks for a credit ledger only |
 | Paise | Amounts are whole rupees |
 | Looking up whether a number is on WhatsApp | No such lookup exists without a business account and a server. The owner answers after a hello message |
 
@@ -115,16 +115,16 @@ What the product does within its scope but only up to a point is listed under
 
 | Measure | Target |
 | --- | --- |
-| The sample shop, with the date set to 15 November 2026 in the page address | Total outstanding 11,820 and every balance as the brief's expected file gives it |
+| The sample shop, with the date set to 15 November 2026 in the page address | Total outstanding 11,820 and every balance as the specification's sample gives it |
 | A different shop loaded through the import box | Every total and balance correct |
-| Every requirement of the brief and every bonus item | Met, each shown by a test |
+| Every required item and every optional feature of the specification | Met, each shown by a test |
 | Sideways scroll at 375 px | None, in every language |
 | Light and dark | Every screen readable in both |
 | A plain visit | No request to any host but the site itself |
 | A visit without signal, after one visit with it | The app opens with its data |
 
-The results on the live link are in [the report](REPORT.md#latest-results-on-the-live-link). Each line of the
-brief is checked in [the specification check](SPEC-CHECK.md).
+The results on the live link are in [the report](REPORT.md#latest-results-on-the-live-link). Each
+requirement is checked in [the specification check](SPEC-CHECK.md).
 
 ## Assumptions
 

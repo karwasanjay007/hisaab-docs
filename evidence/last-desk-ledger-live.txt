@@ -4,7 +4,7 @@ PASS 1024x768 light: room for at least 8 customer rows on the first screen, and 
 PASS 1024x768 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 light: the "+" button is 44 px | 44
 PASS 1024x768 light: right panel only from 1200 px, 320 to 380 px wide | 0
-PASS 1024x768 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 light: no horizontal scroll | 0
 PASS 1024x768 light: Enter opens the popover above the pill
 PASS 1024x768 light: the popover holds every action, each 44 px | missing  small 0
@@ -22,7 +22,7 @@ PASS 1024x768 dark: room for at least 8 customer rows on the first screen, and e
 PASS 1024x768 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 dark: the "+" button is 44 px | 44
 PASS 1024x768 dark: right panel only from 1200 px, 320 to 380 px wide | 0
-PASS 1024x768 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 dark: no horizontal scroll | 0
 PASS 1024x768 dark: Enter opens the popover above the pill
 PASS 1024x768 dark: the popover holds every action, each 44 px | missing  small 0
@@ -35,7 +35,7 @@ PASS 1280x800 light: room for at least 10 customer rows on the first screen, and
 PASS 1280x800 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 light: the "+" button is 44 px | 44
 PASS 1280x800 light: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1280x800 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 light: no horizontal scroll | 0
 PASS 1280x800 light: Enter opens the popover above the pill
 PASS 1280x800 light: the popover holds every action, each 44 px | missing  small 0
@@ -53,7 +53,7 @@ PASS 1280x800 dark: room for at least 10 customer rows on the first screen, and 
 PASS 1280x800 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 dark: the "+" button is 44 px | 44
 PASS 1280x800 dark: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1280x800 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 dark: no horizontal scroll | 0
 PASS 1280x800 dark: Enter opens the popover above the pill
 PASS 1280x800 dark: the popover holds every action, each 44 px | missing  small 0
@@ -66,7 +66,7 @@ PASS 1440x900 light: room for at least 12 customer rows on the first screen, and
 PASS 1440x900 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 light: the "+" button is 44 px | 44
 PASS 1440x900 light: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1440x900 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 light: no horizontal scroll | 0
 PASS 1440x900 light: Enter opens the popover above the pill
 PASS 1440x900 light: the popover holds every action, each 44 px | missing  small 0
@@ -84,7 +84,7 @@ PASS 1440x900 dark: room for at least 12 customer rows on the first screen, and 
 PASS 1440x900 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 dark: the "+" button is 44 px | 44
 PASS 1440x900 dark: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1440x900 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 dark: no horizontal scroll | 0
 PASS 1440x900 dark: Enter opens the popover above the pill
 PASS 1440x900 dark: the popover holds every action, each 44 px | missing  small 0

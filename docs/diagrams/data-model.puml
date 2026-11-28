@@ -124,7 +124,7 @@ Shop "1" *-- "0..*" Customer : customers
 Shop "1" *-- "0..*" Entry : entries
 Customer "1" -- "0..*" Entry : phone
 
-note right of Customer
+note bottom of Customer
   <b>Worked out, never stored</b>
   balance = credit amounts - payment amounts
   balance > 0 : owes the shop
@@ -147,5 +147,9 @@ note left of Shop
   sum of all balances, so a customer
   in advance lowers it.
 end note
+
+Shops -[hidden]right- WaChecks
+Entry -[hidden]down- Preferences
+Customer -[hidden]down- Cache
 
 @enduml

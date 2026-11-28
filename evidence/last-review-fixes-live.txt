@@ -21,7 +21,7 @@ PASS 375 light: home: entry row buttons are at least 44 px | 44
 PASS 375 light: home: the shop logo file field is at least 44 px tall | 56
 PASS 375 light: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 375 light: home: the h1 is the largest heading | h1 15 against 15
-PASS 375 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 light: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 375 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 375 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 375 light: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -67,7 +67,7 @@ PASS 375 dark: home: entry row buttons are at least 44 px | 44
 PASS 375 dark: home: the shop logo file field is at least 44 px tall | 56
 PASS 375 dark: home: every primary button is the brand amber | entry-save=rgb(201, 122, 29) customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29)
 PASS 375 dark: home: the h1 is the largest heading | h1 15 against 15
-PASS 375 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 375 dark: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 375 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 375 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 375 dark: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -113,7 +113,7 @@ PASS 1280 light: home: entry row buttons are at least 44 px | 44
 PASS 1280 light: home: the shop logo file field is at least 44 px tall | 56
 PASS 1280 light: home: every primary button is the brand amber | customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29) profile-save=rgb(201, 122, 29)
 PASS 1280 light: home: the h1 is the largest heading | h1 24 against 20.8
-PASS 1280 light: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 light: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 1280 light: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 1280 light: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 1280 light: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -160,7 +160,7 @@ PASS 1280 dark: home: entry row buttons are at least 44 px | 44
 PASS 1280 dark: home: the shop logo file field is at least 44 px tall | 56
 PASS 1280 dark: home: every primary button is the brand amber | customer-add=rgb(201, 122, 29) Save settings=rgb(201, 122, 29) profile-save=rgb(201, 122, 29)
 PASS 1280 dark: home: the h1 is the largest heading | h1 24 against 20.8
-PASS 1280 dark: home: every grader hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
+PASS 1280 dark: home: every automated test hook is there and visible | {"total":true,"customers":8,"balances":8,"reminds":8,"box":true,"go":true,"shot":true,"shots":0}
 PASS 1280 dark: home: the payment hint keeps its words | Demo UPI ID in use. Put your shop's own 
 PASS 1280 dark: customer: the top bar is the brand navy | rgb(18, 38, 58)
 PASS 1280 dark: customer: the total block is the brand navy | rgb(18, 38, 58)
@@ -260,7 +260,7 @@ PASS 1024x768 light: room for at least 8 customer rows on the first screen, and 
 PASS 1024x768 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 light: the "+" button is 44 px | 44
 PASS 1024x768 light: right panel only from 1200 px, 320 to 380 px wide | 0
-PASS 1024x768 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 light: no horizontal scroll | 0
 PASS 1024x768 light: Enter opens the popover above the pill
 PASS 1024x768 light: the popover holds every action, each 44 px | missing  small 0
@@ -278,7 +278,7 @@ PASS 1024x768 dark: room for at least 8 customer rows on the first screen, and e
 PASS 1024x768 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1024x768 dark: the "+" button is 44 px | 44
 PASS 1024x768 dark: right panel only from 1200 px, 320 to 380 px wide | 0
-PASS 1024x768 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1024x768 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1024x768 dark: no horizontal scroll | 0
 PASS 1024x768 dark: Enter opens the popover above the pill
 PASS 1024x768 dark: the popover holds every action, each 44 px | missing  small 0
@@ -291,7 +291,7 @@ PASS 1280x800 light: room for at least 10 customer rows on the first screen, and
 PASS 1280x800 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 light: the "+" button is 44 px | 44
 PASS 1280x800 light: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1280x800 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 light: no horizontal scroll | 0
 PASS 1280x800 light: Enter opens the popover above the pill
 PASS 1280x800 light: the popover holds every action, each 44 px | missing  small 0
@@ -309,7 +309,7 @@ PASS 1280x800 dark: room for at least 10 customer rows on the first screen, and 
 PASS 1280x800 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1280x800 dark: the "+" button is 44 px | 44
 PASS 1280x800 dark: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1280x800 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1280x800 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1280x800 dark: no horizontal scroll | 0
 PASS 1280x800 dark: Enter opens the popover above the pill
 PASS 1280x800 dark: the popover holds every action, each 44 px | missing  small 0
@@ -322,7 +322,7 @@ PASS 1440x900 light: room for at least 12 customer rows on the first screen, and
 PASS 1440x900 light: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 light: the "+" button is 44 px | 44
 PASS 1440x900 light: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1440x900 light: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 light: no horizontal scroll | 0
 PASS 1440x900 light: Enter opens the popover above the pill
 PASS 1440x900 light: the popover holds every action, each 44 px | missing  small 0
@@ -340,7 +340,7 @@ PASS 1440x900 dark: room for at least 12 customer rows on the first screen, and 
 PASS 1440x900 dark: the pill is in view at the bottom, its field 16 px or more | 16
 PASS 1440x900 dark: the "+" button is 44 px | 44
 PASS 1440x900 dark: right panel only from 1200 px, 320 to 380 px wide | 340
-PASS 1440x900 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 1440x900 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 1440x900 dark: no horizontal scroll | 0
 PASS 1440x900 dark: Enter opens the popover above the pill
 PASS 1440x900 dark: the popover holds every action, each 44 px | missing  small 0
@@ -447,7 +447,7 @@ PASS 360x640 light: the compact total is at most 150 px | 143
 PASS 360x640 light: the pill and the tabs together are at most 112 px | 112
 PASS 360x640 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 360x640 light: the "+" button is 44 px | 44
-PASS 360x640 light: every grader hook exists and the quick-entry ids are not copied
+PASS 360x640 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 360x640 light: no horizontal scroll | 0
 PASS 360x640 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 360x640 light: the sheet holds every action | missing 
@@ -466,7 +466,7 @@ PASS 360x640 dark: the compact total is at most 150 px | 143
 PASS 360x640 dark: the pill and the tabs together are at most 112 px | 112
 PASS 360x640 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 360x640 dark: the "+" button is 44 px | 44
-PASS 360x640 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 360x640 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 360x640 dark: no horizontal scroll | 0
 PASS 360x640 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 360x640 dark: the sheet holds every action | missing 
@@ -483,7 +483,7 @@ PASS 375x667 light: the compact total is at most 150 px | 143
 PASS 375x667 light: the pill and the tabs together are at most 112 px | 112
 PASS 375x667 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 375x667 light: the "+" button is 44 px | 44
-PASS 375x667 light: every grader hook exists and the quick-entry ids are not copied
+PASS 375x667 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 375x667 light: no horizontal scroll | 0
 PASS 375x667 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 375x667 light: the sheet holds every action | missing 
@@ -502,7 +502,7 @@ PASS 375x667 dark: the compact total is at most 150 px | 143
 PASS 375x667 dark: the pill and the tabs together are at most 112 px | 112
 PASS 375x667 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 375x667 dark: the "+" button is 44 px | 44
-PASS 375x667 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 375x667 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 375x667 dark: no horizontal scroll | 0
 PASS 375x667 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 375x667 dark: the sheet holds every action | missing 
@@ -519,7 +519,7 @@ PASS 390x844 light: the compact total is at most 150 px | 143
 PASS 390x844 light: the pill and the tabs together are at most 112 px | 112
 PASS 390x844 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 390x844 light: the "+" button is 44 px | 44
-PASS 390x844 light: every grader hook exists and the quick-entry ids are not copied
+PASS 390x844 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 390x844 light: no horizontal scroll | 0
 PASS 390x844 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 390x844 light: the sheet holds every action | missing 
@@ -538,7 +538,7 @@ PASS 390x844 dark: the compact total is at most 150 px | 143
 PASS 390x844 dark: the pill and the tabs together are at most 112 px | 112
 PASS 390x844 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 390x844 dark: the "+" button is 44 px | 44
-PASS 390x844 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 390x844 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 390x844 dark: no horizontal scroll | 0
 PASS 390x844 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 390x844 dark: the sheet holds every action | missing 
@@ -555,7 +555,7 @@ PASS 412x915 light: the compact total is at most 150 px | 143
 PASS 412x915 light: the pill and the tabs together are at most 112 px | 112
 PASS 412x915 light: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 412x915 light: the "+" button is 44 px | 44
-PASS 412x915 light: every grader hook exists and the quick-entry ids are not copied
+PASS 412x915 light: every automated test hook exists and the quick-entry ids are not copied
 PASS 412x915 light: no horizontal scroll | 0
 PASS 412x915 light: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 412x915 light: the sheet holds every action | missing 
@@ -574,7 +574,7 @@ PASS 412x915 dark: the compact total is at most 150 px | 143
 PASS 412x915 dark: the pill and the tabs together are at most 112 px | 112
 PASS 412x915 dark: the quick-entry field is in the pill, 16 px or more, inside the screen | 16
 PASS 412x915 dark: the "+" button is 44 px | 44
-PASS 412x915 dark: every grader hook exists and the quick-entry ids are not copied
+PASS 412x915 dark: every automated test hook exists and the quick-entry ids are not copied
 PASS 412x915 dark: no horizontal scroll | 0
 PASS 412x915 dark: the "+" sheet opens by tap with aria-expanded and aria-controls
 PASS 412x915 dark: the sheet holds every action | missing 

@@ -1,0 +1,49 @@
+@startuml c4-addons
+!include <C4/C4_Component>
+title Hisaab: the add-on files around app.js and what each hooks into
+
+skinparam wrapWidth 190
+skinparam maxMessageSize 150
+
+Container(app, "Ledger script", "app.js", "Ends by setting window.Hisaab: on(name, fn) for render, statement, imported and export; state, replace, save, text, addLanguage, quickWords")
+
+Container_Boundary(addons, "Add-on scripts, loaded after app.js") {
+  Component(profile, "Shop profile", "profile.js, profile.css", "Owner, address and logo; Balance over time on the customer page. Hooks: render, statement, imported, export")
+  Component(extras, "Extras", "extras.js, extras.css", "Note shortcuts, the overdue total line, the date the figures are for. Hooks: render; reads overdue rows")
+  Component(customer, "Customer tools", "customer.js, customer.css", "Totals, Call, WhatsApp chat, change phone number, delete customer with Undo. Hooks: render; changes the shop")
+  Component(sendways, "Other ways to send", "sendways.js", "The reminder as SMS, to a chosen contact, or copied; demo UPI notice. Hooks: render; reads the reminder")
+
+  Component(names, "Names", "names.js", "A customer's name in the script of the nine newer languages. Sets nameIn, uses translit")
+  Component(assist, "Assist", "assist.js", "Says which theme and which view; skip link; offers to add an unknown name. Reads the language, the text and the quick entry result")
+  Component(compact, "Compact layout", "compact.js, compact.css", "Quick entry pill, the + menu, summary strip, right panel, right to left for Urdu. Hooks: render")
+
+  Component(langs, "More languages", "langs.js", "Nine more languages, each fetched when chosen. Adds a language and its quick entry words")
+  Component(shops, "Several shops", "shops.js, shops.css", "Add, switch and remove shops; Import as a new shop. Hooks: render, imported; replaces the shop")
+  Component(wacheck, "WhatsApp check", "wacheck.js", "Hello message and the owner's answer per number. Hooks: render, imported")
+  Component(guard, "Guard", "guard.js, guard.css", "Storage full or blocked notices, imported picture limit, whole rupees. Hooks: render, imported; watches writes to hisaab.v1")
+}
+
+Container(i18nfiles, "Language files", "i18n/*.json", "One file per language; groups core, profile, shops, customer, extras, compact; 256 text keys")
+Container(swc, "Service worker", "sw.js", "Network first, the cache hisaab-v22 as the fallback")
+ContainerDb(ls, "localStorage", "Web Storage", "hisaab.v1, hisaab.shops, hisaab.wa, hisaab.guard")
+
+Lay_R(profile, extras)
+Lay_R(extras, customer)
+Lay_R(customer, sendways)
+Lay_D(profile, names)
+Lay_R(names, assist)
+Lay_R(assist, compact)
+Lay_D(names, langs)
+Lay_R(langs, shops)
+Lay_R(shops, wacheck)
+Lay_R(wacheck, guard)
+
+Rel(app, profile, "window.Hisaab: every add-on starts only if it exists")
+Rel(langs, i18nfiles, "Fetches the chosen language", "fetch")
+Rel(swc, i18nfiles, "Caches each file the first time it is fetched", "Cache API")
+Rel(shops, ls, "Parks the other shops", "hisaab.shops")
+Rel(wacheck, ls, "The owner's answer", "hisaab.wa")
+Rel(guard, ls, "Tests that storage works", "hisaab.guard")
+
+SHOW_LEGEND()
+@enduml

@@ -33,7 +33,7 @@ does not follow the owner to a second device by itself; the backup file does tha
 Nothing. Every part above is free: the hosting is on a free plan, the libraries and fonts are open source, and
 there is no server, database, key or paid service.
 
-## Security in brief
+## Security
 
 - **Nothing to break into.** There is no server code, no account, no key and no secret. No environment variable
   is read.
@@ -55,10 +55,10 @@ What stays on the device and who can read it is in [the data model](docs/data-mo
 | Not used | Why |
 | --- | --- |
 | A server or serverless functions | Nothing in the product needs one, and the ledger would have to leave the device |
-| A database, accounts and sign-in | One owner on one device; the brief allows browser storage |
+| A database, accounts and sign-in | One owner on one device; the specification allows browser storage |
 | A framework and a build step | The pages are small; plain files load fastest and need no tooling to release |
 | IndexedDB, cookies and session storage | The ledger is small enough for the browser's simple key and value store once screenshots are shrunk |
-| An AI model | The brief says Hisaab needs none. The screenshot reader is text recognition that runs in the browser |
+| An AI model | The specification asks for none. The screenshot reader is text recognition that runs in the browser |
 | A vision or speech service with a key | A key needs a server to keep it; the reader and the browser's speech service need neither |
 | A WhatsApp business account | Needed only to send messages without the owner or to look a number up; the owner sends each message |
 | A payment gateway | A UPI link and QR code let the customer pay the shop directly, with no fees and no account |
